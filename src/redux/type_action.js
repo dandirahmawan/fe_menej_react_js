@@ -1,0 +1,11 @@
+export const deleteDataNoteAction = 'DELETE_DATA_NOTE'
+export const selectRowModuleAction = 'SELECT_ROW_MODULE'
+export const updateDataModuleBugsAction = "UPDATE_DATA_MODULE_BUGS"
+export const setDataDocFileAction = "SET_DATA_DOC_FILE"
+export const appendDataDocFileAction = "APPEND_DATA_DOC_FILE"
+export const deleteDataDocFileAction =  "DELETE_DATA_DOC_FILE"
+export const closeDataBugsAction = "CLOSE_DATA_BUGS"
+export const uncloseDataBugsAction = "UNCLOSE_DATA_BUGS"
+export const updateDataModuleBugsCloseAction = "CLOSE_DATA_BUGS_MODULE"
+export const updateDataModuleBugsUncloseAction = "UNCLOSE_DATA_BUGS_MODULE"
+export const editBugsAction = "EDIT_BUGS"
