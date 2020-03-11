@@ -1,13 +1,13 @@
 import React from 'react'
 import {baseUrl} from '../../const/const'
 import {Spinner} from '../spinner'
+import { getCookieUserId } from '../../function/function'
 
 class row_doc_file extends React.Component{
 
     byteToKb(size){
         var rtn = 0
         var mathFLoor = Math.floor(size / 1000)
-        console.log(mathFLoor+" => 1")
         if(mathFLoor >= 1000){
             rtn = Math.floor(mathFLoor / 1000)
             rtn = rtn+" mb"
@@ -29,6 +29,11 @@ class row_doc_file extends React.Component{
         return rtn
     }
 
+    urlPath(url){
+        var url2 = url.replace("..\\upload\\", "")
+        return url2
+    }
+
     render(){
         return(
             <tr className='tr-selectable row-doc-file'>
@@ -38,14 +43,28 @@ class row_doc_file extends React.Component{
                     }
                 </td>
                 <td style={{width: "70%", paddingRight: "10px"}}>
-                    <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName)} href={baseUrl+"/file/"+this.props.fileName} style={{color: "#000"}}>{this.props.fileName}</a>
-                    <div className="second-font-color" style={{fontSize: "11px"}}>ini adalah description dari document file</div>
+                    <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.urlPath(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
+                    <div className="second-font-color" style={{fontSize: "11px"}}>
+                        {
+                            (this.props.descFile != null && this.props.descFile != "")
+                            ?
+                                this.props.descFile
+                            :
+                                'No description for this document file'
+                        }
+                    </div>
                 </td>
                 <td className='second-font-color' style={{paddingRight: "5px"}} align="right">
                     {this.byteToKb(this.props.fileSize)}
                 </td>
                 <td className='second-font-color' style={{paddingRight: "5px"}} align="right">
-                    <button onClick={(e) => this.props.delete(e, this.props.fileName)} style={{background: "none", padding: "0px"}}><i class="fa fa-trash"></i></button>
+                    {
+                        (this.props.isPermition || this.props.picProject == getCookieUserId())
+                        ?
+                            <button onClick={(e) => this.props.delete(e, this.props.fileName)} style={{background: "none", padding: "0px"}}><i class="fa fa-trash"></i></button>
+                        :
+                            ""
+                    }
                 </td>
             </tr>
         )

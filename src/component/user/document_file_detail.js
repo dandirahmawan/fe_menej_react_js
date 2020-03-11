@@ -11,8 +11,10 @@ class document_file_detail extends React.Component{
             <React.Fragment>
                 <table style={{width: "100%", marginTop: "10px"}}>
                     <thead className="bold second-font-color">
-                        <th colSpan="2" className="main-border-right">Name</th>
-                        <th className="main-border-right">Size</th>
+                        <tr>
+                            <th colSpan="2" className="main-border-right">Name</th>
+                            <th className="main-border-right">Size</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {data}

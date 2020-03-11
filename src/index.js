@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import {updateMenu} from './redux/action'
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import RootReducer from './redux/reducer'
@@ -10,7 +9,6 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const crStore = createStore(RootReducer)
-// crStore.dispatch(updateMenu("dandi"))
 
 ReactDOM.render(<Provider store={crStore}><App /></Provider>, document.getElementById('root'));
 serviceWorker.unregister();

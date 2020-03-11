@@ -44,7 +44,7 @@ class sidebar extends React.Component{
 
     render(){
 
-        const menuProjectLink = this.props.menuProject.map(dt => <Link to={"/project/"+dt.projectId}><li style={{padding: "10px",fontSize:"12px",color:"#FFF"}}>{dt.projectName}</li></Link>)
+        const menuProjectLink = this.props.menuProject.map(dt => (dt.isDelete !== 'Y') ? <Link to={"/project/"+dt.projectId}><li className="none-style-list" style={{padding: "10px",fontSize:"12px",color:"#FFF"}}>{dt.projectName}</li></Link> : '')
 
         return(
             <React.Fragment>
@@ -53,8 +53,12 @@ class sidebar extends React.Component{
                     <div style={{height:"60px"}}>
                         <img style={{marginTop:"12px",marginLeft: "15px"}} src={Logo}></img>
                     </div>
-                    <ul style={{fontSize: '16px',marginTop:"0px"}}>
+                    <ul style={{fontSize: '14px',marginTop:"0px"}}>
                         {/* <Link to="/dashboard"> */}
+                        <a onClick={this.createProject}><li className='nav-li'>
+                            <em className='fa fa-plus-circle'>&nbsp;</em>
+                            Create
+                        </li></a>
                         <Link to={{pathname:'/dashboard', load: 'yes'}}>
                             <li className='nav-li'>
                                 <em className='fa fa-dashboard'>&nbsp;</em>
@@ -62,15 +66,11 @@ class sidebar extends React.Component{
                             </li>
                         </Link>
                         <Link to={{pathname:'/users', load: 'yes'}}>
-                            <li className='nav-li'> 
+                            <li className='nav-li'>
                                 <em className='fa fa-user-circle'>&nbsp;</em>
                                 User
                             </li>
                         </Link>
-                        <a onClick={this.createProject}><li className='nav-li'>
-                            <em className='fa fa-plus-circle'>&nbsp;</em>
-                            Create project
-                        </li></a>
                         <Link to={{pathname:'/project', load: 'yes'}}>
                             <li className='nav-li'>
                                 <em className='fa fa-folder'>&nbsp;</em>

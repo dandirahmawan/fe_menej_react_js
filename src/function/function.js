@@ -2,16 +2,12 @@ import scsAlt from '../images/success_alt_inf.png'
 import wrnAlt from '../images/warn_alert_inf.png'
 import GifLoader from '../gif/Rolling-1s-45px.gif'
 
-export function testFunction(a){
-    alert(a * 100);
-}
-
 export function getCookieUserId(){
     var c = document.cookie.split(";")
     var userId = "";
     for(var a = 0;a<c.length;a++){
         var d = c[a].split("=")
-        if(d[0] == 'userId'){
+        if(d[0] === 'userId'){
             userId = d[1]
         }
     }
@@ -23,7 +19,7 @@ export function getCookieSessionId(){
     var sessionId = "";
     for(var a = 0;a<c.length;a++){
         var d = c[a].split("=")
-        if(d[0].replace(" ", "") == 'sessionId'){
+        if(d[0].replace(" ", "") === 'sessionId'){
             sessionId = d[1]
         }
     }
@@ -37,7 +33,7 @@ export function popUpAlert(message, type){
     }
 
     var img = new Image()
-    img.src = (type == 'success') ? scsAlt : wrnAlt
+    img.src = (type === 'success') ? scsAlt : wrnAlt
     img.style.width = "25px"
 
     var messageHtml = document.createElement("span")
@@ -49,7 +45,7 @@ export function popUpAlert(message, type){
     html.style.textAlign = "center"
     html.style.padding = "15px"
     html.style.borderRadius = "5px"
-    html.style.zIndex = "10000"
+    html.style.zIndex = "100000"
     html.append(img)
     html.append(messageHtml)
     document.body.append(html)
@@ -83,7 +79,7 @@ export function backHistory(){
 }
 
 export function getBaseUrl(){
-    return "http://localhost:8081"
+    return "http://localhost:8088"
 }
 
 export function getLoaderImage(){
@@ -105,4 +101,45 @@ export function getLoaderImage(){
     elm.append(l)
 
     return elm
+}
+
+export function popCenterPosition(idElement){
+    var d = document.getElementById(idElement)
+    var h = d.offsetHeight;
+    var w = d.offsetWidth;
+    var ww = window.innerWidth
+    var wh = window.innerHeight
+
+    var l = (ww - w) / 2
+    var t = (wh - h) / 2
+    d.style.top = t+"px"
+    d.style.left = l+"px"
+}
+
+export function convertDate(date){
+    var d = new Date(date)
+    var dt = d.toLocaleDateString("id-ID");
+    return dt
+}
+
+export function convertDate_dd_MMM_yyy(date){
+    var dated = new Date(date)
+    if(dated != "Invalid Date"){
+        var month = parseInt(dated.getMonth()) + 1
+        var monthName = ""
+        
+        if(month == 1) monthName = "January"
+        if(month == 2) monthName = "February"
+        if(month == 3) monthName = "March"
+        if(month == 4) monthName = "April"
+        if(month == 5) monthName = "May"
+        if(month == 6) monthName = "June"
+        if(month == 7) monthName = "July"
+        if(month == 8) monthName = "August"
+        if(month == 9) monthName = "September"
+        if(month == 10) monthName = "October"
+        if(month == 11) monthName = "November"
+        if(month == 12) monthName = "December"
+        return dated.getDate()+" "+monthName+" "+dated.getFullYear()
+    }
 }

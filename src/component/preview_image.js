@@ -17,7 +17,6 @@ class preview_image extends React.Component{
                 if(w > 0) window.clearInterval(itvImg)
             }, 10);
         }else{
-            var w = img.offsetWidth
             var wdw = window.innerWidth;
             var maxH = window.innerHeight - 100;
             img.style.maxHeight = maxH+"px"
@@ -29,7 +28,7 @@ class preview_image extends React.Component{
     
     render(){
 
-        const urlImage = baseUrl+"/file/"+this.props.image
+        const urlImage = baseUrl+"/file/"+this.props.url
 
         return(
             <React.Fragment>

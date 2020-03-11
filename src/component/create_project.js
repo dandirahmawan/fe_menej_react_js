@@ -1,6 +1,7 @@
 import React from 'react'
 import {baseUrl} from '../const/const'
 import {getCookieUserId, popUpAlert} from '../function/function'
+import {Redirect} from 'react-router-dom'
 
 class create_project extends React.Component{
 
@@ -13,6 +14,10 @@ class create_project extends React.Component{
     }
     
     componentDidMount(){
+        this.setState({
+            redirectId: ''
+        })
+
         var elm = document.getElementById("pop_create_project")
         var xHeight = elm.offsetHeight;
         var xWidth = elm.offsetWidth;
@@ -24,8 +29,6 @@ class create_project extends React.Component{
 
     commitProject(){
         var userId = getCookieUserId()
-
-        // var elm = document.getElementById("pn_input")
         if(this.state.projectName == ""){
             popUpAlert("Project name is empty", "warning");
             return false;
@@ -37,11 +40,14 @@ class create_project extends React.Component{
         fetch(baseUrl+"/insert_project",{
             method: 'POST',
             body: formData
-        }).then(res => res.json())
-        .then((result) => {
+        }).then(res => res.text())
+        .then(result => {
+            if(result != 'exists'){
+                window.location = '/project/'+result
+            }else{
+                popUpAlert("project name already exists")
+            }
         })
-        this.props.hidePopUp()
-
     }
 
     handleChange(e){

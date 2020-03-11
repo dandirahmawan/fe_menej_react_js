@@ -14,10 +14,14 @@ class module_detail extends React.Component{
         return(
             <table style={{width: "100%", marginTop: "10px"}}>
                 <thead className="bold second-font-color">
-                    <th colSpan="2" className="main-border-right">Name</th>
-                    <th className="main-border-right">Due date</th>
+                    <tr>
+                        <th colSpan="2" className="main-border-right">Name</th>
+                        <th className="main-border-right">Due date</th>
+                    </tr>
                 </thead>
-                {data}
+                <tbody>
+                    {data}
+                </tbody>
             </table>
         )
     }

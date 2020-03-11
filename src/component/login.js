@@ -60,8 +60,8 @@ class login extends React.Component{
         })
 
         var b = e.target
-        b.style.background = "#CCC"
-        b.innerText = "processing.."
+        b.setAttribute("class", "btn-secondary")
+        b.innerText = "processing..."
         
         var form = new FormData()
         form.append("email", this.state.email)
@@ -80,7 +80,7 @@ class login extends React.Component{
                 this.setState({
                     alertLogin: "Email and password is not match"
                 })
-                b.style.background = ""
+                b.setAttribute("class", "btn-primary")
                 b.innerText = "Sign in"
             }
         })    

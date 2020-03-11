@@ -35,7 +35,10 @@ class new_module extends React.Component{
 
     selectUser(){
         this.setState({
-            popupListChoice: <UserListChoice xSelected={this.xSelected} userSelected={this.userSelected}/>
+            popupListChoice: <UserListChoice 
+                                projectId={this.props.projectId}
+                                xSelected={this.xSelected} 
+                                userSelected={this.userSelected}/>
         })
     }
 
@@ -54,7 +57,7 @@ class new_module extends React.Component{
     }
 
     commit(){
-        if(this.userSelected == "" || this.state.moduleName == "" || this.state.dueDate == ""){
+        if(this.state.userSelected == "Select" || this.state.moduleName == "" || this.state.dueDate == ""){
             return false
         }
         var iu = this.state.userSelectedId

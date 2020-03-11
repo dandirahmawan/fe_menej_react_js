@@ -1,11 +1,19 @@
 import React from 'react'
 import { baseUrl } from '../../const/const'
+import {getCookieSessionId, getCookieUserId, popUpAlert} from '../../function/function'
+import {SpinnerButton} from '../spinner'
 
 class invite_user extends React.Component{
 
     constructor(){
         super()
+        this.state = {
+            buttonInnerHtml : "Send"
+        }
+
+        this.buttonCommit = React.createRef()
         this.addEmail = this.addEmail.bind(this)
+        this.commitInvite = this.commitInvite.bind(this)
     }
 
     componentDidMount(){
@@ -63,14 +71,27 @@ class invite_user extends React.Component{
                 arrEmail += v+" "
             }
         }
-       
 
         if(isReady){
+            this.setState({
+                buttonInnerHtml: <SpinnerButton size="15px"/>
+            })
+            this.buttonCommit.current.style.opacity = "0.5"
+            this.buttonCommit.current.setAttribute("disabled", "disabled")
+
             var form = new FormData()
             form.append("email", arrEmail)
+            form.append("userId", getCookieUserId())
+            form.append("sessionId", getCookieSessionId())
             fetch(baseUrl+"/invitation", {
                 method: "POST",
                 body: form
+            }).then(res => res.text())
+            .then(result => {
+                if(result == 'success'){
+                    popUpAlert("Invitation has been sent", "success")
+                    this.props.hidePopUp()
+                }
             })
         }
     }
@@ -97,7 +118,9 @@ class invite_user extends React.Component{
                             </div>
                         </div>
                         <div style={{padding: "10px", textAlign: "right"}}>
-                            <button onClick={this.commitInvite} style={{fontSize: "12px"}} className="btn-primary">Send</button>
+                            <button ref={this.buttonCommit} onClick={this.commitInvite} style={{fontSize: "12px", minWidth: "50px"}} className="btn-primary">
+                                {this.state.buttonInnerHtml}
+                            </button>
                             <button onClick={this.props.hidePopUp} style={{fontSize: "12px", marginLeft: "10px"}} className="btn-secondary">Cancel</button>
                         </div>
                     </div>

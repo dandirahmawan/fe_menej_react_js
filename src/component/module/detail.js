@@ -2,10 +2,11 @@ import React from 'react'
 import ModuleInfo from './module_info'
 import BugsModule from './bugs_module'
 import DocFileModule from './doc_file_module'
-import {getCookieUserId} from '../../function/function'
+import {getCookieUserId, getCookieSessionId} from '../../function/function'
 import { baseUrl } from '../../const/const'
 import {connect} from 'react-redux'
-import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule} from '../../redux/action'
+import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule, appendDataBugs, appendDataDocFile, deleteDataDocFile, updateDataModuleBugsClose, updateDataModuleBugsUnclose} from '../../redux/action'
+import {Spinner} from '../spinner'
 
 class detail extends React.Component{
 
@@ -14,6 +15,7 @@ class detail extends React.Component{
         this.state = {
             dataBugs: [],
             dataDocFile: [],
+            dataPermition: [],
             projectId:"",
             moduleId:"",
             moduleName: "",
@@ -27,7 +29,10 @@ class detail extends React.Component{
             mbDisplay:"none",
             dfmDisplay: "none",
             mainBaseHeight: "",
-            documentFileUploadData:""
+            pic:"",
+            picProject:"",
+            documentFileUploadData:"",
+            isLoad: true
         }
         this.navDetail = this.navDetail.bind(this)
         this.changeNameModul = this.changeNameModul.bind(this)
@@ -41,6 +46,9 @@ class detail extends React.Component{
         this.commitDocFileUpload = this.commitDocFileUpload.bind(this)
         this.deleteDocFile = this.deleteDocFile.bind(this)
         this.deleteBugs = this.deleteBugs.bind(this)
+        this.closeBugs = this.closeBugs.bind(this)
+        this.uncloseBugs = this.uncloseBugs.bind(this)
+        this.commitEditBugs = this.commitEditBugs.bind(this)
     }
     
     componentDidMount(){
@@ -54,33 +62,53 @@ class detail extends React.Component{
         var t = (wh - h) / 2
         d.style.top = t+"px"
         d.style.left = l+"px"
+        
+        //paramater for set which tab will be default open
+        var discloseTab = (this.props.tabParameter === undefined) ? "info" : this.props.tabParameter
+        var miDisplay = (discloseTab != "bugs" && discloseTab != "doc_file") ? "block" : "none"
+        var mbDisplay = (discloseTab == "bugs") ? "block" : "none"
+        var dfmDisplay = (discloseTab == "doc_file") ? "block" : "none"
 
-        //data json
-        var dm = this.props.dataModule
+        var navigationDetailClass = document.getElementsByClassName("nav-dtl");
+        for(var i = 0;i<navigationDetailClass.length;i++){
+            if(discloseTab == navigationDetailClass[i].getAttribute("nav-for")){
+                navigationDetailClass[i].setAttribute("class", "bold main-color nav-dtl")
+            }else{
+                navigationDetailClass[i].setAttribute("class", "second-font-color nav-dtl")
+            }
+        }
         
         var form = new FormData()
-        form.append("moduleId",  dm.modulId)
+        form.append("moduleId",  this.props.modulId)
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
+        form.append("projectId", this.props.projectId)
         fetch(baseUrl+"/detail_module", {
             method: "POST",
             body: form
         }).then(res => res.json())
         .then(result => {
+            var dm = result.dataModule
             this.setState({
                 dataBugs: result.bugs,
-                dataDocFile: result.documentFile
+                dataDocFile: result.documentFile,
+                dataPermition: result.permitionProject,
+                isLoad: false,
+                projectId: dm.projectId,
+                moduleId: dm.modulId,
+                moduleName : dm.modulName,
+                desciptionModule : dm.description,
+                userId: dm.userId,
+                emailUser: dm.emailUser,
+                userName: dm.userName,
+                moduleStatus: dm.modulStatus,
+                pic: dm.pic,
+                dueDate: this.dateInputConvert(dm.endDate),
+                picProject: dm.pic,
+                miDisplay: miDisplay,
+                mbDisplay: mbDisplay,
+                dfmDisplay: dfmDisplay
             })
-        })
-
-        this.setState({
-            projectId: dm.projectId,
-            moduleId: dm.modulId,
-            moduleName : dm.modulName,
-            desciptionModule : dm.description,
-            userId: dm.userId,
-            emailUser: dm.emailUser,
-            userName: dm.userName,
-            moduleStatus: dm.modulStatus,
-            dueDate: this.dateInputConvert(dm.endDate)
         })
 
         var hd = document.getElementById("header-dtl")
@@ -184,7 +212,6 @@ class detail extends React.Component{
     }
 
     commitBugs(bugsText){
-        
         var form = new FormData()
         form.append("projectId", this.state.projectId)
         form.append("moduleId", this.state.moduleId)
@@ -200,6 +227,7 @@ class detail extends React.Component{
             this.setState({
                 dataBugs: newState
             })
+            this.props.appendDataBugs(result)
         })
     }
 
@@ -210,12 +238,14 @@ class detail extends React.Component{
         })
     }
 
-    commitDocFileUpload(){
+    commitDocFileUpload(descFile){
         var form = new FormData()
         form.append('file', this.state.documentFileUploadData)
-        form.append('userId', this.state.userId)
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
         form.append('projectId', this.state.projectId)
         form.append('moduleId', this.state.moduleId)
+        form.append('descFile', descFile)
         fetch(baseUrl+"/document_file",{
             method: "POST",
             body: form
@@ -228,6 +258,7 @@ class detail extends React.Component{
                 dataDocFile: newState,
                 documentFileUploadData: ""
             })
+            this.props.appendDataDocFile(result)
         })
     }
 
@@ -261,6 +292,7 @@ class detail extends React.Component{
                     dataDocFile: newState
                 })
                 this.props.updateDataModuleDocFile(mi, "delete")
+                this.props.deleteDataDocFile(mi, pi, fileName, userId)
             }
 
            var row = document.getElementsByClassName("row-doc-file")
@@ -271,30 +303,69 @@ class detail extends React.Component{
         })
     }
 
-    deleteBugs(note){
+    deleteBugs(bugsId){
         var mi = this.state.moduleId
         var pi = this.state.projectId
-        
-        var newStateBugs = this.state.dataBugs
-        this.state.dataBugs.map(dt => {
-            if(dt.modulId == mi && dt.projectId == pi && dt.note == note){
-                var idx = newStateBugs.indexOf(dt);
-                newStateBugs.splice(idx, 1)
-                this.setState({
-                    dataBugs: newStateBugs
-                })
+        const newData = this.state.dataBugs.map(dt => {
+            if(dt.modulId === mi && dt.projectId === pi && dt.bugsId === bugsId){
+                dt.isDelete = "Y"
                 this.props.updateDataModuleBugs(this.state.moduleId, "delete")
             }
+            return dt
         })
+        console.log(newData)
+        this.setState({
+            dataBugs: newData
+        })
+    }
+
+    closeBugs(bugsId){
+        let mi = this.state.moduleId
+        let pi = this.state.projectId
+        const newData = this.state.dataBugs.map(dt => {
+            if(dt.modulId == mi && dt.projectId == pi && dt.bugsId == bugsId){
+                dt.bugStatus = "C"
+            }
+            return dt
+        })
+        this.setState({
+            dataBugs: newData
+        })
+        this.props.closeBugsModule(mi)
+    }
+
+    uncloseBugs(bugsId){
+        let mi = this.state.moduleId
+        let pi = this.state.projectId
+        const newData = this.state.dataBugs.map(dt => {
+            if(dt.modulId == mi && dt.projectId == pi && dt.bugsId == bugsId){
+               dt.bugStatus = "P"
+            }
+            return dt
+        })
+        this.setState({
+            dataBugs: newData
+        })
+        this.props.uncloseBugsModule(mi)
+    }
+
+    commitEditBugs(bugsId, textBugs){
+        const newData = this.state.dataBugs.map(dt => {
+            if(dt.bugsId == bugsId){
+                dt.note = textBugs
+            }
+            return dt
+        })
+        console.log(newData)
     }
 
     render(){
 
         return(
             <React.Fragment>
-                <div onClick={this.props.hide} className="block"></div>
-                <div id="detail-modul-base" style={{width: "500px", height: "400px", background: "#FFF", position: "fixed", zIndex: "1000"}}> 
-                    <div id="header-dtl" style={{position: "fixed", width: "500px"}}>
+                <div onClick={this.props.hide} className="block" style={{zIndex: "10001"}}></div>
+                <div id="detail-modul-base" style={{width: "600px", height: "400px", background: "#FFF", position: "fixed", zIndex: "10002"}}> 
+                    <div id="header-dtl" style={{position: "fixed", width: "600px"}}>
                         <div className='main-border-bottom' style={{padding: "10px", background: "#FFF"}}>
                             <i style={{fontSize: "14px", color: "#d4ae2b"}} class="fa fa-clipboard"></i>
                             &nbsp;&nbsp;
@@ -302,49 +373,68 @@ class detail extends React.Component{
                             <a onClick={this.props.close}><i style={{float: "right", color: "#a2a2a2"}} class="fa fa-times"></i></a>
                         </div>
                         <div className="main-border-bottom" style={{padding: "5px", paddingLeft: "10px", background: "#FFF"}}>
-                            <button onClick={this.navDetail} nav-for="info" id='nav-dtl' className="bold main-color" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Info</button>
-                            <button onClick={this.navDetail} nav-for="bugs" id='nav-dtl' className="second-font-color" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Bugs</button>
-                            <button onClick={this.navDetail} nav-for="doc_file" id='nav-dtl' className="second-font-color" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Doc & file</button>
+                            <button onClick={this.navDetail} nav-for="info" id='nav-dtl' className="bold main-color nav-dtl" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Info</button>
+                            <button onClick={this.navDetail} nav-for="bugs" id='nav-dtl' className="second-font-color nav-dtl" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Bugs</button>
+                            <button onClick={this.navDetail} nav-for="doc_file" id='nav-dtl' className="second-font-color nav-dtl" style={{marginRight: "20px", background: "none", border: "none", fontSize: "12px"}}>Doc & file</button>
                         </div>
                     </div>
 
                     <div id="main-base-detail">
-                        <div id='mi-base' style={{display: this.state.miDisplay}}>
-                            <ModuleInfo
-                                moduleName={this.state.moduleName}
-                                userId={this.state.userId}
-                                emailUser={this.state.emailUser}
-                                userName={this.state.userName}
-                                description={this.state.descriptionModule}
-                                moduleStatus={this.state.moduleStatus}
-                                dueDate={this.state.dueDate}
-                                //action button
-                                changeName={this.changeNameModul}
-                                changeUserSelected={this.changeUserSelected}
-                                changeStatus={this.changeStatus}
-                                changeDesc={this.changeDesc}
-                                commitModule={this.commitModuleInfo}
-                                changeDate={this.changeDate}
-                            />
-                        </div>
-                        <div id='mb-base' style={{display: this.state.mbDisplay}}>
-                            <BugsModule
-                                mainHeight={this.state.mainBaseHeight}
-                                dataBugs={this.state.dataBugs}
-                                commitBugs={this.commitBugs}
-                                deleteBugs={this.deleteBugs}
-                                moduleId={this.state.moduleId}
-                            />
-                        </div>
-                        <div id='mdf-base' style={{display: this.state.dfmDisplay}}>
-                            <DocFileModule
-                                mainHeight={this.state.mainBaseHeight}
-                                dataDocFile={this.state.dataDocFile}
-                                documentFileUpload={this.documentFileUpload}
-                                commitDocFileUpload={this.commitDocFileUpload}
-                                deleteDocFile={this.deleteDocFile}
-                            />
-                        </div>
+                        {
+                            (this.state.isLoad)
+                            ?
+                                <Spinner size="25px" textLoader="Loading..."/>
+                            :
+                                <React.Fragment>
+                                    <div id='mi-base' style={{display: this.state.miDisplay}}>
+                                        <ModuleInfo
+                                            moduleName={this.state.moduleName}
+                                            userId={this.state.userId}
+                                            emailUser={this.state.emailUser}
+                                            userName={this.state.userName}
+                                            description={this.state.descriptionModule}
+                                            moduleStatus={this.state.moduleStatus}
+                                            dueDate={this.state.dueDate}
+                                            projectId={this.state.projectId}
+                                            pic={this.state.pic}
+                                            mainHeight={this.state.mainBaseHeight}
+                                            //action button
+                                            changeName={this.changeNameModul}
+                                            changeUserSelected={this.changeUserSelected}
+                                            changeStatus={this.changeStatus}
+                                            changeDesc={this.changeDesc}
+                                            commitModule={this.commitModuleInfo}
+                                            changeDate={this.changeDate}
+                                        />
+                                    </div>
+                                    <div id='mb-base' style={{display: this.state.mbDisplay}}>
+                                        <BugsModule
+                                            mainHeight={this.state.mainBaseHeight}
+                                            dataBugs={this.state.dataBugs}
+                                            commitBugs={this.commitBugs}
+                                            deleteBugs={this.deleteBugs}
+                                            moduleId={this.state.moduleId}
+                                            dataPermition={this.state.dataPermition}
+                                            picProject={this.state.picProject}
+                                            closeBugs={this.closeBugs}
+                                            uncloseBugs={this.uncloseBugs}
+                                            commitEditBugs={this.commitEditBugs}
+                                        />
+                                    </div>
+                                    <div id='mdf-base' style={{display: this.state.dfmDisplay}}>
+                                        <DocFileModule
+                                            mainHeight={this.state.mainBaseHeight}
+                                            dataDocFile={this.state.dataDocFile}
+                                            documentFileUpload={this.documentFileUpload}
+                                            commitDocFileUpload={this.commitDocFileUpload}
+                                            deleteDocFile={this.deleteDocFile}
+                                            picProject={this.state.picProject}
+                                            dataPermition={this.state.dataPermition}
+                                        />
+                                    </div>
+                                </React.Fragment>
+                        }
+                        
                     </div>
                 </div>
             </React.Fragment>
@@ -356,11 +446,16 @@ const mapStateToProps = state => {
     
 }
 
-const mapDispatchToProps = dispath => {
+const mapDispatchToProps = dispatch => {
     return{
-        updateDataModuleBugs: (moduleId, type) => dispath(updateDataModuleBugs(moduleId, type)),
-        updateDataModuleDocFile: (moduleId, type) => dispath(updateDataModuleDocFile(moduleId, type)),
-        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate) => dispath(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate))
+        updateDataModuleBugs: (moduleId, type) => dispatch(updateDataModuleBugs(moduleId, type)),
+        updateDataModuleDocFile: (moduleId, type) => dispatch(updateDataModuleDocFile(moduleId, type)),
+        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate)),
+        appendDataBugs: (jsonObjectBugs) => dispatch(appendDataBugs(jsonObjectBugs)),
+        appendDataDocFile: (jsonObject) => dispatch(appendDataDocFile(jsonObject)),
+        deleteDataDocFile: (mi, pi, fn, ui) => dispatch(deleteDataDocFile(mi, pi, fn, ui)),
+        closeBugsModule: (moduleId) => dispatch(updateDataModuleBugsClose(moduleId)),
+        uncloseBugsModule: (moduleId) => dispatch(updateDataModuleBugsUnclose(moduleId))
     }
 }
 

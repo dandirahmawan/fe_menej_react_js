@@ -16,8 +16,9 @@ class userListChoice extends React.Component{
         var userId = getCookieUserId();
         var form = new FormData()
         form.append('userId', userId)
+        form.append('project_id', this.props.projectId)
         
-        fetch(baseUrl+"/user_relation", {
+        fetch(baseUrl+"/team", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -34,7 +35,8 @@ class userListChoice extends React.Component{
             <ItemUserChoice 
                 userName={dt.userName}
                 userId={dt.userId}
-                userEmail={dt.emailUser}
+                userEmail={dt.mailUser}
+                picProfile={dt.picProfile}
                 userSelected={this.props.userSelected}/>
         )
 

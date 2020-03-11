@@ -5,6 +5,9 @@ import {baseUrl} from '../../const/const'
 import {setTitleHader} from '../../redux/action'
 import RowUser from './row_user'
 import InviteUser from './invite_user'
+import { getCookieUserId } from '../../function/function'
+import CardView from './card_view_user'
+import DetailUserPopup from './detail_user_popup'
 
 class user extends React.Component{
 
@@ -22,10 +25,16 @@ class user extends React.Component{
         this.hideDetail = this.hideDetail.bind(this)
         this.inviteUser = this.inviteUser.bind(this)
         this.hidePopUp = this.hidePopUp.bind(this)
+        this.deleteUser = this.deleteUser.bind(this)
     }
 
     componentDidMount(){
-        fetch(baseUrl+"/user")
+        var form = new FormData();
+        form.append("userId", getCookieUserId());
+        fetch(baseUrl+"/user_relation", {
+            method: "POST",
+            body: form
+        })
         .then(res => res.json())
         .then((result) => {
             this.setState({
@@ -42,16 +51,30 @@ class user extends React.Component{
         document.getElementById('tbl-list-user').style.marginTop = parseInt(h) + 10+"px"
     }
 
-    rowClick(userName, emailUser, userId){
+    rowClick(userId){
         var tbl = document.getElementById("tbl-list-user")
-        tbl.style.width = "65%"
-        this.setState({
-            detailUser: <DetailUser 
-                            userName={userName}
-                            emailUser={emailUser}
-                            hideDetail={this.hideDetail}
-                            userId={userId}
-                        />
+        // tbl.style.width = "65%"
+        this.state.data.map(dt => {
+            if(dt.userId == userId){
+                this.setState({
+                    // detailUser: <DetailUser 
+                    //                 userName={userName}
+                    //                 emailUser={emailUser}
+                    //                 hideDetail={this.hideDetail}
+                    //                 userId={userId}
+                    //             />
+                    detailUser: <DetailUserPopup
+                                    userName={dt.userName}
+                                    emailUser={dt.emailUser}
+                                    relateDate={dt.relateDate}
+                                    picProfileDetail={dt.picProfileDetail}
+                                    hideDetail={this.hideDetail}
+                                    userId={dt.userId}
+                                    hide={this.hideDetail}
+                                    deleteUser={this.deleteUser}
+                                />
+                })
+            }
         })
     }
 
@@ -75,14 +98,41 @@ class user extends React.Component{
         })
     }
 
+    deleteUser(userId){
+       const newUserData = this.state.data.map(dt => {
+           if(dt.userId == userId){
+               dt.isDelete = "Y"
+           }
+           return dt
+       })
+
+       this.setState({
+           data: newUserData,
+           detailUser: ""
+       })
+    }
+
     render(){
 
-        const dataView = this.state.data.map(dt => <RowUser
-                                                        userName={dt.userName}
-                                                        emailUser={dt.emailUser}
-                                                        rowClick={this.rowClick}
-                                                        userId={dt.user_id}
-                                                    />)
+        const dataView = this.state.data.map(dt => {
+            if(dt.isDelete != "Y")
+            {
+                return <RowUser
+                        userName={dt.userName}
+                        emailUser={dt.emailUser}
+                        rowClick={this.rowClick}
+                        userId={dt.userId}
+                        picProfile={dt.picProfile}
+                    />
+            }
+        })
+
+        const dataCardView = this.state.data.map(dt => <CardView
+                                // userName={dt.userName}
+                                // emailUser={dt.emailUser}
+                                // rowClick={this.rowClick}
+                                // userId={dt.userId}
+                            />)
         
         const styleUserItem = {
             width: "140px", 
@@ -102,7 +152,7 @@ class user extends React.Component{
                 <div id="header-user-base" style={{position: "fixed", width: "100%", background: "#FFF", marginTop: "1px"}}>
                     <div className="main-border-bottom" style={{paddingTop: "20px", fontSize: "14px", paddingBottom: "15px", overflow: "hidden"}}>
                         <div style={{width: "80%", float: "left"}}>
-                            <i class="fa fa-users" aria-hidden="true"></i> <span className="bold">10 User</span>
+                            <i class="fa fa-users" aria-hidden="true"></i> <span className="bold">List User</span>
                             <input placeholder="search user" type="text" style={{float: "right", padding: "5px", marginTop: "-5px", marginRight: "10px"}}></input>
                         </div>
                         <button onClick={this.inviteUser} className="bold main-font-color" style={{marginLeft: "50px", background: "none", float: "left"}}>
@@ -113,15 +163,18 @@ class user extends React.Component{
 
                 {this.state.detailUser}
 
-                <div id="tbl-list-user" style={{width: "80%", marginTop: "10px"}}>
-                    <table style={{width: "100%"}}>
+                <div id="tbl-list-user" style={{width: "80%"}}>
+                    <table style={{width: "100%", marginTop: "-10px"}}>
                         <thead>
-                            <th className="main-border-right second-font-color bold">Name</th>
-                            <th className="main-border-right second-font-color bold">Project</th>
-                            <th className="main-border-right second-font-color bold">Moduled</th>
-                            <th className="main-border-right second-font-color bold">Bugs</th>
+                            <tr>
+                                <th className="bold" colSpan="2" style={{paddingTop: "10px"}}>Name</th>
+                                <th className="bold" style={{paddingTop: "10px"}}>Date</th>
+                                <th className="bold" style={{paddingTop: "10px"}}>Moduled</th>
+                                <th className="bold" style={{paddingTop: "10px"}}>Bugs</th>
+                                <th className="bold" style={{paddingTop: "10px"}}>Doc File</th>
+                            </tr>
                         </thead>
-                        <tbody className="bold">
+                        <tbody>
                             {dataView}
                         </tbody>
                     </table>

@@ -27,11 +27,12 @@ class detail_user extends React.Component{
 
     componentDidMount(){
         var h1 = document.getElementById("header").offsetHeight
-        var h2 = document.getElementById("header-user-base").offsetHeight
-        var h = parseInt(h1) + h2
-        var heightDetailBase = window.innerHeight - h
+        var h2 = document.getElementById("header-detail-user-base").offsetHeight
+        // var h = parseInt(h1) + h2
+        var heightDetailBase = window.innerHeight - h1
         document.getElementById("detail-user-base").style.height = heightDetailBase+"px"
-        document.getElementById("main-base-detail").style.height = heightDetailBase - 59+"px"
+        document.getElementById("main-base-detail").style.height = heightDetailBase - h2+"px"
+        // document.getElementById("main-base-detail").style.height = heightDetailBase - 59+"px"
 
         document.getElementById("base-module-detail").style.display = "block"
         document.getElementById("base-bugs-detail").style.display = "none"
@@ -106,7 +107,11 @@ class detail_user extends React.Component{
         this.props.dataModule.map(dt => {
             if(dt.modulId == moduleId){
                 this.setState({
-                    popup: <Detail close={this.hidePopUp} dataModule={dt}/>
+                    popup: <Detail 
+                                close={this.hidePopUp} 
+                                modulId={dt.modulId}
+                                projectId={dt.projectId}
+                            />
                 })
             }
         })
@@ -136,14 +141,22 @@ class detail_user extends React.Component{
             document.getElementById("base-module-detail").style.display = "block"
             document.getElementById("base-bugs-detail").style.display = "none"
             document.getElementById("base-doc-file-detail").style.display = "none"
+            document.getElementById("base-permition-detail").style.display = "none"
         }else if(menu == "bugs"){
             document.getElementById("base-module-detail").style.display = "none"
             document.getElementById("base-bugs-detail").style.display = "block"
             document.getElementById("base-doc-file-detail").style.display = "none"
+            document.getElementById("base-permition-detail").style.display = "none"
+        }else if(menu == "permition"){
+            document.getElementById("base-module-detail").style.display = "none"
+            document.getElementById("base-bugs-detail").style.display = "none"
+            document.getElementById("base-doc-file-detail").style.display = "none"
+            document.getElementById("base-permition-detail").style.display = "block"
         }else{
             document.getElementById("base-module-detail").style.display = "none"
             document.getElementById("base-bugs-detail").style.display = "none"
             document.getElementById("base-doc-file-detail").style.display = "block"
+            document.getElementById("base-permition-detail").style.display = "none"
         }  
     }
 
@@ -154,8 +167,8 @@ class detail_user extends React.Component{
                 {this.state.popup}
                 {this.state.popImage}
 
-                <div id="detail-user-base" className="main-border-left" style={{width: "35%", position: "fixed", right: "0px", height: "100%", background:"#FFF", marginTop: "59px"}}>
-                    <div className="main-border-bottom" style={{padding: "10px"}}>
+                <div id="detail-user-base" className="main-border-left" style={{width: "35%", position: "fixed", right: "0px", height: "100%", background:"#FFF", /*marginTop: "59px"*/}}>
+                    <div id="header-detail-user-base" className="main-border-bottom" style={{padding: "10px"}}>
                         <span className="bold second-font-color" style={{fontSize: "14px"}}>
                             <a onClick={this.props.hideDetail} className="second-font-color" style={{marginRight: "10px"}}><i class="fa fa-times"></i></a> Detail user
                         </span>
@@ -172,18 +185,23 @@ class detail_user extends React.Component{
                         <div style={{paddingLeft: "10px", paddingRight: "10px"}}>
                             <div className="main-border-bottom" style={{marginTop: "20px", overflow: "hidden"}}>
                                 <a onClick={(e) => this.menuDetail(e, "module")}>
-                                    <div className="bold mn-dtl" style={{width: "33%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px", borderBottom: "2px solid #386384"}}>
+                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px", borderBottom: "2px solid #386384"}}>
                                         <em class="fa fa-clipboard">&nbsp;</em>Module
                                     </div>
                                 </a>
                                 <a onClick={(e) => this.menuDetail(e, "bugs")}>
-                                    <div className="bold mn-dtl" style={{width: "33%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
+                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
                                         <i class="fa fa-exclamation-triangle">&nbsp;</i>Bugs
                                     </div>
                                 </a>
                                 <a onClick={(e) => this.menuDetail(e, "doc_file")}>
-                                    <div className="bold mn-dtl" style={{width: "33%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
+                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
                                         <i class="fa fa-file">&nbsp;</i>Document file
+                                    </div>  
+                                </a>
+                                <a onClick={(e) => this.menuDetail(e, "permition")}>
+                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
+                                        <i class="fa fa-key">&nbsp;</i>Permition
                                     </div>  
                                 </a>
                             </div>
@@ -203,6 +221,9 @@ class detail_user extends React.Component{
                                     data={this.state.dataDocFile}
                                     rowClickDocFile={this.rowClickDocFile}
                                 />
+                            </div>
+                            <div id="base-permition-detail">
+                                halaman permition
                             </div>
                         </div>
                     </div>

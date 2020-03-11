@@ -2,9 +2,30 @@ import React from 'react'
 import Triangle from '../images/triangle.png'
 
 class popup_notification extends React.Component{
+
+    constructor() {
+        super();
+        this.setWrapperRef = this.setWrapperRef.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+    }
+
+    componentDidMount() {
+        document.addEventListener('mouseup', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.props.hidePopUp()
+        }
+    }
+
+    setWrapperRef(node) {
+        this.wrapperRef = node;
+    }
+
     render(){
         return(
-            <div className="main-border popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", right: "10px", top: "55px", padding: "10px", borderRadius: "5px", right: "57px"}}>
+            <div ref={this.setWrapperRef} className="main-border popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", right: "10px", top: "55px", padding: "10px", borderRadius: "5px", right: "57px"}}>
                 
                 <img src={Triangle} style={{width: "15px", height: "12px", float: "right", marginTop: "-22px"}}></img>
                 <div className="bold second-color" style={{textAlign: "center", padding: "30px", fontSize: "12px"}}>
