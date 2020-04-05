@@ -1,4 +1,18 @@
-import {deleteDataNoteAction, updateDataModuleBugsAction, selectRowModuleAction, setDataDocFileAction, appendDataDocFileAction, deleteDataDocFileAction, closeDataBugsAction, uncloseDataBugsAction, updateDataModuleBugsCloseAction, updateDataModuleBugsUncloseAction, editBugsAction} from './type_action'
+import {
+    deleteDataNoteAction,
+    updateDataModuleBugsAction,
+    selectRowModuleAction,
+    setDataDocFileAction,
+    appendDataDocFileAction,
+    deleteDataDocFileAction,
+    closeDataBugsAction,
+    uncloseDataBugsAction,
+    updateDataModuleBugsCloseAction,
+    updateDataModuleBugsUncloseAction,
+    editBugsAction,
+    editNoteAction
+} from './type_action'
+import note from "../component/note/note";
 
 export function setDataProject(data){
     return{
@@ -205,5 +219,13 @@ export function editBugs(bugsId, bugs){
         type: editBugsAction,
         bugsId: bugsId,
         bugs: bugs
+    }
+}
+
+export function editNote(noteId, note){
+    return{
+        type: editNoteAction,
+        noteId: noteId,
+        note: note
     }
 }

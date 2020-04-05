@@ -112,6 +112,7 @@ strong{
     font-family: reguler_font;
     overflow-y: scroll;
     scrollbar-width: thin;
+    scrollbar-color: #CCC #386384;
     z-index: 1000;
 }
 
@@ -262,9 +263,9 @@ button{
     background: #ddf0ff !important;
 }
 
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
+/*.sidebar::-webkit-scrollbar {*/
+    /*width: 5px;*/
+/*}*/
 
 .tr-selectable{
     background: none;
@@ -345,6 +346,7 @@ td{
     padding-bottom: 5px;
     font-size: 12px;
     margin: 0px;
+    outline: none;
 }
 
 tr.tr_border_bottom td {
@@ -388,6 +390,16 @@ blockquote{
 p{
     margin-top: 0px;
 }
+
+.scrollbar{
+    scrollbar-width: thin;
+    scrollbar-color: #CCC #e6e6e6;
+}
+
+.scrollbar-white-bck{
+    scrollbar-width: thin;
+    scrollbar-color: #CCC #FFF;
+}
 /* tbody {
     display:block;
     height:400px;
@@ -401,3 +413,45 @@ thead, tbody tr {
 thead {
     width: calc( 100% - 1em )
 } */
+
+.table-test {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-top: 1px solid grey;
+}
+
+.td-test {
+    margin: 0;
+    border: 1px solid grey;
+    white-space: nowrap;
+    border-top-width: 0px;
+}
+
+.test-div {
+    width: 500px;
+    overflow-x: scroll;
+    margin-left: 5em;
+    overflow-y: visible;
+    padding: 0;
+    height: 200px;
+}
+
+.headcol {
+    position: absolute;
+    width: 5em;
+    left: 0;
+    top: auto;
+    border-top-width: 1px;
+    /*only relevant for first row*/
+    margin-top: -1px;
+    /*compensate for top border*/
+}
+
+.headcol:before {
+    content: 'Row ';
+}
+
+.long {
+    background: yellow;
+    letter-spacing: 1em;
+}

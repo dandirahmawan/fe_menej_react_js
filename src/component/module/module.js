@@ -13,9 +13,12 @@ import {connect} from 'react-redux'
 import {setDataNote, selectRowModule} from '../../redux/action'
 import Bugs from '../bugs/bugs'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBorderAll, faBorderNone} from '@fortawesome/free-solid-svg-icons'
+import {faBorderAll, faBorderNone, faHandshake, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import DocumentFile from '../document_file/document_file'
 import InfoProject from './info_project'
+import HandoverModule from './handover_module'
+import NewTab from './new_tab'
+import Tab from './tab/tab'
 
 var ctrlClick = false
 var arrSelected = []
@@ -43,8 +46,9 @@ class modulePage extends React.Component{
             newDescitiopn:"",
             infoPop:"",
             addMember:"",
-            dataTeam: [],
+            dataTeam:[],
             dataPermition:[],
+            dataTab:[],
             userIdAccess:"",
             createdByProject:"",
             userSetTeamMember:"",
@@ -55,7 +59,8 @@ class modulePage extends React.Component{
             isBorder:"",
             documentFileBase:"",
             projectName:"",
-            infoProjectPop:""
+            infoProjectPop:"",
+            tabBase:""
         }
 
         this.refBugs = React.createRef()
@@ -64,6 +69,7 @@ class modulePage extends React.Component{
         this.theadModule = React.createRef()
         this.markAllBtn = React.createRef()
         this.unMarkAllBtn = React.createRef()
+        this.baseMenuTab = React.createRef()
  
         this.hidePopUp = this.hidePopUp.bind(this)
         this.deleteModule = this.deleteModule.bind(this)
@@ -88,6 +94,12 @@ class modulePage extends React.Component{
         this.unmarkAll = this.unmarkAll.bind(this)
         this.infoProject = this.infoProject.bind(this)
         this.hideInfoProject = this.hideInfoProject.bind(this)
+        this.handOver = this.handOver.bind(this)
+        this.refreshModule = this.refreshModule.bind(this)
+        this.selectedRow2 = this.selectedRow2.bind(this)
+        this.newTab = this.newTab.bind(this)
+        this.updateDataTab = this.updateDataTab.bind(this)
+        this.tabMenu = this.tabMenu.bind(this)
     }
 
     componentDidMount(){
@@ -100,10 +112,13 @@ class modulePage extends React.Component{
                 projectName:dt.projectName,
                 dataPermition: this.props.dataPermition,
                 dataNote: this.props.dataNote,
-                picProject: dt.pic
+                picProject: dt.pic,
+                dataTab: this.props.dataTab
             })
         })
-       
+
+        // let baseTabMenu = this.baseMenuTab.current
+        // alert(baseTabMenu.offsetWidth);
     }
 
     refreshDataTeam(jsonData, userIdList){
@@ -121,6 +136,25 @@ class modulePage extends React.Component{
     selectedRow(a, data){
         var t = a.target.parentElement
         if(ctrlClick){
+            //no action
+        }else{
+            this.props.dataModule.map(dt => {
+                if(dt.modulId == data){
+                    this.setState({
+                        infoPop: <Detail
+                                    close={this.hidePopUp}
+                                    modulId={dt.modulId}
+                                    projectId={dt.projectId}
+                                    tabParameter="info"
+                                />
+                    })
+                }
+            })
+        }
+    }
+
+    selectedRow2(a, data){
+        if(ctrlClick){
             this.props.dataModule.map(dt => {
                 if(dt.modulId === data){
                     if(dt.isSelected){
@@ -132,20 +166,7 @@ class modulePage extends React.Component{
                     this.props.selectRowModule(data)
                 }
             })
-        }else{
-            this.props.dataModule.map(dt => {
-                if(dt.modulId == data){
-                    this.setState({
-                        infoPop: <Detail 
-                                    close={this.hidePopUp} 
-                                    modulId={dt.modulId}
-                                    projectId={dt.projectId} 
-                                    tabParameter="info" 
-                                />
-                    })
-                }
-            })
-        }   
+        }
     }
 
     updateStateDataNote(jsonObj){
@@ -196,6 +217,10 @@ class modulePage extends React.Component{
                                     dataPermition={this.state.dataPermition}/>
             })
         }
+
+        this.setState({
+            tabBase: ""
+        })
 
     }
 
@@ -272,6 +297,19 @@ class modulePage extends React.Component{
                 infoPop: <PopupConfirmation textPopup="Are you sure, you want delete this module ?" titleConfirmation="Delete module" hidePopUp={this.hidePopUp} yesAction={this.commitDeleteModule}/>
             })
         }
+    }
+
+    handOver(){
+        this.setState({
+            infoPop: <HandoverModule
+                        projectId={this.props.projectIdHeader}
+                        refreshModule={this.refreshModule}
+                        cancel={this.hidePopUp}/>
+        })
+    }
+
+    refreshModule(){
+        this.props.refreshModule()
     }
 
     deleteModuleDel(event){
@@ -436,6 +474,34 @@ class modulePage extends React.Component{
         })
     }
 
+    newTab(){
+        this.setState({
+            infoPop: <NewTab
+                            cancel={this.hidePopUp}
+                            projectId={this.props.projectIdHeader}
+                            updateDataTab={this.updateDataTab}
+                        />
+        })
+    }
+
+    updateDataTab(jsonData){
+        this.setState({
+            dataTab: jsonData
+        })
+    }
+
+    tabMenu(tabName, tabId){
+        this.refBugs.current.style.display = "none"
+        this.refDocFile.current.style.display = "none"
+        this.refModule.current.style.display = "none"
+        this.setState({
+            tabBase: <Tab
+                        projectId={this.props.projectIdHeader}
+                        tabId={tabId}
+                        tabName={tabName}/>
+        })
+    }
+
     render(){
         
         // const dataProject = this.props.dataProject.map(dt => <HeaderModule
@@ -450,7 +516,8 @@ class modulePage extends React.Component{
         const dataModule = this.props.dataModule.map(dt => <RowModule
                                                             detail = {this.detail}
                                                             isDelete = {dt.isTrash}
-                                                            selected = {this.selectedRow} 
+                                                            selected = {this.selectedRow}
+                                                            selectedRow = {this.selectedRow2}
                                                             moduleId = {dt.modulId}
                                                             modulName = {dt.modulName}
                                                             endDate = {dt.endDate}
@@ -481,15 +548,20 @@ class modulePage extends React.Component{
                                                                 picProfile={dt.picProfile}
                                                             />)
 
-        
+
+        const tabMenuAdditional = this.state.dataTab.map(dt => {
+            return <a onClick={() => this.tabMenu(dt.tabName, dt.tabId)}
+                      className="bold main-menu-module second-font-color"
+                      style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>{dt.tabName}</a>
+        })
+
         return(
             <React.Fragment>
                 {/* {dataProject} */}
                 {this.state.infoPop}
                 {this.state.addMember}
                 {this.state.permition}
-
-                <div className="main-border-bottom second-background-grs" style={{paddingTop: "10px", paddingBottom: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px"}}>
+                <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" style={{paddingTop: "10px", paddingBottom: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px"}}>
                     <div style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
                         <a onClick={this.infoProject} className="bold" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", color: "#000"}}>
                             <em class="fa fa-folder">&nbsp;</em>Project Info
@@ -500,8 +572,18 @@ class modulePage extends React.Component{
                     <a onClick={(e) => this.mainMenu(e, "module")} className="bold main-menu-module" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", borderBottom: "2px solid #386384"}}>Module</a>
                     <a onClick={(e) => this.mainMenu(e, "bugs")} className="bold main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>Bugs</a>
                     <a onClick={(e) => this.mainMenu(e, "doc file")} className="bold main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>Doc File</a>
+
+                    {
+                        /*data tab from database*/
+                        tabMenuAdditional
+                    }
+
+                    <a onClick={this.newTab} className="main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", borderLeft: "2px solid #CCC", paddingLeft: "10px"}}>
+                        <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;
+                        New Tab
+                    </a>
                 </div>
-                
+                {this.state.tabBase}
                 <div ref={this.refModule} id="base-tab-module">
                     <div id="header-base-tab-module" className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
                         <span className="bold">List Module</span>
@@ -517,6 +599,10 @@ class modulePage extends React.Component{
                                     </button>
                                     <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}} className='bold main-border-right'>
                                         <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                    <button onClick={this.handOver} style={{background: "none", fontSize: "12px"}}
+                                            className='bold main-border-right'>
+                                        <FontAwesomeIcon icon={faHandshake}/> Handover
                                     </button>
                                     <button onClick={this.newModule.bind(this)} style={{background:"none", fontSize: "12px"}} className='bold main-border-right'>
                                         <i class="fa fa-plus"></i> New Module

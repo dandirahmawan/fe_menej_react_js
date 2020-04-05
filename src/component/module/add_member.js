@@ -3,6 +3,8 @@ import { baseUrl } from '../../const/const'
 import { getCookieUserId, getCookieSessionId, popUpAlert } from '../../function/function'
 import ItemUserAddMember from '../item_user_add_member'
 import ItemUserAddMemberSelected from '../item_user_add_member_selected'
+import ReactDom from 'react-dom'
+import {SpinnerButton} from "../spinner";
 
 class add_member extends React.Component{
 
@@ -131,7 +133,7 @@ class add_member extends React.Component{
         })
     }
 
-    commitAddMember(){
+    commitAddMember(e){
         var listUserId = []
         var form = new FormData()
         this.state.addMemberDataSelected.map(dt => {
@@ -139,6 +141,10 @@ class add_member extends React.Component{
         })
 
         if(listUserId.length > 0){
+            let t = e.target
+            t.style.opacity = 0.5
+            ReactDom.render(<SpinnerButton size="15px"/>, t)
+
             form.append("userIdList", listUserId)
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
@@ -148,7 +154,10 @@ class add_member extends React.Component{
                 body: form
             }).then(res => res.json())
             .then(result => {
-                this.props.refresh(result, listUserId);
+                this.props.refresh(result, listUserId)
+                ReactDom.render("Add", t)
+                t.style.opacity = 1
+                // popUpAlert("Member team succesfully update", "success")
             })
         }else{
             popUpAlert("No user selected", "warning")
@@ -206,12 +215,6 @@ class add_member extends React.Component{
                             <button onClick={this.props.cancel} style={{fontSize: "12px", marginLeft: "5px", background: "none"}}>Cancel</button>
                         </div>
                     </div>
-                    
-                    {/* <div style={{padding: "10px"}}>
-                        <span style={{fontSize: "12px"}}>
-                            <img style={{width: "20px"}} src={GifLoader}></img>
-                        </span>
-                    </div> */}
                 </div>
             </React.Fragment>
         )

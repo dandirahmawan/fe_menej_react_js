@@ -9,7 +9,7 @@ import {
     uncloseDataBugsAction,
     updateDataModuleBugsCloseAction,
     updateDataModuleBugsUncloseAction,
-    editBugsAction
+    editBugsAction, editNoteAction
 } from './type_action'
 
 const initState = {
@@ -423,6 +423,20 @@ function rootReducer(state = initState, action){
         return{
             ...state,
             dataBugs: newData
+        }
+    }
+
+    if(action.type === editNoteAction){
+        const newData = state.dataNote.map(dt => {
+            if(action.noteId == dt.noteId){
+                dt.note = action.note
+            }
+            return dt
+        })
+
+        return{
+            ...state,
+            dataNote: newData
         }
     }
 

@@ -18,8 +18,21 @@ class row_document_file extends React.Component{
     }
 
     url(url){
-        var url2 = url.replace("..\\upload\\", "")
-        return url2
+        let url2 = url.replace("..\\upload\\", "")
+        let url21 = url2.replace("../upload/", "")
+        return url21
+    }
+
+    getIconDocFIle(fileName){
+        var a = fileName.split(".")
+        var ext = a[a.length - 1]
+        var rtn = ""
+        if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
+            rtn = "image"
+        }else{
+            rtn = "doc file"
+        }
+        return rtn
     }
 
     render(){
@@ -28,7 +41,12 @@ class row_document_file extends React.Component{
             ?
                 <tr className="tb-doc-file tr-selectable" valign="top">
                     <td className="tb-doc-file" style={{width: "20px"}}>
-                        <i class="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i>
+                        {
+                            (this.getIconDocFIle(this.props.fileName) == "image")
+                                ? <i className="fa fa-image"></i>
+                                : <i className="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i>
+                        }
+
                     </td>
                     <td className="tb-doc-file" style={{paddingRight: "10px"}}>
                         <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
@@ -58,7 +76,13 @@ class row_document_file extends React.Component{
                 </tr>
             :
                 <tr className="tb-doc-file tr-selectable main-border" valign="top">
-                    <td className="tb-doc-file main-border" style={{width: "20px"}}><i class="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i></td>
+                    <td className="tb-doc-file main-border" style={{width: "20px"}}>
+                        {
+                            (this.getIconDocFIle(this.props.fileName) == "image")
+                                ? <i className="fa fa-image"></i>
+                                : <i className="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i>
+                        }
+                    </td>
                     <td className="tb-doc-file main-border" style={{paddingRight: "10px"}}>
                         <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">

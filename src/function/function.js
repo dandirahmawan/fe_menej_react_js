@@ -143,3 +143,59 @@ export function convertDate_dd_MMM_yyy(date){
         return dated.getDate()+" "+monthName+" "+dated.getFullYear()
     }
 }
+
+export function tableHeaderRender(columJson, idElement, action){
+    let elm = document.getElementById(idElement)
+    let count = Object.keys(columJson).length;
+    let thead0 = document.createElement("th")
+    thead0.setAttribute("class", "th-tab bold second-font-color main-border-bottom second-background-grs")
+    thead0.style.width = "20px"
+    thead0.style.padding = "5px"
+    thead0.paddingRight = "10px"
+    thead0.style.textAlign = "left"
+    thead0.style.marginLeft = "-1px"
+    thead0.innerText = "No"
+    elm.append(thead0)
+    let wt = 20
+    let w = 140
+    let sumw = parseInt(140 * count) + (10 * parseInt(count + 1)) + 20
+
+    for(let i = 0;i<count;i++){
+        wt = parseInt(wt) + w
+        let thead = document.createElement("th")
+        thead.setAttribute("class", "th-tab bold second-font-color main-border-bottom second-background-grs")
+        thead.style.width = w+"px"
+        thead.style.padding = "5px"
+        thead.style.textAlign = "left"
+        thead.innerText = columJson[i]
+        thead.style.cursor = "pointer"
+        thead.onmouseover = mouseOverTheadTab
+        thead.onmouseleave = mouseLeaveTheadTab
+
+        let elmBtn = document.createElement("button")
+        elmBtn.onclick = () => action(thead, i)
+        elmBtn.style.background = "none"
+        elmBtn.style.height = "10px"
+        elmBtn.style.float = "right"
+        elmBtn.style.display = "none"
+        elmBtn.style.marginTop = "1px"
+        elmBtn.setAttribute("class", "second-font-color")
+        let fa = document.createElement("em")
+        fa.setAttribute("class", "fa fa-arrows-h")
+
+        elmBtn.append(fa)
+        thead.append(elmBtn)
+        elm.append(thead)
+    }
+    elm.style.width = sumw+"px"
+}
+
+function mouseOverTheadTab(e){
+    let child = e.target.children
+    if(child[0] !== undefined) child[0].style.display = "block"
+}
+
+function mouseLeaveTheadTab(e){
+    let child = e.target.children
+    if(child[0] !== undefined) child[0].style.display = "none"
+}

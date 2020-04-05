@@ -136,7 +136,6 @@ class bugs extends React.Component{
             body: form
         }).then(response => response.text())
             .then(result => {
-                alert(result)
                 this.props.closeDataBugs(this.state.bugsIdDelete)
                 this.props.updateDataModuleBugsClose(this.state.moduleId)
                 this.hidePopUp()
@@ -153,7 +152,6 @@ class bugs extends React.Component{
             body: form
         }).then(response => response.text())
             .then(result => {
-                alert(result)
                 this.props.uncloseDataBugs(this.state.bugsIdDelete)
                 this.props.updateDataModuleBugsUnclose(this.state.moduleId)
                 this.hidePopUp()

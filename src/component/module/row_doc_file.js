@@ -30,8 +30,9 @@ class row_doc_file extends React.Component{
     }
 
     urlPath(url){
-        var url2 = url.replace("..\\upload\\", "")
-        return url2
+        let url2 = url.replace("..\\upload\\", "")
+        let url21 = url2.replace("../upload/", "")
+        return url21
     }
 
     render(){

@@ -28,7 +28,10 @@ class edit_bugs extends React.Component{
 
     textKeyUp(e){
         let val = e.target.value
-        let l = val.length
+        let ll = val.length
+        this.setState({
+            l: ll
+        })
     }
 
     submit(e){
@@ -68,7 +71,7 @@ class edit_bugs extends React.Component{
                     </div>
                     <div style={{padding: "10px", overflow: "hidden"}}>
                         <div style={{float: "left", padding: "2px"}}>
-                            <span className="second-font-color" style={{fontSize: "11px"}}> {this.state.l} / 500</span>
+                            <span className="second-font-color bold" style={{fontSize: "12px"}}> {this.state.l} / 500</span>
                         </div>
                         <div style={{float: "right"}}>
                             <button onClick={this.submit} className="btn-primary" style={{fontSize: "12px", marginRight: "10px"}}>Save</button>

@@ -1,8 +1,11 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
 import {popCenterPosition, popUpAlert, getCookieUserId, getCookieSessionId} from '../../function/function'
 import { baseUrl } from '../../const/const'
 import {appendDataDocFile, updateDataModuleDocFile} from '../../redux/action'
+import {SpinnerButton} from "../spinner";
+import {EXIF} from "exif-js";
 class upload_document_file extends React.Component{
 
     constructor(){
@@ -12,6 +15,11 @@ class upload_document_file extends React.Component{
             description: "",
             fileName: "",
             files:"",
+            ort:0,
+            modWidth: 0,
+            modHeight: 0,
+            base64: "",
+            image:null,
             choicesModule:[]
         }
 
@@ -21,6 +29,8 @@ class upload_document_file extends React.Component{
         this.submit = this.submit.bind(this)
         this.changeDescription = this.changeDescription.bind(this)
         this.changeFile = this.changeFile.bind(this)
+        this.getModWidthHeight = this.getModWidthHeight.bind(this)
+        this.canvasing = this.canvasing.bind(this)
     }
 
     componentDidMount(){
@@ -63,19 +73,29 @@ class upload_document_file extends React.Component{
         this.inputRef.current.click()
     }
 
-    submit(){
-        var ready = true
-        if(this.state.moduleId === 0) ready = false
-        if(this.state.fileName === 0) ready = false 
-        
-        if(ready){
-            var form = new FormData()
-            form.append('file', this.state.files)
+    submit(e){
+        let t = e.target
+        let ready0 = true
+        let ready1 = true
+
+        if(this.state.moduleId == 0) ready0 = false
+        if(this.state.fileName == 0) ready1 = false
+        // return false
+        if(ready0 && ready1){
+            ReactDOM.render(<SpinnerButton size="15px"/>, e.target)
+            e.target.style.opacity = 0.5
+            let form = new FormData()
+            let file = (this.state.base64 == "") ? this.state.files : null
+            let bs64 = (this.state.base64 != "") ? this.state.base64 : ""
+            form.append('file', file)
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
             form.append('projectId', this.props.projectId)
             form.append('moduleId', this.state.moduleId)
             form.append('descFile', this.state.description)
+            form.append('base64', bs64)
+            form.append('fileName', this.state.fileName)
+            form.append('ort', this.state.ort)
             fetch(baseUrl+"/document_file",{
                 method: "POST",
                 body: form
@@ -83,24 +103,129 @@ class upload_document_file extends React.Component{
             .then(result => {
                 if(result != ""){
                     var json = JSON.parse(result)
-                    this.props.appendDataDocFile(json)
-                    this.props.updateDataModuleDocFile(this.state.moduleId)
-                    popUpAlert("Document or file uploaded successfully", "success")
-                    this.props.hide()
+                    if(json.projectId !== undefined){
+                        this.props.appendDataDocFile(json)
+                        this.props.updateDataModuleDocFile(this.state.moduleId)
+                        popUpAlert("Document or file uploaded successfully", "success")
+                        this.props.hide()
+                    }else{
+                        popUpAlert("Upload doc file failed")
+                        ReactDOM.render("Submit", t)
+                        t.style.opacity = 1
+                    }
+
                 }
             })
         }else{
-            popUpAlert("make sure that you have select modul and file to upload")
+            if(!ready0) popUpAlert("Module not selected")
+            if(!ready1) popUpAlert("File not choosen")
         }
     }
 
     changeFile(e){
         var file = e.target.files[0]
         var fileName = file.name
-        alert(file.type)
+        let fileSize = file.size
         this.setState({
             fileName: fileName,
             files: file
+        })
+        let ft = fileName.substr(fileName.lastIndexOf("."), fileName.length)
+        if(ft == ".jpg" || ft == ".jpeg" || ft == ".png"){
+            this.changeImage(e, fileSize)
+        }
+    }
+
+    getModWidthHeight(w, h){
+        if(w > h){
+            if(w > 1280){
+                this.setState({
+                    modWidth: 1280,
+                    modHeight: h / w * 1280
+                })
+            }else{
+                this.setState({
+                    modWidth: w,
+                    modHeight: h
+                })
+            }
+        }else{
+            if(h > 1280){
+                this.setState({
+                    modWidth: w / h * 1280,
+                    modHeight: 1280
+                })
+            }else{
+                this.setState({
+                    modWidth: w,
+                    modHeight: h
+                })
+            }
+        }
+    }
+
+    changeImage(e, fileSize) {
+        let imgData = e.target.files[0]
+        const scope = this
+        EXIF.getData(imgData, function () {
+            var allMetaData = EXIF.getAllTags(this)
+
+            let reader = new FileReader()
+            reader.readAsDataURL(imgData)
+            reader.onload = function (e) {
+                let elm = document.getElementById("base-img-upload")
+                scope.setState({
+                    ort: (allMetaData.Orientation == undefined) ? 0 : allMetaData.Orientation,
+                    srcImage: e.target.result
+                })
+                let img = new Image()
+                img.src = e.target.result
+                elm.src = e.target.result
+                scope.setState({
+                    image: img
+                })
+
+                let itvl = setInterval(function(){
+                    scope.getModWidthHeight(img.width, img.height)
+                    if(scope.state.modHeight > 0 && scope.state.modWidth > 0){
+                        clearInterval(itvl)
+                        if(fileSize > 500000) scope.canvasing()
+                    }
+                }, 100)
+                // let ort = scope.state.ort
+                // if (ort == 6) {
+                //     elm.style.transform = "rotate(90deg)"
+                // } else if (ort == 8) {
+                //     elm.style.transform = "rotate(-90deg)"
+                // } else if (ort == 1) {
+                //     elm.style.transform = "rotate(0deg)"
+                // } else if (ort === undefined) {
+                //     elm.style.transform = "rotate(0deg)"
+                // } else {
+                //     elm.style.transform = "rotate(180deg)"
+                // }
+
+                // var img = new Image()
+                // img.src = e.target.result
+                // img.setAttribute("id", "img-to-cvs")
+                // img.style.display = "none"
+                // let baseImgCvs = document.getElementById("base-img-cvs")
+                // baseImgCvs.append(img)
+            }
+        })
+    }
+
+    canvasing(){
+        let imgToCvs = document.getElementById("base-img-upload")
+        let canvas = document.getElementById("image_canvas")
+        canvas.setAttribute("width", this.state.modWidth+"px")
+        canvas.setAttribute("height", this.state.modHeight+"px")
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(imgToCvs, 0, 0, this.state.modWidth, this.state.modHeight)
+        var dataurl = canvas.toDataURL('image/jpeg',80);
+        this.setState({
+            base64: dataurl
         })
     }
 
@@ -113,6 +238,8 @@ class upload_document_file extends React.Component{
         return(
             <React.Fragment>
                 <div className="block"></div>
+                <canvas id="image_canvas" style={{display: "none"}}/>
+                <div style={{display: "none"}}><img id="base-img-upload"/></div>
                 <div id="upl_doc_file_bs" className="pop" style={{width: "350px", minHeight: "300px", background: "#FFF", borderRadius: "4px", overflow: "hidden"}}>
                     <div id="hd-upl-doc-file-bs" className="main-border-bottom bold" style={{padding: "10px", fontSize: "14px", background: "#f5f5f5"}}>
                         Upload
@@ -136,11 +263,11 @@ class upload_document_file extends React.Component{
                                     </td>
                                 </tr>
                                 <tr valign="top">
-                                    <td>Document / file</td>
+                                    <td>Doc / file</td>
                                     <td>
                                         <div style={{borderLeft: "2px solid #CCC", paddingLeft: "5px"}}>
                                             <input ref={this.inputRef} onChange={this.changeFile} type="file" style={{display: "none"}}></input>
-                                            <button onClick={this.fileSelect} style={{fontSize: "14px",marginTtop: "15px", background: "none", padding: "0px", color: "blue"}}>
+                                            <button onClick={this.fileSelect} style={{fontSize: "12px",marginTtop: "15px", background: "none", padding: "0px", color: "blue"}}>
                                                 <i class="fa fa-paperclip"></i> Attachment
                                             </button><br/>
                                             

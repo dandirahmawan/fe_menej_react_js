@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDom from 'react-dom'
 import RowNote from './row_note'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
 import {baseUrl} from '../../const/const'
@@ -7,6 +8,8 @@ import {appendDataNote, updateDataModuleNote, deleteDataNote} from '../../redux/
 import ExpandNote from './expand_note'
 import PopupConfirmation from '../popup_confirmation'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {SpinnerButton} from "../spinner";
+import EditNote from './edit_note'
 
 class note extends React.Component{
 
@@ -27,6 +30,7 @@ class note extends React.Component{
         this.deleteNote = this.deleteNote.bind(this)
         this.hidePopUp = this.hidePopUp.bind(this)
         this.commitDeleteNote = this.commitDeleteNote.bind(this)
+        this.editNote = this.editNote.bind(this)
     }
 
     componentDidMount(){
@@ -41,15 +45,17 @@ class note extends React.Component{
         })
     }
 
-    submitNote(){
+    submitNote(e){
         if(this.state.noteText != 0){
-            this.submit()
+            let t = e.target
+            ReactDom.render(<SpinnerButton size="15px"/>, t)
+            this.submit(t)
         }else{
             popUpAlert("Note is empty")
         }
     }
 
-    submit(){
+    submit(t){
         var userId = getCookieUserId()
         var moduleId = (this.props.moduleId === undefined) ? 0 : this.props.moduleId
         var bugsId = (this.props.bugsId === undefined) ? 0 : this.props.bugsId
@@ -65,7 +71,7 @@ class note extends React.Component{
             body: form
         }).then(res => res.json())
         .then(result => {
-            //make sure tha result of api is json object type
+            //make sure that result of api is json object type
             var jsonObject = result
             // this.state.dataNoteState.push(jsonObject)
             this.setState({
@@ -75,6 +81,7 @@ class note extends React.Component{
             })
 
             //update data to redux
+            ReactDom.render("Submit", t)
             this.props.appendDataNote(jsonObject, bugsId, moduleId)
             this.props.updateDataModuleNote(moduleId, "add")
         })
@@ -117,7 +124,8 @@ class note extends React.Component{
         this.setState({
             popup: ""
         })
-        e.stopPropagation()
+        if(e !== undefined)
+            e.stopPropagation()
     }
 
     baseNoteClick(e){
@@ -128,6 +136,16 @@ class note extends React.Component{
         var val = e.target.value
         this.setState({
             noteText: val
+        })
+    }
+
+    editNote(noteId, note){
+        this.setState({
+            popup: <EditNote
+                        noteId={noteId}
+                        note={note}
+                        cancel={this.hidePopUp}
+                    />
         })
     }
 
@@ -165,6 +183,7 @@ class note extends React.Component{
                                     userId={dt.userId}
                                     deleteNote={this.deleteNote}
                                     createdDate={dt.createdDate}
+                                    editNote={this.editNote}
                                 />
                     }
                 }
@@ -180,6 +199,7 @@ class note extends React.Component{
                                     userId={dt.userId}
                                     deleteNote={this.deleteNote}
                                     createdDate={dt.createdDate}
+                                    editNote={this.editNote}
                                 />
                     }
                 }

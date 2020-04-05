@@ -1,7 +1,9 @@
 import React from 'react'
+import ReactDom from 'react-dom'
 import Row from './row_permition'
 import { baseUrl } from '../../const/const'
-import { getCookieSessionId } from '../../function/function'
+import {getCookieSessionId, popUpAlert} from '../../function/function'
+import {SpinnerButton} from "../spinner";
 
 class permition extends React.Component{
 
@@ -89,7 +91,11 @@ class permition extends React.Component{
         })
     }
 
-    commitPermition(){
+    commitPermition(e){
+        let t = e.target
+        t.style.opacity = 0.5
+        ReactDom.render(<SpinnerButton size="15px"/>, t)
+
         var form = new FormData()
         form.append('permition_code', this.state.permitionSelected)
         form.append('project_id', this.props.projectId)
@@ -98,7 +104,14 @@ class permition extends React.Component{
         fetch(baseUrl+"/set_permition", {
             method: "POST",
             body: form
-        })
+        }).then(res => res.text())
+            .then(result => {
+                if(result == ""){
+                    popUpAlert("Permition successfully updated", "success")
+                    ReactDom.render("Submit", t)
+                    t.style.opacity = 1
+                }
+            })
     }
 
     render(){

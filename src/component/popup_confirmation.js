@@ -1,8 +1,20 @@
 import React from 'react'
+import ReactDom from 'react-dom'
+import {SpinnerButton} from "./spinner";
 
 class popup_confrimation extends React.Component{
 
+    constructor(){
+        super()
+        this.yesBtn = React.createRef()
+    }
+
     componentDidMount(){
+        this.yesBtn.current.addEventListener("click", function(e){
+            e.target.style.opacity = 0.5
+            ReactDom.render(<SpinnerButton size="15px"/>, e.target)
+        })
+
         var elm = document.getElementsByClassName("pop")[0]
         var h = elm.offsetHeight
         var w = elm.offsetWidth
@@ -27,7 +39,7 @@ class popup_confrimation extends React.Component{
                         </span>
                     </div>
                     <div className="header-second-background bold" style={{padding: "10px", textAlign: "right"}}>
-                        <button onClick={this.props.yesAction} className="btn-primary" style={{fontSize: "12px", marginRight: "10px"}}>Yes</button>
+                        <button ref={this.yesBtn} onClick={this.props.yesAction} className="btn-primary" style={{fontSize: "12px", marginRight: "10px"}}>Yes</button>
                         <button onClick={this.props.hidePopUp} className="btn-secondary bold" style={{background: "none", fontSize: "12px"}}>No</button>
                     </div>
                 </div>

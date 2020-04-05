@@ -7,6 +7,7 @@ import {faTimes, faBorderAll, faBorderNone, faClipboardCheck, faExclamationTrian
 import PopupConfirmation from '../popup_confirmation'
 import { baseUrl } from '../../const/const'
 import {deleteDataNote, appendDataNote, updateDataModuleNote} from '../../redux/action'
+import EditNote from './edit_note'
 
 class expand_note extends React.Component{
 
@@ -25,6 +26,7 @@ class expand_note extends React.Component{
         this.commitDeleteNoteExpand = this.commitDeleteNoteExpand.bind(this)
         this.changeNote = this.changeNote.bind(this)
         this.commitNote = this.commitNote.bind(this)
+        this.editNote = this.editNote.bind(this)
     }
 
     componentDidMount(){
@@ -95,7 +97,6 @@ class expand_note extends React.Component{
             popup: ""
         })
         this.blockExpandNote.current.style.display = "block"
-        e.stopPropagation()
     }
 
     commitDeleteNoteExpand(e){
@@ -171,8 +172,17 @@ class expand_note extends React.Component{
         })
     }
 
-    render(){
+    editNote(noteId, note){
+        this.setState({
+            popup: <EditNote
+                        noteId={noteId}
+                        note={note}
+                        cancel={this.hidePopUpExpand}
+                    />
+        })
+    }
 
+    render(){
         const styleExpand = {width: "600px", height: "450px", background: "#FFF", position: "fixed", zIndex: "1000"}
         var no = 0
         const data = this.props.dataNote.map(dt => {
@@ -182,7 +192,6 @@ class expand_note extends React.Component{
                 if(bugsId == 0){
                     if(dt.moduleId == moduleId){
                         no++
-                        console.log(no)
                         return <Row key={no}
                                     no={no}
                                     note={dt.note}
@@ -191,21 +200,24 @@ class expand_note extends React.Component{
                                     deleteNote={this.deleteNote}
                                     pic={dt.pic}
                                     userId={dt.userId}
-                                    userName={dt.userName}/>
+                                    userName={dt.userName}
+                                    editNote={this.editNote}
+                                />
                     }
                 }else{
                     if(dt.bugsId == bugsId){
                         no++
-                        console.log(no)
                         return <Row key={no}
-                                           no={no}
-                                           note={dt.note}
-                                           noteId={dt.noteId}
-                                           createdDate={dt.createdDate}
-                                           deleteNote={this.deleteNote}
-                                           pic={dt.pic}
-                                           userId={dt.userId}
-                                           userName={dt.userName}/>
+                                    no={no}
+                                    note={dt.note}
+                                    noteId={dt.noteId}
+                                    createdDate={dt.createdDate}
+                                    deleteNote={this.deleteNote}
+                                    pic={dt.pic}
+                                    userId={dt.userId}
+                                    userName={dt.userName}
+                                    editNote={this.editNote}
+                                />
                     }
                 }
             }

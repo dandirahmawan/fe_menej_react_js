@@ -22,7 +22,7 @@ class row_user extends React.Component{
                         <span className="bold">{this.props.userName}</span><br/>
                         <span className="second-font-color" style={{fontSize: "11px"}}>
                             {this.props.emailUser}
-                            {this.props.picProfile}
+                            {/*{this.props.picProfile}*/}
                         </span>
                     </div>
                 </td>

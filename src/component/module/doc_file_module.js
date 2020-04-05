@@ -6,6 +6,7 @@ import {popUpAlert, getCookieUserId} from '../../function/function'
 import PreviewImage from '../preview_image'
 import DocFileInput from './doc_file_input'
 import { baseUrl } from '../../const/const'
+import {EXIF} from "exif-js";
 
 class doc_file_module extends React.Component{
 
@@ -19,7 +20,9 @@ class doc_file_module extends React.Component{
             popImage:"",
             descFile:"",
             picProject:"",
-            isPermition:""
+            isPermition:"",
+            ort: 0,
+            base64: ""
         }
 
         this.inputElement = React.createRef()
@@ -32,6 +35,7 @@ class doc_file_module extends React.Component{
         this.rowClickDocFile = this.rowClickDocFile.bind(this)
         this.hideImage = this.hideImage.bind(this)
         this.descFileHandler = this.descFileHandler.bind(this)
+        this.changeImage = this.changeImage.bind(this)
     }
 
     componentDidMount(){
@@ -55,8 +59,11 @@ class doc_file_module extends React.Component{
     }
 
     fileUploaHandler(e){
-        var file = e.target.files[0]
-        var fileSize = file.size
+        let file = e.target.files[0]
+        let fileName = file.name
+        let fileSize = file.size
+        let fileType = fileName.substr(fileName.lastIndexOf("."), fileName.length)
+
         if(fileSize > 11000000){
             popUpAlert("Maximum file size upload is 10 mb", "warning")
         }else{
@@ -65,6 +72,9 @@ class doc_file_module extends React.Component{
             this.setState({
                 fileName: name
             })
+            if(fileType == ".jpg" || fileType == ".jpef" || fileType == ".png"){
+                this.changeImage(e, fileSize)
+            }
         }
     }
 
@@ -142,7 +152,7 @@ class doc_file_module extends React.Component{
         if(this.state.fileName == ""){
             popUpAlert("File upload is empty", "warning")
         }else{
-            this.props.commitDocFileUpload(this.state.descFile)
+            this.props.commitDocFileUpload(this.state.descFile, this.state.base64, this.state.ort, this.state.fileName)
             this.setState({
                 fileName: ""
             })
@@ -152,6 +162,80 @@ class doc_file_module extends React.Component{
     txtDocFileClick(e){
         var t = e.target
         t.style.height = "40px"
+    }
+
+    getModWidthHeight(w, h){
+        if(w > h){
+            if(w > 1280){
+                this.setState({
+                    modWidth: 1280,
+                    modHeight: h / w * 1280
+                })
+            }else{
+                this.setState({
+                    modWidth: w,
+                    modHeight: h
+                })
+            }
+        }else{
+            if(h > 1280){
+                this.setState({
+                    modWidth: w / h * 1280,
+                    modHeight: 1280
+                })
+            }else{
+                this.setState({
+                    modWidth: w,
+                    modHeight: h
+                })
+            }
+        }
+    }
+
+    changeImage(e, fileSize) {
+        let imgData = e.target.files[0]
+        const scope = this
+        EXIF.getData(imgData, function () {
+            var allMetaData = EXIF.getAllTags(this)
+
+            let reader = new FileReader()
+            reader.readAsDataURL(imgData)
+            reader.onload = function (e) {
+                let elm = document.getElementById("base-img-upload")
+                scope.setState({
+                    ort: (allMetaData.Orientation == undefined) ? 0 : allMetaData.Orientation,
+                    srcImage: e.target.result
+                })
+                let img = new Image()
+                img.src = e.target.result
+                elm.src = e.target.result
+                scope.setState({
+                    image: img
+                })
+
+                let itvl = setInterval(function(){
+                    scope.getModWidthHeight(img.width, img.height)
+                    if(scope.state.modHeight > 0 && scope.state.modWidth > 0){
+                        clearInterval(itvl)
+                        if(fileSize > 500000) scope.canvasing()
+                    }
+                }, 100)
+            }
+        })
+    }
+
+    canvasing(){
+        let imgToCvs = document.getElementById("base-img-upload")
+        let canvas = document.getElementById("image_canvas")
+        canvas.setAttribute("width", this.state.modWidth+"px")
+        canvas.setAttribute("height", this.state.modHeight+"px")
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(imgToCvs, 0, 0, this.state.modWidth, this.state.modHeight)
+        var dataurl = canvas.toDataURL('image/jpeg',80);
+        this.setState({
+            base64: dataurl
+        })
     }
 
     render(){
@@ -171,6 +255,8 @@ class doc_file_module extends React.Component{
             <React.Fragment>
                 {this.state.popImage}
                 {this.state.popConfirmDelete}
+                <canvas id="image_canvas" style={{display: "none"}}/>
+                <div style={{display: "none"}}><img id="base-img-upload"/></div>
                 <div style={{padding: "10px", height: heightMain+"px", overflowY: "scroll"}}>
                     <table style={{width: "85%"}}>
                         <thead>

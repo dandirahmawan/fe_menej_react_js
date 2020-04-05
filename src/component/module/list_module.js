@@ -18,6 +18,7 @@ class list_module extends React.Component{
             permitionProject:[],
             loader:"",
             projectIdHeader:"",
+            dataTab:[],
             dataNote:[],
             notFound:false
         }
@@ -29,6 +30,7 @@ class list_module extends React.Component{
         this.commitDeleteModule = this.commitDeleteModule.bind(this)
         this.updateDataDocumentFile = this.updateDataDocumentFile.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
+        this.refreshModule = this.refreshModule.bind(this)
     }
 
     componentDidMount(){
@@ -67,7 +69,8 @@ class list_module extends React.Component{
                 var dataTeam = result[0]['dataProjectTeam']
                 var permition  = result[0]['permitionProjects']
                 var dataNote = result[0]['note']
-                
+                var dataTab = result[0]['tabs']
+
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
                 }
@@ -80,10 +83,15 @@ class list_module extends React.Component{
                     dataTeam: dataTeam,
                     dataProject: dataProjectFetch,
                     permitionProject: permition,
-                    dataNote: dataNote
+                    dataNote: dataNote,
+                    dataTab: dataTab
                 })
             }
         })
+    }
+
+    refreshModule(){
+        this.fetchData(getCookieUserId(), this.props.match.params.id)
     }
 
     mapingProjectData(idProject){
@@ -183,11 +191,14 @@ class list_module extends React.Component{
                         dataModule={this.props.dataModule}
                         dataTeam={this.state.dataTeam}
                         dataNote={this.state.dataNote}
+                        dataTab={this.state.dataTab}
                         dataPermition={this.state.permitionProject}
                         commitDeleteModule={this.commitDeleteModule}
                         commitNewModule={this.commitNewModule}
                         commitDeleteModule={this.commitDeleteModule}
-                        commitDeleteMember={this.commitDeleteMember}/>
+                        commitDeleteMember={this.commitDeleteMember}
+                        refreshModule={this.refreshModule}
+                        />
 
         return(
             <div id="main-base-data" style={{marginBottom: "100px"}}>

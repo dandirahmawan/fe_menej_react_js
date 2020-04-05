@@ -1,12 +1,13 @@
 import React from 'react'
+import ReactDom from 'react-dom'
 import ModuleInfo from './module_info'
 import BugsModule from './bugs_module'
 import DocFileModule from './doc_file_module'
-import {getCookieUserId, getCookieSessionId} from '../../function/function'
+import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
 import { baseUrl } from '../../const/const'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule, appendDataBugs, appendDataDocFile, deleteDataDocFile, updateDataModuleBugsClose, updateDataModuleBugsUnclose} from '../../redux/action'
-import {Spinner} from '../spinner'
+import {Spinner, SpinnerButton} from '../spinner'
 
 class detail extends React.Component{
 
@@ -177,7 +178,12 @@ class detail extends React.Component{
         })
     }
 
-    commitModuleInfo(){
+    commitModuleInfo(e){
+        let t = e.target
+        ReactDom.render(<SpinnerButton size="15px"/>, t)
+        t.style.opacity = 0.5
+        t.style.minWidth = "100px"
+
         var form = new FormData()
         form.append("date", this.state.dueDate)
         form.append("moduleId",this.state.moduleId)
@@ -195,6 +201,9 @@ class detail extends React.Component{
                 this.setState({
                     infoPop: ""
                 })
+                popUpAlert("Module successfully update", "success")
+                ReactDom.render("Save change", t)
+                t.style.opacity = 1
             }
         })
     }
@@ -238,14 +247,19 @@ class detail extends React.Component{
         })
     }
 
-    commitDocFileUpload(descFile){
-        var form = new FormData()
-        form.append('file', this.state.documentFileUploadData)
+    commitDocFileUpload(descFile, bs64, ort, fileName){
+        let form = new FormData()
+        let file = (bs64 == "") ? this.state.documentFileUploadData : ""
+        form.append('file', file)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append('projectId', this.state.projectId)
         form.append('moduleId', this.state.moduleId)
         form.append('descFile', descFile)
+        form.append('base64', bs64)
+        form.append('fileName', fileName)
+        form.append('ort', ort)
+
         fetch(baseUrl+"/document_file",{
             method: "POST",
             body: form

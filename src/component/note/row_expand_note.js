@@ -29,8 +29,8 @@ class row_expand_view extends React.Component{
                                 <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip" style={{marginRight: "5px"}}>
                                     <FontAwesomeIcon icon={faTrash} className="tooltip" style={{color: "#000"}}></FontAwesomeIcon>
                                 </a>
-                                <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip">
-                                    <FontAwesomeIcon icon={faEdit} className="tooltip" style={{color: "#000"}}></FontAwesomeIcon>
+                                <a onClick={() => this.props.editNote(this.props.noteId, this.props.note)} className="tooltip">
+                                    <FontAwesomeIcon icon={faEdit} className="tooltip" style={{color: "#000"}}/>
                                 </a>
                             </React.Fragment>
                         :
@@ -38,10 +38,10 @@ class row_expand_view extends React.Component{
                             ?
                                 <React.Fragment>
                                     <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip" style={{marginRight: "5px"}}>>
-                                        <FontAwesomeIcon icon={faTrash} className="tooltip" style={{color: "#000"}}></FontAwesomeIcon>
+                                        <FontAwesomeIcon icon={faTrash} className="tooltip" style={{color: "#000"}}/>
                                     </a>
-                                    <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip">
-                                        <FontAwesomeIcon icon={faEdit} className="tooltip"></FontAwesomeIcon>
+                                    <a onClick={() => this.props.editNote(this.props.noteId, this.props.note)} className="tooltip">
+                                        <FontAwesomeIcon icon={faEdit} className="tooltip"/>
                                     </a>
                                 </React.Fragment>
                             :

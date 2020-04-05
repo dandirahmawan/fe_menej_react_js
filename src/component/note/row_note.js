@@ -13,11 +13,19 @@ class row_note extends React.Component{
                         {
                             (this.props.pic == getCookieUserId())
                             ?
-                                <a onClick={() => this.props.deleteNote(this.props.noteId)}>Delete</a>
+                                <React.Fragment>
+                                    <a onClick={() => this.props.deleteNote(this.props.noteId)}>Delete</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a onClick={() => this.props.editNote(this.props.noteId, this.props.note)}>Edit</a>
+                                </React.Fragment>
                             :
                                 (this.props.userId == getCookieUserId())
                                 ?
-                                    <a onClick={() => this.props.deleteNote(this.props.noteId)}>Delete</a>
+                                    <React.Fragment>
+                                        <a onClick={() => this.props.deleteNote(this.props.noteId)}>Delete</a>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a onClick={() => this.props.editNote(this.props.noteId, this.props.note)}>Edit</a>
+                                    </React.Fragment>
                                 :
                                     ""
                         }

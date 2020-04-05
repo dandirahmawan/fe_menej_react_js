@@ -60,7 +60,7 @@ class row_module extends React.Component{
                     ? 
                         (this.props.isBorder)
                         ?
-                            <tr onClick={(e) => this.props.selected(e, this.props.moduleId)} className={classNameRow+" main-border"} valign="top" is-selected="false">
+                            <tr onClick={(e) => this.props.selectedRow(e, this.props.moduleId)} className={classNameRow+" main-border"} valign="top" is-selected="false">
                                 <td className="tb-border-mod main-border" style={{width: "40px"}}>
                                     <i className="fa fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i>
                                         {
@@ -76,7 +76,9 @@ class row_module extends React.Component{
                                         }
                                 </td>
                                 <td className="tb-border-mod main-border">
-                                    <span className="bold">{this.props.modulName}</span>
+                                    <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">
+                                        {this.props.modulName}
+                                    </a>
                                     {
                                         (this.state.noteBaseVisible) 
                                         ?
@@ -134,7 +136,7 @@ class row_module extends React.Component{
                                 </td>
                             </tr>
                         :
-                            <tr onClick={(e) => this.props.selected(e, this.props.moduleId)} className={classNameRow} valign="top" data-module={this.props.modulId} is-selected="false">
+                            <tr onClick={(e) => this.props.selectedRow(e, this.props.moduleId)} className={classNameRow} valign="top" data-module={this.props.modulId} is-selected="false">
                                 <td className="tb-border-mod" style={{width: "40px"}}>
                                     <i className="fa fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i>
                                         {
@@ -150,8 +152,7 @@ class row_module extends React.Component{
                                         }
                                 </td>
                                 <td className="tb-border-mod">
-                                    <span className="bold">{this.props.modulName}</span>
-                                    
+                                    <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">{this.props.modulName}</a>
                                     {
                                         (this.state.noteBaseVisible) 
                                         ?

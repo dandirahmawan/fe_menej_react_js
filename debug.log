@@ -3,3 +3,7 @@
 [0218/110241.416:ERROR:process_info.cc(359)] UncheckedAllocate
 [0218/110341.720:ERROR:process_info.cc(359)] UncheckedAllocate
 [0310/140944.951:ERROR:process_info.cc(359)] UncheckedAllocate
+[0328/120048.405:ERROR:process_info.cc(359)] UncheckedAllocate
+[0328/120058.706:ERROR:process_info.cc(359)] UncheckedAllocate
+[0328/120123.550:ERROR:file_io.cc(134)] WriteFile: The pipe is being closed. (0xE8)
+[0328/120123.550:ERROR:file_io.cc(134)] WriteFile: The pipe is being closed. (0xE8)
