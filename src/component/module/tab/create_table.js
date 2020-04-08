@@ -91,6 +91,7 @@ class create_table extends React.Component{
             body: form
         }).then(res => res.text()).then(result => {
             if(result == ""){
+                this.props.fetchAction(this.props.tabId)
                 this.props.cancel()
             }
         })

@@ -4,7 +4,9 @@ import {connect} from 'react-redux'
 import PopupNotification from './popup_notification'
 import LeftArrow from '../images/left_arrow.png'
 import {backHistory} from '../function/function'
-import {baseUrl} from "../const/const";
+import {baseUrl} from "../const/const"
+import {faBars} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 class navbar extends React.Component{
     constructor(){
@@ -105,11 +107,32 @@ class navbar extends React.Component{
         )
     }
 
+    bars(){
+        let btn = document.getElementById("btn-sb-togle")
+        btn.style.display = "none"
+        let elm2 = document.getElementById("sidebar")
+        elm2.style.marginLeft = "0px"
+
+        let elm = document.getElementById("main-base-data-wrapper")
+        elm.style.marginLeft =  elm2.offsetWidth+"px"
+
+        let elm3 = document.getElementById("main-header")
+        elm3.style.marginLeft =  elm2.offsetWidth+"px"
+    }
+
     render(){
         return(
             <div id="header" className='navbar main-border' style={{background: "#FFF", overflow: 'hidden', borderTop: "none"}}>
                 <div id="main-header" style={{marginLeft: '230px'}}>
-                    
+                    <button id="btn-sb-togle" onClick={this.bars}
+                        style={{float: "left",
+                                fontSize: "16px",
+                                background: "none",
+                                display: "none",
+                                marginTop: "21px",
+                                marginLeft: "15px"}}>
+                        <FontAwesomeIcon icon={faBars}/>
+                    </button>
                     <div id="title-header" className="bold second-color" style={{float: "left", fontSize: "20px", padding: "19px"}}>
                         <img onClick={this.backNavbar} src={LeftArrow} style={{width: "15px", marginRight: "10px", cursor: "pointer",}}></img>
                         {this.props.title}

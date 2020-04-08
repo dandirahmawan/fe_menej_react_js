@@ -268,17 +268,26 @@ button{
 /*}*/
 
 .tr-selectable{
-    background: none;
+    background: #FFF;
 }
 
 .tr-selectable:hover{
-    background: #ddf0ff;
+    background: #ddf0ff !important;
 }
 
 .sidebar::-webkit-scrollbar-track {
     /* -webkit-box-shadow: inset 0 0 6px ;  */
     border-radius: 2px;
     background: #386384;
+}
+
+.tab-base-scroll::-webkit-scrollbar-track {
+    background: #e6e6e6;
+}
+
+.scrollbar{
+    scrollbar-width: thin;
+    scrollbar-color: #CCC #e6e6e6;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
@@ -293,6 +302,7 @@ button{
 
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
 }
 
 .list-item{
@@ -313,8 +323,12 @@ button{
 }
 
 #main-base-data{
+
+}
+
+#main-base-data-wrapper{
     margin-top: 50px;
-    margin-left:230px;
+    margin-left: 230px;
     padding: 10px;
     padding-left: 20px;
 }
@@ -391,10 +405,10 @@ p{
     margin-top: 0px;
 }
 
-.scrollbar{
-    scrollbar-width: thin;
-    scrollbar-color: #CCC #e6e6e6;
-}
+/*div{*/
+    /*scrollbar-width: thin;*/
+    /*scrollbar-color: #CCC #e6e6e6;*/
+/*}*/
 
 .scrollbar-white-bck{
     scrollbar-width: thin;
@@ -434,6 +448,14 @@ thead {
     overflow-y: visible;
     padding: 0;
     height: 200px;
+}
+
+.gj-row{
+    background: #FFF;
+}
+
+.gn-row{
+    background: #F1f1f1;
 }
 
 .headcol {

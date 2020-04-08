@@ -38,44 +38,30 @@ class App extends React.Component{
   }
 
   componentDidMount(){
-    // document.addEventListener("click", function(e){
-    //   let elmClick = e.target
-    //   let tag = elmClick.tagName
-    //   if(tag === "BUTTON"){
-    //       let classs = elmClick.getAttribute("class").split(" ")
-    //       for(let i = 0;i<classs.length;i++){
-    //           if(classs[i] == "btn-primary"){
-    //               elmClick.style.opacity = 0.5
-    //               ReactDom.render(<SpinnerButton size="15px"/>, elmClick)
-    //           }
-    //       }
-    //   }
-    // })
+      let form = new FormData();
+      var userId =  getCookieUserId()
+      var sessionId = getCookieSessionId()
 
-    let form = new FormData();
-    var userId =  getCookieUserId()
-    var sessionId = getCookieSessionId()
+      form.append("userId", userId)
+      form.append("sessionId", sessionId);
 
-    form.append("userId", userId)
-    form.append("sessionId", sessionId);
-
-    fetch(baseUrl+"/start_data", {
-      method : "POST",
-      body : form
-    }).then(rst => rst.text())
-    .then(result => {
-      if(result != ""){
-        let jsonData = JSON.parse(result)
-        if(jsonData.name != null && jsonData.email != null){
-            this.props.dispatchStartData(jsonData.name, jsonData.email, jsonData.picProfile)
+      fetch(baseUrl+"/start_data", {
+        method : "POST",
+        body : form
+      }).then(rst => rst.text())
+      .then(result => {
+        if(result != ""){
+          let jsonData = JSON.parse(result)
+          if(jsonData.name != null && jsonData.email != null){
+              this.props.dispatchStartData(jsonData.name, jsonData.email, jsonData.picProfile)
+          }
+          this.setState({
+            userNameLogin: jsonData.name,
+            emailLogin: jsonData.email,
+            isLoad: false
+          })
         }
-        this.setState({
-          userNameLogin: jsonData.name,
-          emailLogin: jsonData.email,
-          isLoad: false
-        })
-      }
-    })
+      })
   }
 
   render(){
@@ -124,12 +110,14 @@ class App extends React.Component{
                 {redirect}
                 <Navbar/>
                 <Sidebar/>
-                <Route path="/dashboard" exact component={Dashboard} />
-                <Route path="/users/"  exact component={User} />
-                <Route path="/project/"  exact component={Project} />
-                <Route path="/project/:id"  exact component={ListModule} />
-                <Route path="/logout"  exact component={Logout} />
-                <Route path="/profile"  exact component={Profile} />
+                <div id="main-base-data-wrapper">
+                  <Route path="/dashboard" exact component={Dashboard} />
+                  <Route path="/users/"  exact component={User} />
+                  <Route path="/project/"  exact component={Project} />
+                  <Route path="/project/:id"  exact component={ListModule} />
+                  <Route path="/logout"  exact component={Logout} />
+                  <Route path="/profile"  exact component={Profile} />
+                </div>
             </BrowserRouter>
           )
         }

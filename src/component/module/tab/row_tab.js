@@ -37,23 +37,25 @@ class row_tab extends React.Component{
         let sumWidth = null
         for(let i = 0;i<count;i++){
             let i2 = parseInt(i) + 1
-            let wi = this.props.elm[i2].style.width.replace("px", "")
-            let elm1 = document.createElement("td")
-            elm1.innerText = col[i];
-            if(!isBorder){
-                elm1.setAttribute("class", "td-tab-data")
-            }else{
-                elm1.setAttribute("class", "td-tab-data main-border")
-            }
+            if(this.props.elm[i2] !== undefined) {
+                let wi = this.props.elm[i2].style.width.replace("px", "")
+                let elm1 = document.createElement("td")
+                elm1.innerText = col[i]
+                if (!isBorder) {
+                    elm1.setAttribute("class", "td-tab-data")
+                } else {
+                    elm1.setAttribute("class", "td-tab-data main-border")
+                }
 
-            elm1.style.padding = "5px"
-            elm1.style.textAlign = "left"
-            elm1.style.wordWrap = "anywhere"
+                elm1.style.padding = "5px"
+                elm1.style.textAlign = "left"
+                elm1.style.wordWrap = "anywhere"
 
-            if(no == 1) elm1.style.width = wi+"px"
-            this.refRow.current.append(elm1)
-            if(no == 1 && isStarting) {
-                sumWidth = this.props.tableHeader.style.width
+                if (no == 1) elm1.style.width = wi + "px"
+                this.refRow.current.append(elm1)
+                if (no == 1 && isStarting) {
+                    sumWidth = this.props.tableHeader.style.width
+                }
             }
         }
         if(no == 1 && isStarting){
@@ -62,13 +64,14 @@ class row_tab extends React.Component{
             this.props.bodyTable.style.width = wb+"px"
             this.props.tableHeader.style.width = sumWidth
             this.props.tableTbody.style.width = sumWidth
+            this.props.tableBodyScroll.style.width = sumWidth
         }
     }
 
     render() {
         return (
             <React.Fragment>
-                <tr valign="top" onClick={(e) => this.props.formTab(e, this.props.seq)} className="tr-selectable tr-tb-data" ref={this.refRow}/>
+                <tr valign="top" onClick={(e) => this.props.formTab(e, this.props.seq)} className="tr-selectable tr-tb-data" ref={this.refRow} style={{background: "#FFF"}}/>
             </React.Fragment>
         )
     }

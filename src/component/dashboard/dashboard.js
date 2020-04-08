@@ -23,17 +23,17 @@ class dashboard extends React.Component{
 
     componentDidMount(){
         this.props.setTitleHader()
-        var elmP = document.createElement("P")
-        elmP.innerHTML = "<br/>"
-        var elm = document.getElementById("react-trumbowyg")
+        // var elmP = document.createElement("P")
+        // elmP.innerHTML = "<br/>"
+        // var elm = document.getElementById("react-trumbowyg")
         // elm.append(elmP)
-        elm.style.fontSize = "12px"
-        elm.style.padding = "10px"
+        // elm.style.fontSize = "12px"
+        // elm.style.padding = "10px"
         // elm.style.paddingLeft = "10px"
         // elm.style.paddingRight = "10px"
 
-        var elmClass = document.getElementsByClassName("trumbowyg-del-button ")
-        elmClass[0].remove()
+        // var elmClass = document.getElementsByClassName("trumbowyg-del-button ")
+        // elmClass[0].remove()
     }
 
     someCallback(e){
@@ -112,30 +112,30 @@ class dashboard extends React.Component{
                         {/*} }*/}
                     {/*/>*/}
                 {/*</div>*/}
-                <div style={{width: "350px", display: "none"}}>
-                    <Trumbowyg id='react-trumbowyg'
-                           buttons={
-                               [
-                                   // ['viewHTML'],
-                                   ['formatting'],
-                                   'btnGrp-semantic',
-                                   ['link'],
-                                   // ['insertImage'],
-                                   // 'btnGrp-justify',
-                                   'btnGrp-lists',
-                                   ['table'], // I ADDED THIS FOR THE TABLE PLUGIN BUTTON
-                                   ['fullscreen']
-                               ]
-                           }
-                           style={{fontSize: "12px"}}
-                           data={this.props.someData}
-                           placeholder='Type your text!'
-                           onChange={this.someCallback}
-                           ref="trumbowyg"
-                    />
-                    <button onClick={this.submitNote} className="btn-primary">Submit</button>
-                </div>
-                <div style={{fontSize: "12px", width: "300px"}} dangerouslySetInnerHTML={{ __html: this.state.noteText }}/>
+                {/*<div style={{width: "350px", display: "none"}}>*/}
+                    {/*<Trumbowyg id='react-trumbowyg'*/}
+                           {/*buttons={*/}
+                               {/*[*/}
+                                   {/*// ['viewHTML'],*/}
+                                   {/*['formatting'],*/}
+                                   {/*'btnGrp-semantic',*/}
+                                   {/*['link'],*/}
+                                   {/*// ['insertImage'],*/}
+                                   {/*// 'btnGrp-justify',*/}
+                                   {/*'btnGrp-lists',*/}
+                                   {/*['table'], // I ADDED THIS FOR THE TABLE PLUGIN BUTTON*/}
+                                   {/*['fullscreen']*/}
+                               {/*]*/}
+                           {/*}*/}
+                           {/*style={{fontSize: "12px"}}*/}
+                           {/*data={this.props.someData}*/}
+                           {/*placeholder='Type your text!'*/}
+                           {/*onChange={this.someCallback}*/}
+                           {/*ref="trumbowyg"*/}
+                    {/*/>*/}
+                    {/*<button onClick={this.submitNote} className="btn-primary">Submit</button>*/}
+                {/*</div>*/}
+                {/*<div style={{fontSize: "12px", width: "300px"}} dangerouslySetInnerHTML={{ __html: this.state.noteText }}/>*/}
                 {/*<div>*/}
                     {/*<RichTextInput source="body" validation={{ required: true }} />*/}
                 {/*</div>*/}

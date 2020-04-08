@@ -17,7 +17,7 @@ import {faBorderAll, faBorderNone, faHandshake, faPlusCircle} from '@fortawesome
 import DocumentFile from '../document_file/document_file'
 import InfoProject from './info_project'
 import HandoverModule from './handover_module'
-import NewTab from './new_tab'
+import NewTab from './tab/new_tab'
 import Tab from './tab/tab'
 
 var ctrlClick = false
@@ -100,6 +100,7 @@ class modulePage extends React.Component{
         this.newTab = this.newTab.bind(this)
         this.updateDataTab = this.updateDataTab.bind(this)
         this.tabMenu = this.tabMenu.bind(this)
+        this.editTab = this.editTab.bind(this)
     }
 
     componentDidMount(){
@@ -250,8 +251,7 @@ class modulePage extends React.Component{
                                 modulId={dt.modulId}
                                 projectId={dt.projectId}
                                 picProject={this.state.picProject} 
-                                tabParameter="doc_file" 
-                            />
+                                tabParameter="doc_file"/>
                 })
             }
         })
@@ -490,15 +490,54 @@ class modulePage extends React.Component{
         })
     }
 
-    tabMenu(tabName, tabId){
+    tabMenu(e, tabId){
+        var c = document.getElementsByClassName("main-menu-module")
+        for(var i = 0;i<c.length;i++){
+            c[i].style.borderBottom = "none"
+            c[i].setAttribute("class", "bold main-menu-module second-font-color")
+        }
+
+        var t = e.target
+        t.setAttribute("class", "bold main-menu-module")
+        t.style.borderBottom = "2px solid #386384"
+
+        this.refModule.current.style.display = "none"
         this.refBugs.current.style.display = "none"
         this.refDocFile.current.style.display = "none"
-        this.refModule.current.style.display = "none"
+
+        let tabName = null
+        let privacy = null
+        let createdBy = null
+        this.state.dataTab.map(dt => {
+            if(dt.tabId == tabId){
+                tabName = dt.tabName
+                privacy = dt.privacy
+                createdBy = dt.createdBy
+            }
+        })
+
         this.setState({
             tabBase: <Tab
+                        editTab={this.editTab}
                         projectId={this.props.projectIdHeader}
                         tabId={tabId}
+                        createdBy={createdBy}
+                        privacy={privacy}
                         tabName={tabName}/>
+        })
+    }
+
+    editTab(tabId, tabName, privacy){
+        const data = this.state.dataTab.map(dt => {
+            if(dt.tabId == tabId){
+                dt.tabName = tabName
+                dt.privacy = privacy
+            }
+            return dt
+        })
+
+        this.setState({
+            dataTab: data
         })
     }
 
@@ -550,7 +589,7 @@ class modulePage extends React.Component{
 
 
         const tabMenuAdditional = this.state.dataTab.map(dt => {
-            return <a onClick={() => this.tabMenu(dt.tabName, dt.tabId)}
+            return <a onClick={(e) => this.tabMenu(e, dt.tabId)}
                       className="bold main-menu-module second-font-color"
                       style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>{dt.tabName}</a>
         })
@@ -574,7 +613,7 @@ class modulePage extends React.Component{
                     <a onClick={(e) => this.mainMenu(e, "doc file")} className="bold main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>Doc File</a>
 
                     {
-                        /*data tab from database*/
+                        /*menu -> data tab from database*/
                         tabMenuAdditional
                     }
 
