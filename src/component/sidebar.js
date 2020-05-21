@@ -81,24 +81,24 @@ class sidebar extends React.Component{
                     <ul style={{fontSize: '14px',marginTop:"0px"}}>
                         {/* <Link to="/dashboard"> */}
                         <a onClick={this.createProject}><li className='nav-li'>
-                            <em className='fa fa-plus-circle'>&nbsp;</em>
+                            <em className='fa fa-plus-circle'>&nbsp;&nbsp;&nbsp;</em>
                             Create
                         </li></a>
                         <Link to={{pathname:'/dashboard', load: 'yes'}}>
                             <li className='nav-li'>
-                                <em className='fa fa-dashboard'>&nbsp;</em>
+                                <em className='fa fa-dashboard'>&nbsp;&nbsp;&nbsp;</em>
                                 Dashboard
                             </li>
                         </Link>
                         <Link to={{pathname:'/users', load: 'yes'}}>
                             <li className='nav-li'>
-                                <em className='fa fa-user-circle'>&nbsp;</em>
+                                <em className='fa fa-user-circle'>&nbsp;&nbsp;&nbsp;</em>
                                 User
                             </li>
                         </Link>
                         <Link to={{pathname:'/project', load: 'yes'}}>
                             <li className='nav-li'>
-                                <em className='fa fa-folder'>&nbsp;</em>
+                                <em className='fa fa-folder'>&nbsp;&nbsp;&nbsp;</em>
                                 Project
                             </li>
                         </Link>

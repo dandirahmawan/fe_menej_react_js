@@ -5,7 +5,9 @@ import PreviewImage from '../preview_image'
 class document_file_detail extends React.Component{
     render(){
         
-        const data = this.props.data.map(dt => <RowDocFile rowClickDocFile={this.props.rowClickDocFile} fileName={dt.fileName} fileSize={dt.fileSize}/>)
+        const data = this.props.data.map(dt => <RowDocFile rowClickDocFile={this.props.rowClickDocFile}
+                                                           fileName={dt.fileName}
+                                                           fileSize={dt.fileSize}/>)
 
         return(
             <React.Fragment>

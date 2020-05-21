@@ -1,5 +1,5 @@
 import React from 'react'
-import {popCenterPosition} from '../../function/function'
+import {getCookieSessionId, getCookieUserId, popCenterPosition} from '../../function/function'
 import {connect} from 'react-redux'
 import { baseUrl } from '../../const/const'
 import {appendDataBugs, updateDataModuleBugs} from '../../redux/action'
@@ -55,7 +55,8 @@ class new_module extends React.Component{
             form.append("moduleId", this.state.moduleId)
             form.append("projectId", this.props.projectId)
             form.append("bugs", this.state.bugs)
-
+            form.append("userId", getCookieUserId())
+            form.append("sessionId", getCookieSessionId())
             fetch(baseUrl+"/add_bugs", {
                 method: 'POST',
                 body: form

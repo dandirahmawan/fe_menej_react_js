@@ -13,12 +13,14 @@ import {connect} from 'react-redux'
 import {setDataNote, selectRowModule} from '../../redux/action'
 import Bugs from '../bugs/bugs'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBorderAll, faBorderNone, faHandshake, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import {faBorderAll, faBorderNone, faHandshake, faPlusCircle, faCaretDown} from '@fortawesome/free-solid-svg-icons'
 import DocumentFile from '../document_file/document_file'
 import InfoProject from './info_project'
 import HandoverModule from './handover_module'
 import NewTab from './tab/new_tab'
 import Tab from './tab/tab'
+import DropDownMenuTab from './dropdown_tab_menu'
+import MenuTab from './menu_tab'
 
 var ctrlClick = false
 var arrSelected = []
@@ -60,7 +62,12 @@ class modulePage extends React.Component{
             documentFileBase:"",
             projectName:"",
             infoProjectPop:"",
-            tabBase:""
+            tabBase:"",
+            isPermitionModule: false,
+            dropDownMenuTabBase: "",
+            dropDownMenuTabItem: [],
+            isUpadateDataTab: false,
+            isRecreteMenuTab: false,
         }
 
         this.refBugs = React.createRef()
@@ -70,6 +77,9 @@ class modulePage extends React.Component{
         this.markAllBtn = React.createRef()
         this.unMarkAllBtn = React.createRef()
         this.baseMenuTab = React.createRef()
+        this.menuModule = React.createRef()
+        this.tabBaseMenu = React.createRef()
+        this.dropdownBase = React.createRef()
  
         this.hidePopUp = this.hidePopUp.bind(this)
         this.deleteModule = this.deleteModule.bind(this)
@@ -100,7 +110,15 @@ class modulePage extends React.Component{
         this.newTab = this.newTab.bind(this)
         this.updateDataTab = this.updateDataTab.bind(this)
         this.tabMenu = this.tabMenu.bind(this)
+        this.tabMenuDp = this.tabMenuDp.bind(this)
         this.editTab = this.editTab.bind(this)
+        this.refreshTabMenu = this.refreshTabMenu.bind(this)
+        this.dropDownMenuTabAction = this.dropDownMenuTabAction.bind(this)
+        this.hideDropDownTabMenu = this.hideDropDownTabMenu.bind(this)
+        this.setDropDownTabMenuData = this.setDropDownTabMenuData.bind(this)
+        this.resetDropDownTabMenu = this.resetDropDownTabMenu.bind(this)
+        this.setRecreateMenuTabTrue = this.setRecreateMenuTabTrue.bind(this)
+        this.setRecreateMenuTabFalse = this.setRecreateMenuTabFalse.bind(this)
     }
 
     componentDidMount(){
@@ -118,8 +136,13 @@ class modulePage extends React.Component{
             })
         })
 
-        // let baseTabMenu = this.baseMenuTab.current
-        // alert(baseTabMenu.offsetWidth);
+        this.props.dataPermition.map(dt => {
+            if(dt.permitionCode == 1 && dt.isChecked == 'Y'){
+                this.setState({
+                    isPermitionModule: true
+                })
+            }
+        })
     }
 
     refreshDataTeam(jsonData, userIdList){
@@ -299,6 +322,18 @@ class modulePage extends React.Component{
         }
     }
 
+    setRecreateMenuTabTrue(){
+        this.setState({
+            isRecreteMenuTab: true
+        })
+    }
+
+    setRecreateMenuTabFalse(){
+        this.setState({
+            isRecreteMenuTab: false
+        })
+    }
+
     handOver(){
         this.setState({
             infoPop: <HandoverModule
@@ -367,7 +402,10 @@ class modulePage extends React.Component{
         this.setState({
             userSetTeamMember: '',
             userIdAccess: userId,
-            infoPop: <PopupConfirmation textPopup={text} titleConfirmation="Delete member" hidePopUp={this.hidePopUp} yesAction={this.commitDeleteMember}/>
+            infoPop: <PopupConfirmation textPopup={text}
+                                        titleConfirmation="Delete member"
+                                        hidePopUp={this.hidePopUp}
+                                        yesAction={this.commitDeleteMember}/>
         })
     }
 
@@ -486,7 +524,8 @@ class modulePage extends React.Component{
 
     updateDataTab(jsonData){
         this.setState({
-            dataTab: jsonData
+            dataTab: jsonData,
+            isUpadateDataTab: true
         })
     }
 
@@ -496,6 +535,8 @@ class modulePage extends React.Component{
             c[i].style.borderBottom = "none"
             c[i].setAttribute("class", "bold main-menu-module second-font-color")
         }
+
+        this.dropdownBase.current.style.borderBottom = "none"
 
         var t = e.target
         t.setAttribute("class", "bold main-menu-module")
@@ -508,22 +549,72 @@ class modulePage extends React.Component{
         let tabName = null
         let privacy = null
         let createdBy = null
+        let userName = null
         this.state.dataTab.map(dt => {
             if(dt.tabId == tabId){
                 tabName = dt.tabName
                 privacy = dt.privacy
                 createdBy = dt.createdBy
+                userName = dt.userName
             }
         })
 
         this.setState({
             tabBase: <Tab
+                        updateDataTab={this.updateDataTab}
+                        dataTeam={this.state.dataTeam}
                         editTab={this.editTab}
                         projectId={this.props.projectIdHeader}
+                        dataTeam={this.state.dataTeam}
                         tabId={tabId}
+                        pic={this.state.picProject}
                         createdBy={createdBy}
                         privacy={privacy}
+                        userName={userName}
+                        refreshDelete={this.refreshTabMenu}
                         tabName={tabName}/>
+        })
+    }
+
+    tabMenuDp(base, tabId){
+        var c = document.getElementsByClassName("main-menu-module")
+        for(var i = 0;i<c.length;i++){
+            c[i].style.borderBottom = "none"
+            c[i].setAttribute("class", "bold main-menu-module second-font-color")
+        }
+
+        base.style.borderBottom = "2px solid #386384"
+
+        this.refModule.current.style.display = "none"
+        this.refBugs.current.style.display = "none"
+        this.refDocFile.current.style.display = "none"
+
+        let tabName = null
+        let privacy = null
+        let createdBy = null
+        let userName = null
+        this.state.dataTab.map(dt => {
+            if(dt.tabId == tabId){
+                tabName = dt.tabName
+                privacy = dt.privacy
+                createdBy = dt.createdBy
+                userName = dt.userName
+            }
+        })
+
+        this.setState({
+            tabBase: <Tab
+                updateDataTab={this.updateDataTab}
+                editTab={this.editTab}
+                projectId={this.props.projectIdHeader}
+                dataTeam={this.state.dataTeam}
+                tabId={tabId}
+                pic={this.state.picProject}
+                createdBy={createdBy}
+                privacy={privacy}
+                userName={userName}
+                refreshDelete={this.refreshTabMenu}
+                tabName={tabName}/>
         })
     }
 
@@ -541,17 +632,51 @@ class modulePage extends React.Component{
         })
     }
 
+    refreshTabMenu(tabId){
+        let data = this.state.dataTab
+        this.state.dataTab.map(dt => {
+            if(dt.tabId == tabId){
+                let idx = data.indexOf(dt)
+                data.splice(idx, 1)
+            }
+            return dt
+        })
+
+        this.menuModule.current.click()
+        this.setState({
+            isRecreteMenuTab: true,
+            dataTab: data
+        })
+    }
+
+    dropDownMenuTabAction(){
+        this.setState({
+            dropDownMenuTabBase : <DropDownMenuTab item={this.state.dropDownMenuTabItem}
+                                                   baseDropdown={this.dropdownBase}
+                                                   tabMenuActionDp={this.tabMenuDp}
+                                                   hideDropDown={this.hideDropDownTabMenu}/>
+        })
+    }
+
+    hideDropDownTabMenu(){
+        this.setState({
+            dropDownMenuTabBase : ""
+        })
+    }
+
+    resetDropDownTabMenu(){
+        this.setState({
+            dropDownMenuTabItem : []
+        })
+    }
+
+    setDropDownTabMenuData(jsonObject){
+        if(jsonObject.isDelete != "Y") {
+            this.state.dropDownMenuTabItem.push(jsonObject)
+        }
+    }
+
     render(){
-        
-        // const dataProject = this.props.dataProject.map(dt => <HeaderModule
-        //                                                         projectName     = {dt.projectName}
-        //                                                         projectManager  = {dt.picName}
-        //                                                         countModule     = {dt.countModule}
-        //                                                         countBugs       = {dt.countBugs}
-        //                                                         countMember     = {dt.countTeam}
-        //                                                         percentage      = "100%"
-        //                                                     />)
-        
         const dataModule = this.props.dataModule.map(dt => <RowModule
                                                             detail = {this.detail}
                                                             isDelete = {dt.isTrash}
@@ -587,47 +712,115 @@ class modulePage extends React.Component{
                                                                 picProfile={dt.picProfile}
                                                             />)
 
-
         const tabMenuAdditional = this.state.dataTab.map(dt => {
-            return <a onClick={(e) => this.tabMenu(e, dt.tabId)}
-                      className="bold main-menu-module second-font-color"
-                      style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>{dt.tabName}</a>
-        })
+            // let wWindow = window.innerWidth - 250
+            // let wMainMenu = document.getElementById("main-menu-module").offsetWidth
+            // let wInfo = document.getElementById("inf-project-module").offsetWidth
+            // let w = wWindow - wMainMenu - wInfo
+            // let wTabMenu = this.tabBaseMenu.current.offsetWidth
+            // let allWidthMenu = parseInt(wTabMenu) +107
 
+            // let displayMenu = (allWidthMenu >= w) ? "none" : "inline-block"
+            // console.log(displayMenu)
+            // if (dt.isDelete != "Y") {
+            //     let isYours = ""
+            //     if (dt.userId != getCookieUserId())
+            //         isYours = <span style={{
+            //             background: "#aeaeae",
+            //             padding: "3px",
+            //             fontSize: "8px",
+            //             borderRadius: "2px",
+            //             display: "none",
+            //             color: "#FFF"
+            //         }}>
+            //             {this.firstWord(dt.userName)}
+            //         </span>
+            //
+            //     return <MenuTab baseMenuTab={this.tabBaseMenu.current}
+            //                     action={this.tabMenu}
+            //                     tabId={dt.tabId}
+            //                     tabName={dt.tabName}/>
+            // }
+        })
         return(
             <React.Fragment>
                 {/* {dataProject} */}
                 {this.state.infoPop}
                 {this.state.addMember}
                 {this.state.permition}
-                <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" style={{paddingTop: "10px", paddingBottom: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px"}}>
-                    <div style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
+                <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" style={{paddingTop: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px", overflow: "hidden"}}>
+                    <div id="inf-project-module" style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
                         <a onClick={this.infoProject} className="bold" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", color: "#000"}}>
                             <em class="fa fa-folder">&nbsp;</em>Project Info
                         </a>
                         {this.state.infoProjectPop}
                     </div>
 
-                    <a onClick={(e) => this.mainMenu(e, "module")} className="bold main-menu-module" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", borderBottom: "2px solid #386384"}}>Module</a>
-                    <a onClick={(e) => this.mainMenu(e, "bugs")} className="bold main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>Bugs</a>
-                    <a onClick={(e) => this.mainMenu(e, "doc file")} className="bold main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px"}}>Doc File</a>
+                    {/*menu module, bugs, doc file*/}
+                    <div id="main-menu-module" style={{float: "left"}}>
+                        <a ref={this.menuModule} onClick={(e) => this.mainMenu(e, "module")}
+                           className="bold main-menu-module"
+                           style={{fontSize: "12px",
+                               marginRight: "20px",
+                               paddingBottom: "10px",
+                               borderBottom: "2px solid #386384",
+                               display: "inline-block"}}>
+                            Module
+                        </a>
+                        <a onClick={(e) => this.mainMenu(e, "bugs")}
+                           className="bold main-menu-module second-font-color"
+                           style={{fontSize: "12px",
+                                marginRight: "20px",
+                                paddingBottom: "10px",
+                                display: "inline-block"}}>
+                            Bugs
+                        </a>
+                        <a onClick={(e) => this.mainMenu(e, "doc file")}
+                           className="bold main-menu-module second-font-color"
+                           style={{fontSize: "12px",
+                                marginRight: "20px",
+                                paddingBottom: "10px",
+                                display: "inline-block"}}>
+                            Doc File
+                        </a>
+                    </div>
 
-                    {
-                        /*menu -> data tab from database*/
-                        tabMenuAdditional
-                    }
+                    <div id="base-tab-menu" ref={this.tabBaseMenu} style={{float: "left"}}>
 
-                    <a onClick={this.newTab} className="main-menu-module second-font-color" style={{fontSize: "12px", marginRight: "20px", borderLeft: "2px solid #CCC", paddingLeft: "10px"}}>
-                        <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;
-                        New Tab
-                    </a>
+                        <MenuTab
+                            dataTab={this.state.dataTab}
+                            isRecreate={this.state.isRecreteMenuTab}
+                            action={this.tabMenu}
+                            baseMenuTab={this.tabBaseMenu}
+                            resetDropDown={this.resetDropDownTabMenu}
+                            setDropDownData={this.setDropDownTabMenuData}
+                            setRecreateMenuTabFalse={this.setRecreateMenuTabFalse}
+                        />
+
+                        <div ref={this.dropdownBase} style={{display: "none", paddingBottom: "10px"}}>
+                            <button onClick={this.dropDownMenuTabAction}
+                                    id="dropdown-menu-tab"
+                                    className="main-border-left"
+                                    style={{background: "none"}}>
+                                <FontAwesomeIcon icon={faCaretDown}/>
+                            </button>
+                            {this.state.dropDownMenuTabBase}
+                        </div>
+                        <a id="btn-new-tab" onClick={this.newTab}
+                           className="main-menu-module second-font-color"
+                           style={{fontSize: "12px", marginRight: "20px", borderLeft: "2px solid #CCC", paddingLeft: "10px"}}>
+                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;
+                            New Tab
+                        </a>
+                    </div>
+
                 </div>
                 {this.state.tabBase}
                 <div ref={this.refModule} id="base-tab-module">
                     <div id="header-base-tab-module" className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
                         <span className="bold">List Module</span>
                         {
-                            (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId()) 
+                            (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
                             ?
                                 <div style={{float: "right"}}>
                                     <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block", float: "left", marginTop: "4px"}} className='bold main-border-right'>
@@ -648,20 +841,34 @@ class modulePage extends React.Component{
                                     </button>
                                     {
                                         (this.state.isBorder)
-                                        ?
+                                            ?
                                             <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
                                                 <FontAwesomeIcon icon={faBorderNone}/>
                                                 <span className="tooltiptext">Hide border</span>
                                             </button>
-                                        :
+                                            :
                                             <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
                                                 <FontAwesomeIcon icon={faBorderAll}/>
                                                 <span className="tooltiptext">Show border</span>
                                             </button>
                                     }
                                 </div>
-                            : 
-                                ""
+                            :
+                                <div style={{float: "right"}}>
+                                    {
+                                        (this.state.isBorder)
+                                        ?
+                                            <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
+                                                <FontAwesomeIcon icon={faBorderNone}/>
+                                                <span className="tooltiptext">Hide border</span> Hide border
+                                            </button>
+                                        :
+                                            <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                                <FontAwesomeIcon icon={faBorderAll}/>
+                                                <span className="tooltiptext">Show border</span> Show border
+                                            </button>
+                                    }
+                                </div>
                         }
                     </div>
                     

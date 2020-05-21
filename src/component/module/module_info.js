@@ -44,7 +44,7 @@ class module_info extends React.Component{
                         <tr>
                             <td style={{width:"100px"}} className="bold">Name</td>
                             {
-                                (this.props.pic == getCookieUserId())
+                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ?
                                     <td><input placeholder="module name" onChange={this.props.changeName} style={{padding: "5px", width: "300px"}} type='text' value={this.props.moduleName}></input></td>
                                 : 
@@ -54,17 +54,28 @@ class module_info extends React.Component{
                         <tr>
                             <td style={{width:"100px"}} className="bold">Assigned</td>
                             <td style={{paddingBottom: "10px"}}>
-                                {this.state.popupListChoice}
-                                <a onClick={this.setAssigned}>
-                                    <span className="bold">{this.props.userName}</span><br/>
-                                    <span style={{fontSize: "10px"}}>{this.props.emailUser}</span>
-                                </a>
+                                {
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                        ?
+                                            <React.Fragment>
+                                                {this.state.popupListChoice}
+                                                <a onClick={this.setAssigned}>
+                                                    <span className="bold">{this.props.userName}</span><br/>
+                                                    <span style={{fontSize: "10px"}}>{this.props.emailUser}</span>
+                                                </a>
+                                            </React.Fragment>
+                                        :
+                                            <React.Fragment>
+                                                <span className="bold">{this.props.userName}</span><br/>
+                                                <span style={{fontSize: "10px"}}>{this.props.emailUser}</span>
+                                            </React.Fragment>
+                                }
                             </td>
                         </tr>
                         <tr>
                             <td style={{width:"100px"}} className="bold">Status</td>
                             {
-                                (this.props.pic == getCookieUserId())
+                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ?
                                     <td>
                                         <select onChange={this.props.changeStatus} value={this.props.moduleStatus} style={{fontSize: "12px"}}>
@@ -79,7 +90,7 @@ class module_info extends React.Component{
                         <tr>
                             <td style={{width:"100px"}} className="bold">Due date</td>
                             {
-                                (this.props.pic == getCookieUserId())
+                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ?
                                     <td><input style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input></td>
                                 :
@@ -89,7 +100,7 @@ class module_info extends React.Component{
                         <tr>
                             <td style={{width:"100px"}} className="bold">Due date</td>
                             {
-                                (this.props.pic == getCookieUserId())
+                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ?
                                     <td><input style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input></td>
                                 :
@@ -108,7 +119,7 @@ class module_info extends React.Component{
                             <td style={{width:"100px", paddingTop: "10px"}} valign="top" className="bold">Description</td>
                             <td>
                                 {
-                                    (this.props.pic == getCookieUserId())
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                     ?
                                         <textarea value={this.props.description} onChange={this.props.changeDesc} placeholder="description" style={{width: "300px", height: "50px", fontSize: "12px"}}></textarea>
                                     :
@@ -120,7 +131,7 @@ class module_info extends React.Component{
                             <td style={{width:"100px", paddingTop: "10px"}} valign="top" className="bold"></td>
                             <td>
                                 {
-                                (this.props.pic == getCookieUserId())
+                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ? 
                                         <button onClick={this.props.commitModule} className="btn-primary bold" style={{fontSize: "12px"}}>Save change</button>
                                     :

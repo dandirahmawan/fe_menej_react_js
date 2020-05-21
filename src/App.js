@@ -19,12 +19,8 @@ import './css/style.css'
 import './App.css'
 import { baseUrl } from './const/const';
 import { getCookieUserId, getCookieSessionId } from './function/function';
+import {isMobile, MobileView, isBrowser, BrowserView} from 'react-device-detect'
 import {SpinnerButton} from "./component/spinner";
-
-// const btnPrimary = document.getElementsByTagName("button")
-// btnPrimary.addEventListener("click", function(){
-//     alert("dandi")
-// })
 
 class App extends React.Component{
   
@@ -71,9 +67,11 @@ class App extends React.Component{
       return (
         <div>
           <BrowserRouter>
-            <Redirect to="/login"></Redirect>
-            <Route path="/login"  exact component={Login} />
-            <Route path="/register"  exact component={Register} />
+            {/*<BrowserView>*/}
+              <Redirect to="/login"/>
+              <Route path="/login"  exact component={Login} />
+              <Route path="/register"  exact component={Register} />
+            {/*</BrowserView>*/}
           </BrowserRouter>
         </div>
       );
@@ -100,7 +98,7 @@ class App extends React.Component{
             <BrowserRouter>
               {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
             </BrowserRouter>
-            
+
           )
         }else{
           const path = window.location.pathname
@@ -122,7 +120,7 @@ class App extends React.Component{
           )
         }
       }
-      
+
     }
   }
 }

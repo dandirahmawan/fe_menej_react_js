@@ -11,6 +11,7 @@ import RowBugs from './row_bugs_user_detail_pop'
 import RowDocFile from './row_doc_file_user_detail_pop'
 import PopupConfirmation from '../popup_confirmation'
 import { Spinner } from '../spinner'
+import Row from "./row_module_detail";
 
 class detail_user_popup extends React.Component{
     
@@ -143,6 +144,7 @@ class detail_user_popup extends React.Component{
                         rowClick={this.rowModuleClick}
                         countDoc={dt.countDoc}
                         countBugs={dt.countBugs}
+                        countBugsClose={dt.countBugsClose}
                     />
         })
 
@@ -151,13 +153,13 @@ class detail_user_popup extends React.Component{
         })
 
         const dataDocFile = this.props.dataDocFile.map(dt => {
-            return <RowDocFile fileName={dt.fileName} description={dt.description}/>
+            return <RowDocFile fileName={dt.fileName} path={dt.path} description={dt.descriptionFile}/>
         })
 
         return(
             <React.Fragment>
                 {this.state.popup}
-                <div className="block" ref={this.block} onClick={this.props.hide}></div>
+                <div className="block" ref={this.block} onClick={this.props.hide}/>
                 <div ref={this.refBase} id="base-pop-usr-dtl" className="pop" style={{width: "450px", background: "#FFF", height: "400px", overflowY: "scroll"}}>
                     <div className="bold main-border-bottom"  style={{padding: "10px", position: "fixed", width: "430px", background: "#FFF"}}>
                         Detail user
@@ -187,7 +189,7 @@ class detail_user_popup extends React.Component{
                         <button onClick={(e) => this.btnNavUser(e, "module")} className="btn-primary btn-nav-usr-dtl" style={{fontSize: "11px", marginRight: "10px"}}>Module</button>
                         <button onClick={(e) => this.btnNavUser(e, "bugs")} className="btn-secondary btn-nav-usr-dtl" style={{fontSize: "11px", marginRight: "10px"}}>Bugs</button>
                         <button onClick={(e) => this.btnNavUser(e, "doc file")} className="btn-secondary btn-nav-usr-dtl" style={{fontSize: "11px", marginRight: "10px"}}>Doc & File</button>
-                        <button onClick={this.btnNavUser} className="btn-secondary btn-nav-usr-dtl" style={{fontSize: "11px", marginRight: "10px"}}>Permition</button>
+                        {/*<button onClick={this.btnNavUser} className="btn-secondary btn-nav-usr-dtl" style={{fontSize: "11px", marginRight: "10px"}}>Permition</button>*/}
                     </div>
                     
                     <div ref={this.loaderBase}><Spinner size="25px" textLoader="load data.."/></div>

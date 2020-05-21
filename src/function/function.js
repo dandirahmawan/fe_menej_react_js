@@ -144,7 +144,7 @@ export function convertDate_dd_MMM_yyy(date){
     }
 }
 
-export function tableHeaderRender(columJson, idElement, action){
+export function tableHeaderRender(columJson, idElement, action, actionFilter){
     let elm = document.getElementById(idElement)
     let count = Object.keys(columJson).length;
     let thead0 = document.createElement("th")
@@ -167,24 +167,46 @@ export function tableHeaderRender(columJson, idElement, action){
         thead.style.width = w+"px"
         thead.style.padding = "5px"
         thead.style.textAlign = "left"
-        thead.innerText = columJson[i]
         thead.style.cursor = "pointer"
         thead.onmouseover = mouseOverTheadTab
         thead.onmouseleave = mouseLeaveTheadTab
 
-        let elmBtn = document.createElement("button")
+        let elmBtn = document.createElement("a")
         elmBtn.onclick = () => action(thead, i)
         elmBtn.style.background = "none"
         elmBtn.style.height = "10px"
-        elmBtn.style.float = "right"
-        elmBtn.style.display = "none"
-        elmBtn.style.marginTop = "1px"
+        elmBtn.style.float = "left"
+        elmBtn.style.marginTop = "0px"
         elmBtn.setAttribute("class", "second-font-color")
         let fa = document.createElement("em")
         fa.setAttribute("class", "fa fa-arrows-h")
 
+        let elmBtnFilter = document.createElement("a")
+        elmBtnFilter.onclick = (e) => actionFilter(e, i)
+        elmBtnFilter.style.background = "none"
+        elmBtnFilter.style.height = "10px"
+        elmBtnFilter.style.float = "left"
+        elmBtnFilter.style.marginTop = "0px"
+        elmBtnFilter.style.marginRight = "4px"
+        elmBtnFilter.setAttribute("class", "second-font-color")
+        let faFilter = document.createElement("em")
+        faFilter.setAttribute("class", "fa fa-filter")
+
         elmBtn.append(fa)
-        thead.append(elmBtn)
+        elmBtnFilter.append(faFilter)
+
+        let divBaseBtn = document.createElement("div")
+        divBaseBtn.style.float = "right"
+        divBaseBtn.style.display = "none"
+        divBaseBtn.append(elmBtnFilter)
+        divBaseBtn.append(elmBtn)
+
+        let divTitleColumn = document.createElement("div")
+        divTitleColumn.style.marginRight = "26px"
+        divTitleColumn.innerText = columJson[i]
+
+        thead.append(divBaseBtn)
+        thead.append(divTitleColumn)
         elm.append(thead)
     }
     elm.style.width = sumw+"px"

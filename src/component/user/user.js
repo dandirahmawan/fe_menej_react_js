@@ -8,6 +8,7 @@ import InviteUser from './invite_user'
 import { getCookieUserId } from '../../function/function'
 import CardView from './card_view_user'
 import DetailUserPopup from './detail_user_popup'
+import PopupConfirmation from "../popup_confirmation";
 
 class user extends React.Component{
 
@@ -48,7 +49,7 @@ class user extends React.Component{
         hub.style.width = w+"px"
         var hmb = hub.children
         var h = hmb[0].offsetHeight
-        document.getElementById('tbl-list-user').style.marginTop = parseInt(h) + 10+"px"
+        document.getElementById('tbl-list-user').style.marginTop = parseInt(h)+"px"
     }
 
     rowClick(userId){
@@ -123,33 +124,33 @@ class user extends React.Component{
                         rowClick={this.rowClick}
                         userId={dt.userId}
                         picProfile={dt.picProfile}
+                        delete={this.deleteUser}
                     />
             }
         })
 
-        const dataCardView = this.state.data.map(dt => <CardView
-                                // userName={dt.userName}
-                                // emailUser={dt.emailUser}
-                                // rowClick={this.rowClick}
-                                // userId={dt.userId}
-                            />)
-        
-        const styleUserItem = {
-            width: "140px", 
-            height: '160px', 
-            marginTop:"10px", 
-            background: "#FFF", 
-            borderRadius: "5px", 
-            float: "left", 
-            marginRight: "10px", 
-            padding: "10px",
-        }
+        // const dataCardView = this.state.data.map(dt => <CardView
+        //                         // userName={dt.userName}
+        //                         // emailUser={dt.emailUser}
+        //                         // rowClick={this.rowClick}
+        //                         // userId={dt.userId}
+        //                     />)
+        //
+        // const styleUserItem = {
+        //     width: "140px",
+        //     height: '160px',
+        //     marginTop:"10px",
+        //     background: "#FFF",
+        //     borderRadius: "5px",
+        //     float: "left",
+        //     marginRight: "10px",
+        //     padding: "10px",
+        // }
 
-        const stylePicProfileList = {width: "60px", height: "60px", margin: "auto", marginTop: "20px", textAlign: "center", padding: "20px", background: "#eaeaea", border: "1px solid #CCC", borderRadius: "10px"}
         return(
             <div id='main-base-data'>
                 {this.state.popup}
-                <div id="header-user-base" style={{position: "fixed", width: "100%", background: "#FFF", marginTop: "1px"}}>
+                <div id="header-user-base" style={{width: "100%", background: "#FFF", position: "fixed", top: "61px"}}>
                     <div className="main-border-bottom" style={{paddingTop: "20px", fontSize: "14px", paddingBottom: "15px", overflow: "hidden"}}>
                         <div style={{width: "80%", float: "left"}}>
                             <i class="fa fa-users" aria-hidden="true"></i> <span className="bold">List User</span>
@@ -164,14 +165,15 @@ class user extends React.Component{
                 {this.state.detailUser}
 
                 <div id="tbl-list-user" style={{width: "80%"}}>
-                    <table style={{width: "100%", marginTop: "-10px"}}>
-                        <thead>
+                    <table style={{width: "100%"}}>
+                        <thead className="second-background-grs main-border-bottom">
                             <tr>
-                                <th className="bold" colSpan="2" style={{paddingTop: "10px"}}>Name</th>
-                                <th className="bold" style={{paddingTop: "10px"}}>Date</th>
-                                <th className="bold" style={{paddingTop: "10px"}}>Moduled</th>
-                                <th className="bold" style={{paddingTop: "10px"}}>Bugs</th>
-                                <th className="bold" style={{paddingTop: "10px"}}>Doc File</th>
+                                <td className="bold" colSpan="2" style={{paddingTop: "10px"}}>Name</td>
+                                <td className="bold" style={{paddingTop: "10px"}}>Date</td>
+                                <td className="bold" style={{paddingTop: "10px"}}>Moduled</td>
+                                <td className="bold" style={{paddingTop: "10px"}}>Bugs</td>
+                                <td className="bold" style={{paddingTop: "10px"}}>Doc File</td>
+                                <td className="bold" style={{paddingTop: "10px"}}></td>
                             </tr>
                         </thead>
                         <tbody>

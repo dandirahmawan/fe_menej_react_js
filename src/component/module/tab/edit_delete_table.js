@@ -1,5 +1,5 @@
 import React from 'react'
-import {getCookieSessionId, getCookieUserId, popCenterPosition} from "../../../function/function";
+import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from "../../../function/function";
 import {baseUrl} from "../../../const/const";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
@@ -113,9 +113,15 @@ class edit_delete_table extends React.Component{
     }
 
     removeColumn(e, seqCol){
-        if(seqCol != null) this.state.delCol.push(seqCol)
-        e.target.parentElement.parentElement.remove()
         let elm = document.getElementsByClassName("ttl-col-seq")
+        if(elm.length == 1){
+            popUpAlert("This is the last one")
+            return false
+        }
+        let tag = e.target.tagName
+        let prt = (tag == "I") ? e.target.parentElement.parentElement : e.target.parentElement
+        if(seqCol != null) this.state.delCol.push(seqCol)
+        prt.remove()
         for(let i = 0;i<elm.length;i++){
             let no = parseInt(i) + 1
             elm[i].innerText = "column "+no+" :"

@@ -12,11 +12,14 @@ class new_tab extends React.Component{
         super(props);
         this.state = {
             privacyIcon : <FontAwesomeIcon style={{float: "left", marginTop: "4px"}} icon={faLock}/>,
-            privacy: "pr"
+            privacy: "pr",
+            tabName: ""
         }
         this.submit = this.submit.bind(this)
         this.inputTabName = React.createRef()
+        this.divPrevTabName = React.createRef()
         this.privacyChange = this.privacyChange.bind(this)
+        this.tabNameChange = this.tabNameChange.bind(this)
     }
 
 
@@ -25,13 +28,14 @@ class new_tab extends React.Component{
     }
 
     submit(e){
+        let wPreview = this.divPrevTabName.current.offsetWidth
+        wPreview = parseInt(wPreview) + 25
         let t = e.target
         let val = this.inputTabName.current.value
         if(val != 0){
             e.target.style.opacity = 0.5
             e.target.style.minWidth = "50px"
             ReactDom.render(<SpinnerButton size="15px"/>, e.target)
-            alert(this.state.privacy)
             let form = new FormData()
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
@@ -80,6 +84,13 @@ class new_tab extends React.Component{
         })
     }
 
+    tabNameChange(e){
+        let val = e.target.value
+        this.setState({
+            tabName: val
+        })
+    }
+
     render(){
         return(
             <React.Fragment>
@@ -87,8 +98,19 @@ class new_tab extends React.Component{
                 <div id="base-new-tab" className="pop" style={{background: "#FFF", borderRadius: "4px", overflow: "hidden"}}>
                     <div className="bold main-border-bottom second-background-grs" style={{padding: "10px"}}>New tab</div>
                     <div style={{padding: "11px"}}>
+                        <div ref={this.divPrevTabName}
+                             className="bold"
+                             style={{fontSize: "12px", position: "fixed", opacity: "0"}}>
+                            {this.state.tabName}
+                        </div>
                         <span className="bold" style={{fontSize: "10px"}}>Tab name :</span><br/>
-                        <input ref={this.inputTabName} type="text" placeholder="tab name" style={{padding: "5px", width: "200px"}}/>
+                        <input
+                            ref={this.inputTabName}
+                            type="text"
+                            value={this.state.tabBaseMenu}
+                            placeholder="tab name"
+                            onChange={this.tabNameChange}
+                            style={{padding: "5px", width: "200px"}}/>
                     </div>
                     <div style={{padding: "11px", paddingTop: "0px"}}>
                         <span className="bold" style={{fontSize: "10px"}}>Privacy :</span><br/>

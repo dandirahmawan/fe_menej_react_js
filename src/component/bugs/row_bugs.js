@@ -102,7 +102,8 @@ class row_bugs extends Component{
                             <td className="tb-border main-border" style={{minWidth: "150px"}}>
                                 <a onClick={() => this.props.moduleCLick(this.props.moduleId)}>{this.props.moduleName}</a>
                             </td>
-                            <td className="tb-border main-border" style={{minWidth: "150px"}}>Dandi Rahmawan</td>
+                            <td className="tb-border main-border" style={{minWidth: "150px"}}>{this.props.userName}</td>
+                            <td className="tb-border main-border" style={{minWidth: "150px"}}>{this.props.createdByName}</td>
                             <td className="tb-border main-border" style={{width: "70px"}}>{convertDate(this.props.createDate)}</td>
                             <td className="tb-border">
                                 {
@@ -181,7 +182,8 @@ class row_bugs extends Component{
                             <td className="tb-border" style={{minWidth: "150px"}}>
                                 <a onClick={() => this.props.moduleCLick(this.props.moduleId)}>{this.props.moduleName}</a>
                             </td>
-                            <td className="tb-border" style={{minWidth: "150px"}}>Dandi Rahmawan</td>
+                            <td className="tb-border" style={{minWidth: "150px"}}>{this.props.userName}</td>
+                            <td className="tb-border" style={{minWidth: "150px"}}>{this.props.createdByName}</td>
                             <td className="tb-border">{convertDate(this.props.createDate)}</td>
                             <td className="tb-border">
                                 {

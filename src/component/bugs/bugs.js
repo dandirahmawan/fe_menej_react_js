@@ -275,6 +275,8 @@ class bugs extends React.Component{
                                     uncloseBugs={this.uncloseBugs}
                                     pic={dt.pic}
                                     editBugs={this.editBugs}
+                                    userName={dt.userName}
+                                    createdByName={dt.createdByName}
                                 />
                     }
                 }else{
@@ -294,6 +296,8 @@ class bugs extends React.Component{
                                 uncloseBugs={this.uncloseBugs}
                                 pic={dt.pic}
                                 editBugs={this.editBugs}
+                                userName={dt.userName}
+                                createdByName={dt.createdByName}
                             />
                 } 
             }
@@ -305,7 +309,7 @@ class bugs extends React.Component{
                 {this.state.detailBase}
                 {this.state.popUp}
 
-                <div className="main-border-bottom bold" style={{paddingTop: "10px", paddingBottom: "10px", width: "80%"}}>
+                <div className="main-border-bottom bold" style={{paddingTop: "10px", paddingBottom: "10px", width: "90%"}}>
                     List Bugs
                     
                     <div style={{float: "right", marginTop: "2px"}}>
@@ -336,11 +340,12 @@ class bugs extends React.Component{
                         </div>
                     </div>
                 </div>
-                <table style={{width: "80%"}}>
+                <table style={{width: "90%"}}>
                     <thead ref={this.theadBugs}>
                         <tr>
                             <th className="bold second-font-color main-border-right" colSpan="2">Bugs</th>
                             <th className="bold second-font-color main-border-right">Module</th>
+                            <th className="bold second-font-color main-border-right">Assigned</th>
                             <th className="bold second-font-color main-border-right">Created By</th>
                             <th className="bold second-font-color" colSpan="2">Date</th>
                         </tr>

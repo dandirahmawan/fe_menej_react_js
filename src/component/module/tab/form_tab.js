@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {SpinnerButton} from "../../spinner";
 import {baseUrl} from "../../../const/const";
+import {getCookieUserId} from "../../../function/function";
 
 class form_tab extends React.Component{
 
@@ -17,13 +18,13 @@ class form_tab extends React.Component{
     }
 
     componentDidMount(){
-        this.renderForm(this.props.col, this.props.data)
+        this.renderForm(this.props.col, this.props.data, this.props.createdBy)
         this.startAction(this.props.data, this.props.col)
     }
 
     componentWillReceiveProps(nexProps){
         if(nexProps.seq != this.props.seq){
-            this.renderForm(nexProps.col, nexProps.data)
+            this.renderForm(nexProps.col, nexProps.data, nexProps.createdBy)
             this.startAction(nexProps.data, nexProps.col)
         }
     }
@@ -36,11 +37,13 @@ class form_tab extends React.Component{
         let hSet = (h - (parseInt(h1) + h2)) - 20
         document.getElementById("bs-form-tab").style.height = hSet+"px"
         this.baseForm.current.style.height = h+"px"
-        this.buttonSubmit.current.innerText = "Submit"
-        this.buttonSubmit.current.style.opacity = 1
+        if(this.buttonSubmit.current != null) {
+            this.buttonSubmit.current.innerText = "Submit"
+            this.buttonSubmit.current.style.opacity = 1
+        }
     }
 
-    renderForm(col, data){
+    renderForm(col, data, createdBy){
         let wrapper = document.getElementById("bs-form-tab")
         wrapper.innerHTML = ""
         let count = Object.keys(col).length;
@@ -59,29 +62,27 @@ class form_tab extends React.Component{
             div.style.padding = "5px"
             div.style.fontSize = "12px"
             div.style.width = "80%"
-            div.style.position = "absolute"
-            div.style.opacity = "0"
-            div.style.zIndex = "-1"
+            div.style.borderRadius = "3px"
+            if(createdBy == getCookieUserId()) {
+                div.style.position = "absolute"
+                div.style.opacity = "0"
+                div.style.zIndex = "-1"
+            }
             div.setAttribute("class", "div-txt-frm main-border second-background-grs")
-            div.innerText = data[i]
+            div.innerHTML = (data[i] === undefined) ? "" : (data[i] == "") ? "<span class='second-font-color'>empty</span>" : data[i]
             elm1.append(div)
 
-            let txtarea = document.createElement("textarea")
-            txtarea.style.fontSize = "12px"
-            // txtarea.style.width = "80%"
-            // txtarea.style.boxSizing = "border-box"
-            txtarea.style.padding = "6px"
-            txtarea.placeholder = col[i]
-            txtarea.value = data[i]
-            txtarea.style.minHeight = "15px"
-            // if(data[i].length >= 43) {
-            //     txtarea.style.height = "50px"
-            // }else{
-            //     txtarea.style.height = "27px"
-            // }
-            txtarea.setAttribute("rows", "1")
-            txtarea.setAttribute("class", "txt-val-frm-tab")
-            elm1.append(txtarea)
+            if(createdBy == getCookieUserId()) {
+                let txtarea = document.createElement("textarea")
+                txtarea.style.fontSize = "12px"
+                txtarea.style.padding = "6px"
+                txtarea.placeholder = col[i]
+                txtarea.value = (data[i] === undefined) ? "" : data[i]
+                txtarea.style.minHeight = "15px"
+                txtarea.setAttribute("rows", "1")
+                txtarea.setAttribute("class", "txt-val-frm-tab")
+                elm1.append(txtarea)
+            }
 
             wrapper.append(elm1)
         }
@@ -91,8 +92,10 @@ class form_tab extends React.Component{
             let classtxt = document.getElementsByClassName("txt-val-frm-tab")
             let h = classDiv[i].offsetHeight - 10
             let w = classDiv[i].offsetWidth - 10
-            classtxt[i].style.height = h+"px"
-            classtxt[i].style.width = w+"px"
+            if(classtxt[i] !== undefined) {
+                classtxt[i].style.height = h + "px"
+                classtxt[i].style.width = w + "px"
+            }
         }
     }
 
@@ -138,10 +141,18 @@ class form_tab extends React.Component{
                     </button>
                 </div>
                 <div style={{padding: "10px", paddingLeft: "20px", overflowY: "scroll"}} id="bs-form-tab"/>
-                <div id="ft-form-tb" className="main-border-top" style={{textAlign: "right", padding: "10px"}}>
-                    <button ref={this.buttonSubmit} onClick={this.submit} className="btn-primary" style={{marginRight: "10px"}}>Submit</button>
-                    <button onClick={this.props.cancelForm} className="btn-secondary">Cancel</button>
-                </div>
+                {
+                    (this.props.createdBy == getCookieUserId())
+                    ?
+                        <div id="ft-form-tb" className="main-border-top" style={{textAlign: "right", padding: "10px"}}>
+                            <button ref={this.buttonSubmit} onClick={this.submit} className="btn-primary" style={{marginRight: "10px"}}>
+                                Submit
+                            </button>
+                            <button onClick={this.props.cancelForm} className="btn-secondary">Cancel</button>
+                        </div>
+                    :
+                        <div id="ft-form-tb"/>
+                }
             </div>
         )
     }

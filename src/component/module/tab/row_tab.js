@@ -9,18 +9,19 @@ class row_tab extends React.Component{
     }
 
     componentDidMount(){
-        this.renderElement(this.props.col, this.props.no, this.props.isStarting, this.props.isBorder)
+        this.renderElement(this.props.col, this.props.no, this.props.isStarting, this.props.isBorder, this.props.colHeader)
     }
 
     componentWillReceiveProps(nexProps){
         if(nexProps.col !== this.props.col || nexProps.no != this.props.no || nexProps.isStarting || nexProps.isBorder != this.props.isBorder){
-            this.renderElement(nexProps.col, nexProps.no, nexProps.isStarting, nexProps.isBorder)
+            this.renderElement(nexProps.col, nexProps.no, nexProps.isStarting, nexProps.isBorder, nexProps.colHeader)
         }
     }
 
-    renderElement(col, no, isStarting, isBorder){
+    renderElement(col, no, isStarting, isBorder, colHeader){
         this.refRow.current.innerHTML = ""
-        let count = Object.keys(col).length;
+        // let count = Object.keys(col).length;
+        let countColHeader = Object.keys(colHeader).length
         let elm0 = document.createElement("td")
         elm0.innerText = no
         if(!isBorder){
@@ -35,12 +36,12 @@ class row_tab extends React.Component{
 
         this.refRow.current.append(elm0)
         let sumWidth = null
-        for(let i = 0;i<count;i++){
+        for(let i = 0;i<countColHeader;i++){
             let i2 = parseInt(i) + 1
             if(this.props.elm[i2] !== undefined) {
                 let wi = this.props.elm[i2].style.width.replace("px", "")
                 let elm1 = document.createElement("td")
-                elm1.innerText = col[i]
+                elm1.innerText = (col[i] === undefined) ? "" : col[i]
                 if (!isBorder) {
                     elm1.setAttribute("class", "td-tab-data")
                 } else {
@@ -51,7 +52,7 @@ class row_tab extends React.Component{
                 elm1.style.textAlign = "left"
                 elm1.style.wordWrap = "anywhere"
 
-                if (no == 1) elm1.style.width = wi + "px"
+                elm1.style.width = wi + "px"
                 this.refRow.current.append(elm1)
                 if (no == 1 && isStarting) {
                     sumWidth = this.props.tableHeader.style.width
@@ -59,8 +60,7 @@ class row_tab extends React.Component{
             }
         }
         if(no == 1 && isStarting){
-            let w = sumWidth.replace("px", "")
-            let wb = parseInt(sumWidth) + 10
+            let wb = parseInt(sumWidth)
             this.props.bodyTable.style.width = wb+"px"
             this.props.tableHeader.style.width = sumWidth
             this.props.tableTbody.style.width = sumWidth

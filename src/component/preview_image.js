@@ -14,6 +14,8 @@ class preview_image extends React.Component{
                 img.style.top = (window.innerHeight - img.offsetHeight) / 2+"px"
                 img.style.left = (wdw - img.offsetWidth) / 2+"px"
                 img.style.opacity = 1
+                img.style.border = "2px solid #909090"
+                img.style.borderRadius = "5px"
                 if(w > 0) window.clearInterval(itvImg)
             }, 10);
         }else{
@@ -23,6 +25,8 @@ class preview_image extends React.Component{
             img.style.top = (window.innerHeight - img.offsetHeight) / 2+"px"
             img.style.left = (wdw - img.offsetWidth) / 2+"px"
             img.style.opacity = 1
+            img.style.border = "2px solid #909090"
+            img.style.borderRadius = "5px"
         }
     }
     
@@ -33,7 +37,10 @@ class preview_image extends React.Component{
         return(
             <React.Fragment>
                 <div className="block-image" onClick={this.props.hideImage}></div>
-                <img id="img-preview" style={{zIndex: "10002", position: "fixed", opacity: "0"}} src={urlImage}></img>
+                <img id="img-preview"
+                     style={{zIndex: "10002", position: "fixed", opacity: "0"}}
+                     src={urlImage}>
+                </img>
             </React.Fragment>
         )
     }

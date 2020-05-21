@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser} from '@fortawesome/free-solid-svg-icons'
+import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser, faCopy, faUserAlt, faFileExcel} from '@fortawesome/free-solid-svg-icons'
 import CreateTable from './create_table'
 import {baseUrl} from "../../../const/const";
 import Form from './form_tab'
@@ -10,7 +10,9 @@ import Row from './row_tab'
 import PopConfirmation from '../../../component/popup_confirmation'
 import EditDelTable from './edit_delete_table'
 import TabSetting from './tab_setting'
-import {getCookieSessionId, getCookieUserId, tableHeaderRender} from "../../../function/function";
+import Filter from './filter_table_tab'
+import CopyTab from './copy_tab'
+import {getCookieSessionId, getCookieUserId, popUpAlert, tableHeaderRender} from "../../../function/function";
 
 class tab extends React.Component{
 
@@ -32,6 +34,11 @@ class tab extends React.Component{
             privacy: null,
             privacyIcon : null,
             createdBy: null,
+            userName: null,
+            filterHeaderColumn: null,
+            btnAdditional: true,
+            dataTeam: [],
+            pic:null
         }
 
         this.headerTable = React.createRef()
@@ -43,6 +50,7 @@ class tab extends React.Component{
         this.tableHeader = React.createRef()
         this.spanToWidth = React.createRef()
         this.tableBodyScroll = React.createRef()
+
         this.thClick = this.thClick.bind(this)
         this.cancel = this.cancel.bind(this)
         this.createTable = this.createTable.bind(this)
@@ -63,6 +71,15 @@ class tab extends React.Component{
         this.editTab = this.editTab.bind(this)
         this.editDelTable = this.editDelTable.bind(this)
         this.reloadEditDelTable = this.reloadEditDelTable.bind(this)
+        this.deleteTabPage = this.deleteTabPage.bind(this)
+        this.thClickFilter = this.thClickFilter.bind(this)
+        this.filterSubmit = this.filterSubmit.bind(this)
+        this.isButtonAdditional = this.isButtonAdditional.bind(this)
+        this.deleteTabPage2 = this.deleteTabPage2.bind(this)
+        this.commitDeleteTab2 = this.commitDeleteTab2.bind(this)
+        this.copyTab = this.copyTab.bind(this)
+        this.existCopy = this.existCopy.bind(this)
+        this.yesConfirmReplace = this.yesConfirmReplace.bind(this)
     }
 
     componentDidMount(){
@@ -76,8 +93,12 @@ class tab extends React.Component{
             privacy: this.props.privacy,
             popSetting: null,
             createdBy: this.props.createdBy,
-            privacyIcon: icon
+            privacyIcon: icon,
+            userName: this.props.userName,
+            pic: this.props.pic,
+            dataTeam: this.props.dataTeam
         })
+        this.isButtonAdditional(this.props.dataTeam, this.props.createdBy)
     }
 
     componentWillReceiveProps(nextProps){
@@ -96,8 +117,13 @@ class tab extends React.Component{
                 privacy: nextProps.privacy,
                 popSetting: null,
                 createdBy: nextProps.createdBy,
-                privacyIcon: icon
+                privacyIcon: icon,
+                userName: nextProps.userName,
+                pic: nextProps.pic,
+                dataTeam: nextProps.dataTeam,
+                btnAdditional: true
             })
+            this.isButtonAdditional(nextProps.dataTeam, nextProps.createdBy)
         }
     }
 
@@ -125,7 +151,7 @@ class tab extends React.Component{
                 this.tableBase.current.style.display = "block"
                 let elm = document.createElement("btn")
                 ReactDom.render(<FontAwesomeIcon icon={faArrowsAltH}/>, elm)
-                tableHeaderRender(jo, "header-table-render", this.thClick)
+                tableHeaderRender(jo, "header-table-render", this.thClick, this.thClickFilter, this.state.filterHeaderColumn)
                 let headerWidth = this.headerTable.current.offsetWidth
                 this.tableBody.current.style.width = headerWidth+"px"
                 this.fetchActionRow(tabIdpar)
@@ -178,7 +204,8 @@ class tab extends React.Component{
 
     reloadEditDelTable(){
         this.setState({
-            row: []
+            row: [],
+            isStartingRow: true
         })
         this.fetchAction(this.props.tabId)
     }
@@ -222,6 +249,7 @@ class tab extends React.Component{
                     seqSelected: key,
                     isStartingRow: false,
                     form: <Form data={data[i]}
+                                createdBy={this.state.createdBy}
                                 seq={key}
                                 tabId={this.props.tabId}
                                 col={this.state.col}
@@ -260,13 +288,17 @@ class tab extends React.Component{
         let newHeaderWidth = curWidthHeader
         let ltext = 0
 
-        let thw = thead.style.width
-        if(thw.replace("px", "") > 140){
+        let thw = thead.style.width.replace("px", "")
+        if(thw > 140){
             thead.style.width = "140px"
-            newHeaderWidth = parseInt(150) + (curWidthHeader - 500)
+            newHeaderWidth = parseInt(150) + (curWidthHeader - thw)
         }else{
+            let i = 0
             this.state.row.map(dt => {
-                if(dt[seqCol].length > ltext){
+                let elmtable = this.tbody.current.children
+                let isDislpay =  elmtable[i].style.display
+                i++
+                if(dt[seqCol].length > ltext && isDislpay != "none"){
                     ltext = dt[seqCol].length
                     if(dt[seqCol].length > 0) elmSpan.innerText = dt[seqCol]
                     w = (elmSpan.offsetWidth > 500) ? 500 : parseInt(elmSpan.offsetWidth) + 10
@@ -280,6 +312,59 @@ class tab extends React.Component{
         this.tableHeader.current.style.width = newHeaderWidth+"px"
         this.setState({
             isStartingRow: true
+        })
+    }
+
+    thClickFilter(e, seqCol){
+        var x = e.clientX;     // Get the horizontal coordinate
+        var y = e.clientY;     // Get the vertical coordinate
+        let r = window.innerWidth - x
+
+        let left = x
+        if(r <= 210){
+            left = window.innerWidth - 210
+        }
+
+        this.setState({
+            popup: <Filter top={y}
+                           column={seqCol}
+                           data={this.state.row}
+                           left={left}
+                           right={r}
+                           filter={this.filterSubmit}
+                           cancel={this.cancel}/>
+        })
+    }
+
+    filterSubmit(data, column){
+        console.log(data.length)
+        let elmChild = this.tbody.current.children
+        if(data.length > 0){
+            for(let i = 0;i<elmChild.length;i++){
+                let child = elmChild[i].children
+                let col = parseInt(column) + 1
+                let idx = data.indexOf(child[col].innerText)
+                if(idx == "-1"){
+                    elmChild[i].style.display = "none"
+                }else{
+                    elmChild[i].style.display = "block"
+                }
+            }
+        }else{
+            for(let i = 0;i<elmChild.length;i++){
+                elmChild[i].style.display = "block"
+            }
+        }
+    }
+
+    isButtonAdditional(dataTeam, createdBy){
+        dataTeam.map(dt => {
+            console.log(dt.userId, createdBy)
+            if(dt.userId == createdBy){
+                this.setState({
+                    btnAdditional: false
+                })
+            }
         })
     }
 
@@ -396,12 +481,110 @@ class tab extends React.Component{
     setting(){
         this.setState({
             popSetting: <TabSetting
+                            dataTeam={this.props.dataTeam}
                             tabId={this.state.tabId}
                             privacy={this.state.privacy}
                             editTab={this.editTab}
                             tabName={this.props.tabName}
+                            deleteTab={this.deleteTabPage}
                             cancel={this.cancel}/>
         })
+    }
+
+    copyTab(){
+        this.setState({
+            popup: <CopyTab existCopy={this.existCopy}
+                            updateDataTab={this.props.updateDataTab}
+                            tabId={this.state.tabId}
+                            projectId={this.props.projectId}
+                            cancel={this.cancel}/>
+        })
+    }
+
+    existCopy(tabName, tabId, projectId){
+        this.setState({
+            popup: <PopConfirmation titleConfirmation="Copy tab"
+                                    textPopup="tab name is already exist, do you want to replace the tab ?"
+                                    yesAction ={() => this.yesConfirmReplace(tabName, tabId, projectId)}
+                                    hidePopUp={this.cancel}
+                                    />
+        })
+    }
+
+    yesConfirmReplace(tabName, tabId, projectId){
+        let form = new FormData()
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
+        form.append("tabName", tabName)
+        form.append("confirmReplace", "Y")
+        form.append("tabId", tabId)
+        form.append("projectId", projectId)
+        fetch(baseUrl+"/copy_tab", {
+            method: "POST",
+            body: form
+        }).then(res => res.text()).then(result => {
+            if(result == 0){
+
+                let form = new FormData()
+                form.append("userId", getCookieUserId())
+                form.append("sessionId", getCookieSessionId())
+                form.append("projectId", this.props.projectId)
+                fetch(baseUrl+"/tab_list", {
+                    method: "POST",
+                    body: form
+                }).then(res => res.json()).then(result => {
+                    this.props.updateDataTab(result)
+                    this.setState({
+                        popup: ""
+                    })
+                    popUpAlert("copy tab successfully", "success")
+                })
+            }else if(result == 2){
+                this.props.existCopy(this.inputTabName.current.value, this.props.tabId, this.props.projectId)
+            }else if(result == 3){
+                this.setState({
+                    popup: ""
+                })
+                popUpAlert("You cannot replace this tab")
+            }
+        })
+    }
+
+   deleteTabPage(tabId){
+        this.props.refreshDelete(tabId)
+   }
+
+   deleteTabPage2(){
+        this.setState({
+            popup: <PopConfirmation titleConfirmation="Delete tab"
+                                    hidePopUp={this.cancel}
+                                    yesAction={this.commitDeleteTab2}
+                                    textPopup="Are you sure you want delete this tab, make sure that tab maker is not a member anymore"/>
+        })
+    }
+
+    commitDeleteTab2(){
+        let form = new FormData()
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
+        form.append("tabId", this.state.tabId)
+        fetch(baseUrl+"/delete_tab", {
+            method: "POST",
+            body: form
+        }).then(res => res.text()).then(result => {
+            if(result == ""){
+                this.cancel()
+                this.props.refreshDelete(this.state.tabId)
+                popUpAlert("Delete tab page successfully", "success")
+            }else if(result == 1){
+                this.cancel()
+                popUpAlert("Tab maker is still a member in this project")
+            }
+        })
+    }
+
+    exportExcel(tabId, tabName){
+        window.open(baseUrl+"/export_excel_tab/"+tabId+"/"+tabName)
     }
 
     render(){
@@ -424,6 +607,7 @@ class tab extends React.Component{
                             seq={seq}
                             seqSelected={this.state.seqSelected}
                             no={no}
+                            colHeader={this.state.col}
                             col={dt}/>
             }
         })
@@ -432,16 +616,22 @@ class tab extends React.Component{
             <React.Fragment>
                 {this.state.popup}
                 {this.state.form}
+                {this.state.filterHeaderColumn}
                 <span style={{fontSize: "12px", position: "absolute", opacity: "0", zIndex: "-1"}} ref={this.spanToWidth}/>
-                <div className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
-                    <div className="second-font-color"
-                         style={{fontSize: "13px", marginRight: "5px", float: "left", marginTop: "2px"}}>
-                        {this.state.privacyIcon}
+                <div className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "100%", overflow: "hidden"}}>
+                    <div style={{float: "left"}}>
+                        <div className="second-font-color"
+                             style={{fontSize: "13px", marginRight: "5px", float: "left", marginTop: "2px"}}>
+                            {this.state.privacyIcon}
+                        </div>
+                        <span className="bold">
+                            {this.state.tabName}
+                        </span>
+                        <div className="second-font-color bold" style={{fontSize: "10px", marginLeft: "15px"}}>
+                            <FontAwesomeIcon icon={faUserAlt}/> {this.props.userName}
+                        </div>
                     </div>
-                    <span className="bold">
-                        {this.state.tabName}
-                    </span>
-                    <div style={{float: "right"}}>
+                    <div style={{float: "right", padding: "5px"}}>
                         {
                             (this.state.createdBy == getCookieUserId())
                             ?
@@ -465,30 +655,6 @@ class tab extends React.Component{
                                         <FontAwesomeIcon icon={faTrash}/>&nbsp;
                                         Delete
                                     </button>
-
-                                {
-                                    (!this.state.isBorder)
-                                    ?
-                                    <button onClick={this.showBorder}
-                                            style={{background:"none",
-                                            fontSize: "12px",
-                                            display: "block",
-                                            float: "left",
-                                            marginTop: "4px"}}>
-                                        <FontAwesomeIcon icon={faBorderAll}/>&nbsp;
-                                        Show Border
-                                    </button>
-                                    :
-                                    <button onClick={this.hideBorder}
-                                            style={{background:"none",
-                                            fontSize: "12px",
-                                            display: "block",
-                                            float: "left",
-                                            marginTop: "4px"}}>
-                                        <FontAwesomeIcon icon={faBorderNone}/>&nbsp;
-                                        Hide Border
-                                    </button>
-                                }
 
                                     {
                                         (this.state.tableReady)
@@ -529,51 +695,125 @@ class tab extends React.Component{
                                 </React.Fragment>
                             : ""
                         }
+
+                        <button onClick={this.copyTab}
+                                style={{background:"none",
+                                    fontSize: "12px",
+                                    display: "block",
+                                    float: "left",
+                                    marginTop: "4px"}}>
+                            <FontAwesomeIcon icon={faCopy}/>&nbsp;
+                            Copy tab
+                        </button>
+
+                        {
+                            (!this.state.isBorder)
+                                ?
+                                <button onClick={this.showBorder}
+                                        style={{background:"none",
+                                            fontSize: "12px",
+                                            display: "block",
+                                            float: "left",
+                                            marginTop: "4px"}}>
+                                    <FontAwesomeIcon icon={faBorderAll}/>&nbsp;
+                                    Show Border
+                                </button>
+                                :
+                                <button onClick={this.hideBorder}
+                                        style={{background:"none",
+                                            fontSize: "12px",
+                                            display: "block",
+                                            float: "left",
+                                            marginTop: "4px"}}>
+                                    <FontAwesomeIcon icon={faBorderNone}/>&nbsp;
+                                    Hide Border
+                                </button>
+                        }
+                        {
+                            (this.state.btnAdditional && this.state.pic != this.state.createdBy)
+                            ?
+                                <React.Fragment>
+                                    <button onClick={this.deleteTabPage2}
+                                            style={{background:"none",
+                                                fontSize: "12px",
+                                                display: "block",
+                                                float: "left",
+                                                marginTop: "4px"}}>
+                                        <FontAwesomeIcon icon={faTrash}/>&nbsp;
+                                        Delete tab
+                                    </button>
+                                </React.Fragment>
+                            :
+                                ""
+                        }
+
+                        {
+                            ((this.state.tableReady))
+                            ?
+                                <button onClick={() => this.exportExcel(this.state.tabId, this.state.tabName)}
+                                        style={{background:"none",
+                                            fontSize: "12px",
+                                            display: "block",
+                                            float: "left",
+                                            color: "green",
+                                            marginTop: "4px"}}>
+                                    <FontAwesomeIcon icon={faFileExcel}/>&nbsp;
+                                    Export Excel
+                                </button>
+                            :
+                                ""
+                        }
+
+
                     </div>
                 </div>
-                {this.state.tableReady}
-                <div style={{width: "90%", textAlign: "centre"}}>
-                    {
-                        (!this.state.tableReady) ?
-                            <div style={{fontSize: "12px", marginTop: "25px"}}>
-                                <span className="bold second-font-color">This page not have table to display</span><br/>
-                                click <a onClick={this.createTable} style={{color: "blue"}}>create table</a> to creat a table
-                            </div> : ""
-                    }
-                    <div ref={this.tableBase}  className="scrollbar-white-bck" style={{width: "100%", overflowX: "hidden"}}>
-                        <table ref={this.tableHeader} id="header-table-render" className="main-border" style={{fontSize: "12px"}}>
-                            <thead ref={this.headerTable}/>
-                        </table>
-                        <div ref={this.tableBodyScroll} onScroll={this.scroll} className="scrollbar tab-base-scroll" style={{maxHeight: "350px", overflowX: "scroll", maxWidth: "100%"}}>
-                            <div ref={this.tableBody} style={{overflowX: "hidden", minWidth: "150px"}}>
-                                <table ref={this.tableTBody}>
-                                    <tbody ref={this.tbody}>
-                                    {
-                                        (this.state.isLoadData)
-                                            ?
-                                            <tr>
-                                                <td colSpan="2" style={{textAlign: "left"}}>
-                                                    <div className="second-font-color bold"
-                                                         style={{fontSize: "12px", height: "100px"}}>
-                                                        Load data...</div>
-                                                </td>
-                                            </tr>
-                                            : ""
-                                    }
-                                    {
-                                        (!this.state.isLoadData && row.length == 0 && this.state.tableReady)
-                                            ?
-                                            <tr>
-                                                <td colSpan="2" style={{textAlign: "left"}}>
-                                                    <div style={{fontSize: "12px", height: "100px"}}>
-                                                        No data to display</div>
-                                                </td>
-                                            </tr>
-                                            :
-                                            row
-                                    }
-                                    </tbody>
-                                </table>
+                <div style={{overflow: "hidden"}}>
+                    <div  className={(this.state.tableReady) ? "main-border-right main-border-left" : ""}
+                         style={{maxWidth: "99%", textAlign: "centre", marginRight: "10px", float: "left", minWidth: (!this.state.tableReady) ? "80%" : "0px"}}>
+                        {
+                            (!this.state.tableReady) ?
+                                <div style={{fontSize: "12px", marginTop: "25px", textAlign: "center"}}>
+                                    <span className="bold second-font-color">This tab not have table to display</span>
+                                </div> : ""
+                        }
+                        <div ref={this.tableBase}  className="scrollbar-white-bck" style={{width: "100%", overflowX: "hidden"}}>
+                            <table ref={this.tableHeader} id="header-table-render" className="main-border" style={{fontSize: "12px"}}>
+                                <thead ref={this.headerTable}/>
+                            </table>
+                            <div ref={this.tableBodyScroll}
+                                 onScroll={this.scroll}
+                                 className="scrollbar tab-base-scroll"
+                                 style={{maxHeight: "350px", overflowX: "scroll", maxWidth: "100%", minHeight: "100px"}}>
+                                <div ref={this.tableBody} style={{overflowX: "hidden", minWidth: "150px"}}>
+                                    <table ref={this.tableTBody}>
+                                        <tbody ref={this.tbody}>
+                                        {
+                                            (this.state.isLoadData)
+                                                ?
+                                                <tr>
+                                                    <td colSpan="2" style={{textAlign: "left"}}>
+                                                        <div className="second-font-color bold"
+                                                             style={{fontSize: "12px", height: "100px"}}>
+                                                            Load data...</div>
+                                                    </td>
+                                                </tr>
+                                                : ""
+                                        }
+                                        {
+                                            (!this.state.isLoadData && row.length == 0 && this.state.tableReady)
+                                                ?
+                                                <tr>
+                                                    <td colSpan="2" style={{textAlign: "left"}}>
+                                                        <div style={{fontSize: "12px", height: "100px"}}>
+                                                            No data to display</div>
+                                                    </td>
+                                                </tr>
+                                                :
+                                                row
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

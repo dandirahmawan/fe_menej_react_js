@@ -1,11 +1,13 @@
 @font-face{
     font-family: reguler_font;
-    src: url('../font/Helvetica.ttf');
+    /*src: url('../font/Helvetica.ttf');*/
+    src: url('../font/Roboto-Regular.ttf')
 }
 
 @font-face{
     font-family: bold_font;
-    src: url('../font/arialbd.ttf');
+    /*src: url('../font/arialbd.ttf');*/
+    src: url('../font/Roboto-Bold.ttf');
 }
 
 @font-face{

@@ -100,7 +100,7 @@ class login extends React.Component{
                 <button className='btn-primary bold' onClick={this.submit} style={{fontSize: "12px", marginTop: "10px", width: "150px", padding: "10px"}}>Sign in</button>
                 
                 <div style={{marginTop: '20px'}}>
-                    <a style={{fontSize: "12px"}}>Forgot Username / Password?</a><br/>
+                    <a style={{fontSize: "12px"}}>Forgot Password?</a><br/>
                     <Link to="/register" style={{fontSize: "12px"}}>Sign up for an account</Link>
                 </div>
             </div>

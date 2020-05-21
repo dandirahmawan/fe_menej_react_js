@@ -179,7 +179,7 @@ class row_module extends React.Component{
                                     {
                                         (this.props.countBugs > 0) 
                                         ? 
-                                            (this.props.countBugsClose != this.props.countBugs)
+                                            (this.props.countBugsClose < this.props.countBugs)
                                             ?
                                                 <a onClick={(e) => this.props.bugsIconClick(e, this.props.moduleId)}>
                                                     <i style={{color: "red", fontSize: "14px", marginRight: "5px"}} class="fa fa-exclamation-triangle tooltip"><span class="tooltiptext">this module have bugs</span></i>

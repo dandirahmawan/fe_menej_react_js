@@ -2,6 +2,7 @@ import React from 'react'
 
 class row_module_detail_popup extends React.Component{
     render(){
+        console.log(this.props.countBugsClose, this.props.countBugs)
         return(
             <tr onClick={() => this.props.rowClick(this.props.moduleId)} className="tr-selectable">
                 <td style={{width: "20px"}}>
@@ -9,13 +10,19 @@ class row_module_detail_popup extends React.Component{
                 </td>
                 <td className="main-border-bottom">
                     <span className="bold" style={{fontSize: "12px"}}>{this.props.moduleName}</span><br/>
-                    <span className="second-font-color">{this.props.projectName}</span>
+                    <span className="second-font-color" style={{fontSize: "11px"}}>{this.props.projectName}</span>
                 </td>
                 <td className="main-border-bottom" style={{width: "40px", textAlign: "right"}}>
                     {
                         (this.props.countBugs > 0)
                         ?
-                            <i class="fa fa-exclamation-triangle" style={{color: "red", fontSize: "12px", marginRight: "5px"}}></i>
+                            (this.props.countBugs > this.props.countBugsClose)
+                            ?
+                                <i class="fa fa-exclamation-triangle"
+                                   style={{color: "red", fontSize: "12px", marginRight: "5px"}}/>
+                            :
+                                <i className="fa fa-exclamation-triangle"
+                                   style={{color: "green", fontSize: "12px", marginRight: "5px"}}/>
                         : 
                             ""
                     }

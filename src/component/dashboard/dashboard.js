@@ -2,11 +2,11 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFolder, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
-import RichInput from '../rich_input_text'
-import CKEditor from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import 'react-trumbowyg/dist/trumbowyg.min.css'
-import Trumbowyg from 'react-trumbowyg'
+// import RichInput from '../rich_input_text'
+// import CKEditor from '@ckeditor/ckeditor5-react'
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import 'react-trumbowyg/dist/trumbowyg.min.css'
+// import Trumbowyg from 'react-trumbowyg'
 import { setTitleHader } from '../../redux/action'
 
 class dashboard extends React.Component{

@@ -33,7 +33,8 @@ class detail extends React.Component{
             pic:"",
             picProject:"",
             documentFileUploadData:"",
-            isLoad: true
+            isLoad: true,
+            modulePermition: false
         }
         this.navDetail = this.navDetail.bind(this)
         this.changeNameModul = this.changeNameModul.bind(this)
@@ -63,7 +64,7 @@ class detail extends React.Component{
         var t = (wh - h) / 2
         d.style.top = t+"px"
         d.style.left = l+"px"
-        
+
         //paramater for set which tab will be default open
         var discloseTab = (this.props.tabParameter === undefined) ? "info" : this.props.tabParameter
         var miDisplay = (discloseTab != "bugs" && discloseTab != "doc_file") ? "block" : "none"
@@ -90,6 +91,15 @@ class detail extends React.Component{
         }).then(res => res.json())
         .then(result => {
             var dm = result.dataModule
+
+            result.permitionProject.map(dt => {
+                if(dt.permitionCode == 1 && dt.isChecked == "Y"){
+                    this.setState({
+                        modulePermition: true
+                    })
+                }
+            })
+
             this.setState({
                 dataBugs: result.bugs,
                 dataDocFile: result.documentFile,
@@ -225,7 +235,8 @@ class detail extends React.Component{
         form.append("projectId", this.state.projectId)
         form.append("moduleId", this.state.moduleId)
         form.append("bugs", bugsText)
-
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
         fetch(baseUrl+"/add_bugs", {
             method: "POST",
             body: form
@@ -327,7 +338,7 @@ class detail extends React.Component{
             }
             return dt
         })
-        console.log(newData)
+
         this.setState({
             dataBugs: newData
         })
@@ -412,6 +423,7 @@ class detail extends React.Component{
                                             projectId={this.state.projectId}
                                             pic={this.state.pic}
                                             mainHeight={this.state.mainBaseHeight}
+                                            modulePermition={this.state.modulePermition}
                                             //action button
                                             changeName={this.changeNameModul}
                                             changeUserSelected={this.changeUserSelected}

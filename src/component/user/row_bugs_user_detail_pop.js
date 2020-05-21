@@ -9,7 +9,8 @@ class row_bugs_user_detail_pop extends React.Component{
                 </td>
                 <td className="main-border-bottom">
                     {this.props.note}
-                    <div className="second-font-color bold" style={{marginTop: "3px"}}><i class="fa fa-clipboard"></i> {this.props.moduleName}</div>
+                    <div className="second-font-color bold" style={{marginTop: "3px", fontSize: "11px"}}>
+                        <i class="fa fa-clipboard"></i> {this.props.moduleName}</div>
                 </td>
             </tr>
         )
