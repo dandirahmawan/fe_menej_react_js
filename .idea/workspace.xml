@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdebb8da-2018-489f-9d78-213904e0aaaf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/register/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/register/register.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/component/mobile.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +94,7 @@
         <counts>
           <entry key="css" value="9" />
           <entry key="html" value="2" />
-          <entry key="js" value="302" />
+          <entry key="js" value="303" />
           <entry key="json" value="8" />
           <entry key="png" value="1" />
           <entry key="sql" value="2" />
@@ -112,7 +109,7 @@
           <entry key="HTML" value="2" />
           <entry key="Image" value="1" />
           <entry key="JSON" value="8" />
-          <entry key="JavaScript" value="302" />
+          <entry key="JavaScript" value="303" />
           <entry key="Scratch" value="2" />
           <entry key="TypeScript" value="4" />
         </counts>
@@ -121,7 +118,7 @@
         <counts>
           <entry key="css" value="562" />
           <entry key="html" value="3" />
-          <entry key="js" value="103109" />
+          <entry key="js" value="103189" />
           <entry key="json" value="10" />
           <entry key="sql" value="44" />
           <entry key="ts" value="90" />
@@ -133,7 +130,7 @@
           <entry key="CSS" value="562" />
           <entry key="HTML" value="3" />
           <entry key="JSON" value="10" />
-          <entry key="JavaScript" value="103109" />
+          <entry key="JavaScript" value="103189" />
           <entry key="PLAIN_TEXT" value="24" />
           <entry key="Scratch" value="44" />
           <entry key="TypeScript" value="90" />
@@ -171,7 +168,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/component/forgot_password.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="317">
@@ -179,6 +176,15 @@
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/component/mobile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -287,7 +293,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/component/module/row_doc_file.js" />
         <option value="$PROJECT_DIR$/src/component/document_file/row_document_file.js" />
         <option value="$PROJECT_DIR$/src/component/document_file/upload_document_file.js" />
         <option value="$PROJECT_DIR$/src/component/module/doc_file_module.js" />
@@ -338,6 +343,7 @@
         <option value="$PROJECT_DIR$/src/component/login.js" />
         <option value="$PROJECT_DIR$/src/component/register/register.js" />
         <option value="$PROJECT_DIR$/src/component/forgot_password.js" />
+        <option value="$PROJECT_DIR$/src/component/mobile.js" />
       </list>
     </option>
   </component>
@@ -392,13 +398,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="component" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="menej" type="b2602c69:ProjectViewProjectNode" />
-              <item name="menej" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="component" type="462c0819:PsiDirectoryNode" />
-              <item name="register" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -409,7 +408,7 @@
     <property name="DatabaseDriversLRU" value="mysql&#10;oracle" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1590173634165" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1590174070634" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="last_opened_file_path" value="F:/spring/spring_first" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -558,12 +557,12 @@
       <workItem from="1589956127326" duration="754000" />
       <workItem from="1589956931671" duration="12335000" />
       <workItem from="1590039656255" duration="1325000" />
-      <workItem from="1590125181574" duration="4298000" />
+      <workItem from="1590125181574" duration="4351000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="569315000" />
+    <option name="totallyTimeSpent" value="569368000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -667,13 +666,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/component/module/tab/form_tab.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="489">
-          <caret line="71" column="120" selection-start-line="71" selection-start-column="120" selection-end-line="71" selection-end-column="120" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/component/module/tab/copy_tab.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="901">
@@ -1032,6 +1024,13 @@
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/mobile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
         </state>
       </provider>
     </entry>
