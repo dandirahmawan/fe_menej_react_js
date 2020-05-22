@@ -13,6 +13,7 @@ import Register from './component/register/register'
 import Invitation from './component/invitation/invitation'
 import Logout from './component/logout'
 import Profile from './component/profile/profile'
+import ForgotPassword from './component/forgot_password'
 import {startData} from './redux/action'
 import {connect} from 'react-redux'
 import './css/style.css'
@@ -70,6 +71,7 @@ class App extends React.Component{
             {/*<BrowserView>*/}
               <Redirect to="/login"/>
               <Route path="/login"  exact component={Login} />
+              <Route path="/forgot_password"  exact component={ForgotPassword} />
               <Route path="/register"  exact component={Register} />
             {/*</BrowserView>*/}
           </BrowserRouter>

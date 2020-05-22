@@ -2,44 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdebb8da-2018-489f-9d78-213904e0aaaf" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/component/module/dropdown_tab_menu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/menu_tab.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/row_dropdown_tab_menu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/tab/base_select_user_privacy.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/tab/copy_tab.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/tab/filter_table_tab.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/component/module/tab/item_base_select_user_privacy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/bugs/bugs.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/bugs/bugs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/bugs/new_bugs.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/bugs/new_bugs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/bugs/row_bugs.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/bugs/row_bugs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/dashboard/dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/dashboard/dashboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/component/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/detail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/detail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/module.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/module_info.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/module_info.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/row_module.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/row_module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/edit_delete_table.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/edit_delete_table.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/form_tab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/form_tab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/new_tab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/new_tab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/row_tab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/row_tab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/tab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/tab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/module/tab/tab_setting.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/module/tab/tab_setting.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/preview_image.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/preview_image.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/detail_user_popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/detail_user_popup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/document_file_detail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/document_file_detail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/module_detail_popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/module_detail_popup.js.unuse" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/row_bugs_user_detail_pop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/row_bugs_user_detail_pop.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/row_doc_file_user_detail_pop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/row_doc_file_user_detail_pop.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/row_module_detail_popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/row_module_detail_popup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/row_user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/row_user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/user/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/user/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/function/function.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/function/function.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/register/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/register/register.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -81,7 +47,7 @@
     <session id="-257174539">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="104" />
+          <entry key="project.closed" value="105" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="3" />
           <entry key="project.open.time.12" value="4" />
@@ -97,7 +63,7 @@
           <entry key="project.open.time.39" value="1" />
           <entry key="project.open.time.4" value="2" />
           <entry key="project.open.time.40" value="1" />
-          <entry key="project.open.time.44" value="1" />
+          <entry key="project.open.time.44" value="2" />
           <entry key="project.open.time.45" value="1" />
           <entry key="project.open.time.46" value="1" />
           <entry key="project.open.time.5" value="18" />
@@ -124,14 +90,14 @@
           <entry key="project.open.time.8" value="7" />
           <entry key="project.open.time.83" value="1" />
           <entry key="project.open.time.9" value="4" />
-          <entry key="project.opened" value="114" />
+          <entry key="project.opened" value="115" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="css" value="9" />
           <entry key="html" value="2" />
-          <entry key="js" value="296" />
+          <entry key="js" value="302" />
           <entry key="json" value="8" />
           <entry key="png" value="1" />
           <entry key="sql" value="2" />
@@ -146,7 +112,7 @@
           <entry key="HTML" value="2" />
           <entry key="Image" value="1" />
           <entry key="JSON" value="8" />
-          <entry key="JavaScript" value="296" />
+          <entry key="JavaScript" value="302" />
           <entry key="Scratch" value="2" />
           <entry key="TypeScript" value="4" />
         </counts>
@@ -155,7 +121,7 @@
         <counts>
           <entry key="css" value="562" />
           <entry key="html" value="3" />
-          <entry key="js" value="102025" />
+          <entry key="js" value="103109" />
           <entry key="json" value="10" />
           <entry key="sql" value="44" />
           <entry key="ts" value="90" />
@@ -167,7 +133,7 @@
           <entry key="CSS" value="562" />
           <entry key="HTML" value="3" />
           <entry key="JSON" value="10" />
-          <entry key="JavaScript" value="102025" />
+          <entry key="JavaScript" value="103109" />
           <entry key="PLAIN_TEXT" value="24" />
           <entry key="Scratch" value="44" />
           <entry key="TypeScript" value="90" />
@@ -182,11 +148,70 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/component/module/tab/tab.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-52">
+            <state relative-caret-position="833">
               <caret line="749" column="25" selection-start-line="749" selection-start-column="25" selection-end-line="749" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/component/user/invite_user.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1581">
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/component/forgot_password.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="317">
+              <caret line="45" column="41" selection-start-line="45" selection-start-column="41" selection-end-line="45" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/component/register/register.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-6">
+              <caret line="130" column="156" selection-start-line="130" selection-start-column="156" selection-end-line="130" selection-end-column="156" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/App.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="79">
+              <caret line="69" column="25" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/component/login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-204">
+              <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -262,9 +287,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/component/module/add_member.js" />
-        <option value="$PROJECT_DIR$/src/component/popup_confirmation.js" />
-        <option value="$PROJECT_DIR$/src/component/bugs/edit_bugs.js" />
         <option value="$PROJECT_DIR$/src/component/module/row_doc_file.js" />
         <option value="$PROJECT_DIR$/src/component/document_file/row_document_file.js" />
         <option value="$PROJECT_DIR$/src/component/document_file/upload_document_file.js" />
@@ -282,7 +304,6 @@
         <option value="$PROJECT_DIR$/src/css/style.css" />
         <option value="$PROJECT_DIR$/src/component/module/tab/row_tab.js" />
         <option value="$PROJECT_DIR$/src/component/module/tab/copy_tab.js" />
-        <option value="$PROJECT_DIR$/src/component/login.js" />
         <option value="$PROJECT_DIR$/src/component/dashboard/dashboard.js" />
         <option value="$PROJECT_DIR$/src/redux/reducer.js" />
         <option value="$PROJECT_DIR$/src/component/module/row_module.js" />
@@ -304,7 +325,6 @@
         <option value="$PROJECT_DIR$/src/component/module/tab/tab_setting.js" />
         <option value="$PROJECT_DIR$/src/component/module/tab/base_select_user_privacy.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/component/preview_image.js" />
         <option value="$PROJECT_DIR$/src/component/user/row_doc_file_user_detail_pop.js" />
         <option value="$PROJECT_DIR$/src/component/user/module_detail.js" />
@@ -313,6 +333,11 @@
         <option value="$PROJECT_DIR$/src/component/module/tab/filter_table_tab.js" />
         <option value="$PROJECT_DIR$/src/component/module/module.js" />
         <option value="$PROJECT_DIR$/src/component/module/tab/tab.js" />
+        <option value="$PROJECT_DIR$/src/component/user/forgot_password.js" />
+        <option value="$PROJECT_DIR$/src/App.js" />
+        <option value="$PROJECT_DIR$/src/component/login.js" />
+        <option value="$PROJECT_DIR$/src/component/register/register.js" />
+        <option value="$PROJECT_DIR$/src/component/forgot_password.js" />
       </list>
     </option>
   </component>
@@ -347,8 +372,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -372,15 +397,7 @@
               <item name="menej" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="component" type="462c0819:PsiDirectoryNode" />
-              <item name="module" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="menej" type="b2602c69:ProjectViewProjectNode" />
-              <item name="menej" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="component" type="462c0819:PsiDirectoryNode" />
-              <item name="module" type="462c0819:PsiDirectoryNode" />
-              <item name="tab" type="462c0819:PsiDirectoryNode" />
+              <item name="register" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -392,7 +409,7 @@
     <property name="DatabaseDriversLRU" value="mysql&#10;oracle" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1590013554208" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1590173634165" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="last_opened_file_path" value="F:/spring/spring_first" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -541,11 +558,12 @@
       <workItem from="1589956127326" duration="754000" />
       <workItem from="1589956931671" duration="12335000" />
       <workItem from="1590039656255" duration="1325000" />
+      <workItem from="1590125181574" duration="4298000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="565017000" />
+    <option name="totallyTimeSpent" value="569315000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -560,7 +578,7 @@
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49836066" visible="true" weight="0.23676248" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49836066" visible="true" weight="0.24054463" />
       <window_info id="Structure" order="1" sideWeight="0.50163937" side_tool="true" weight="0.22390318" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -575,7 +593,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3295082" />
       <window_info anchor="bottom" id="Database Changes" order="7" weight="0.3295082" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.4977307" visible="true" weight="0.29016393" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.4977307" visible="true" weight="0.29016393" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50226927" side_tool="true" weight="0.16557378" />
       <window_info anchor="bottom" id="Version Control" order="10" weight="0.3295082" />
       <window_info anchor="bottom" id="Database Console" order="11" weight="0.43934426" />
@@ -649,34 +667,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/component/popup_profile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="24" column="7" selection-start-line="23" selection-start-column="4" selection-end-line="25" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/component/sidebar.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="100" column="79" selection-start-line="100" selection-start-column="79" selection-end-line="100" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/component/popup_confirmation.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="37" column="49" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/css/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="478" column="23" selection-start-line="478" selection-start-column="23" selection-end-line="478" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/component/module/tab/form_tab.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="489">
@@ -874,13 +864,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/component/login.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1683">
-          <caret line="102" column="57" selection-start-line="102" selection-start-column="57" selection-end-line="102" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/component/module/tab/item_base_select_user_privacy.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -906,13 +889,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="249">
           <caret line="59" column="50" selection-start-line="59" selection-start-column="50" selection-end-line="59" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="74" column="26" selection-start-line="74" selection-start-column="26" selection-end-line="74" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -981,7 +957,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/component/module/tab/tab.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-52">
+        <state relative-caret-position="833">
           <caret line="749" column="25" selection-start-line="749" selection-start-column="25" selection-end-line="749" selection-end-column="25" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
@@ -1000,6 +976,62 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="73" selection-start-line="15" selection-start-column="73" selection-end-line="15" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/user/forgot_password.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="9" lean-forward="true" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/user/invite_user.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1581">
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="79">
+          <caret line="69" column="25" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-204">
+          <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/register/register.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6">
+          <caret line="130" column="156" selection-start-line="130" selection-start-column="156" selection-end-line="130" selection-end-column="156" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/component/forgot_password.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="45" column="41" selection-start-line="45" selection-start-column="41" selection-end-line="45" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
