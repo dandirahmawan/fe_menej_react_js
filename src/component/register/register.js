@@ -2,6 +2,7 @@ import React from 'react'
 import Logo from '../../images/menej_285e8e.png'
 import { baseUrl } from '../../const/const'
 import Confirmaton from './register_confirmation'
+import {Link} from "react-router-dom";
 
 class register extends React.Component{
 
@@ -131,9 +132,9 @@ class register extends React.Component{
                     
                     <button className='btn-primary bold' onClick={this.submit} style={{fontSize: "12px", marginTop: "10px", width: "150px", padding: "10px"}}>Submit</button>
 
-                    <div style={{marginTop: '20px'}}>
-                        <a style={{fontSize: "12px"}}>Forgot Username / Password?</a><br/>
-                        <a style={{fontSize: "12px"}}>Sign up for an account</a>
+                    <div className="bold" style={{marginTop: '20px', textAlign: "center"}}>
+                        <Link to="/login"><a style={{fontSize: "11px"}}>Back to login</a></Link><br/>
+                        <Link to="/forgot_password" style={{fontSize: "11px"}}>Forgot password</Link>
                     </div>
                 </div>
                 {this.state.confirmationBase}
