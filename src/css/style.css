@@ -20,6 +20,10 @@ strong{
     src: url('../font/arialbd.ttf');
 }
 
+input{
+    outline: none;
+}
+
 .navbar{
     position: fixed;
     top: 0;
@@ -70,6 +74,15 @@ strong{
 
 .second-background-grs{
     background: #f5f5f5;
+}
+
+.tab-cell{
+    background: none;
+}
+
+.tab-cell:hover{
+    background: #c5dce4;
+    border: 1px double #4da1b5;
 }
 
 .main-border-bottom{
@@ -196,6 +209,11 @@ textarea{
     border-radius: 3px;
     font-family: reguler_font;
     padding: 5px;
+}
+
+textarea:focus{
+    /* outline: 1px solid #87d9ec; */
+    outline: none;
 }
 
 select{

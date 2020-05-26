@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser, faCopy, faUserAlt, faFileExcel} from '@fortawesome/free-solid-svg-icons'
+import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser, faCopy, faUserAlt, faFileExcel, faOm} from '@fortawesome/free-solid-svg-icons'
 import CreateTable from './create_table'
 import {baseUrl} from "../../../const/const";
 import Form from './form_tab'
@@ -12,6 +12,7 @@ import EditDelTable from './edit_delete_table'
 import TabSetting from './tab_setting'
 import Filter from './filter_table_tab'
 import CopyTab from './copy_tab'
+import CellEdit from './cell_edit'
 import {getCookieSessionId, getCookieUserId, popUpAlert, tableHeaderRender} from "../../../function/function";
 
 class tab extends React.Component{
@@ -38,7 +39,9 @@ class tab extends React.Component{
             filterHeaderColumn: null,
             btnAdditional: true,
             dataTeam: [],
-            pic:null
+            pic:null, 
+            isCellEdit: false,
+            rowCellEdit: 0
         }
 
         this.headerTable = React.createRef()
@@ -80,6 +83,8 @@ class tab extends React.Component{
         this.copyTab = this.copyTab.bind(this)
         this.existCopy = this.existCopy.bind(this)
         this.yesConfirmReplace = this.yesConfirmReplace.bind(this)
+        this.cellContextMenu = this.cellContextMenu.bind(this)
+        this.submitCellContextMenu = this.submitCellContextMenu.bind(this)
     }
 
     componentDidMount(){
@@ -248,6 +253,7 @@ class tab extends React.Component{
                 this.setState({
                     seqSelected: key,
                     isStartingRow: false,
+                    popup: null,
                     form: <Form data={data[i]}
                                 createdBy={this.state.createdBy}
                                 seq={key}
@@ -261,7 +267,6 @@ class tab extends React.Component{
     }
 
     appendDataTab(json){
-        console.log(json)
         const newState = this.state.row.concat(json)
         this.setState({
             row : newState
@@ -279,7 +284,6 @@ class tab extends React.Component{
     }
 
     thClick(thead, seqCol){
-        console.log(thead)
         let curThWidth = thead.offsetWidth
         let elmSpan = this.spanToWidth.current
         elmSpan.innerText = ""
@@ -337,7 +341,6 @@ class tab extends React.Component{
     }
 
     filterSubmit(data, column){
-        console.log(data.length)
         let elmChild = this.tbody.current.children
         if(data.length > 0){
             for(let i = 0;i<elmChild.length;i++){
@@ -359,7 +362,6 @@ class tab extends React.Component{
 
     isButtonAdditional(dataTeam, createdBy){
         dataTeam.map(dt => {
-            console.log(dt.userId, createdBy)
             if(dt.userId == createdBy){
                 this.setState({
                     btnAdditional: false
@@ -587,6 +589,56 @@ class tab extends React.Component{
         window.open(baseUrl+"/export_excel_tab/"+tabId+"/"+tabName)
     }
 
+    cellContextMenu(e, row, column){
+        e.preventDefault()
+        // let elm = document.getElementById("base-data-tab-table")
+        // let bound = elm.getBoundingClientRect()
+        var x = e.clientX    // Get the horizontal coordinate
+        var y = e.clientY    // Get the vertical coordinate
+        this.setState({
+            isCellEdit: false,
+            form: null,
+            popup: <CellEdit x={x}
+                        y={y}
+                        row={row}
+                        column={column}
+                        cancel={this.cancel}
+                        submitCellContextMenu={this.submitCellContextMenu} 
+                        value={e.target.innerText}/>
+        })
+    }
+
+    submitCellContextMenu(row, column, value){
+        let i = 0
+        let dataPass = ""
+        
+        this.state.row.map(dt => {
+            if(i == row){
+                dt[column] = value
+                dataPass = dt
+            }
+            i++
+        })
+        
+        let scope = this
+
+        let form = new FormData()
+        form.append("seq", row)
+        form.append("tabId", this.state.tabId)
+        form.append("data", JSON.stringify(dataPass))
+        fetch(baseUrl+"/edit_tab_data", {
+            method: "POST",
+            body: form
+        }).then(res => res.text()).then(result => {
+            this.setState({
+                isCellEdit: true,
+                popup: null
+            })
+            scope.update(dataPass, row)
+            popUpAlert("Data successfully updated", "success")
+        })
+    }
+
     render(){
         let i = 0
         let no = 0
@@ -607,8 +659,10 @@ class tab extends React.Component{
                             seq={seq}
                             seqSelected={this.state.seqSelected}
                             no={no}
+                            cellContextMenu={this.cellContextMenu}
                             colHeader={this.state.col}
-                            col={dt}/>
+                            col={dt}
+                            isCellEdit={this.state.isCellEdit}/>
             }
         })
 
@@ -782,8 +836,9 @@ class tab extends React.Component{
                             </table>
                             <div ref={this.tableBodyScroll}
                                  onScroll={this.scroll}
+                                 id="base-data-tab-table"
                                  className="scrollbar tab-base-scroll"
-                                 style={{maxHeight: "350px", overflowX: "scroll", maxWidth: "100%", minHeight: "100px"}}>
+                                 style={{maxHeight: "350px", overflowX: "scroll", maxWidth: "100%", minHeight: "100px", position: "relative"}}>
                                 <div ref={this.tableBody} style={{overflowX: "hidden", minWidth: "150px"}}>
                                     <table ref={this.tableTBody}>
                                         <tbody ref={this.tbody}>

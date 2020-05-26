@@ -4,6 +4,9 @@ class row_tab extends React.Component{
 
     constructor(){
         super()
+        this.state = {
+            baseEditCell: null
+        }
         this.refRow = React.createRef()
         this.renderElement = this.renderElement.bind(this)
     }
@@ -13,7 +16,14 @@ class row_tab extends React.Component{
     }
 
     componentWillReceiveProps(nexProps){
-        if(nexProps.col !== this.props.col || nexProps.no != this.props.no || nexProps.isStarting || nexProps.isBorder != this.props.isBorder){
+        if(
+            nexProps.col !== this.props.col || 
+            nexProps.no != this.props.no || 
+            nexProps.isStarting || 
+            nexProps.isBorder != this.props.isBorder || 
+            nexProps.col != this.props.col ||
+            nexProps.isCellEdit
+        ){
             this.renderElement(nexProps.col, nexProps.no, nexProps.isStarting, nexProps.isBorder, nexProps.colHeader)
         }
     }
@@ -43,14 +53,18 @@ class row_tab extends React.Component{
                 let elm1 = document.createElement("td")
                 elm1.innerText = (col[i] === undefined) ? "" : col[i]
                 if (!isBorder) {
-                    elm1.setAttribute("class", "td-tab-data")
+                    elm1.setAttribute("class", "td-tab-data tab-cell")
                 } else {
-                    elm1.setAttribute("class", "td-tab-data main-border")
+                    elm1.setAttribute("class", "td-tab-data tab-cell main-border")
                 }
 
                 elm1.style.padding = "5px"
                 elm1.style.textAlign = "left"
                 elm1.style.wordWrap = "anywhere"
+
+                let rowNumber = no - 1
+                let colNumber = i
+                elm1.oncontextmenu = (e) => this.props.cellContextMenu(e, rowNumber, colNumber)
 
                 elm1.style.width = wi + "px"
                 this.refRow.current.append(elm1)
@@ -71,6 +85,7 @@ class row_tab extends React.Component{
     render() {
         return (
             <React.Fragment>
+                {this.state.baseEditCell}
                 <tr valign="top" onClick={(e) => this.props.formTab(e, this.props.seq)} className="tr-selectable tr-tb-data" ref={this.refRow} style={{background: "#FFF"}}/>
             </React.Fragment>
         )
