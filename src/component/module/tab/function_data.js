@@ -1,12 +1,14 @@
 import React from 'react'
 import FunctionImage from '../../../images/function_15.png'
+import {ApiFetch} from '../../apiFetch'
 
 class function_data extends React.Component{
 
     constructor(){
         super()
         this.state = {
-            functionName: null
+            functionName: null,
+            data: []
         }
         this.base = React.createRef()
     }
@@ -17,15 +19,33 @@ class function_data extends React.Component{
         this.setState({
             functionName: this.props.functionName.replace("=", "")
         })
+
+        let form = new FormData()
+        form.append("projectId", 72)
+        form.append("type", "doc")
+        ApiFetch("/function_data", {
+            method: "POST",
+            body: form
+        }).then(res => res.json()).then(result => {
+            this.setState({
+                data: result
+            })
+        })
+    }
+
+    select(id){
+        alert(id)
     }
 
     render(){
 
-        const data = dataFunction.map(dt => {
-            return <div className="tr-selectable" style={{padding: "7px", paddingLeft: "10px", paddingRight: "10px", cursor: "pointer"}}>
+        const data = this.state.data.map(dt => {
+            return <div onClick={() => this.select(dt.id)} className="tr-selectable" style={{padding: "7px", paddingLeft: "10px", paddingRight: "10px", cursor: "pointer"}}>
                         <div style={{fontSize: "12px"}}>
                             <i className="fa fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i> 
-                            <div style={{marginLeft: "20px", marginTop: "-15px"}}>{dt.description}</div>
+                            <div className="bold" style={{marginLeft: "20px", marginTop: "-15px", wordBreak: "break-all", color: "#777"}}>
+                                {dt.name}
+                            </div>
                         </div>
                     </div>
         })
@@ -36,7 +56,9 @@ class function_data extends React.Component{
                     <img src={FunctionImage} style={{width: "15px"}}/>&nbsp; 
                     <span className="second-font-color bold">{this.state.functionName}</span>
                 </div>
-                {data}
+                <div style={{maxHeight: "300px", overflowY: "scroll"}}>
+                    {data}
+                </div>
             </div>
         )
     }
