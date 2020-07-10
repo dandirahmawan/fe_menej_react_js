@@ -1,5 +1,4 @@
 import React from 'react'
-import HeaderModule from './header_module'
 import RowModule from './row_module'
 import NewModule from './new_module'
 import PopupConfirmation from '../popup_confirmation'
@@ -7,7 +6,7 @@ import ProjectMember from '../project/project_member_team'
 import Detail from './detail'
 import AddMember from './add_member'
 import Permition from './permition'
-import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import {connect} from 'react-redux'
 import {setDataNote, selectRowModule} from '../../redux/action'
@@ -80,6 +79,8 @@ class modulePage extends React.Component{
         this.menuModule = React.createRef()
         this.tabBaseMenu = React.createRef()
         this.dropdownBase = React.createRef()
+        this.menuBugs = React.createRef()
+        this.menuDocFile = React.createRef()
  
         this.hidePopUp = this.hidePopUp.bind(this)
         this.deleteModule = this.deleteModule.bind(this)
@@ -122,6 +123,21 @@ class modulePage extends React.Component{
     }
 
     componentDidMount(){
+        let href = window.location.href
+        let getCurrentTab = href.split("?")[1]
+        let getCurrentTab2 = (getCurrentTab !== undefined) ? getCurrentTab.split("=")[1] : ""
+        let currentTab = getCurrentTab2.replace("%20", " ")
+
+        if(currentTab == "bugs") {
+            this.menuBugs.current.click()
+        }else if(currentTab == "doc file"){
+            this.menuDocFile.current.click()
+        }else if(currentTab == "" || currentTab == "module"){
+            //do nothing
+        }else{
+            this.tabMenu(null, currentTab)
+        }
+
         arrSelected = []
         this.props.dataProject.map(dt => {
             this.props.setDataNote(this.props.dataNote)
@@ -169,6 +185,7 @@ class modulePage extends React.Component{
                                     close={this.hidePopUp}
                                     modulId={dt.modulId}
                                     projectId={dt.projectId}
+                                    description={dt.description}
                                     tabParameter="info"
                                 />
                     })
@@ -201,6 +218,7 @@ class modulePage extends React.Component{
     }
 
     mainMenu(e, tab){
+        this.pushHistory(tab)
         var c = document.getElementsByClassName("main-menu-module")
         for(var i = 0;i<c.length;i++){
             c[i].style.borderBottom = "none"
@@ -257,6 +275,7 @@ class modulePage extends React.Component{
                                 modulId={dt.modulId}
                                 projectId={dt.projectId}
                                 picProject={this.state.picProject} 
+                                description={dt.description}
                                 tabParameter="bugs" 
                             />
                 })
@@ -362,7 +381,8 @@ class modulePage extends React.Component{
         var form = new FormData()
         form.append("userId", userId)
         form.append("moduleId", arrSelected)
-        fetch(baseUrl+"/delete_module", {
+
+        ApiFetch("/delete_module", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -442,7 +462,7 @@ class modulePage extends React.Component{
         form.append("userDelete", userId)
         form.append("projectId", projectId)
 
-        fetch(baseUrl+"/delete_member", {
+        ApiFetch("/delete_member", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -538,9 +558,11 @@ class modulePage extends React.Component{
 
         this.dropdownBase.current.style.borderBottom = "none"
 
-        var t = e.target
-        t.setAttribute("class", "bold main-menu-module")
-        t.style.borderBottom = "2px solid #386384"
+        if(e != null) {
+            var t = e.target
+            t.setAttribute("class", "bold main-menu-module")
+            t.style.borderBottom = "2px solid #386384"
+        }
 
         this.refModule.current.style.display = "none"
         this.refBugs.current.style.display = "none"
@@ -562,23 +584,21 @@ class modulePage extends React.Component{
         this.setState({
             tabBase: <Tab
                         updateDataTab={this.updateDataTab}
-                        dataTeam={this.state.dataTeam}
                         editTab={this.editTab}
                         projectId={this.props.projectIdHeader}
                         dataTeam={this.state.dataTeam}
                         tabId={tabId}
-                        pic={this.state.picProject}
-                        createdBy={createdBy}
-                        privacy={privacy}
-                        userName={userName}
                         refreshDelete={this.refreshTabMenu}
-                        tabName={tabName}/>
+                        // pic={this.state.picProject}
+                        // createdBy={createdBy}
+
+                    />
         })
     }
 
     tabMenuDp(base, tabId){
-        var c = document.getElementsByClassName("main-menu-module")
-        for(var i = 0;i<c.length;i++){
+        let c = document.getElementsByClassName("main-menu-module")
+        for(let i = 0;i<c.length;i++){
             c[i].style.borderBottom = "none"
             c[i].setAttribute("class", "bold main-menu-module second-font-color")
         }
@@ -658,6 +678,16 @@ class modulePage extends React.Component{
         })
     }
 
+    pushHistory(tab){
+        let href = window.location.href
+        let getCurrentTab = href.split("?")[1]
+        let getCurrentTab2 = (getCurrentTab !== undefined) ? getCurrentTab.split("=")[1] : ""
+        let currentTab = getCurrentTab2
+        if(tab !== currentTab){
+            window.history.pushState("", "dandi", "/project/"+this.props.projectIdHeader+"?tab="+tab)
+        }
+    }
+
     hideDropDownTabMenu(){
         this.setState({
             dropDownMenuTabBase : ""
@@ -678,28 +708,29 @@ class modulePage extends React.Component{
 
     render(){
         const dataModule = this.props.dataModule.map(dt => <RowModule
-                                                            detail = {this.detail}
-                                                            isDelete = {dt.isTrash}
-                                                            selected = {this.selectedRow}
-                                                            selectedRow = {this.selectedRow2}
-                                                            moduleId = {dt.modulId}
-                                                            modulName = {dt.modulName}
-                                                            endDate = {dt.endDate}
-                                                            modulStatus = {dt.modulStatus}
-                                                            countBugs = {dt.countBugs}
-                                                            countBugsClose = {dt.countBugsClose}
-                                                            countDoc = {dt.countDoc}
-                                                            countNote = {dt.countNote}
-                                                            userName = {dt.userName}
-                                                            isMember = {dt.isMember}
-                                                            note = {this.state.dataNote}
-                                                            bugsIconClick = {this.bugsIconClick}
-                                                            isSelected={dt.isSelected}
-                                                            docFileIconClick = {this.docFileIconClick}
-                                                            noteClick={this.noteClick}
-                                                            appendsNote={this.state.appendsNote}
-                                                            updateStateDataNote={this.updateStateDataNote}
-                                                            isBorder={this.state.isBorder}/>)
+                                                                detail = {this.detail}
+                                                                isDelete = {dt.isTrash}
+                                                                selected = {this.selectedRow}
+                                                                selectedRow = {this.selectedRow2}
+                                                                moduleId = {dt.modulId}
+                                                                modulName = {dt.modulName}
+                                                                description = {dt.description}
+                                                                endDate = {dt.endDate}
+                                                                modulStatus = {dt.modulStatus}
+                                                                countBugs = {dt.countBugs}
+                                                                countBugsClose = {dt.countBugsClose}
+                                                                countDoc = {dt.countDoc}
+                                                                countNote = {dt.countNote}
+                                                                userName = {dt.userName}
+                                                                isMember = {dt.isMember}
+                                                                note = {this.state.dataNote}
+                                                                bugsIconClick = {this.bugsIconClick}
+                                                                isSelected={dt.isSelected}
+                                                                docFileIconClick = {this.docFileIconClick}
+                                                                noteClick={this.noteClick}
+                                                                appendsNote={this.state.appendsNote}
+                                                                updateStateDataNote={this.updateStateDataNote}
+                                                                isBorder={this.state.isBorder}/>)
 
         const dataTeamMember = this.state.dataTeam.map(dt => <ProjectMember
                                                                 userName={dt.userName}
@@ -767,7 +798,7 @@ class modulePage extends React.Component{
                                display: "inline-block"}}>
                             Module
                         </a>
-                        <a onClick={(e) => this.mainMenu(e, "bugs")}
+                        <a ref={this.menuBugs} onClick={(e) => this.mainMenu(e, "bugs")}
                            className="bold main-menu-module second-font-color"
                            style={{fontSize: "12px",
                                 marginRight: "20px",
@@ -775,7 +806,7 @@ class modulePage extends React.Component{
                                 display: "inline-block"}}>
                             Bugs
                         </a>
-                        <a onClick={(e) => this.mainMenu(e, "doc file")}
+                        <a ref={this.menuDocFile} onClick={(e) => this.mainMenu(e, "doc file")}
                            className="bold main-menu-module second-font-color"
                            style={{fontSize: "12px",
                                 marginRight: "20px",

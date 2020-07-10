@@ -5,6 +5,7 @@ import { getCookieSessionId, getCookieUserId } from '../../function/function'
 import wrnAlt from '../../images/warn_alert_inf.png'
 import scsAlt from '../../images/success_alt_inf.png'
 import {Spinner} from '../spinner'
+import {ApiFetch} from '../apiFetch'
 
 class invitation extends React.Component{
 
@@ -31,9 +32,15 @@ class invitation extends React.Component{
             form.append("conf", parGet)
             form.append("userId", userId)
             form.append("sessionId", sessionId)
-            fetch(baseUrl+"/conf_invitation", {
+
+            var header = new Headers()
+            header.append("sessionId", getCookieSessionId())
+            header.append("userId", getCookieUserId());
+
+            ApiFetch("/conf_invitation", {
                 method: "POST",
-                body: form
+                body: form,
+                headers: header
             }).then(res => res.text())
             .then(result => {
                 this.setState({

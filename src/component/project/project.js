@@ -13,6 +13,7 @@ import { faBorderAll, faFolder, faPlus, faList } from '@fortawesome/free-solid-s
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import New from '../create_project'
 import Handover from './handover'
+import {ApiFetch} from '../apiFetch'
 
 class project extends React.Component{
     constructor(){
@@ -45,7 +46,6 @@ class project extends React.Component{
 
     componentDidMount(){
         var isLoad = this.props.location.load
-        // if(isLoad !== undefined)
 
         var userId = getCookieUserId()
         var sessionId = getCookieSessionId()
@@ -55,12 +55,15 @@ class project extends React.Component{
         form.append("userId", userId)
         form.append("sessionId", sessionId)
 
-        fetch(baseUrl+"/list_project",{
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/list_project", {
             method: "POST",
             body: form
-        })
-        .then(res => res.json())
-        .then((result) => {
+        }).then(res => res.json()).then(result => {
+            console.log(result)
             this.props.setDataProject(result)
         })
     }
@@ -199,9 +202,15 @@ class project extends React.Component{
         var formData = new FormData()
         formData.append("userId", getCookieUserId())
         formData.append("projectId", this.state.projectId)
+
+        var header = new Headers()
+        header.append("Sessionid", getCookieSessionId())
+        header.append("Userid", getCookieUserId());
+
         fetch(baseUrl+"/delete_project",{
             method:"POST",
-            body:formData
+            body:formData,
+            headers: header
         }).then(res => res.text()).then((result) => {
             if(result == 'success'){
                 this.props.deleteProject(this.state.projectId)

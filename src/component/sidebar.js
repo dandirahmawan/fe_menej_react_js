@@ -66,45 +66,47 @@ class sidebar extends React.Component{
             <React.Fragment>
                 {this.state.createProjectPop}
                 <div id="sidebar" className='sidebar main-color'>
-                    <div style={{height:"60px"}}>
+                    <div style={{height:"60px", width: "44px", overflow: "hidden", marginLeft: "-5px"}}>
                         <img style={{marginTop:"12px",marginLeft: "15px"}} src={Logo}></img>
-                        <button
-                            onClick={this.bars}
-                            style={{float: "right",
-                                    background: "none",
-                                    color: "#FFF",
-                                    marginTop: "20px",
-                                    fontSize: "16px"}}>
-                            <FontAwesomeIcon icon={faBars}/>
-                        </button>
+                        {/*<button*/}
+                            {/*onClick={this.bars}*/}
+                            {/*style={{float: "right",*/}
+                                    {/*background: "none",*/}
+                                    {/*color: "#FFF",*/}
+                                    {/*marginTop: "20px",*/}
+                                    {/*fontSize: "16px"}}>*/}
+                            {/*<FontAwesomeIcon icon={faBars}/>*/}
+                        {/*</button>*/}
                     </div>
-                    <ul style={{fontSize: '14px',marginTop:"0px"}}>
+                    <ul style={{fontSize: '14px',marginTop:"10px"}}>
                         {/* <Link to="/dashboard"> */}
-                        <a onClick={this.createProject}><li className='nav-li'>
+                        <a onClick={this.createProject}><li className='nav-li' style={{fontSize: "17px"}}>
                             <em className='fa fa-plus-circle'>&nbsp;&nbsp;&nbsp;</em>
-                            Create
+                            {/*Create*/}
                         </li></a>
-                        <Link to={{pathname:'/dashboard', load: 'yes'}}>
-                            <li className='nav-li'>
-                                <em className='fa fa-dashboard'>&nbsp;&nbsp;&nbsp;</em>
-                                Dashboard
-                            </li>
-                        </Link>
+                        {/*<Link to={{pathname:'/dashboard', load: 'yes'}}>*/}
+                            {/*<li className='nav-li'>*/}
+                                {/*<em className='fa fa-dashboard'>&nbsp;&nbsp;&nbsp;</em>*/}
+                                {/*/!*Dashboard*!/*/}
+                            {/*</li>*/}
+                        {/*</Link>*/}
                         <Link to={{pathname:'/users', load: 'yes'}}>
                             <li className='nav-li'>
                                 <em className='fa fa-user-circle'>&nbsp;&nbsp;&nbsp;</em>
-                                User
+                                {/*User*/}
                             </li>
                         </Link>
                         <Link to={{pathname:'/project', load: 'yes'}}>
                             <li className='nav-li'>
                                 <em className='fa fa-folder'>&nbsp;&nbsp;&nbsp;</em>
-                                Project
+                                {/*Project*/}
                             </li>
                         </Link>
-                        <ul style={{marginTop:"0px",paddingLeft:"25px"}}>
-                            {menuProjectLink}
-                        </ul>
+                        <div style={{width: "350px"}}>
+                            <ul style={{marginTop:"0px",paddingLeft:"25px"}}>
+                                {/*{menuProjectLink}*/}
+                            </ul>
+                        </div>
                     </ul>
                 </div>
             </React.Fragment>

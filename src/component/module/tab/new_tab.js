@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from "../../../function/function";
 import {SpinnerButton} from "../../spinner";
-import {baseUrl} from "../../../const/const";
+import {ApiFetch} from '../../apiFetch'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe, faLock, faUser} from "@fortawesome/free-solid-svg-icons";
 
@@ -42,7 +42,8 @@ class new_tab extends React.Component{
             form.append("projectId", this.props.projectId)
             form.append("prv", this.state.privacy)
             form.append("tabName", val)
-            fetch(baseUrl+"/new_tab", {
+
+            ApiFetch("/new_tab", {
                 method: "POST",
                 body: form
             }).then(res => res.text())
@@ -57,7 +58,7 @@ class new_tab extends React.Component{
                         form.append("userId", getCookieUserId())
                         form.append("sessionId", getCookieSessionId())
                         form.append("projectId", this.props.projectId)
-                        fetch(baseUrl+"/tab_list", {
+                        ApiFetch("/tab_list", {
                             method: "POST",
                             body: form
                         }).then(res => res.json()).then(result => {
@@ -103,7 +104,7 @@ class new_tab extends React.Component{
                              style={{fontSize: "12px", position: "fixed", opacity: "0"}}>
                             {this.state.tabName}
                         </div>
-                        <span className="bold" style={{fontSize: "10px"}}>Tab name :</span><br/>
+                        <span className="bold" style={{fontSize: "11px"}}>Tab name :</span><br/>
                         <input
                             ref={this.inputTabName}
                             type="text"
@@ -113,7 +114,7 @@ class new_tab extends React.Component{
                             style={{padding: "5px", width: "200px"}}/>
                     </div>
                     <div style={{padding: "11px", paddingTop: "0px"}}>
-                        <span className="bold" style={{fontSize: "10px"}}>Privacy :</span><br/>
+                        <span className="bold" style={{fontSize: "11px"}}>Privacy :</span><br/>
                         {this.state.privacyIcon}
                         <select onChange={this.privacyChange} style={{fontSize: "12px", border: "none", outline: "none"}}>
                             <option value="pr">Private</option>

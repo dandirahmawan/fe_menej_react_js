@@ -2,6 +2,7 @@ import React from 'react'
 import { baseUrl } from '../../const/const'
 import {getCookieSessionId, getCookieUserId, popUpAlert} from '../../function/function'
 import {SpinnerButton} from '../spinner'
+import { ApiFetch } from '../apiFetch'
 
 class invite_user extends React.Component{
 
@@ -83,7 +84,7 @@ class invite_user extends React.Component{
             form.append("email", arrEmail)
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
-            fetch(baseUrl+"/invitation", {
+            ApiFetch("/invitation", {
                 method: "POST",
                 body: form
             }).then(res => res.text())

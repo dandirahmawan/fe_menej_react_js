@@ -1,6 +1,7 @@
 import scsAlt from '../images/success_alt_inf.png'
 import wrnAlt from '../images/warn_alert_inf.png'
 import GifLoader from '../gif/Rolling-1s-45px.gif'
+import {pathUrlConst} from '../const/const'
 
 export function getCookieUserId(){
     var c = document.cookie.split(";")
@@ -144,7 +145,7 @@ export function convertDate_dd_MMM_yyy(date){
     }
 }
 
-export function tableHeaderRender(columJson, idElement, action, actionFilter){
+export function tableHeaderRender(columJson, idElement, action, actionFilter, bodyTableBase){
     let elm = document.getElementById(idElement)
     let count = Object.keys(columJson).length;
     let thead0 = document.createElement("th")
@@ -174,6 +175,7 @@ export function tableHeaderRender(columJson, idElement, action, actionFilter){
         let elmBtn = document.createElement("a")
         elmBtn.onclick = () => action(thead, i)
         elmBtn.style.background = "none"
+        elmBtn.style.display = "none"
         elmBtn.style.height = "10px"
         elmBtn.style.float = "left"
         elmBtn.style.marginTop = "0px"
@@ -184,20 +186,21 @@ export function tableHeaderRender(columJson, idElement, action, actionFilter){
         let elmBtnFilter = document.createElement("a")
         elmBtnFilter.onclick = (e) => actionFilter(e, i)
         elmBtnFilter.style.background = "none"
-        elmBtnFilter.style.height = "10px"
+        // elmBtnFilter.style.display = "none"
+        elmBtnFilter.style.height = "12px"
         elmBtnFilter.style.float = "left"
         elmBtnFilter.style.marginTop = "0px"
         elmBtnFilter.style.marginRight = "4px"
         elmBtnFilter.setAttribute("class", "second-font-color")
         let faFilter = document.createElement("em")
         faFilter.setAttribute("class", "fa fa-filter")
+        faFilter.innerHTML = "<div class='seq-filter-pin' style='font-size: 10px;float: right;margin-top: 2px'></div>"
 
         elmBtn.append(fa)
         elmBtnFilter.append(faFilter)
 
         let divBaseBtn = document.createElement("div")
         divBaseBtn.style.float = "right"
-        divBaseBtn.style.display = "none"
         divBaseBtn.append(elmBtnFilter)
         divBaseBtn.append(elmBtn)
 
@@ -209,15 +212,49 @@ export function tableHeaderRender(columJson, idElement, action, actionFilter){
         thead.append(divTitleColumn)
         elm.append(thead)
     }
+
     elm.style.width = sumw+"px"
+    let bodyTable = bodyTableBase.current
+    bodyTable.style.width = sumw+"px"
+}
+
+export function pathValidation(path) {
+    let paths = path.split("/")[1]
+    let pathComparation = "/"+paths
+
+    if(pathUrlConst.indexOf(pathComparation) == -1 && paths != ""){
+        return "invalid";
+    }else{
+        return "valid";
+    }
 }
 
 function mouseOverTheadTab(e){
     let child = e.target.children
-    if(child[0] !== undefined) child[0].style.display = "block"
+    if(child[0] !== undefined) {
+        let filter = child[0].children[0]
+        // if(filter !== undefined) {
+        //     filter.style.display = "block"
+        // }
+        
+        let widhtsetter =  child[0].children[1]
+        if(widhtsetter !== undefined){
+            widhtsetter.style.display = "block"
+        }
+    }
 }
 
 function mouseLeaveTheadTab(e){
     let child = e.target.children
-    if(child[0] !== undefined) child[0].style.display = "none"
+    if(child[0] !== undefined) {
+        let filter = child[0].children[0]
+        // if(filter !== undefined) {
+        //     filter.style.display = "none"
+        // }
+        
+        let widhtsetter =  child[0].children[1]
+        if(widhtsetter !== undefined){
+            widhtsetter.style.display = "none"
+        }
+    }
 }

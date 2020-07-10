@@ -1,5 +1,5 @@
 import React from 'react'
-import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import PermitionList from './permitionList'
 import { getCookieUserId } from '../../function/function'
 
@@ -16,7 +16,7 @@ class permition extends React.Component{
     componentDidMount(){
         var form = new FormData()
         form.append("userId", getCookieUserId())
-        fetch(baseUrl+"/list_permition_profile",{
+        ApiFetch("/list_permition_profile",{
             method: "POST",
             body: form
         }).then(res => res.text())

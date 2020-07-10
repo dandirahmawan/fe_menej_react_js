@@ -15,23 +15,6 @@ class permitionItem extends React.Component{
     
     render(){
         return(
-            // <div style={{float: "left", fontSize: "12px", marginRight: "40px", marginBottom: "5px",marginTop: "5px"}}>
-            //     <div style={{float: "left"}}>
-            //         {
-            //             (this.isPermit(this.props.permitionCode) >= 0 || this.props.pic == getCookieUserId()) 
-            //             ?
-            //                 <i class="fa fa-check-circle" style={{color: "green", fontSize: "14px"}}></i>
-            //             :
-            //                 <i class="fa fa-times-circle" style={{color: "red", fontSize: "14px"}}></i>
-            //         }
-            //     </div>
-            //     <div style={{float: "left", marginLeft: "5px"}}>
-            //         <div className="bold">
-            //             {this.props.permitionName}
-            //         </div>
-            //         <div>{this.props.permitionDescription}</div>    
-            //     </div>
-            // </div>
             <tr valign="top">
                 <td>
                     {

@@ -3,6 +3,7 @@ import PopupProfile from './popup_profile'
 import {connect} from 'react-redux'
 import PopupNotification from './popup_notification'
 import LeftArrow from '../images/left_arrow.png'
+import Logo from '../images/menej_285e8e.png'
 import {backHistory} from '../function/function'
 import {baseUrl} from "../const/const"
 import {faBars} from '@fortawesome/free-solid-svg-icons'
@@ -123,7 +124,8 @@ class navbar extends React.Component{
     render(){
         return(
             <div id="header" className='navbar main-border' style={{background: "#FFF", overflow: 'hidden', borderTop: "none"}}>
-                <div id="main-header" style={{marginLeft: '230px'}}>
+                {/*<img src={Logo} style={{height: "25px", float: "left", marginTop: "17px"}}/>*/}
+                <div id="main-header" style={{marginLeft: "50px"}}>
                     <button id="btn-sb-togle" onClick={this.bars}
                         style={{float: "left",
                                 fontSize: "16px",
@@ -137,7 +139,7 @@ class navbar extends React.Component{
                         <img onClick={this.backNavbar} src={LeftArrow} style={{width: "15px", marginRight: "10px", cursor: "pointer",}}></img>
                         {this.props.title}
                     </div>
-                    
+
                     <div style={{float: 'right', padding: "12px"}}>
                         <input className="main-border" placeholder="Search" type="text" style={{padding: "7px", fontWeight: "bolder", width: "250px", float: "left", marginRight: "100px", background: "#f7f7f7", marginTop: "3px"}}/>
 

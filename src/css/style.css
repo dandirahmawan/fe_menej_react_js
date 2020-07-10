@@ -12,7 +12,11 @@
 
 @font-face{
     font-family: bold_black_font;
-    src: url('../font/arial-black.ttf');
+    src: url('../font/Roboto-Black.ttf');
+}
+
+.force-block{
+    display: block !important;
 }
 
 strong{
@@ -67,7 +71,6 @@ input{
     color: #386384;
 }
 
-
 .main-border{
     border: #dcdbdb 1px solid;
 }
@@ -119,10 +122,12 @@ input{
 }
 
 .sidebar{
-    width: 230px;
+    /*width: 230px;*/
+    width: 50px;
     position: fixed;
     height: 100%;
     top: 0px;
+    /*top: 60px;*/
     text-align: left;
     font-family: reguler_font;
     overflow-y: scroll;
@@ -202,6 +207,11 @@ button:hover{
 input{
     border: #ccc9c9 1px solid;
     border-radius: 3px;
+    /*box-shadow: #cad7ef 1px 1px;*/
+}
+
+.box-shadow{
+    box-shadow: #cad7ef 1px 1px;
 }
 
 textarea{
@@ -209,6 +219,8 @@ textarea{
     border-radius: 3px;
     font-family: reguler_font;
     padding: 5px;
+    /*box-shadow: #cad7ef 1px 1px;*/
+    resize: none;
 }
 
 textarea:focus{
@@ -231,6 +243,17 @@ select{
     padding: 5px;
     cursor: pointer;
     min-width: 40px;
+}
+
+.btn-primary-clicked{
+    background: #386384;
+    border: 1px solid #386384;
+    border-radius: 3px;
+    color: #FFF;
+    padding: 5px;
+    cursor: pointer;
+    min-width: 40px;
+    opacity: 0.5;
 }
 
 .btn-secondary{
@@ -348,7 +371,8 @@ button{
 
 #main-base-data-wrapper{
     margin-top: 50px;
-    margin-left: 230px;
+    /*margin-left: 230px;*/
+    margin-left: 50px;
     padding: 10px;
     padding-left: 20px;
 }

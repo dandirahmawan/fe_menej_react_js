@@ -6,6 +6,8 @@ import { baseUrl } from '../../const/const'
 import {appendDataDocFile, updateDataModuleDocFile} from '../../redux/action'
 import {SpinnerButton} from "../spinner";
 import {EXIF} from "exif-js";
+import {ApiFetch} from '../apiFetch'
+
 class upload_document_file extends React.Component{
 
     constructor(){
@@ -96,9 +98,15 @@ class upload_document_file extends React.Component{
             form.append('base64', bs64)
             form.append('fileName', this.state.fileName)
             form.append('ort', this.state.ort)
-            fetch(baseUrl+"/document_file",{
+
+            var header = new Headers()
+            header.append("sessionId", getCookieSessionId())
+            header.append("userId", getCookieUserId());
+
+            ApiFetch("/document_file",{
                 method: "POST",
-                body: form
+                body: form,
+                headers: header
             }).then(res => res.text())
             .then(result => {
                 if(result != ""){

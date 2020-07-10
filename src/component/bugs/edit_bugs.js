@@ -5,6 +5,7 @@ import {baseUrl} from "../../const/const"
 import {editBugs} from '../../redux/action'
 import {connect} from 'react-redux'
 import {SpinnerButton} from "../spinner"
+import {ApiFetch} from '../apiFetch'
 
 class edit_bugs extends React.Component{
 
@@ -44,9 +45,15 @@ class edit_bugs extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("bugsId", this.props.bugsId)
         form.append("bugs", v)
-        fetch(baseUrl+"/edit_bugs", {
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/edit_bugs", {
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(res => res.text())
         .then(result => {
             if(result == "success"){

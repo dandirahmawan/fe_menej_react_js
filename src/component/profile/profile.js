@@ -7,6 +7,7 @@ import DocumentFile from './document_file_profile'
 import Account from './account'
 import Permition from './permition'
 import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit} from '@fortawesome/free-solid-svg-icons'
@@ -44,7 +45,7 @@ class profile extends React.Component{
         var form = new FormData()
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/user_data", {
+        ApiFetch("/user_data", {
             method: "POST",
             body: form
         }).then(res => res.json())

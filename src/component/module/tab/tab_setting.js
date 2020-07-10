@@ -4,7 +4,7 @@ import Triangle from "../../../images/triangle.png"
 import {SpinnerButton} from "../../spinner"
 import {faGlobe, faLock, faUser, faTrashAlt, faInfoCircle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {baseUrl} from "../../../const/const"
+import {ApiFetch} from '../../apiFetch'
 import PopConfirmation from '../../popup_confirmation'
 import {getCookieSessionId, getCookieUserId, popUpAlert} from "../../../function/function"
 import BaseSelectUser from './base_select_user_privacy'
@@ -51,25 +51,30 @@ class tab_setting extends React.Component{
     }
 
     submit(e){
-        ReactDom.render(<SpinnerButton size="15px"/>, e.target)
-        e.target.style.opacity = 0.4
+        if(this.state.tabName != 0){
+            ReactDom.render(<SpinnerButton size="15px"/>, e.target)
+            e.target.style.opacity = 0.4
 
-        let form = new FormData()
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
-        form.append("tabName", this.state.tabName)
-        form.append("prv", this.state.privacy)
-        form.append("tabId", this.props.tabId)
-        form.append("userSelectedPrivacy", this.state.userSelectedPrivacy)
-        fetch(baseUrl+"/edit_tab", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
-            if(result == "") {
-                this.props.editTab(this.state.tabName, this.state.privacy)
-                this.props.cancel()
-            }
-        })
+            let form = new FormData()
+            form.append("userId", getCookieUserId())
+            form.append("sessionId", getCookieSessionId())
+            form.append("tabName", this.state.tabName)
+            form.append("prv", this.state.privacy)
+            form.append("tabId", this.props.tabId)
+            form.append("userSelectedPrivacy", this.state.userSelectedPrivacy)
+
+            ApiFetch("/edit_tab", {
+                method: "POST",
+                body: form
+            }).then(res => res.text()).then(result => {
+                if(result == "") {
+                    this.props.editTab(this.state.tabName, this.state.privacy)
+                    this.props.cancel()
+                }
+            })
+        }else{
+            popUpAlert("Tab name is empty")
+        }
     }
 
     privacyChange(e){
@@ -93,6 +98,7 @@ class tab_setting extends React.Component{
                 baseSelectUserPrivacy: <BaseSelectUser cancel={this.cancelSetUserPrivacy}
                                                        submit={this.submitUserPrivacyTab}
                                                        tabId={this.props.tabId}
+                                                       userPrivacyData={this.state.userSelectedPrivacy}
                                                        data={this.props.dataTeam}/>
             })
         }
@@ -103,6 +109,7 @@ class tab_setting extends React.Component{
             baseSelectUserPrivacy: <BaseSelectUser cancel={this.cancelSetUserPrivacy}
                                                    submit={this.submitUserPrivacyTab}
                                                    tabId={this.props.tabId}
+                                                   userPrivacyData={this.state.userSelectedPrivacy}
                                                    data={this.props.dataTeam}/>
         })
     }
@@ -141,7 +148,8 @@ class tab_setting extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("tabId", this.props.tabId)
-        fetch(baseUrl+"/delete_tab", {
+
+        ApiFetch("/delete_tab", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -175,7 +183,9 @@ class tab_setting extends React.Component{
                     <div style={{width: "15px", marginTop: "-15px", marginLeft: "110px"}}>
                         <img src={Triangle} style={{height: "12px"}}></img>
                     </div>
+
                     <div className="bold main-border-bottom" style={{fontSize: "12px", padding: "5px", paddingLeft: "10px", paddingRight: "10px"}}>Setting</div>
+
                     <div style={{padding: "10px", paddingLeft: "10px", paddingRight: "10px"}}>
                         <div className="bold" style={{fontSize: "11px", marginBottom: "3px"}}>Tab name :</div>
                         <input onChange={this.changeTabNameHandler}
@@ -184,7 +194,9 @@ class tab_setting extends React.Component{
                                placeholder="tab name"
                                style={{padding: "5px", marginBottom: "10px"}}
                         />
+
                         <div className="bold" style={{fontSize: "11px", marginBottom: "3px"}}>Privacy :</div>
+
                         <div style={{overflow: "hidden"}}>
                             {this.state.iconPrivacy}
                             <select onChange={this.privacyChange}
@@ -195,9 +207,10 @@ class tab_setting extends React.Component{
                                 <option value="us">Users</option>
                             </select>
                             {
-                                (this.state.privacy == "us")
+                                (this.state.privacy == "us" && this.state.baseSelectUserPrivacy == null)
                                 ?
-                                    <button onClick={this.infoPrivacy} style={{marginTop: "5px", background: "none", color: "#91ACB3", position: "absolute"}}>
+                                    <button onClick={this.infoPrivacy}
+                                            style={{marginTop: "5px", background: "none", color: "#91ACB3", position: "absolute"}}>
                                         <FontAwesomeIcon icon={faInfoCircle}/>
                                     </button>
                                 :
@@ -207,12 +220,14 @@ class tab_setting extends React.Component{
                                 this.state.baseSelectUserPrivacy
                             }
                         </div>
+
                         <div className="main-border-top" style={{paddingTop: "10px", paddingBottom: "10px", marginTop: "10px"}}>
                             <a onClick={this.delete} className="bold" style={{fontSize: "12px"}}>
                                 <FontAwesomeIcon icon={faTrashAlt}/> delete tab
                             </a>
                         </div>
                     </div>
+
                     <div className="bold main-border-top" style={{fontSize: "12px", padding: "5px", paddingLeft: "10px", paddingRight: "10px", textAlign: "right"}}>
                         <button onClick={this.submit} className="btn-primary"
                                 style={{fontSize: "12px", marginRight: "5px"}}>

@@ -3,18 +3,28 @@ import ReactDom from 'react-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {SpinnerButton} from "../../spinner";
-import {baseUrl} from "../../../const/const";
-import {getCookieUserId, popUpAlert} from "../../../function/function";
+import {ApiFetch} from '../../apiFetch'
+import {getCookieSessionId, getCookieUserId, popUpAlert} from "../../../function/function"
+import FunctionPreview from './function_preview'
+import FunctionData from './function_data'
 
 class form_tab extends React.Component{
 
     constructor(){
         super()
+        this.state = {
+            functionBase: null,
+            functionDataBase: null
+        }
+
         this.baseForm = React.createRef()
         this.buttonSubmit = React.createRef()
         this.startAction = this.startAction.bind(this)
         this.renderForm = this.renderForm.bind(this)
         this.submit = this.submit.bind(this)
+        this.keyUpTxtAreaForm = this.keyUpTxtAreaForm.bind(this)
+        this.hidePopUp = this.hidePopUp.bind(this)
+        this.functionSelect = this.functionSelect.bind(this)
     }
 
     componentDidMount(){
@@ -80,7 +90,7 @@ class form_tab extends React.Component{
                 txtarea.value = (data[i] === undefined) ? "" : data[i]
                 txtarea.style.minHeight = "15px"
                 txtarea.setAttribute("rows", "1")
-                txtarea.setAttribute("class", "txt-val-frm-tab")
+                txtarea.setAttribute("class", "txt-val-frm-tab box-shadow")
                 txtarea.onkeyup = this.keyUpTxtAreaForm
                 elm1.append(txtarea)
             }
@@ -100,6 +110,9 @@ class form_tab extends React.Component{
     }
 
     keyUpTxtAreaForm(e){
+        var x = e.target.offsetTop    // Get the horizontal coordinate
+        var y = e.target.offsetLeft    // Get the vertical coordinate
+
         let prt = e.target.parentElement
         let divTxtPreview = prt.children
         for(let i = 0;i<divTxtPreview.length;i++){
@@ -111,6 +124,33 @@ class form_tab extends React.Component{
                 e.target.style.height = h+"px"
             }
         }
+
+        if(e.target.value == "="){
+            this.setState({
+                functionBase : <FunctionPreview x={x} y={y} target={e.target} select={this.functionSelect} hidePopUp={this.hidePopUp}/>
+            })
+        }else{
+            this.setState({
+                functionBase : null
+            })
+        }
+    }
+
+    functionSelect(x, y, functionName){
+        let x1 = parseInt(x) + 20
+        let y1 = parseInt(y) + 50
+        this.setState({
+            functionBase: null,
+            functionDataBase: <FunctionData functionName={functionName}
+                                            x={x1} 
+                                            y={y1}/>
+        })
+    }
+
+    hidePopUp(){
+        this.setState({
+            functionBase : null
+        })
     }
 
     submit(e){
@@ -131,7 +171,8 @@ class form_tab extends React.Component{
         form.append("seq", this.props.seq)
         form.append("tabId", this.props.tabId)
         form.append("data", JSON.stringify(jo))
-        fetch(baseUrl+"/edit_tab_data", {
+
+        ApiFetch("/edit_tab_data", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -148,6 +189,9 @@ class form_tab extends React.Component{
     render(){
         return(
             <div className="main-border-left" ref={this.baseForm} style={{position: "fixed", right: "0px", background: "#FFF", width: "350px", top: "60px", zIndex: "1"}}>
+                {this.state.functionBase}
+                {this.state.functionDataBase}
+
                 <div id="hd-form-tb" className="bold main-border-bottom" style={{padding: "10px", fontSize: "14px", paddingLeft: "20px"}}>
                     Form data
                     <button onClick={this.props.cancelForm}

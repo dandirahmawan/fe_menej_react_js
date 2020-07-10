@@ -9,6 +9,7 @@ class row_tab extends React.Component{
         }
         this.refRow = React.createRef()
         this.renderElement = this.renderElement.bind(this)
+        this.removeRow = this.removeRow.bind(this)
     }
 
     componentDidMount(){
@@ -22,28 +23,45 @@ class row_tab extends React.Component{
             nexProps.isStarting || 
             nexProps.isBorder != this.props.isBorder || 
             nexProps.col != this.props.col ||
-            nexProps.isCellEdit
-        ){
-            this.renderElement(nexProps.col, nexProps.no, nexProps.isStarting, nexProps.isBorder, nexProps.colHeader)
+            nexProps.isCellEdit ||
+            nexProps.dataFilter != this.props.dataFilter
+        )
+        {
+            this.renderElement(nexProps.col, nexProps.no, nexProps.isStarting, this.props.isBorder, this.props.colHeader)
         }
+    }
+
+    validationRenderElement(dataFilter, column){
+        let returnData = "bad"
+        var count = Object.keys(column).length
+        for(let i = 0;i<count;i++){
+            let idx = dataFilter[i].indexOf(column[i])
+            if(idx != -1) {
+                returnData = "ok"
+                this.setState({
+                    isRender: true
+                })
+            }
+        }
+        return returnData
     }
 
     renderElement(col, no, isStarting, isBorder, colHeader){
         this.refRow.current.innerHTML = ""
-        // let count = Object.keys(col).length;
         let countColHeader = Object.keys(colHeader).length
         let elm0 = document.createElement("td")
         elm0.innerText = no
         if(!isBorder){
-            elm0.setAttribute("class", "bold td-tab-data")
+            elm0.setAttribute("class", "second-background-grs td-tab-data")
         }else{
-            elm0.setAttribute("class", "bold td-tab-data main-border")
+            elm0.setAttribute("class", "second-background-grs td-tab-data main-border")
         }
 
         elm0.style.padding = "5px"
         elm0.style.width = this.props.elm[0].offsetWidth - 10+"px"
         elm0.style.textAlign = "left"
 
+        //append column number
         this.refRow.current.append(elm0)
         let sumWidth = null
         for(let i = 0;i<countColHeader;i++){
@@ -73,20 +91,22 @@ class row_tab extends React.Component{
                 }
             }
         }
-        if(no == 1 && isStarting){
-            let wb = parseInt(sumWidth)
-            this.props.bodyTable.style.width = wb+"px"
-            this.props.tableHeader.style.width = sumWidth
-            this.props.tableTbody.style.width = sumWidth
-            this.props.tableBodyScroll.style.width = sumWidth
-        }
+    }
+
+    removeRow(){
+        let elm = this.refRow.current
+        if(elm != null) elm.remove()
     }
 
     render() {
         return (
             <React.Fragment>
                 {this.state.baseEditCell}
-                <tr valign="top" onClick={(e) => this.props.formTab(e, this.props.seq)} className="tr-selectable tr-tb-data" ref={this.refRow} style={{background: "#FFF"}}/>
+                    <tr valign="top"
+                        onClick={(e) => this.props.formTab(e, this.props.seq)}
+                        className="tr-selectable tr-tb-data main-border"
+                        ref={this.refRow}
+                        style={{background: "#FFF"}}></tr>
             </React.Fragment>
         )
     }

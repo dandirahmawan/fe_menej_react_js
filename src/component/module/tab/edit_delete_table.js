@@ -1,6 +1,6 @@
 import React from 'react'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from "../../../function/function";
-import {baseUrl} from "../../../const/const";
+import {ApiFetch} from '../../apiFetch'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
@@ -162,7 +162,8 @@ class edit_delete_table extends React.Component{
         form.append("col", JSON.stringify(jo))
         form.append("tabId", this.props.tabId)
         form.append("re_col", this.state.delCol)
-        fetch(baseUrl+"/edit_table", {
+
+        ApiFetch("/edit_table", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -190,7 +191,7 @@ class edit_delete_table extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("tabId", this.props.tabId)
 
-        fetch(baseUrl+"/delete_tab_table", {
+        ApiFetch("/delete_tab_table", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {

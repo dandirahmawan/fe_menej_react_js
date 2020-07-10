@@ -1,5 +1,7 @@
 import React from 'react'
 import NoteModule from '../note/note'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
 
 class row_module extends React.Component{
 
@@ -79,6 +81,9 @@ class row_module extends React.Component{
                                     <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">
                                         {this.props.modulName}
                                     </a>
+                                    <div className="second-font-color" style={{width: "400px", marginTop: "3px"}}>
+                                        {this.props.description}
+                                    </div>
                                     {
                                         (this.state.noteBaseVisible) 
                                         ?
@@ -91,14 +96,24 @@ class row_module extends React.Component{
                                     }
                                 </td>
                                 <td className="tb-border-mod main-border">
-                                    {this.props.userName}&nbsp; 
                                     {
-                                        this.props.isMember == 0 ? 
-                                        <i style={{color: "red", fontSize: "12px"}} alt='sasas' class="fa fa-exclamation-circle tooltip"><span class="tooltiptext">this user not available</span></i> 
-                                        : ''
+                                        (this.props.isMember) 
+                                        ?
+                                            <div><FontAwesomeIcon className="second-font-color" icon={faUserAlt}/></div>
+                                        :
+                                            <div className="tooltip">
+                                                <FontAwesomeIcon style={{color: "#F00"}} icon={faUserAlt}/>
+                                                <span class="tooltiptext">this user not available</span>
+                                            </div>
                                     }
+                                    <div style={{float: "left", marginLeft: "20px", marginTop: "-13px"}}>
+                                        {this.props.userName}
+                                    </div>
                                 </td>
-                                <td className="tb-border-mod main-border">{this.convertDate(this.props.endDate)}</td>
+                                <td className="tb-border-mod main-border">
+                                    <FontAwesomeIcon style={{marginRight: "5px"}} className="second-font-color" icon={faCalendarAlt}/>
+                                    {this.convertDate(this.props.endDate)}
+                                </td>
                                 <td className="bold tb-border-mod main-border" style={{color: this.colorStatus(this.props.modulStatus)}}>{this.moduleStatus(this.props.modulStatus)}</td>
                                 <td className="bold tb-border-mod main-border">
                                     {
@@ -152,7 +167,12 @@ class row_module extends React.Component{
                                         }
                                 </td>
                                 <td className="tb-border-mod">
-                                    <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">{this.props.modulName}</a>
+                                    <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">
+                                        {this.props.modulName}
+                                    </a>
+                                    <div className="second-font-color" style={{width: "400px", marginTop: "3px"}}>
+                                        {this.props.description}
+                                    </div>
                                     {
                                         (this.state.noteBaseVisible) 
                                         ?
@@ -166,14 +186,24 @@ class row_module extends React.Component{
                                     
                                 </td>
                                 <td className="tb-border-mod">
-                                    {this.props.userName}&nbsp; 
                                     {
-                                        this.props.isMember == 0 ? 
-                                        <i style={{color: "red", fontSize: "12px"}} alt='sasas' class="fa fa-exclamation-circle tooltip"><span class="tooltiptext">this user not available</span></i> 
-                                        : ''
+                                        (this.props.isMember) 
+                                        ?
+                                            <div><FontAwesomeIcon className="second-font-color" icon={faUserAlt}/></div>
+                                        :
+                                            <div className="tooltip">
+                                                <FontAwesomeIcon style={{color: "#F00"}} icon={faUserAlt}/>
+                                                <span class="tooltiptext">this user not available</span>
+                                            </div>
                                     }
+                                    <div style={{float: "left", marginLeft: "20px", marginTop: "-13px"}}>
+                                        {this.props.userName}
+                                    </div>
                                 </td>
-                                <td className="tb-border-mod">{this.convertDate(this.props.endDate)}</td>
+                                <td className="tb-border-mod">
+                                    <FontAwesomeIcon icon={faCalendarAlt} style={{marginRight: "5px"}} className="second-font-color"/>
+                                    {this.convertDate(this.props.endDate)}
+                                </td>
                                 <td className="bold tb-border-mod" style={{color: this.colorStatus(this.props.modulStatus)}}>{this.moduleStatus(this.props.modulStatus)}</td>
                                 <td className="bold tb-border-mod">
                                     {

@@ -4,7 +4,7 @@ import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFolder} from '@fortawesome/free-solid-svg-icons'
 import RowUser from './row_user_handover'
-import {baseUrl} from "../../const/const"
+import {ApiFetch} from '../apiFetch'
 import {SpinnerButton} from '../spinner'
 import {setDataProject} from '../../redux/action'
 import {connect} from 'react-redux'
@@ -37,7 +37,8 @@ class handover extends React.Component{
         let form = new FormData()
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/user_relation", {
+
+        ApiFetch("/user_relation", {
             method: "POST",
             body: form
         }).then(res => res.json()).then(
@@ -69,7 +70,8 @@ class handover extends React.Component{
         form.append("userId_", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/handover_project", {
+
+        ApiFetch("/handover_project", {
             method: "POST",
             body: form
         }).then(res => res.json())

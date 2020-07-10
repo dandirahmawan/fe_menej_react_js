@@ -7,3 +7,11 @@
 [0328/120058.706:ERROR:process_info.cc(359)] UncheckedAllocate
 [0328/120123.550:ERROR:file_io.cc(134)] WriteFile: The pipe is being closed. (0xE8)
 [0328/120123.550:ERROR:file_io.cc(134)] WriteFile: The pipe is being closed. (0xE8)
+[0614/230738.070:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/231738.082:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/231738.083:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/232238.071:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/233150.308:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/233738.072:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0614/235238.072:ERROR:crash_report_database_win.cc(428)] unexpected header
+[0615/091814.622:ERROR:crash_report_database_win.cc(428)] unexpected header

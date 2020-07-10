@@ -2,6 +2,7 @@ import React from 'react'
 import ItemUserChoice from './item_user_choice'
 import {baseUrl} from '../const/const'
 import {getCookieUserId} from '../function/function'
+import {ApiFetch} from './apiFetch'
 
 class userListChoice extends React.Component{
 
@@ -18,7 +19,7 @@ class userListChoice extends React.Component{
         form.append('userId', userId)
         form.append('project_id', this.props.projectId)
         
-        fetch(baseUrl+"/team", {
+        ApiFetch("/team", {
             method: "POST",
             body: form
         }).then(res => res.json())

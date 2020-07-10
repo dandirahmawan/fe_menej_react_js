@@ -3,10 +3,11 @@ import ReactDom from 'react-dom'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from "../../function/function"
 import Row from './row_handover_module'
 import RowTo from './row_handover_module_to'
+import {ApiFetch} from '../apiFetch'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faClipboard} from '@fortawesome/free-solid-svg-icons'
 import {baseUrl} from "../../const/const";
-import {SpinnerButton} from "../spinner";
+import {SpinnerButton, Spinner} from "../spinner";
 
 class handover_module extends React.Component{
 
@@ -14,9 +15,11 @@ class handover_module extends React.Component{
         super()
         this.state = {
             dataUserFrom: [],
-            dataUserTo: []
+            dataUserTo: [],
+            isLoad: true
         }
 
+        this.baseHandover = React.createRef()
         this.selectFromUser = this.selectFromUser.bind(this)
         this.selectToUser = this.selectToUser.bind(this)
         this.submitHandover = this.submitHandover.bind(this)
@@ -29,14 +32,17 @@ class handover_module extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/user_handover", {
+
+        ApiFetch("/user_handover", {
             method: "POST",
             body: form
         }).then(res => res.json())
         .then(result => {
+            this.baseHandover.current.style.display = "block"
             this.setState({
                 dataUserFrom: result,
-                dataUserTo: result
+                dataUserTo: result,
+                isLoad: false
             })
         })
     }
@@ -107,46 +113,40 @@ class handover_module extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/handover_module", {
+
+        ApiFetch("/handover_module", {
             method: "POST",
             body: form
         }).then(res => res.text())
             .then(result => {
                 if(result == ""){
-                    // popUpAlert("Handover module successfully", "success")
                     this.props.cancel()
                     this.props.refreshModule()
                 }
             })
     }
 
-    fetchModule(){
-        let form = new FormData()
-        form.append("userId", getCookieUserId())
-        form.append("projectId", this.props.projectId)
-        form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/data_module", {
-            method: "POST",
-            body: form
-        }).then(res => res.json())
-            .then(result => {
-
-            })
-    }
-
     render(){
 
         const data = this.state.dataUserFrom.map(dt => {
-            return <Row userId={dt.userId}
-                        userName={dt.userName}
-                        picProfile={dt.picProfile}
-                        userStatus={dt.userStatus}
-                        select={this.selectFromUser}
-                        userEmail={dt.emailUser}/>
+            console.log(dt.isMember+" "+dt.userStatus+" "+dt.hasModule)
+            if((dt.userStatus == 'N' && dt.hasModule == 'Y') 
+                || dt.userStatus != 'N')
+                // || (dt.isMember != 'N' && dt.hasModule == 'Y'))
+            {
+                return <Row userId={dt.userId}
+                            userName={dt.userName}
+                            picProfile={dt.picProfile}
+                            hasModule={dt.hasModule}
+                            userStatus={dt.userStatus}
+                            isMember={dt.isMember}
+                            select={this.selectFromUser}
+                            userEmail={dt.emailUser}/>
+            }
         })
 
         const data2 = this.state.dataUserFrom.map(dt => {
-            if(dt.userStatus != "N") {
+            if(dt.userStatus != "N" && dt.isMember != "N") {
                 return <RowTo userId={dt.userId}
                               userName={dt.userName}
                               picProfile={dt.picProfile}
@@ -163,7 +163,19 @@ class handover_module extends React.Component{
                     <div className="bold" style={{padding: "10px", fontSize: "14px"}}>
                         Handover module
                     </div>
-                    <div style={{height: "300px", paddingRight: "10px", paddingLeft: "10px"}}>
+
+                    {
+                        (this.state.isLoad)
+                        ?
+                            <div style={{textAlign: "center", height: "300px"}}>
+                                <Spinner size="25px"/>
+                                <span className="second-font-color bold" style={{fontSize: "12px"}}>Loading..</span>
+                            </div>
+                        :
+                            ""
+                    }
+
+                    <div ref={this.baseHandover} style={{height: "300px", paddingRight: "10px", paddingLeft: "10px", display: "none"}}>
                         <div className="main-border" style={{width: "280px", height: "300px", float: "left", overflowY: "scroll", overflowX: "hidden"}}>
                             <div className="main-border-bottom second-background-grs bold" style={{padding: "5px", fontSize: "12px", position: "fixed", width: "270px"}}>
                                 Source user

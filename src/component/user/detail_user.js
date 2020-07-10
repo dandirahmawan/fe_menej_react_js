@@ -2,7 +2,7 @@ import React from 'react'
 import ModuleDetail from './module_detail'
 import BugsDetail from './bugs_detail'
 import DocumentFileDetail from './document_file_detail'
-import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {getCookieSessionId, getCookieUserId} from '../../function/function'
 import Detail from '../module/detail'
 import {setDataModule} from '../../redux/action'
@@ -43,7 +43,7 @@ class detail_user extends React.Component{
         form.append("user", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        fetch(baseUrl+"/user_detail", {
+        ApiFetch("/user_detail", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -68,7 +68,7 @@ class detail_user extends React.Component{
             form.append("user", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
 
-            fetch(baseUrl+"/user_detail", {
+            ApiFetch("/user_detail", {
                 method: "POST",
                 body: form
             }).then(res => res.json())

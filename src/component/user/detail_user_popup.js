@@ -5,6 +5,7 @@ import {faCalendar, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {connect} from 'react-redux'
 import {setDataModule, setDataBugs, setDataDocFile} from '../../redux/action'
 import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import RowModule from './row_module_detail_popup'
 import Detail from '../module/detail'
 import RowBugs from './row_bugs_user_detail_pop'
@@ -42,7 +43,7 @@ class detail_user_popup extends React.Component{
         form.append("user", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        fetch(baseUrl+"/user_detail", {
+        ApiFetch("/user_detail", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -127,7 +128,7 @@ class detail_user_popup extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("userIdLogin", getCookieUserId())
 
-        fetch(baseUrl+"/delete_user", {
+        ApiFetch("/delete_user", {
             method: "POST",
             body: form
         })

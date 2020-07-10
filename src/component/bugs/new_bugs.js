@@ -3,6 +3,7 @@ import {getCookieSessionId, getCookieUserId, popCenterPosition} from '../../func
 import {connect} from 'react-redux'
 import { baseUrl } from '../../const/const'
 import {appendDataBugs, updateDataModuleBugs} from '../../redux/action'
+import {ApiFetch} from '../apiFetch'
 
 class new_module extends React.Component{
 
@@ -57,9 +58,15 @@ class new_module extends React.Component{
             form.append("bugs", this.state.bugs)
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
-            fetch(baseUrl+"/add_bugs", {
+
+            var header = new Headers()
+            header.append("sessionId", getCookieSessionId())
+            header.append("userId", getCookieUserId());
+
+            ApiFetch("/add_bugs", {
                 method: 'POST',
-                body: form
+                body: form,
+                headers: header
             }).then(res => res.json())
             .then(result => {
                 this.props.appendBugs(result)

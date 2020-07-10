@@ -1,8 +1,8 @@
 import React from 'react'
 import Triangle from '../../../images/triangle.png'
 import Item from './item_base_select_user_privacy'
-import {baseUrl} from "../../../const/const";
 import {getCookieSessionId, getCookieUserId, popUpAlert} from "../../../function/function";
+import {ApiFetch} from '../../apiFetch'
 
 class base_select_user_privacy extends React.Component{
 
@@ -10,7 +10,8 @@ class base_select_user_privacy extends React.Component{
         super()
         this.state = {
             userSelected: [],
-            dataUserPrivacy: []
+            dataUserPrivacy: [],
+            dataTeam: []
         }
         this.cancel = this.cancel.bind(this)
         this.select = this.select.bind(this)
@@ -23,16 +24,32 @@ class base_select_user_privacy extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("tabId", this.props.tabId)
 
-        fetch(baseUrl+"/get_user_privacy", {
+        for(let i = 0;i<this.props.userPrivacyData.length;i++){
+            this.state.userSelected.push(this.props.userPrivacyData[i])
+        }
+
+        ApiFetch("/get_user_privacy", {
             method: "POST",
             body: form
-        }).then(res => res.text()).then(result => {
-            let arr = result.split(",")
+        }).then(res => res.json()).then(result => {
+            let dataTeam = result.dataTeam
+            let dataTeamJson = JSON.parse(dataTeam)
+
+            this.setState({
+                dataTeam: dataTeamJson,
+                userSelected: (this.state.userSelected.length == 0)
+                    ? result.selectedUser.split(",") : this.state.userSelected
+            })
+
+            let arr = this.state.userSelected
             const data = this.props.data.map(dt => {
                 let idx = arr.indexOf(dt.userId.toString())
+                // console.log(arr)
+                // console.log(dt.userId)
+                // console.log(idx)
+                // console.log("--------------------")
                 if(idx != -1){
                     dt.isSelected = true
-                    this.state.userSelected.push(dt.userId)
                 }else{
                     dt.isSelected = false
                 }
@@ -50,9 +67,9 @@ class base_select_user_privacy extends React.Component{
     }
 
     select(userId){
-        let idx = this.state.userSelected.indexOf(userId)
+        let idx = this.state.userSelected.indexOf(userId.toString())
         if(idx == -1){
-            this.state.userSelected.push(userId)
+            this.state.userSelected.push(userId.toString())
         }else{
             this.state.userSelected.splice(idx, 1)
         }
@@ -68,12 +85,13 @@ class base_select_user_privacy extends React.Component{
     }
 
     render(){
-
-        const item = this.state.dataUserPrivacy.map(dt => {
+        const item = this.state.dataTeam.map(dt => {
+            let idx = this.state.userSelected.indexOf(dt.userId.toString())
+            let isSelected = (idx != -1) ? true : dt.isSelected
             return <Item userName={dt.userName}
                          emailUser={dt.emailUser}
                          userId={dt.userId}
-                         isSelected={dt.isSelected}
+                         isSelected={isSelected}
                          select={this.select}/>
         })
 
@@ -90,6 +108,10 @@ class base_select_user_privacy extends React.Component{
                     </div>
                     <div style={{overflowY: "scroll", maxHeight: "200px"}}>
                         {item}
+                        {/*{item}*/}
+                        {/*{item}*/}
+                        {/*{item}*/}
+                        {/*{item}*/}
                     </div>
                 </div>
                 <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>

@@ -4,7 +4,7 @@ import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons'
 import {SpinnerButton} from "../../spinner";
-import {baseUrl} from "../../../const/const";
+import {ApiFetch} from '../../apiFetch'
 
 class copy_tab extends React.Component{
 
@@ -41,7 +41,8 @@ class copy_tab extends React.Component{
         form.append("confirmReplace", "N")
         form.append("tabId", this.props.tabId)
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/copy_tab", {
+
+        ApiFetch("/copy_tab", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -50,7 +51,8 @@ class copy_tab extends React.Component{
                 form.append("userId", getCookieUserId())
                 form.append("sessionId", getCookieSessionId())
                 form.append("projectId", this.props.projectId)
-                fetch(baseUrl+"/tab_list", {
+
+                ApiFetch("/tab_list", {
                     method: "POST",
                     body: form
                 }).then(res => res.json()).then(result => {

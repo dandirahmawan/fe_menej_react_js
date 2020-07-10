@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTrashAlt, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
 import {getCookieSessionId, getCookieUserId} from "../../function/function"
 import PopConfirmation from '../popup_confirmation'
+import {ApiFetch} from '../apiFetch'
 
 class row_user extends React.Component{
 
@@ -25,7 +26,7 @@ class row_user extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("userIdLogin", getCookieUserId())
 
-        fetch(baseUrl+"/delete_user", {
+        ApiFetch("/delete_user", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -81,9 +82,9 @@ class row_user extends React.Component{
                         {/* {this.props.emailUser} */}
                         10 September 2020
                     </td>
-                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>10 Module</td>
-                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>10 Bugs</td>
-                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>10 Doc File</td>
+                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>{this.props.countModule} Module</td>
+                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>{this.props.countBugs} Bugs</td>
+                    <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px"}}>{this.props.countDocFile} Doc File</td>
                     <td style={{borderBottom: "1px solid #e6e5e5", fontSize: "11px", width: "50px"}}>
                         <button onClick={(e) => this.deleteUser(e, this.props.userId)} style={{background: "none",}}>
                             <FontAwesomeIcon className="second-font-color" style={{fontSize: "15px"}} icon={faTrashAlt}/>

@@ -48,7 +48,9 @@ class module_info extends React.Component{
                                 ?
                                     <td><input placeholder="module name" onChange={this.props.changeName} style={{padding: "5px", width: "300px"}} type='text' value={this.props.moduleName}></input></td>
                                 : 
-                                    <td style={{paddingBottom: "10px"}}>{this.props.moduleName}</td>
+                                    <td style={{paddingBottom: "10px"}}>
+                                        <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>{this.props.moduleName}</div>
+                                    </td>
                             }
                         </tr>
                         <tr>
@@ -66,8 +68,10 @@ class module_info extends React.Component{
                                             </React.Fragment>
                                         :
                                             <React.Fragment>
-                                                <span className="bold">{this.props.userName}</span><br/>
-                                                <span style={{fontSize: "10px"}}>{this.props.emailUser}</span>
+                                                <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>
+                                                    <span className="bold">{this.props.userName}</span><br/>
+                                                    <span style={{fontSize: "10px"}}>{this.props.emailUser}</span>
+                                                </div>
                                             </React.Fragment>
                                 }
                             </td>
@@ -84,7 +88,11 @@ class module_info extends React.Component{
                                         </select>
                                     </td>
                                 :
-                                    <td style={{paddingBottom: "10px"}}>{(this.props.moduleStatus == 'C') ? 'Close' : 'On Progress'}</td>
+                                    <td style={{paddingBottom: "10px"}}>
+                                        <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>
+                                            {(this.props.moduleStatus == 'C') ? 'Close' : 'On Progress'}
+                                        </div>
+                                    </td>
                             }
                         </tr>
                         <tr>
@@ -94,36 +102,60 @@ class module_info extends React.Component{
                                 ?
                                     <td><input style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input></td>
                                 :
-                                    <td style={{paddingBottom: "10px"}}>{this.props.dueDate}</td>
+                                    <td style={{paddingBottom: "10px"}}>
+                                        <div className="bold second-background-grs second-font-color" 
+                                            style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
+                                            {this.props.dueDate}
+                                        </div>
+                                    </td>
                             }
                         </tr>
                         <tr>
-                            <td style={{width:"100px"}} className="bold">Due date</td>
-                            {
-                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
-                                ?
-                                    <td><input style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input></td>
-                                :
-                                    <td style={{paddingBottom: "10px"}}>{this.props.dueDate}</td>
-                            }
+                            <td style={{width:"100px"}} className="bold">Created date</td>
+                            <td style={{paddingBottom: "10px"}}>
+                                <div className="bold second-background-grs second-font-color" 
+                                    style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
+                                    {this.props.createdDate}
+                                </div>
+                            </td>
                         </tr>
                         <tr>
+                            <td style={{width:"100px"}} className="bold">Updated date</td>
+                            <td style={{paddingBottom: "10px"}}>
+                                <div className="bold second-background-grs second-font-color" 
+                                    style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
+                                    {this.props.dueDate}
+                                </div>
+                            </td>
+                        </tr>
+                        {/* <tr>
                             <td style={{width:"100px"}} className="bold">Document file</td>
-                            <td style={{paddingBottom: "10px"}}>10</td>
+                            <td style={{paddingBottom: "10px"}}>
+                                <div className="bold" style={{padding: "3px", float: "left", background: "rgb(222, 221, 221)", border: "1px solid #CCC", borderRadius: "3px"}}>0</div>
+                            </td>
                         </tr>
                         <tr>
                             <td style={{width:"100px"}} className="bold">Bugs</td>
-                            <td style={{paddingBottom: "10px"}}>10</td>
-                        </tr>
+                            <td style={{paddingBottom: "10px"}}>
+                                <div className="bold" style={{padding: "3px", float: "left", background: "rgb(222, 221, 221)", border: "1px solid #CCC", borderRadius: "3px"}}>0</div>
+                            </td>
+                        </tr> */}
                         <tr>
                             <td style={{width:"100px", paddingTop: "10px"}} valign="top" className="bold">Description</td>
                             <td>
                                 {
                                     (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                     ?
-                                        <textarea value={this.props.description} onChange={this.props.changeDesc} placeholder="description" style={{width: "300px", height: "50px", fontSize: "12px"}}></textarea>
+                                        <textarea onChange={this.props.changeDesc} 
+                                            placeholder="description" 
+                                            value={this.props.description}
+                                            style={{width: "300px", height: "50px", fontSize: "12px"}}>
+                                        </textarea>
                                     :
-                                        (this.props.description != '') ? this.props.description : 'No description'
+                                        <div style={{padding: "5px", borderRadius: "3px", width: "300px", minHeight: "50px", border: "1px solid #CCC"}} className="second-background-grs second-font-color"> 
+                                            {(this.props.description != '') ? this.props.description : 'No description'}
+                                        </div>    
+                                    
                                 }
                             </td>
                         </tr>
