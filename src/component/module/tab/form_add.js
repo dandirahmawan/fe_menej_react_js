@@ -73,7 +73,8 @@ class form_add extends React.Component{
 
     hidePopUp(){
         this.setState({
-            functionBase: null
+            functionBase: null,
+            functionDataBase: null
         })
     }
 
@@ -109,15 +110,19 @@ class form_add extends React.Component{
         })
     }
 
-    functionSelect(x, y, functionName){
+    functionSelect(target, x, y, functionName){
         let x1 = parseInt(x) + 20
         let y1 = parseInt(y) + 50
-        this.setState({
-            functionBase: null,
-            functionDataBase: <FunctionData functionName={functionName}
-                                            x={x1} 
-                                            y={y1}/>
-        })
+        if(functionName != "url" && functionName != "URL"){
+            this.setState({
+                functionBase: null,
+                functionDataBase: <FunctionData functionName={functionName}
+                                                hidePopUp={this.hidePopUp}
+                                                target={target}
+                                                x={x1} 
+                                                y={y1}/>
+            })
+        }
     }
 
     keyUpTxtAreaForm(e){
