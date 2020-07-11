@@ -14,12 +14,14 @@ import Invitation from './component/invitation/invitation'
 import Logout from './component/logout'
 import Profile from './component/profile/profile'
 import ForgotPassword from './component/forgot_password'
+import AccountRecover from './component/account_recover'
+import PageNotFound from './component/404'
 import {startData} from './redux/action'
 import {connect} from 'react-redux'
 import './css/style.css'
 import './App.css'
-import { baseUrl } from './const/const';
-import { getCookieUserId, getCookieSessionId } from './function/function';
+import { baseUrl , pathUrlConst } from './const/const';
+import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function';
 import {isMobile, MobileView, isBrowser, BrowserView} from 'react-device-detect'
 import {SpinnerButton} from "./component/spinner";
 
@@ -28,9 +30,11 @@ class App extends React.Component{
   constructor(){
     super()
     this.state = {
-      userNameLogin: "",
-      emailLogin: "",
-      isLoad: true
+        userNameLogin: "",
+        emailLogin: "",
+        isLoad: true,
+        pathIndex: true,
+        invalidPath: false
     }
   }
 
@@ -39,24 +43,40 @@ class App extends React.Component{
       var userId =  getCookieUserId()
       var sessionId = getCookieSessionId()
 
+      let path = window.location.pathname
+      if(pathValidation(path) == "invalid"){
+          this.setState({
+              invalidPath: true
+          })
+      }
+
+    //   let scope = this
+    //   document.addEventListener("click", function (e) {
+    //       if(scope.state.invalidPath){
+    //           let elm = document.getElementById("page-not-found-base")
+    //           if(elm != null) elm.remove()
+    //       }
+    //   })
+
       form.append("userId", userId)
       form.append("sessionId", sessionId);
 
       fetch(baseUrl+"/start_data", {
-        method : "POST",
-        body : form
+            method : "POST",
+            body : form
       }).then(rst => rst.text())
       .then(result => {
+        console.log(result)
         if(result != ""){
-          let jsonData = JSON.parse(result)
-          if(jsonData.name != null && jsonData.email != null){
-              this.props.dispatchStartData(jsonData.name, jsonData.email, jsonData.picProfile)
-          }
-          this.setState({
-            userNameLogin: jsonData.name,
-            emailLogin: jsonData.email,
-            isLoad: false
-          })
+            let jsonData = JSON.parse(result)
+            if(jsonData.name != null && jsonData.email != null){
+                this.props.dispatchStartData(jsonData.name, jsonData.email, jsonData.picProfile)
+            }
+            this.setState({
+                userNameLogin: jsonData.name,
+                emailLogin: jsonData.email,
+                isLoad: false
+            })
         }
       })
   }
@@ -64,65 +84,90 @@ class App extends React.Component{
   render(){
     var a = document.cookie
     var path = window.location.pathname
-    if(a === ""){
-      return (
-        <div>
-          <BrowserRouter>
-            {/*<BrowserView>*/}
-              <Redirect to="/login"/>
-              <Route path="/login"  exact component={Login} />
-              <Route path="/forgot_password"  exact component={ForgotPassword} />
-              <Route path="/register"  exact component={Register} />
-            {/*</BrowserView>*/}
-          </BrowserRouter>
-        </div>
-      );
-    }else{
-      if((this.state.userNameLogin == null && this.state.emailLogin == null && this.state.isLoad == false) || this.state.userNameLogin == "" && this.state.emailLogin == "" && this.state.isLoad == false){
-        return(
-          <BrowserRouter>
-            <Redirect to="/logout" component={Logout}></Redirect>
-          </BrowserRouter>
-        )
-      }
-      if((this.props.userEmailLogin == "" || this.props.userNameLogin == "" || this.props.userEmailLogin === undefined || this.props.userNameLogin === undefined) && path != '/logout'){
-        return(
-          <StartPage/>
-        )
-      }else{
-        if(path == '/invitation'){
-          return(
-            <Invitation/>
-          )
-        }
-        else if(path == '/logout'){
-          return(
-            <BrowserRouter>
-              {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
-            </BrowserRouter>
 
-          )
-        }else{
-          const path = window.location.pathname
-          const redirect = (path === '/login') ? <Redirect to="/dashboard"></Redirect> : ""
-          return (
+    if(path == "/account_recovery"){
+        return(
             <BrowserRouter>
-                {redirect}
-                <Navbar/>
-                <Sidebar/>
-                <div id="main-base-data-wrapper">
-                  <Route path="/dashboard" exact component={Dashboard} />
-                  <Route path="/users/"  exact component={User} />
-                  <Route path="/project/"  exact component={Project} />
-                  <Route path="/project/:id"  exact component={ListModule} />
-                  <Route path="/logout"  exact component={Logout} />
-                  <Route path="/profile"  exact component={Profile} />
+                <Route path="/account_recovery"  exact component={AccountRecover} />
+            </BrowserRouter>
+        )
+    }
+    else{
+        if(a === ""){
+            return (
+                <div>
+                    <BrowserRouter>
+                        <Redirect to="/login"/>
+                        <Route path="/login"  exact component={Login} />
+                        <Route path="/account_recovery"  exact component={AccountRecover} />
+                        <Route path="/forgot_password"  exact component={ForgotPassword} />
+                        <Route path="/register"  exact component={Register} />
+                    </BrowserRouter>
                 </div>
-            </BrowserRouter>
-          )
-        }
-      }
+            )
+        }else{
+            if(
+                (this.state.userNameLogin == null &&
+                    this.state.emailLogin == null &&
+                    this.state.isLoad == false
+                ) || this.state.userNameLogin == "" && this.state.emailLogin == "" && this.state.isLoad == false){
+                return(
+                    <BrowserRouter>
+                        <Redirect to="/logout" component={Logout}></Redirect>
+                    </BrowserRouter>
+                )
+            }
+            if(
+                (this.props.userEmailLogin == "" ||
+                    this.props.userNameLogin == "" ||
+                    this.props.userEmailLogin === undefined ||
+                    this.props.userNameLogin === undefined
+                ) && path != '/logout'){
+                return(
+                    <StartPage/>
+                )
+            }else{
+                if(path == '/invitation'){
+                    return(
+                        <Invitation/>
+                    )
+                }
+                else if(path == '/logout'){
+                    return(
+                        <BrowserRouter>
+                            {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
+                        </BrowserRouter>
 
+                    )
+                }else{
+                    const path = window.location.pathname
+                    const redirect = (path === '/login') ? <Redirect to="/project"></Redirect> : ""
+                    return (
+                        <BrowserRouter>
+                            {redirect}
+                            <Navbar/>
+                            <Sidebar/>
+                            <div id="main-base-data-wrapper">
+                                {
+                                    (pathValidation(path) == "invalid")
+                                    ?
+                                        <Route path='*' exact={true} component={PageNotFound} />
+                                    :
+                                        ""
+                                }
+                                <Route path="/dashboard" exact={true} component={Dashboard} />
+                                <Route path="/users/" exact={true} component={User} />
+                                <Route path="/project/" exact={true} component={Project} />
+                                <Route path="/project/:id" exact={true} component={ListModule} />
+                                <Route path="/logout" exact={true} component={Logout} />
+                                <Route path="/profile" exact={true} component={Profile} />
+                                <Route path='/not_found' exact={true} component={PageNotFound} />
+                            </div>
+                        </BrowserRouter>
+                    )
+                }
+            }
+        }
     }
   }
 }

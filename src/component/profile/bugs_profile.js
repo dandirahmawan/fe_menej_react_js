@@ -1,7 +1,7 @@
 import React from 'react'
 import RowBugs from './row_bugs_profile'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
-import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import DetailModule from '../module/detail'
 
 class bugs_profile extends React.Component{
@@ -21,7 +21,7 @@ class bugs_profile extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        fetch(baseUrl+"/bugs_user",{
+        ApiFetch("/bugs_user",{
             method: "POST",
             body: form
         }).then(res => res.text())

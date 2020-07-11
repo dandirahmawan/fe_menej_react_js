@@ -7,6 +7,7 @@ import Module from './module'
 import {Spinner} from '../spinner'
 import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
 import {setDataModule, deleteDataModule, deleteMember} from '../../redux/action'
+import {ApiFetch} from '../apiFetch'
 
 class list_module extends React.Component{
 
@@ -57,7 +58,7 @@ class list_module extends React.Component{
         formData.append("projectId", projectId)
         formData.append("userId", userId)
         formData.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/data_module", {
+        ApiFetch("/data_module", {
             method : "POST",
             body: formData
         }).then(res => res.json())
@@ -147,7 +148,7 @@ class list_module extends React.Component{
         })
 
         if(!isReady){
-            fetch(baseUrl+"/insert_module", {
+            ApiFetch("/insert_module", {
                 method: "POST",
                 body:form
             }).then(res => res.json())

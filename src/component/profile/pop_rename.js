@@ -1,7 +1,7 @@
 import React from 'react'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from '../../function/function'
 import {SpinnerButton} from '../spinner'
-import {baseUrl} from "../../const/const"
+import {ApiFetch} from "../apiFetch"
 import {EXIF} from 'exif-js'
 
 class pop_rename extends React.Component{
@@ -148,7 +148,7 @@ class pop_rename extends React.Component{
             form.append("ort", orientation)
             form.append("base64", dataurl)
             form.append("base64Detail", dataurlDetail)
-            fetch(baseUrl+"/rename_profile", {
+            ApiFetch("/rename_profile", {
                 method: "POST",
                 body: form
             }).then(res => res.text())

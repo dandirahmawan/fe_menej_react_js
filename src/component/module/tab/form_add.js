@@ -1,12 +1,21 @@
 import React from 'react'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from "../../../function/function";
-import {baseUrl} from "../../../const/const";
+import {ApiFetch} from '../../apiFetch'
+import FunctionPreview from './function_preview'
+import FunctionData from './function_data'
 
 class form_add extends React.Component{
 
     constructor(){
         super()
+        this.state = {
+            functionBase : null,
+            functionDataBase : null
+        }
         this.submit = this.submit.bind(this)
+        this.hidePopUp = this.hidePopUp.bind(this)
+        this.keyUpTxtAreaForm = this.keyUpTxtAreaForm.bind(this)
+        this.functionSelect = this.functionSelect.bind(this)
     }
 
     componentDidMount(){
@@ -29,18 +38,43 @@ class form_add extends React.Component{
 
             let txtarea = document.createElement("textarea")
             txtarea.style.fontSize = "12px"
-            txtarea.style.width = "80%"
+            txtarea.style.width = "300px"
             txtarea.style.boxSizing = "border-box"
             txtarea.style.padding = "6px"
+            txtarea.style.minHeight = "15px"
             txtarea.placeholder = col[i]
             txtarea.setAttribute("rows", "1")
-            txtarea.setAttribute("class", "txt-val-frm-add")
+            txtarea.setAttribute("class", "txt-val-frm-add box-shadow")
+            txtarea.onkeyup = this.keyUpTxtAreaForm
+
+            let divText = document.createElement("div")
+            divText.setAttribute("class", "div-txt-frm")
+            divText.style.fontSize = "12px"
+            divText.style.padding = "6px"
+            divText.style.paddingTop = "7px"
+            divText.style.paddingBottom = "7px"
+            divText.style.minHeight = "15px"
+            divText.style.position = "absolute"
+            divText.style.opacity = "0"
+            divText.style.zIndex = "-1"
+            divText.style.width = "288px"
+
+            let wraper = document.createElement("div")
+            wraper.setAttribute("class", "wrapper-frm-input")
+
+            wraper.append(divText)
+            wraper.append(txtarea)
 
             elm1.append(elm2)
-            elm1.append(txtarea)
-
+            elm1.append(wraper)
             wrapper.append(elm1)
         }
+    }
+
+    hidePopUp(){
+        this.setState({
+            functionBase: null
+        })
     }
 
     submit(){
@@ -62,7 +96,8 @@ class form_add extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("data", JSON.stringify(jo))
         form.append("tabId", this.props.tabId)
-        fetch(baseUrl+"/new_tab_data", {
+
+        ApiFetch("/new_tab_data", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {
@@ -74,11 +109,57 @@ class form_add extends React.Component{
         })
     }
 
+    functionSelect(x, y, functionName){
+        let x1 = parseInt(x) + 20
+        let y1 = parseInt(y) + 50
+        this.setState({
+            functionBase: null,
+            functionDataBase: <FunctionData functionName={functionName}
+                                            x={x1} 
+                                            y={y1}/>
+        })
+    }
+
+    keyUpTxtAreaForm(e){
+        var x = e.target.offsetTop    // Get the horizontal coordinate
+        var y = e.target.offsetLeft    // Get the vertical coordinate
+
+        let prt = e.target.parentElement
+        let divTxtPreview = prt.children
+        // console.log(divTxtPreview)
+        for(let i = 0;i<divTxtPreview.length;i++){
+            let cname = divTxtPreview[i].className
+            let value = e.target.value
+            if (cname.match(/div-txt-frm*/)) {
+                divTxtPreview[i].innerText = value
+                let h = divTxtPreview[i].offsetHeight
+                e.target.style.height = h+"px"
+            }
+        }
+
+        if(e.target.value == "="){
+            this.setState({
+                functionBase : <FunctionPreview x={x} 
+                                                y={y}
+                                                select={this.functionSelect} 
+                                                target={e.target} 
+                                                hidePopUp={this.hidePopUp}/>
+            })
+        }else{
+            this.setState({
+                functionBase : null
+            })
+        }
+    }
+
     render(){
         return(
             <React.Fragment>
                 <div className="block"/>
-                <div className="pop" id="base-add-data-form" style={{background: "#FFF", minWidth: "350px"}}>
+                <div className="pop" id="base-add-data-form" style={{background: "#FFF", width: "380px"}}>
+                    {this.state.functionBase}
+                    {this.state.functionDataBase}
+
                     <div className="bold main-border-bottom" style={{padding: "10px", fontSize: "14px"}}>
                         Add Data
                     </div>

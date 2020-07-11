@@ -2,38 +2,31 @@ import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFilter, faLessThan, faCoins} from '@fortawesome/free-solid-svg-icons'
 import Row from './row_filter_table_tab'
-import { popUpAlert } from '../../../function/function'
 
 class filter_table_tab extends React.Component{
 
-    constructor() {
+    constructor(){
         super()
+
         this.state = {
             dataFilter: [],
-            filterSelected: [],
-            filterSearch: "",
-            selectAll: false,
-            btnFilter: null,
+            selectedFiter: [],
             inputRefs: []
         }
+
         this.selectAllButton = React.createRef()
         this.setWrapperRef = React.createRef()
 
         this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.hidePopUp = this.hidePopUp.bind(this)
-        this.submitFilter = this.submitFilter.bind(this)
+        // this.hidePopUp = this.hidePopUp.bind(this)
+        this.submitFiler = this.submitFiler.bind(this)
         this.search = this.search.bind(this)
         this.selectAll = this.selectAll.bind(this)
         this.setRef = this.setRef.bind(this)
         this.chooseFilter = this.chooseFilter.bind(this)
     }
 
-    componentDidMount() {
-        let btn = (this.props.btnFilter.tagName == "EM")
-            ? this.props.btnFilter.parentElement : this.props.btnFilter
-        
-        document.addEventListener('mouseup', this.handleClickOutside);
-        
+    componentDidMount(){
         var listFilter  = []
         var selected    = []
         this.props.data.map(dt => {
@@ -51,8 +44,7 @@ class filter_table_tab extends React.Component{
         
         this.setState({
             dataFilter      : listFilter,
-            filterSelected  : (this.props.dataFiltered.length == 0) ? selected : this.props.dataFiltered,
-            btnFilter       : btn
+            selectedFiter   : selected
         })
     }
 
@@ -62,44 +54,18 @@ class filter_table_tab extends React.Component{
         }
     }
 
-    hidePopUp(){
-        this.props.cancel()
-    }
-
-    submitFilter(){
-        let dataFilter = this.state.dataFilter
-        let selected = this.state.filterSelected 
-        let isAll = false
-
-        if (this.state.filterSelected.length == 0){
-            popUpAlert("No data selected")
-        }else{
-            if(selected.length >= dataFilter.length){
-                isAll = true
-                var currentClass = this.state.btnFilter.getAttribute("class")
-                let setClass = currentClass.replace(" force-block", "")
-                this.state.btnFilter.setAttribute("class", setClass)
-            }else{
-                let currentClass = this.state.btnFilter.getAttribute("class")
-                this.state.btnFilter.setAttribute("class", currentClass+" force-block")
-            }
-            
-            this.props.filter(this.state.filterSelected, this.props.column, isAll)
-            this.props.cancel()
-        }
-    }
-
     chooseFilter(val){
-        let selected = this.state.filterSelected
+        let selected = this.state.selectedFiter
         let idx =  selected.indexOf(val)
+        
         if(idx == "-1"){
-            this.state.filterSelected.push(val)
+            selected.push(val)
         }else{
-            this.state.filterSelected.splice(idx, 1)
+            selected.splice(idx, 1)
         }
 
         this.setState({
-            filterSelected: this.state.filterSelected
+            selectedFiter: selected
         })
     }
 
@@ -127,6 +93,11 @@ class filter_table_tab extends React.Component{
         }
     }
 
+    submitFiler(){
+        console.log(this.state.selectedFiter)
+        console.log(this.state.dataFilter)
+    }
+
     setRef(ref){
         let idx = this.state.inputRefs.indexOf(ref)
         if(idx == -1){
@@ -135,9 +106,10 @@ class filter_table_tab extends React.Component{
     }
 
     render(){
+
         const filterVal = this.state.dataFilter.map(dt => {
             if(dt.match(this.state.filterSearch)){
-                if(this.state.filterSelected.indexOf(dt) == -1){
+                if(this.state.selectedFiter.indexOf(dt) == -1){
                     return <Row
                                 isChecked={false}
                                 refCheck={this.setRef}
@@ -182,9 +154,10 @@ class filter_table_tab extends React.Component{
                     </div>
 
                     {filterVal}
+
                 </div>
                 <div className="main-border-top" style={{textAlign: "right", padding: "5px"}}>
-                    <button onClick={this.submitFilter} className="btn-primary" style={{fontSize: "11px"}}>Ok</button>&nbsp;
+                    <button onClick={this.submitFiler} className="btn-primary" style={{fontSize: "11px"}}>Ok</button>&nbsp;
                     <button onClick={this.hidePopUp} className="btn-secondary" style={{fontSize: "11px"}}>Cancel</button>
                 </div>
             </div>
@@ -193,6 +166,3 @@ class filter_table_tab extends React.Component{
 }
 
 export default filter_table_tab
-
-
-

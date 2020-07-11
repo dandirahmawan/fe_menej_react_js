@@ -1,5 +1,5 @@
 import React from 'react'
-import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import { getCookieUserId, getCookieSessionId } from '../../function/function';
 import RowModule from './row_module_profile'
 import DetailModule from '../module/detail'
@@ -28,7 +28,7 @@ class module_profile extends React.Component{
         var formData = new FormData();
         formData.append("userId", getCookieUserId())
         formData.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/module_user", {
+        ApiFetch("/module_user", {
             method : "POST",
             body: formData
         }).then(res => res.json())

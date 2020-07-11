@@ -20,8 +20,6 @@ class menu_tab extends React.Component{
         }
     }
 
-
-
     setTabMenu(){
         let scope = this
         let itv = setInterval(function(){

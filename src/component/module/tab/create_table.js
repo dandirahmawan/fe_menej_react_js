@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {getCookieSessionId, getCookieUserId, popCenterPosition} from "../../../function/function";
-import {baseUrl} from "../../../const/const";
+import {ApiFetch} from '../../apiFetch'
 
 class create_table extends React.Component{
 
@@ -86,7 +86,8 @@ class create_table extends React.Component{
         form.append("projectId", this.props.projectId)
         form.append("tabId", this.props.tabId)
         form.append("col", JSON.stringify(jo))
-        fetch(baseUrl+"/new_table", {
+
+        ApiFetch("/new_table", {
             method: "POST",
             body: form
         }).then(res => res.text()).then(result => {

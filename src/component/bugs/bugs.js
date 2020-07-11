@@ -12,6 +12,7 @@ import PopupConfirmation from '../popup_confirmation'
 import Filter from './filter'
 import {Spinner} from '../spinner'
 import EditBugs from './edit_bugs'
+import {ApiFetch} from '../apiFetch'
 
 class bugs extends React.Component{
 
@@ -53,9 +54,15 @@ class bugs extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/bugs_project",{
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/bugs_project",{
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(res => res.json())
         .then(result => {          
             this.props.setDataBugs(result.bugs)
@@ -113,9 +120,14 @@ class bugs extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        fetch(baseUrl+"/delete_bugs", {
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/delete_bugs", {
             method: 'POST',
-            body: form
+            body: form,
+            headers: header
         }).then(res => res.status)
         .then(result => {
             if(result == 200){
@@ -131,9 +143,15 @@ class bugs extends React.Component{
         form.append("bugsId", this.state.bugsIdDelete)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/close_bugs", {
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/close_bugs", {
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(response => response.text())
             .then(result => {
                 this.props.closeDataBugs(this.state.bugsIdDelete)
@@ -147,9 +165,14 @@ class bugs extends React.Component{
         form.append("bugsId", this.state.bugsIdDelete)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/unclose_bugs", {
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+        ApiFetch("/unclose_bugs", {
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(response => response.text())
             .then(result => {
                 this.props.uncloseDataBugs(this.state.bugsIdDelete)
@@ -270,6 +293,7 @@ class bugs extends React.Component{
                                     countNote={dt.countNote}
                                     deleteBugs={this.deleteBugs}
                                     createDate={dt.createDate}
+                                    bugStatus={dt.bugStatus}
                                     isPermition={this.state.isPermition}
                                     closeBugs={this.closeBusg}
                                     uncloseBugs={this.uncloseBugs}

@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import Row from './row_permition'
-import { baseUrl } from '../../const/const'
-import {getCookieSessionId, popUpAlert} from '../../function/function'
+import {ApiFetch} from '../apiFetch'
+import {getCookieSessionId, getCookieUserId, popUpAlert} from '../../function/function'
 import {SpinnerButton} from "../spinner";
+import {baseUrl} from "../../const/const";
 
 class permition extends React.Component{
 
@@ -14,7 +15,8 @@ class permition extends React.Component{
             userId:"",
             userName:"",
             userEmail:"",
-            permitionSelected:[]
+            picProfile:"",
+            permitionSelected: []
         }
         this.checkClick = this.checkClick.bind(this)
         this.commitPermition = this.commitPermition.bind(this)
@@ -42,7 +44,8 @@ class permition extends React.Component{
         var form = new FormData()
         form.append('userId', this.props.userId)
         form.append('projectId', this.props.projectId)
-        fetch(baseUrl+"/permition_project",{
+
+        ApiFetch("/permition_project",{
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -59,7 +62,8 @@ class permition extends React.Component{
                 dataPermition: result.dataPermition,
                 userId: result.dataUser.userId,
                 userName: result.dataUser.userName,
-                userEmail: result.dataUser.emailUser
+                userEmail: result.dataUser.emailUser,
+                picProfile: result.dataUser.picProfile
             })
 
         })
@@ -101,7 +105,8 @@ class permition extends React.Component{
         form.append('project_id', this.props.projectId)
         form.append('user_id', this.props.userId)
         form.append('sessionId', getCookieSessionId())
-        fetch(baseUrl+"/set_permition", {
+
+        ApiFetch("/set_permition", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -141,7 +146,11 @@ class permition extends React.Component{
                         Permition
                     </div>
                     <div id="main-base-permition" style={{padding: "10px",  overflowY: "scroll"}}>
-                        <div style={{width: "30px", height: "30px", borderRadius: "15px", background: "#CCC"}}></div>
+                        <div style={{width: "30px", height: "30px", borderRadius: "15px", background: "#CCC", overflow: "hidden"}}>
+                            <div style={{background: "url("+baseUrl+"/pic_profile/"+this.state.picProfile+") center / cover no-repeat",
+                                height: "30px",
+                                width: "30px"}}/>
+                        </div>
                         <div style={{marginLeft: "40px", marginTop: "-31px"}}>
                             <span className="bold" style={{fontSize: "12px"}}>
                                 {this.state.userName}

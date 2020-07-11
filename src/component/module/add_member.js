@@ -4,6 +4,7 @@ import { getCookieUserId, getCookieSessionId, popUpAlert } from '../../function/
 import ItemUserAddMember from '../item_user_add_member'
 import ItemUserAddMemberSelected from '../item_user_add_member_selected'
 import ReactDom from 'react-dom'
+import {ApiFetch} from '../apiFetch'
 import {SpinnerButton} from "../spinner";
 
 class add_member extends React.Component{
@@ -44,7 +45,8 @@ class add_member extends React.Component{
         var form = new FormData()
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/add_member", {
+
+        ApiFetch("/add_member", {
             method: "POST",
             body: form
         }).then(rst => rst.json())
@@ -149,7 +151,8 @@ class add_member extends React.Component{
             form.append("userId", getCookieUserId())
             form.append("sessionId", getCookieSessionId())
             form.append("projectId", this.props.projectId)
-            fetch(baseUrl+"/commit_add_member", {
+
+            ApiFetch("/commit_add_member", {
                 method: "POST",
                 body: form
             }).then(res => res.json())

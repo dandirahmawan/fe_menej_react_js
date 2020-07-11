@@ -1,11 +1,11 @@
 import React from 'react'
 import RowBugs from './row_bugs'
 import NoData  from './no_data_bugs'
+import {ApiFetch} from '../apiFetch'
 // import CmenuBugs from './cmenu_bugs'
 import PopConfirmDeleteBugs from './pop_confirm_delete_bugs'
 import PopConfirmCloseBugs from './pop_confirm_close_bugs'
 import PopupConfirmation from '../popup_confirmation'
-import { baseUrl } from '../../const/const'
 import {popUpAlert, getCookieUserId, getCookieSessionId} from '../../function/function'
 import {deleteDataBugs, closeDataBugs, uncloseDataBugs} from '../../redux/action'
 import {connect} from 'react-redux'
@@ -114,7 +114,8 @@ class bugs_module extends React.Component{
         form.append("bugsId", this.state.bugsId)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/delete_bugs",{
+
+        ApiFetch("/delete_bugs",{
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -139,7 +140,8 @@ class bugs_module extends React.Component{
         form.append("bugsId", this.state.bugsId)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/close_bugs",{
+
+        ApiFetch("/close_bugs",{
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -157,7 +159,8 @@ class bugs_module extends React.Component{
         form.append("bugsId", this.state.bugsId)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/unclose_bugs",{
+
+        ApiFetch("/unclose_bugs",{
             method: "POST",
             body: form
         }).then(res => res.text())

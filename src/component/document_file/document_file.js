@@ -12,6 +12,7 @@ import Upload from './upload_document_file'
 import PreviewImage from '../preview_image'
 import {Spinner} from '../spinner'
 import DetailModule from '../module/detail'
+import {ApiFetch} from '../apiFetch'
 // import UserDetail from '../user/detail_user_popup'
 
 class document_file extends React.Component{
@@ -62,9 +63,14 @@ class document_file extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
 
-        fetch(baseUrl+"/document_file_list", {
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/document_file_list", {
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(res => res.json())
         .then(result => {
             this.props.setDataDocFile(result)
@@ -127,9 +133,14 @@ class document_file extends React.Component{
         form.append("fileName", fileName)
         form.append("userId", userId)
 
-        fetch(baseUrl+"/delete_document_file", {
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/delete_document_file", {
             method: "POST",
-            body: form
+            body: form,
+            headers: header
         }).then(res => res.text())
         .then(result => {
             if(result == 1){

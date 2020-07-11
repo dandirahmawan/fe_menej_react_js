@@ -2,10 +2,11 @@ import React from 'react'
 import DetailUser from './detail_user'
 import {connect} from 'react-redux'
 import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {setTitleHader} from '../../redux/action'
 import RowUser from './row_user'
 import InviteUser from './invite_user'
-import { getCookieUserId } from '../../function/function'
+import {getCookieSessionId, getCookieUserId} from '../../function/function'
 import CardView from './card_view_user'
 import DetailUserPopup from './detail_user_popup'
 import PopupConfirmation from "../popup_confirmation";
@@ -32,7 +33,8 @@ class user extends React.Component{
     componentDidMount(){
         var form = new FormData();
         form.append("userId", getCookieUserId());
-        fetch(baseUrl+"/user_relation", {
+
+        ApiFetch("/user_relation", {
             method: "POST",
             body: form
         })
@@ -125,6 +127,9 @@ class user extends React.Component{
                         userId={dt.userId}
                         picProfile={dt.picProfile}
                         delete={this.deleteUser}
+                        countModule={dt.countModule}
+                        countBugs = {dt.countBugs}
+                        countDocFile = {dt.countDocFile}
                     />
             }
         })

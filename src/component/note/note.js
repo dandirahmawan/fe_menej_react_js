@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import RowNote from './row_note'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
-import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {connect} from 'react-redux'
 import {appendDataNote, updateDataModuleNote, deleteDataNote} from '../../redux/action'
 import ExpandNote from './expand_note'
@@ -66,7 +66,8 @@ class note extends React.Component{
         form.append("moduleId", moduleId)
         form.append("bugsId", bugsId)
         form.append("note", this.state.noteText)
-        fetch(baseUrl+"/insert_note", {
+
+        ApiFetch("/insert_note", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -105,7 +106,7 @@ class note extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("noteId", this.state.noteIdDelete)
 
-        fetch(baseUrl+"/delete_note", {
+        ApiFetch("/delete_note", {
             method: "POST",
             body: form
         }).then(res => res.text())

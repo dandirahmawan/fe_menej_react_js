@@ -4,7 +4,7 @@ import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from
 import {SpinnerButton} from '../spinner'
 import {connect} from 'react-redux'
 import {editNote} from '../../redux/action'
-import {baseUrl} from "../../const/const";
+import {ApiFetch} from '../apiFetch'
 
 /*
     "note for using this popup."
@@ -55,7 +55,8 @@ class edit_note extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("noteId", this.props.noteId)
         form.append("note", v)
-        fetch(baseUrl+"/edit_note", {
+
+        ApiFetch("/edit_note", {
             method: "POST",
             body: form
         }).then(res => res.text())

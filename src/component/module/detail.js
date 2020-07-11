@@ -4,7 +4,7 @@ import ModuleInfo from './module_info'
 import BugsModule from './bugs_module'
 import DocFileModule from './doc_file_module'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
-import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule, appendDataBugs, appendDataDocFile, deleteDataDocFile, updateDataModuleBugsClose, updateDataModuleBugsUnclose} from '../../redux/action'
 import {Spinner, SpinnerButton} from '../spinner'
@@ -26,6 +26,8 @@ class detail extends React.Component{
             descriptionModule: "",
             moduleStatus: "",
             dueDate:"",
+            createdDate:"",
+            updatedDate: "",
             miDisplay:"",
             mbDisplay:"none",
             dfmDisplay: "none",
@@ -85,13 +87,13 @@ class detail extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
-        fetch(baseUrl+"/detail_module", {
+
+        ApiFetch("/detail_module", {
             method: "POST",
             body: form
         }).then(res => res.json())
         .then(result => {
             var dm = result.dataModule
-
             result.permitionProject.map(dt => {
                 if(dt.permitionCode == 1 && dt.isChecked == "Y"){
                     this.setState({
@@ -108,13 +110,15 @@ class detail extends React.Component{
                 projectId: dm.projectId,
                 moduleId: dm.modulId,
                 moduleName : dm.modulName,
-                desciptionModule : dm.description,
+                descriptionModule : dm.description,
                 userId: dm.userId,
                 emailUser: dm.emailUser,
                 userName: dm.userName,
                 moduleStatus: dm.modulStatus,
                 pic: dm.pic,
                 dueDate: this.dateInputConvert(dm.endDate),
+                createdDate: this.dateInputConvert(dm.createdDate),
+                updatedDate: this.dateInputConvert(dm.updatedDate),
                 picProject: dm.pic,
                 miDisplay: miDisplay,
                 mbDisplay: mbDisplay,
@@ -200,7 +204,8 @@ class detail extends React.Component{
         form.append("status", this.state.moduleStatus)
         form.append("pic", this.state.userId)
         form.append("desc", this.state.descriptionModule)
-        fetch(baseUrl+"/update_module", {
+
+        ApiFetch("/update_module", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -237,7 +242,8 @@ class detail extends React.Component{
         form.append("bugs", bugsText)
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
-        fetch(baseUrl+"/add_bugs", {
+
+        ApiFetch("/add_bugs", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -271,7 +277,7 @@ class detail extends React.Component{
         form.append('fileName', fileName)
         form.append('ort', ort)
 
-        fetch(baseUrl+"/document_file",{
+        ApiFetch("/document_file",{
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -298,7 +304,7 @@ class detail extends React.Component{
         form.append("fileName", fileName)
         form.append("userId", userId)
 
-        fetch(baseUrl+"/delete_document_file", {
+        ApiFetch("/delete_document_file", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -421,6 +427,8 @@ class detail extends React.Component{
                                             moduleStatus={this.state.moduleStatus}
                                             dueDate={this.state.dueDate}
                                             projectId={this.state.projectId}
+                                            createdDate={this.state.createdDate}
+                                            updatedDate={this.state.updatedDate}
                                             pic={this.state.pic}
                                             mainHeight={this.state.mainBaseHeight}
                                             modulePermition={this.state.modulePermition}

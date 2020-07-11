@@ -1,6 +1,6 @@
 import React from 'react'
 import {getCookieUserId, getCookieSessionId} from '../../function/function'
-import {baseUrl} from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationCircle, faTintSlash} from '@fortawesome/free-solid-svg-icons'
 
@@ -52,7 +52,7 @@ class account extends React.Component{
         form.append("email", newEmail)
         form.append("password", password)
         if(newEmail !== "" && newEmail !== undefined){
-            fetch(baseUrl+"/change_email", {
+            ApiFetch("/change_email", {
                 method: "POST",
                 body: form
             }).then(res => res.text())
@@ -108,7 +108,7 @@ class account extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("password", oldPass)
         form.append("newPass", newPass)
-        fetch(baseUrl+"/change_password", {
+        ApiFetch("/change_password", {
             method: "POST",
             body: form
         }).then(res => res.text())

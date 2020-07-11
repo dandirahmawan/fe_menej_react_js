@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTimes, faBorderAll, faBorderNone, faClipboardCheck, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import PopupConfirmation from '../popup_confirmation'
-import { baseUrl } from '../../const/const'
+import {ApiFetch} from '../apiFetch'
 import {deleteDataNote, appendDataNote, updateDataModuleNote} from '../../redux/action'
 import EditNote from './edit_note'
 
@@ -105,7 +105,7 @@ class expand_note extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("noteId", this.state.noteIdDelete)
 
-        fetch(baseUrl+"/delete_note", {
+        ApiFetch("/delete_note", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -152,7 +152,8 @@ class expand_note extends React.Component{
         form.append("moduleId", moduleId)
         form.append("bugsId", bugsId)
         form.append("note", this.state.textNote)
-        fetch(baseUrl+"/insert_note", {
+
+        ApiFetch("/insert_note", {
             method: "POST",
             body: form
         }).then(res => res.json())
