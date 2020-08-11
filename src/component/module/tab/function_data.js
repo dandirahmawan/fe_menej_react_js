@@ -1,6 +1,7 @@
 import React from 'react'
 import FunctionImage from '../../../images/function_15.png'
 import {ApiFetch} from '../../apiFetch'
+import FunctionDataRow from './function_data_row'
 
 class function_data extends React.Component{
 
@@ -13,13 +14,16 @@ class function_data extends React.Component{
         }
 
         this.base = React.createRef()
+        this.baseIcon = React.createRef()
+        this.baseHeader = React.createRef()
+
         this.search = this.search.bind(this)
         this.select = this.select.bind(this)
         this.handleClickOutside = this.handleClickOutside.bind(this)
     }
 
     componentDidMount(){
-        document.addEventListener('mouseup', this.handleClickOutside);
+        document.addEventListener('mouseup', this.handleClickOutside)
         this.base.current.style.top = this.props.x+"px"
         this.base.current.style.left = this.props.y+"px"
         this.setState({
@@ -38,12 +42,26 @@ class function_data extends React.Component{
                 this.setState({
                     data: result
                 })
+
+                let bottomOffset = (window.innerHeight - this.base.current.offsetTop) - this.props.startTop
+                if(bottomOffset < this.base.current.offsetHeight){
+                    let mtop = this.base.current.offsetTop - (this.base.current.offsetHeight - bottomOffset) - 10
+                    this.base.current.style.top = mtop+"px"
+                }
             })
         }
     }
 
-    select(id){
+    select(id, name, docUrl){
+        let functionText = "="+this.state.functionName+"("+id+")"
+        let json = JSON.parse("{}")
+        json.functionText = functionText
+        json.name = name
+        json.id = id
+        json.docUrl = docUrl
+        
         this.props.target.value = "="+this.state.functionName+"("+id+")"
+        this.props.selectFunction(json)
         this.props.hidePopUp()
     }
 
@@ -63,31 +81,31 @@ class function_data extends React.Component{
     render(){
         let count = 0
         const data = this.state.data.map(dt => {
-            if(dt.name.match(this.state.search)){
+            let srcData = this.state.search.replace(/\\/g, "\\\\");
+            if(dt.name.match(srcData)){
                 count++
-                return <div onClick={() => this.select(dt.id)} className="tr-selectable" style={{padding: "7px", paddingLeft: "10px", paddingRight: "10px", cursor: "pointer"}}>
-                        <div style={{fontSize: "12px"}}>
-                            <i className="fa fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i> 
-                            <div className="bold" style={{marginLeft: "20px", marginTop: "-15px", wordBreak: "break-all", color: "#777"}}>
-                                {dt.name}
-                            </div>
-                        </div>
-                    </div>
+                return <FunctionDataRow fileName={dt.name}
+                                        id={dt.id}
+                                        docUrl={dt.docUrl}
+                                        select={this.select} 
+                                        functionName={this.state.functionName}/>
             }
         })
 
         return(
             <div ref={this.base} className="main-border" style={style.styleBase}>
-                <div className="main-border-bottom second-background-grs" style={{padding: "5px", paddingLeft: "10px", paddingRight: "10px", fontSize: "12px"}}>
-                    <img src={FunctionImage} style={{width: "15px"}}/>&nbsp; 
-                    <span className="second-font-color bold">{this.state.functionName}</span>
-                </div>
-                <div className="main-border-bottom">
-                    <input type="text" 
-                        onKeyUp={this.search}
-                        className="main-border-bottom" 
-                        placeholder="search" 
-                        style={{width: "100%", boxSizing: "border-box", padding: "5px 10px 5px 10px", border: "none"}}/>
+                <div ref={this.baseHeader}>
+                    <div className="main-border-bottom second-background-grs" style={{padding: "5px", paddingLeft: "10px", paddingRight: "10px", fontSize: "12px"}}>
+                        <img src={FunctionImage} style={{width: "15px"}}/>&nbsp; 
+                        <span className="second-font-color bold">{this.state.functionName}</span>
+                    </div>
+                    <div className="main-border-bottom">
+                        <input type="text" 
+                            onKeyUp={this.search}
+                            className="main-border-bottom" 
+                            placeholder="search" 
+                            style={{width: "100%", boxSizing: "border-box", padding: "5px 10px 5px 10px", border: "none"}}/>
+                    </div>
                 </div>
                 <div style={{maxHeight: "300px", overflowY: "scroll"}}>
                     {
@@ -95,7 +113,8 @@ class function_data extends React.Component{
                         ?
                             data
                         :
-                            <div className="second-font-color" style={{padding: "20px", fontSize: "12px", textAlign: "center"}}>no data to display</div>
+                            <div className="second-font-color bold" 
+                                style={{padding: "20px", fontSize: "12px", textAlign: "center"}}>Data not foun</div>
                     }
                 </div>
             </div>
@@ -109,7 +128,7 @@ const style = {
         background: "#FFF", 
         position: "absolute", 
         zIndex: "10002", 
-        borderRadius: "3px",
+        borderRadius: "3px"
     }
 }
 

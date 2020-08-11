@@ -31,12 +31,11 @@ class popup_confrimation extends React.Component{
             <React.Fragment>
                 <div className='block' onClick={this.props.hidePopUp} style={{zIndex: "100001"}}></div>
                 <div className='pop popup_confirmation' style={{zIndex: "100001"}}>
-                    <div className="header-second-background bold" style={{padding: '10px', fontSize:"14px"}}>                                  {this.props.titleConfirmation}
+                    <div className="header-second-background bold" style={{padding: '10px', fontSize:"14px"}}>                                  
+                        {this.props.titleConfirmation}
                     </div>
                     <div style={{padding: '10px'}}>
-                        <span style={{fontSize: "12px"}}>
-                            {this.props.textPopup}
-                        </span>
+                        <span style={{fontSize: "12px"}} dangerouslySetInnerHTML={{ __html: this.props.textPopup }}/>
                     </div>
                     <div className="header-second-background bold" style={{padding: "10px", textAlign: "right"}}>
                         <button ref={this.yesBtn} onClick={this.props.yesAction} className="btn-primary" style={{fontSize: "12px", marginRight: "10px"}}>Yes</button>

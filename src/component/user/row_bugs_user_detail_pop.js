@@ -5,7 +5,13 @@ class row_bugs_user_detail_pop extends React.Component{
         return(
             <tr valign="top">
                 <td>
-                    <i class="fa fa-exclamation-triangle" style={{color: "red", fontSize: "12px", marginRight: "5px", marginTop: "3px"}}></i>
+                    {
+                        (this.props.status == "C")
+                        ?
+                            <i class="fa fa-exclamation-triangle" style={{color: "green", fontSize: "12px", marginRight: "5px", marginTop: "3px"}}></i>
+                        :
+                            <i class="fa fa-exclamation-triangle" style={{color: "red", fontSize: "12px", marginRight: "5px", marginTop: "3px"}}></i>
+                    }
                 </td>
                 <td className="main-border-bottom">
                     {this.props.note}

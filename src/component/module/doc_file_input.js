@@ -22,15 +22,20 @@ class doc_file_input extends React.Component{
 
                     <button onClick={this.props.commit} style={{fontSize: "12px", marginLeft: "5px", marginTop: "15px", background: "none", color: "blue"}}>Kirim</button>
 
+                    <div style={{marginLeft:"10px", background: "#CCC", height: "4px", width: "110px", float: "right", marginRight: "20px", marginTop: "5px", borderRadius: "10px", display: "none"}}>
+                        <div ref={(e) => this.props.progressBar(e)} className="main-color" style={{width: "0%", height: "4px", borderRadius: "10px"}}></div>
+                    </div>
+
                 </div>
                 <div id='base-doc-file-name-upload' style={{fontSize: "12px", overflow: "hidden"}}>
-                    {(this.props.fileName != "") ? 
-                        <div style={{background: "#CCC", padding: "3px", float: "left", borderRadius: "4px",  margin: "10px", marginLeft:"15px"}}>
-                            <i class="fa fa-arrow-circle-up" style={{marginTop: "2px"}}></i> <span>{this.props.fileName}</span>
-                        </div> 
+                    {
+                        (this.props.fileName != "") ? 
+                            <div style={{background: "#CCC", padding: "3px", float: "left", borderRadius: "4px",  margin: "10px", marginLeft:"15px"}}>
+                                <i class="fa fa-arrow-circle-up" style={{marginTop: "2px"}}></i> <span>{this.props.fileName}</span>
+                            </div> 
                         : 
-                        ""
-                    }                    
+                            ""
+                    }                   
                 </div>
             </div>
         )

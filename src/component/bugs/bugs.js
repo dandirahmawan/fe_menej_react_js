@@ -397,6 +397,12 @@ class bugs extends React.Component{
                         
                     </tbody>
                 </table>
+                <div className="main-border-bottom main-border-top" style={{width: "90%", fontSize: "10px"}}>
+                    <div style={{padding: "10px", textAlign: "right"}}>
+                        Modified by : <span className="bold">Dandi rahmawan</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Modified date : <span className="bold">10 Jan 2020</span>
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

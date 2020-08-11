@@ -8,6 +8,7 @@ import {ApiFetch} from '../apiFetch'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule, appendDataBugs, appendDataDocFile, deleteDataDocFile, updateDataModuleBugsClose, updateDataModuleBugsUnclose} from '../../redux/action'
 import {Spinner, SpinnerButton} from '../spinner'
+import { baseUrl } from '../../const/const'
 
 class detail extends React.Component{
 
@@ -36,8 +37,12 @@ class detail extends React.Component{
             picProject:"",
             documentFileUploadData:"",
             isLoad: true,
-            modulePermition: false
+            modulePermition: false,
+            setStatus: null,
+            status: null,
+            progressBar: null
         }
+       
         this.navDetail = this.navDetail.bind(this)
         this.changeNameModul = this.changeNameModul.bind(this)
         this.changeUserSelected = this.changeUserSelected.bind(this)
@@ -53,6 +58,7 @@ class detail extends React.Component{
         this.closeBugs = this.closeBugs.bind(this)
         this.uncloseBugs = this.uncloseBugs.bind(this)
         this.commitEditBugs = this.commitEditBugs.bind(this)
+        this.setRef = this.setRef.bind(this)
     }
     
     componentDidMount(){
@@ -106,6 +112,7 @@ class detail extends React.Component{
                 dataBugs: result.bugs,
                 dataDocFile: result.documentFile,
                 dataPermition: result.permitionProject,
+                dataStatus: result.dataStatus,
                 isLoad: false,
                 projectId: dm.projectId,
                 moduleId: dm.modulId,
@@ -173,8 +180,8 @@ class detail extends React.Component{
         })
     }
 
-    changeStatus(e){
-        var status = e.target.value
+    changeStatus(idStatus){
+        var status = idStatus
         this.setState({
             moduleStatus: status
         })
@@ -204,6 +211,7 @@ class detail extends React.Component{
         form.append("status", this.state.moduleStatus)
         form.append("pic", this.state.userId)
         form.append("desc", this.state.descriptionModule)
+        form.append("moduleName", this.state.moduleName)
 
         ApiFetch("/update_module", {
             method: "POST",
@@ -264,7 +272,22 @@ class detail extends React.Component{
         })
     }
 
+    consume(stream, total = 0) {
+        while (stream.state === "readable") {
+          var data = stream.read()
+          total += data.byteLength;
+          console.log("received " + data.byteLength + " bytes (" + total + " bytes in total).")
+        }
+        if (stream.state === "waiting") {
+          stream.ready.then(() => this.consume(stream, total))
+        }
+        return stream.closed
+    }
+
     commitDocFileUpload(descFile, bs64, ort, fileName){
+        let progressBar = this.state.progressBar.parentElement
+        progressBar.style.display = "block"
+
         let form = new FormData()
         let file = (bs64 == "") ? this.state.documentFileUploadData : ""
         form.append('file', file)
@@ -277,20 +300,64 @@ class detail extends React.Component{
         form.append('fileName', fileName)
         form.append('ort', ort)
 
-        ApiFetch("/document_file",{
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            this.props.updateDataModuleDocFile(this.state.moduleId, "add")
-            var result = JSON.parse(result)
-            var newState = this.state.dataDocFile.concat(result)
-            this.setState({
-                dataDocFile: newState,
-                documentFileUploadData: ""
-            })
-            this.props.appendDataDocFile(result)
-        })
+        const xhr = new XMLHttpRequest()
+        xhr.upload.onprogress = (e) => {
+            const done = e.position || e.loaded
+            const total = e.totalSize || e.total
+            const perc = (Math.floor(done / total * 1000) / 10)
+            
+            //set width progress bar
+            if(perc >= 100){
+                this.state.progressBar.style.width = "100%"
+            }else{
+                this.state.progressBar.style.width = perc+"%"
+            }
+        }
+
+        xhr.onreadystatechange = (e) => {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                var result = JSON.parse(xhr.responseText)
+                var newState = this.state.dataDocFile.concat(result)
+                progressBar.style.display = "none"
+                this.setState({
+                    dataDocFile : newState,
+                    documentFileUploadData : ""
+                })
+                this.props.appendDataDocFile(result)
+            }
+        }
+
+        xhr.open('POST', baseUrl+'/document_file')
+        xhr.setRequestHeader("userId", getCookieUserId())
+        xhr.setRequestHeader("sessionId", getCookieSessionId())
+        xhr.send(form)
+
+        // ApiFetch("/document_file",{
+        //     method: "POST",
+        //     body: form
+        // }).then(res => this.consume(res.body))
+        // .then(result => {
+            // this.props.updateDataModuleDocFile(this.state.moduleId, "add")
+            // var result = JSON.parse(result)
+            // var newState = this.state.dataDocFile.concat(result)
+            // this.setState({
+            //     dataDocFile: newState,
+            //     documentFileUploadData: ""
+            // })
+            // this.props.appendDataDocFile(result)
+        // })
+
+        // then(res => res.text())
+        // .then(result => {
+        //     this.props.updateDataModuleDocFile(this.state.moduleId, "add")
+        //     var result = JSON.parse(result)
+        //     var newState = this.state.dataDocFile.concat(result)
+        //     this.setState({
+        //         dataDocFile: newState,
+        //         documentFileUploadData: ""
+        //     })
+        //     this.props.appendDataDocFile(result)
+        // })
     }
 
     deleteDocFile(fileName){
@@ -387,7 +454,10 @@ class detail extends React.Component{
             }
             return dt
         })
-        console.log(newData)
+    }
+
+    setRef(e){
+        this.state.progressBar = e
     }
 
     render(){
@@ -432,6 +502,7 @@ class detail extends React.Component{
                                             pic={this.state.pic}
                                             mainHeight={this.state.mainBaseHeight}
                                             modulePermition={this.state.modulePermition}
+                                            dataStatus={this.state.dataStatus}
                                             //action button
                                             changeName={this.changeNameModul}
                                             changeUserSelected={this.changeUserSelected}
@@ -464,6 +535,7 @@ class detail extends React.Component{
                                             deleteDocFile={this.deleteDocFile}
                                             picProject={this.state.picProject}
                                             dataPermition={this.state.dataPermition}
+                                            bindProgressBar={this.setRef}
                                         />
                                     </div>
                                 </React.Fragment>
@@ -474,10 +546,6 @@ class detail extends React.Component{
             </React.Fragment>
         )
     }
-}
-
-const mapStateToProps = state => {
-    
 }
 
 const mapDispatchToProps = dispatch => {
@@ -493,4 +561,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (detail)
+export default connect("", mapDispatchToProps) (detail)

@@ -57,13 +57,27 @@ class permition extends React.Component{
                     this.state.permitionSelected.push(result.dataPermition[i]['permitionCode'])
                 }   
             }
+            
+            //set selected permition
+            if(this.props.dataPermition.length <= 0){
+                result.dataPermition.map(dt => {
+                    if(dt.isChecked == "Y"){
+                        let idx = this.state.permitionSelected.indexOf(dt.permitionCode)
+                        if(idx == -1){
+                            this.state.permitionSelected.push(dt.permitionCode)
+                        }
+                    }
+                })
+            }
 
             this.setState({
                 dataPermition: result.dataPermition,
                 userId: result.dataUser.userId,
                 userName: result.dataUser.userName,
                 userEmail: result.dataUser.emailUser,
-                picProfile: result.dataUser.picProfile
+                picProfile: result.dataUser.picProfile,
+                permitionSelected: (this.props.dataPermition.length > 0) 
+                                    ? this.props.dataPermition : this.state.permitionSelected
             })
 
         })
@@ -88,6 +102,7 @@ class permition extends React.Component{
                 }
                 return dt
             })
+
             return{
                 dataPermition: newData,
                 permitionSelected: this.state.permitionSelected
@@ -99,28 +114,24 @@ class permition extends React.Component{
         let t = e.target
         t.style.opacity = 0.5
         ReactDom.render(<SpinnerButton size="15px"/>, t)
-
+        console.log(this.state.permitionSelected)
         var form = new FormData()
         form.append('permition_code', this.state.permitionSelected)
         form.append('project_id', this.props.projectId)
         form.append('user_id', this.props.userId)
-        form.append('sessionId', getCookieSessionId())
-
+        
         ApiFetch("/set_permition", {
             method: "POST",
             body: form
-        }).then(res => res.text())
-            .then(result => {
-                if(result == ""){
-                    popUpAlert("Permition successfully updated", "success")
-                    ReactDom.render("Submit", t)
-                    t.style.opacity = 1
-                }
-            })
+        }).then(res => res.text()).then(result => {
+            if(result == "success"){
+                popUpAlert("Permition succesfully updated", "success")
+                this.props.cancelPermition()
+            }
+        })
     }
 
     render(){
-
         const styleBase = {
             width: "300px",
             background: "#FFF",
@@ -130,17 +141,28 @@ class permition extends React.Component{
             borderRadius: "5px"
         }
 
-        const data = this.state.dataPermition.map(dt => <Row
-                                                            permitionName={dt.permitionName}
-                                                            permitionDescription={dt.permitionDescription}
-                                                            permitionCode={dt.permitionCode}
-                                                            isChecked={dt.isChecked}
-                                                            checkClick={this.checkClick}
-                                                        />)
+        const data = this.state.dataPermition.map(dt => {
+            let isChecked = "N"
+            let permitionParam = this.props.dataPermition
+            if(dt.isChecked == "Y" && permitionParam.length == 0){
+                isChecked = "Y"
+            }else{
+                let idx = this.props.dataPermition.indexOf(dt.permitionCode)
+                if(idx != -1) isChecked = "Y"
+            }
+            
+            return <Row
+                        permitionName={dt.permitionName}
+                        permitionDescription={dt.permitionDescription}
+                        permitionCode={dt.permitionCode}
+                        isChecked={isChecked}
+                        checkClick={this.checkClick}
+                    />
+        })
 
         return(
             <React.Fragment>
-                <div className="block"></div>
+                {/* <div className="block"></div> */}
                 <div id="base-permition" className="main-border pop" style={styleBase}>
                     <div id="head-base-permition" className="bold main-border-bottom" style={{padding: "10px", fontSize: "14px"}}>
                         Permition

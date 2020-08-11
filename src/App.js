@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDom from 'react-dom'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Login from './component/login'
 import Navbar from './component/navbar'
@@ -16,11 +15,12 @@ import Profile from './component/profile/profile'
 import ForgotPassword from './component/forgot_password'
 import AccountRecover from './component/account_recover'
 import PageNotFound from './component/404'
+import Email from './component/email'
 import {startData} from './redux/action'
 import {connect} from 'react-redux'
 import './css/style.css'
 import './App.css'
-import { baseUrl , pathUrlConst } from './const/const';
+import { baseUrl } from './const/const';
 import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function';
 import {isMobile, MobileView, isBrowser, BrowserView} from 'react-device-detect'
 import {SpinnerButton} from "./component/spinner";
@@ -50,14 +50,6 @@ class App extends React.Component{
           })
       }
 
-    //   let scope = this
-    //   document.addEventListener("click", function (e) {
-    //       if(scope.state.invalidPath){
-    //           let elm = document.getElementById("page-not-found-base")
-    //           if(elm != null) elm.remove()
-    //       }
-    //   })
-
       form.append("userId", userId)
       form.append("sessionId", sessionId);
 
@@ -85,10 +77,11 @@ class App extends React.Component{
     var a = document.cookie
     var path = window.location.pathname
 
-    if(path == "/account_recovery"){
+    if(path == "/account_recovery" || path == "/email"){
         return(
             <BrowserRouter>
                 <Route path="/account_recovery"  exact component={AccountRecover} />
+                <Route path="/email"  exact component={Email} />
             </BrowserRouter>
         )
     }
@@ -173,16 +166,16 @@ class App extends React.Component{
 }
 
 const mapStateToProps = state => {
-  return{
-    userNameLogin : state.userNameLogin,
-    userEmailLogin : state.userEmailLogin
-  }
+    return{
+        userNameLogin : state.userNameLogin,
+        userEmailLogin : state.userEmailLogin
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-  return{
-    dispatchStartData : (userName, userEmail, picProfile) => dispatch(startData(userName, userEmail, picProfile))
-  }
+    return{
+        dispatchStartData : (userName, userEmail, picProfile) => dispatch(startData(userName, userEmail, picProfile))
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps) (App);

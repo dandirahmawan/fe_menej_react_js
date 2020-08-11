@@ -12,26 +12,28 @@ class row_module extends React.Component{
         }
         this.noteClick = this.noteClick.bind(this)
         this.updateStateDataNote = this.updateStateDataNote.bind(this)
-    }
-
-    moduleStatus(a){
-        var v = ""
-        if(a == 'P'){
-            v = "On Progress"
-        }else{
-            v = "Closed"
-        }
-        return v
+        this.moduleStatus = this.moduleStatus.bind(this)
     }
 
     colorStatus(a){
-        var v = ""
-        if(a == "P"){
-            v = "#cea827"
-        }else{
-            v = "#4eab2f"
-        }
-        return v
+        let color =  ""
+        this.props.dataStatus.map(dt => {
+            if(a == dt.id){
+                let colorStatus = (dt.color == null) ? "#000" : dt.color
+                color = colorStatus
+            }
+        })
+        return color
+    }
+
+    moduleStatus(id){
+        let status =  ""
+        this.props.dataStatus.map(dt => {
+            if(id == dt.id){
+                status = dt.status
+            }
+        })
+        return status
     }
 
     convertDate(date){
@@ -81,8 +83,14 @@ class row_module extends React.Component{
                                     <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">
                                         {this.props.modulName}
                                     </a>
-                                    <div className="second-font-color" style={{width: "400px", marginTop: "3px"}}>
-                                        {this.props.description}
+                                    <div style={{width: "400px", color: "#8e8e8e"}}>
+                                        {
+                                            (this.props.description != null && this.props.description != "")
+                                            ?   
+                                                <div style={{marginTop: "3px", fontSize: "11px"}}>{this.props.description}</div>
+                                            :
+                                                <span style={{fontSize: "11px"}}>no description for this module</span>
+                                        }
                                     </div>
                                     {
                                         (this.state.noteBaseVisible) 
@@ -114,7 +122,10 @@ class row_module extends React.Component{
                                     <FontAwesomeIcon style={{marginRight: "5px"}} className="second-font-color" icon={faCalendarAlt}/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="bold tb-border-mod main-border" style={{color: this.colorStatus(this.props.modulStatus)}}>{this.moduleStatus(this.props.modulStatus)}</td>
+                                <td className="tb-border-mod main-border" 
+                                    style={{background: this.colorStatus(this.props.modulStatus), color: "#FFF"}}>
+                                    {this.moduleStatus(this.props.modulStatus)}
+                                </td>
                                 <td className="bold tb-border-mod main-border">
                                     {
                                         (this.props.countBugs > 0) 
@@ -170,8 +181,14 @@ class row_module extends React.Component{
                                     <a onClick={(e) => this.props.selected(e, this.props.moduleId)} className="bold">
                                         {this.props.modulName}
                                     </a>
-                                    <div className="second-font-color" style={{width: "400px", marginTop: "3px"}}>
-                                        {this.props.description}
+                                    <div style={{width: "400px", color: "#8e8e8e"}}>
+                                        {
+                                            (this.props.description != null && this.props.description != "")
+                                            ?   
+                                                <div style={{marginTop: "3px", fontSize: "11px"}}>{this.props.description}</div>
+                                            :
+                                                <span style={{fontSize: "11px"}}>no description for this module</span>
+                                        }
                                     </div>
                                     {
                                         (this.state.noteBaseVisible) 
@@ -204,7 +221,10 @@ class row_module extends React.Component{
                                     <FontAwesomeIcon icon={faCalendarAlt} style={{marginRight: "5px"}} className="second-font-color"/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="bold tb-border-mod" style={{color: this.colorStatus(this.props.modulStatus)}}>{this.moduleStatus(this.props.modulStatus)}</td>
+                                <td className="tb-border-mod" 
+                                    style={{background: this.colorStatus(this.props.modulStatus), color: "#FFF"}}>
+                                    {this.moduleStatus(this.props.modulStatus)}
+                                </td>
                                 <td className="bold tb-border-mod">
                                     {
                                         (this.props.countBugs > 0) 

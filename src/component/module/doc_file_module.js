@@ -4,6 +4,7 @@ import PopConfirmDelete from './pop_confirm_delete'
 import PopupConfirmation from '../popup_confirmation'
 import {popUpAlert, getCookieUserId} from '../../function/function'
 import PreviewImage from '../preview_image'
+import PreviewVideo from '../preview_video'
 import DocFileInput from './doc_file_input'
 import { baseUrl } from '../../const/const'
 import {EXIF} from "exif-js";
@@ -24,8 +25,9 @@ class doc_file_module extends React.Component{
             ort: 0,
             base64: ""
         }
-
+        
         this.inputElement = React.createRef()
+        this.setRef = this.setRef.bind(this)
         this.attachment = this.attachment.bind(this)
         this.fileUploaHandler = this.fileUploaHandler.bind(this)
         this.commit = this.commit.bind(this)
@@ -64,9 +66,9 @@ class doc_file_module extends React.Component{
         let fileSize = file.size
         let fileType = fileName.substr(fileName.lastIndexOf("."), fileName.length)
 
-        if(fileSize > 11000000){
-            popUpAlert("Maximum file size upload is 10 mb", "warning")
-        }else{
+        // if(fileSize > 11000000){
+        //     popUpAlert("Maximum file size upload is 10 mb", "warning")
+        // }else{
             var name = file.name
             this.props.documentFileUpload(e)
             this.setState({
@@ -75,16 +77,23 @@ class doc_file_module extends React.Component{
             if(fileType == ".jpg" || fileType == ".jpef" || fileType == ".png"){
                 this.changeImage(e, fileSize)
             }
-        }
+        // }
     }
 
     rowClickDocFile(e, fileName, url){
         var a = fileName.lastIndexOf(".")
         var ext = fileName.substr(parseInt(a) + 1, fileName.length)
+        ext = ext.toLowerCase()
+        
         if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
             e.preventDefault()
             this.setState({
                 popImage : <PreviewImage image={fileName} hideImage={this.hideImage} url={url}/>
+            })
+        }else if(ext == "mp4" || ext == "3gp" || ext == "mkv"){
+            e.preventDefault()
+            this.setState({
+                popImage : <PreviewVideo video={fileName} hideVideo={this.hideImage} url={url}/>
             })
         }else{
             window.open(baseUrl+"/file/"+url)
@@ -238,18 +247,22 @@ class doc_file_module extends React.Component{
         })
     }
 
+    setRef(e){
+        this.props.bindProgressBar(e)
+    }
+
     render(){
 
         const heightMain = (this.props.mainHeight - 40) - 30
         const data = this.props.dataDocFile.map(dt => <RowDocFile 
-                                                        rowClickDocFile={this.rowClickDocFile} 
-                                                        fileName={dt.fileName} 
-                                                        fileSize={dt.fileSize} 
-                                                        descFile={dt.description} 
-                                                        delete={this.delete}
-                                                        picProject={this.props.picProject}
-                                                        isPermition={this.state.isPermition}
-                                                        path={dt.path}/>)
+                                                            rowClickDocFile={this.rowClickDocFile} 
+                                                            fileName={dt.fileName} 
+                                                            fileSize={dt.fileSize} 
+                                                            descFile={dt.description} 
+                                                            delete={this.delete}
+                                                            picProject={this.props.picProject}
+                                                            isPermition={this.state.isPermition}
+                                                            path={dt.path}/>)
 
         return(
             <React.Fragment>
@@ -281,6 +294,7 @@ class doc_file_module extends React.Component{
                             commit={this.commit}
                             fileName={this.state.fileName}
                             inputElement={this.inputElement}
+                            progressBar={this.setRef}
                             fileUploaHandler={this.fileUploaHandler}
                         />
                     :

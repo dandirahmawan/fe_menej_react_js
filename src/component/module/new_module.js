@@ -1,6 +1,11 @@
 import React from 'react'
 import UserListChoice from '../user_list_choice'
 import { tsAnyKeyword } from '@babel/types'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faPlus} from '@fortawesome/free-solid-svg-icons'
+import FormAddStatus from './form_add_status'
+import ChoiceStatus from './status_choice'
+import {SelectBox} from '../custom_element'
 
 class new_module extends React.Component{
 
@@ -12,8 +17,13 @@ class new_module extends React.Component{
             userSelectedId:"",
             moduleName:"",
             dueDate:"",
-            description:""
+            description:"",
+            formAddStatus: "",
+            status: "Not started",
+            idStatus: "N",
+            statusChoice: "",
         }
+        this.baseStatus = React.createRef()
         this.selectUser = this.selectUser.bind(this)
         this.userSelected = this.userSelected.bind(this)
         this.xSelected = this.xSelected.bind(this)
@@ -21,6 +31,11 @@ class new_module extends React.Component{
         this.chName = this.chName.bind(this)
         this.ddChange = this.ddChange.bind(this)
         this.descChange = this.descChange.bind(this)
+        this.selectStatus = this.selectStatus.bind(this)
+        this.newStatusCommit = this.newStatusCommit.bind(this)
+        // this.addStatus = this.addStatus.bind(this)
+        this.chooseStatus = this.chooseStatus.bind(this)
+        this.hideChoice = this.hideChoice.bind(this)
     }
 
     componentDidMount(){
@@ -65,7 +80,8 @@ class new_module extends React.Component{
         var dd = this.state.dueDate
         var desc = this.state.description
         var pi = this.props.projectId
-        this.props.commit(iu, pn, dd, desc, pi)
+        var status = this.state.idStatus
+        this.props.commit(iu, pn, dd, desc, pi, status)
     }
 
     chName(e){
@@ -83,25 +99,81 @@ class new_module extends React.Component{
         this.setState({description: desc})
     }
 
+    chooseStatus(e){
+        let scope = this
+        let target = ""
+        let prtTagId = e.target.parentElement
+        if(prtTagId.getAttribute("id") == "slck-box-cstm"){
+            target = e.target.parentElement
+        }else{
+            target = e.target
+        }
+
+        let itv = setInterval(() => {
+            let w = target.offsetWidth+"px"
+            scope.setState({
+                statusChoice: <ChoiceStatus width={w}
+                                            projectId={this.props.projectId} 
+                                            val="N" dataStatus={this.props.dataStatus}
+                                            selectStatus={this.selectStatus}
+                                            newStatus={this.newStatusCommit} 
+                                            hideChoice={this.hideChoice}/>
+            })
+            clearInterval(itv)
+        }, 100)
+    }
+
+    newStatusCommit(status){
+        this.props.commitNewStatus(status)
+        this.hideChoice()
+    }
+
+    selectStatus(id){
+        this.props.dataStatus.map(dt => {
+            if(id == dt.id){
+                this.setState({
+                    statusChoice: "",
+                    idStatus: dt.id,
+                    status: dt.status
+                })
+            }
+        })
+    }
+
+    hideChoice(){
+        this.setState({
+            statusChoice: ""
+        })
+    }
+
     render(){
         return(
             <React.Fragment>
                 <div onClick={this.props.hide} className="block"></div>
-                <div id='pop_new_module' class='pop' style={{position: "fixed", height: "auto", width: "400px", borderRadius: '5px', overflow: 'hidden'}}>
+                <div id='pop_new_module' class='pop' style={{position: "fixed", height: "auto", width: "500px", borderRadius: '5px'}}>
                     <div className="header-second-background bold main-border-bottom" style={{padding: '10px', fontSize: '16px'}}>
                         New Module
                     </div>
-                    <div style={{background: "#FFF", width: "380px", height: "auto", padding: '10px'}}>
+                    <div style={{background: "#FFF", width: "480px", height: "auto", padding: '10px'}}>
                         <table>
                             <tr>
                                 <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Name <span style={{color: "red"}}>*</span></td>
-                                <td><input onChange={this.chName} placeholder="module name" value={this.state.projectName} style={{padding: "5px"}} type="text"></input></td>
+                                <td><input onChange={this.chName} placeholder="module name" value={this.state.projectName} style={{padding: "5px", width: "250px"}} type="text"></input></td>
                             </tr>
                             <tr>
                                 <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>User <span style={{color: "red"}}>*</span></td>
                                 <td>
                                     {this.state.popupListChoice}
                                     <a onClick={this.selectUser} className="bold">{this.state.userSelected}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Status <span style={{color: "red"}}>*</span></td>
+                                <td ref={this.baseStatus}>
+                                    <SelectBox click={this.chooseStatus} 
+                                        style={{padding: "7px", overflow: "hidden",border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
+                                        value={this.state.status}/>
+                                    {this.state.statusChoice}
                                 </td>
                             </tr>
                             <tr>
@@ -114,7 +186,11 @@ class new_module extends React.Component{
                             </tr>
                             <tr>
                                 <td valign="top" className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Description</td>
-                                <td style={{padding: "5px"}}><textarea placeholder="module description" onChange={this.descChange} style={{height: "50px", width: "100%", fontSize: "12px"}}></textarea></td>
+                                <td style={{padding: "5px"}}>
+                                    <textarea placeholder="module description" 
+                                            onChange={this.descChange} 
+                                            style={{height: "50px", width: "350px", fontSize: "12px"}}/>
+                                </td>
                             </tr>
                         </table>
                     </div>

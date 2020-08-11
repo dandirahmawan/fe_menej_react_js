@@ -1,17 +1,35 @@
 import React from 'react'
 import UserListChoice from '../user_list_choice'
-import { getCookieUserId } from '../../function/function'
+import { getCookieUserId,  convertDate_dd_MMM_yyy} from '../../function/function'
+import {SelectBox} from '../custom_element'
+import ChoiceStatus from '../module/status_choice'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons'
 
 class module_info extends React.Component{
 
     constructor(){
         super()
         this.state = {
-            popupListChoice: ""
+            popupListChoice: "", 
+            statusChoice: "",
+            idStatus: "",
+            status: ""
         }
+        this.SelectBox = React.createRef()
         this.setAssigned = this.setAssigned.bind(this)
         this.xSelected = this.xSelected.bind(this)
         this.userSelected = this.userSelected.bind(this)
+        this.chooseStatus = this.chooseStatus.bind(this)
+        this.hideChoice = this.hideChoice.bind(this)
+        this.selectStatus = this.selectStatus.bind(this)
+        this.statusName = this.statusName.bind(this)
+    }
+
+    componentDidMount(){
+        this.setState({
+            idStatus: this.props.moduleStatus
+        })
     }
 
     setAssigned(){
@@ -33,6 +51,59 @@ class module_info extends React.Component{
     userSelected(ue, ui, un){
         this.props.changeUserSelected(ue, ui, un)
         this.xSelected()
+    }
+
+    chooseStatus(e){
+        let scope = this
+        let target = ""
+        let prtTagId = e.target.parentElement
+        if(prtTagId.getAttribute("id") == "slck-box-cstm"){
+            target = e.target.parentElement
+        }else{
+            target = e.target
+        }
+
+        let itv = setInterval(() => {
+            let w = target.offsetWidth+"px"
+            scope.setState({
+                statusChoice: <ChoiceStatus width={w}
+                                            projectId={this.props.projectId} 
+                                            val={this.state.idStatus} 
+                                            dataStatus={this.props.dataStatus}
+                                            selectStatus={this.selectStatus} 
+                                            hideChoice={this.hideChoice}/>
+            })
+            clearInterval(itv)
+        }, 100)
+    }
+
+    hideChoice(){
+        this.setState({
+            statusChoice: ""
+        })
+    }
+
+    selectStatus(id){
+        this.props.changeStatus(id)
+        this.props.dataStatus.map(dt => {
+            if(id == dt.id){
+                this.setState({
+                    statusChoice: "",
+                    idStatus: dt.id,
+                    status: dt.status
+                })
+            }
+        })
+    }
+
+    statusName(id){
+        let statusName = ""
+        this.props.dataStatus.map(dt => {
+            if(dt.id == id){
+                statusName = dt.status
+            }
+        })
+        return statusName
     }
 
     render(){
@@ -82,10 +153,14 @@ class module_info extends React.Component{
                                 (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                 ?
                                     <td>
-                                        <select onChange={this.props.changeStatus} value={this.props.moduleStatus} style={{fontSize: "12px"}}>
+                                        <SelectBox ref={this.SelectBox} click={this.chooseStatus} 
+                                            style={{padding: "7px", overflow: "hidden",border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
+                                            value={this.statusName(this.state.idStatus)}/>
+                                        {this.state.statusChoice}
+                                        {/* <select onChange={this.props.changeStatus} value={this.props.moduleStatus} style={{fontSize: "12px"}}>
                                             <option value="P">On progress</option>
                                             <option value="C">Close</option>
-                                        </select>
+                                        </select> */}
                                     </td>
                                 :
                                     <td style={{paddingBottom: "10px"}}>
@@ -105,7 +180,7 @@ class module_info extends React.Component{
                                     <td style={{paddingBottom: "10px"}}>
                                         <div className="bold second-background-grs second-font-color" 
                                             style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
-                                            {this.props.dueDate}
+                                            <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(this.props.dueDate)}
                                         </div>
                                     </td>
                             }
@@ -115,7 +190,7 @@ class module_info extends React.Component{
                             <td style={{paddingBottom: "10px"}}>
                                 <div className="bold second-background-grs second-font-color" 
                                     style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
-                                    {this.props.createdDate}
+                                    <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(this.props.createdDate)}
                                 </div>
                             </td>
                         </tr>
@@ -124,7 +199,7 @@ class module_info extends React.Component{
                             <td style={{paddingBottom: "10px"}}>
                                 <div className="bold second-background-grs second-font-color" 
                                     style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
-                                    {this.props.dueDate}
+                                    <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(this.props.updatedDate)}
                                 </div>
                             </td>
                         </tr>

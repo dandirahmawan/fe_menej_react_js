@@ -21,6 +21,7 @@ class list_module extends React.Component{
             projectIdHeader:"",
             dataTab:[],
             dataNote:[],
+            dataStatus:[],
             notFound:false
         }
         this.hidePopUp = this.hidePopUp.bind(this)
@@ -32,6 +33,8 @@ class list_module extends React.Component{
         this.updateDataDocumentFile = this.updateDataDocumentFile.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
+        this.commitNewStatus = this.commitNewStatus.bind(this)
+        this.updateDataStatus = this.updateDataStatus.bind(this)
     }
 
     componentDidMount(){
@@ -71,13 +74,13 @@ class list_module extends React.Component{
                 var permition  = result[0]['permitionProjects']
                 var dataNote = result[0]['note']
                 var dataTab = result[0]['tabs']
+                var dataStatus = result[0]['statusModules']
 
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
                 }
 
                 if(dataProjectFetch === undefined) return false
-
                 this.props.setDataModule(dataModule)
                 
                 this.setState({
@@ -85,7 +88,8 @@ class list_module extends React.Component{
                     dataProject: dataProjectFetch,
                     permitionProject: permition,
                     dataNote: dataNote,
-                    dataTab: dataTab
+                    dataTab: dataTab,
+                    dataStatus: dataStatus
                 })
             }
         })
@@ -130,7 +134,7 @@ class list_module extends React.Component{
         })
     }
 
-    commitNewModule(userId, mouleName, dueDate, description, pi){
+    commitNewModule(userId, mouleName, dueDate, description, pi, status){
         var userLogin = getCookieUserId()
         var form = new FormData()
         form.append("userId", userId)
@@ -139,6 +143,7 @@ class list_module extends React.Component{
         form.append("dueDate", dueDate)
         form.append("description", description)
         form.append("projectId", pi)
+        form.append("status", status)
 
         var isReady = false
         this.props.dataModule.map(dt => {
@@ -184,21 +189,47 @@ class list_module extends React.Component{
         this.props.deleteMember(userId)
     }
 
+    commitNewStatus(status){
+        let statusJson = status[0]
+        let arrStatus = this.state.dataStatus
+        arrStatus.push(statusJson)
+        this.setState({
+            dataStatus: arrStatus
+        })
+    }
+
+    updateDataStatus(statusId, statusName, color){
+        this.state.dataStatus.map(dt => {
+            if(dt.id == statusId){
+                dt.status = statusName
+                dt.color = color
+            }
+            return dt
+        })
+
+        this.setState({
+            dataStatus: this.state.dataStatus
+        })
+    }
+
     render(){
 
         const data =  <Module 
-                        projectIdHeader = {this.state.projectIdHeader}
-                        dataProject={this.state.dataProject}  
-                        dataModule={this.props.dataModule}
-                        dataTeam={this.state.dataTeam}
-                        dataNote={this.state.dataNote}
-                        dataTab={this.state.dataTab}
-                        dataPermition={this.state.permitionProject}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitNewModule={this.commitNewModule}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitDeleteMember={this.commitDeleteMember}
-                        refreshModule={this.refreshModule}
+                            projectIdHeader = {this.state.projectIdHeader}
+                            dataProject={this.state.dataProject}  
+                            dataModule={this.props.dataModule}
+                            dataTeam={this.state.dataTeam}
+                            dataNote={this.state.dataNote}
+                            dataTab={this.state.dataTab}
+                            dataStatus={this.state.dataStatus}
+                            dataPermition={this.state.permitionProject}
+                            commitDeleteModule={this.commitDeleteModule}
+                            commitNewModule={this.commitNewModule}
+                            commitDeleteModule={this.commitDeleteModule}
+                            commitDeleteMember={this.commitDeleteMember}
+                            commitNewStatus={this.commitNewStatus}
+                            updateDataStatus={this.updateDataStatus}
+                            refreshModule={this.refreshModule}
                         />
 
         return(

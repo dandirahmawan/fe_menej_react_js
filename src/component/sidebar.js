@@ -1,10 +1,12 @@
 import React from  'react'
 import {Link} from 'react-router-dom'
-import Logo from '../images/menej_fff.png'
 import {connect} from 'react-redux'
 import CreateProject from './create_project'
-import {faBars} from '@fortawesome/free-solid-svg-icons'
+import {faFolder, faPlusCircle, faCalendarAlt, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import { getCookieSessionId, getCookieUserId } from '../function/function'
+import { ApiFetch } from './apiFetch'
+import project from './project/project'
 
 const mapStateToProps = state => {
     return{
@@ -18,17 +20,54 @@ class sidebar extends React.Component{
         super();
         this.state = {
             isCollpase: false,
-            menuProject: [],
-            createProjectPop:""
+            dataProject: [],
+            createProjectPop:"",
+            projectSelected: null
         }
         this.collapseAction = this.collapseAction.bind(this)
         this.createProject = this.createProject.bind(this)
         this.hidePopUp = this.hidePopUp.bind(this)
+        this.selectProject = this.selectProject.bind(this)
     }
 
     collapseAction(){
         this.setState({
             isCollpase: true
+        })
+    }
+
+    componentDidMount(){
+        let elm = document.getElementById("sidebar")
+        let setHeight = elm.offsetHeight - 63
+        elm.style.height = setHeight+"px"
+
+        var userId = getCookieUserId()
+        var sessionId = getCookieSessionId()
+
+        let path = window.location.pathname
+        let paths = path.split("/")
+
+
+        var form = new FormData()
+        form.append("userId", userId)
+        form.append("sessionId", sessionId)
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/list_project", {
+            method: "POST",
+            body: form
+        }).then(res => res.json()).then(result => {
+            
+            let projectId = 0
+            if(paths[1] == "project") projectId = paths[2]
+                
+            this.setState({
+                dataProject: result,
+                projectSelected: projectId
+            })
         })
     }
 
@@ -58,56 +97,65 @@ class sidebar extends React.Component{
         btn.style.display = "block"
     }
 
-    render(){
+    selectProject(projectId){
+        this.setState({
+            projectSelected: projectId
+        })
+    }
 
-        const menuProjectLink = this.props.menuProject.map(dt => (dt.isDelete !== 'Y') ? <Link to={"/project/"+dt.projectId}><li className="none-style-list" style={{padding: "10px",fontSize:"12px",color:"#FFF"}}>{dt.projectName}</li></Link> : '')
+    render(){
+        const dataProject = this.state.dataProject.map(dt => {
+            const toLink = "/project/"+dt.projectId
+            let classBase = (dt.projectId == this.state.projectSelected) 
+                            ? 
+                                "tr-selectable-project tr-selectable-project-selected" 
+                            : 
+                                "tr-selectable-project"
+           
+            return <Link to={toLink} style={{textDecoration: "none"}}>
+                        <div onClick={() => this.selectProject(dt.projectId)} className={classBase} style={{overflow: "hidden", paddingLeft: "10px", paddingRight: "10px", paddingTop: "5px", paddingBottom: "5px", cursor: "pointer"}}>
+                                <div style={{width: "35px"}}>
+                                    <FontAwesomeIcon icon={faFolder} style={{color: "#d4ae2b", fontSize: "35px"}}/>
+                                </div>
+                                <div style={{marginLeft: "45px", marginTop: "-29px"}}>
+                                    <div className="bold" style={{fontSize: "12px"}}>{dt.projectName}</div>
+                                    <div className="second-font-color bold" style={{fontSize: "10px"}}>
+                                        <FontAwesomeIcon icon={faCalendarAlt}/> {dt.createdDate}
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+        })
 
         return(
             <React.Fragment>
                 {this.state.createProjectPop}
-                <div id="sidebar" className='sidebar main-color'>
-                    <div style={{height:"60px", width: "44px", overflow: "hidden", marginLeft: "-5px"}}>
-                        <img style={{marginTop:"12px",marginLeft: "15px"}} src={Logo}></img>
-                        {/*<button*/}
-                            {/*onClick={this.bars}*/}
-                            {/*style={{float: "right",*/}
-                                    {/*background: "none",*/}
-                                    {/*color: "#FFF",*/}
-                                    {/*marginTop: "20px",*/}
-                                    {/*fontSize: "16px"}}>*/}
-                            {/*<FontAwesomeIcon icon={faBars}/>*/}
-                        {/*</button>*/}
-                    </div>
-                    <ul style={{fontSize: '14px',marginTop:"10px"}}>
-                        {/* <Link to="/dashboard"> */}
-                        <a onClick={this.createProject}><li className='nav-li' style={{fontSize: "17px"}}>
-                            <em className='fa fa-plus-circle'>&nbsp;&nbsp;&nbsp;</em>
-                            {/*Create*/}
-                        </li></a>
-                        {/*<Link to={{pathname:'/dashboard', load: 'yes'}}>*/}
-                            {/*<li className='nav-li'>*/}
-                                {/*<em className='fa fa-dashboard'>&nbsp;&nbsp;&nbsp;</em>*/}
-                                {/*/!*Dashboard*!/*/}
-                            {/*</li>*/}
-                        {/*</Link>*/}
-                        <Link to={{pathname:'/users', load: 'yes'}}>
-                            <li className='nav-li'>
-                                <em className='fa fa-user-circle'>&nbsp;&nbsp;&nbsp;</em>
-                                {/*User*/}
-                            </li>
-                        </Link>
-                        <Link to={{pathname:'/project', load: 'yes'}}>
-                            <li className='nav-li'>
-                                <em className='fa fa-folder'>&nbsp;&nbsp;&nbsp;</em>
-                                {/*Project*/}
-                            </li>
-                        </Link>
-                        <div style={{width: "350px"}}>
-                            <ul style={{marginTop:"0px",paddingLeft:"25px"}}>
-                                {/*{menuProjectLink}*/}
-                            </ul>
+                <div id="sidebar" className='sidebar main-border-right'>
+                    <div>
+                        <div className="bold second-font-color main-border-bottom" style={{fontSize: "12px", padding: "10px", paddingTop: "10px", overflow: "hidden"}}>
+                            <FontAwesomeIcon icon={faFolder} style={{color: "#d4ae2b"}}/>&nbsp;
+                            List project
+                            <button className="main-border-left" style={{float: "right", background: "none"}}>
+                                <FontAwesomeIcon className="main-font-color" icon={faPlusCircle}/>
+                            </button>
                         </div>
-                    </ul>
+                    </div>
+                    <div id="base-data-project">
+                        {
+                            (this.state.dataProject.length > 0)
+                            ?
+                                dataProject
+                            :
+                                <div className="second-font-color" style={{textAlign: "center", fontSize: "12px", padding: "20px"}}>
+                                    <FontAwesomeIcon icon={faFolder} style={{fontSize: "20px"}}/><br/>
+                                    <span className="bold">No data to display</span>
+                                    <div style={{fontSize: "11px"}}>
+                                        The project wthin you as a team will be display here, you can add or create new project with click 
+                                        &nbsp;<FontAwesomeIcon icon={faPlusCircle}/> above
+                                    </div>
+                                </div>
+                        }
+                    </div>
                 </div>
             </React.Fragment>
         )

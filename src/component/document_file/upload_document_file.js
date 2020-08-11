@@ -22,10 +22,14 @@ class upload_document_file extends React.Component{
             modHeight: 0,
             base64: "",
             image:null,
+            numPercent: 0,
             choicesModule:[]
         }
 
         this.inputRef = React.createRef()
+        this.baseProgressBar = React.createRef()
+        this.progressBar = React.createRef()
+
         this.fileSelect = this.fileSelect.bind(this)
         this.changeModule = this.changeModule.bind(this)
         this.submit = this.submit.bind(this)
@@ -79,7 +83,7 @@ class upload_document_file extends React.Component{
         let t = e.target
         let ready0 = true
         let ready1 = true
-
+        
         if(this.state.moduleId == 0) ready0 = false
         if(this.state.fileName == 0) ready1 = false
         // return false
@@ -99,18 +103,25 @@ class upload_document_file extends React.Component{
             form.append('fileName', this.state.fileName)
             form.append('ort', this.state.ort)
 
-            var header = new Headers()
-            header.append("sessionId", getCookieSessionId())
-            header.append("userId", getCookieUserId());
+            this.baseProgressBar.current.style.display = "block"
+            const xhr = new XMLHttpRequest()
+            xhr.upload.onprogress = (e) => {
+                const done = e.position || e.loaded
+                const total = e.totalSize || e.total
+                const perc = (Math.floor(done / total * 1000) / 10)
+                
+                //set width progress bar
+                if(perc >= 100){
+                    this.progressBar.current.style.width = "100%"
+                }else{
+                    this.progressBar.current.style.width = Math.floor(perc)+"%"
+                    this.setState({numPercent : Math.floor(perc)})
+                }
+            }
 
-            ApiFetch("/document_file",{
-                method: "POST",
-                body: form,
-                headers: header
-            }).then(res => res.text())
-            .then(result => {
-                if(result != ""){
-                    var json = JSON.parse(result)
+            xhr.onreadystatechange = (e) => {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var json = JSON.parse(xhr.responseText)
                     if(json.projectId !== undefined){
                         this.props.appendDataDocFile(json)
                         this.props.updateDataModuleDocFile(this.state.moduleId)
@@ -121,9 +132,13 @@ class upload_document_file extends React.Component{
                         ReactDOM.render("Submit", t)
                         t.style.opacity = 1
                     }
-
                 }
-            })
+            }
+
+            xhr.open('POST', baseUrl+'/document_file')
+            xhr.setRequestHeader("userId", getCookieUserId())
+            xhr.setRequestHeader("sessionId", getCookieSessionId())
+            xhr.send(form)
         }else{
             if(!ready0) popUpAlert("Module not selected")
             if(!ready1) popUpAlert("File not choosen")
@@ -200,25 +215,6 @@ class upload_document_file extends React.Component{
                         if(fileSize > 500000) scope.canvasing()
                     }
                 }, 100)
-                // let ort = scope.state.ort
-                // if (ort == 6) {
-                //     elm.style.transform = "rotate(90deg)"
-                // } else if (ort == 8) {
-                //     elm.style.transform = "rotate(-90deg)"
-                // } else if (ort == 1) {
-                //     elm.style.transform = "rotate(0deg)"
-                // } else if (ort === undefined) {
-                //     elm.style.transform = "rotate(0deg)"
-                // } else {
-                //     elm.style.transform = "rotate(180deg)"
-                // }
-
-                // var img = new Image()
-                // img.src = e.target.result
-                // img.setAttribute("id", "img-to-cvs")
-                // img.style.display = "none"
-                // let baseImgCvs = document.getElementById("base-img-cvs")
-                // baseImgCvs.append(img)
             }
         })
     }
@@ -297,6 +293,15 @@ class upload_document_file extends React.Component{
                         </table>
                     </div>
                     <div id="ft-upl-doc-file-bs" className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
+                        <div ref={this.baseProgressBar} style={{float: "left", textAlign: "left", display: "none"}}>
+                            <span className="bold second-font-color" style={{fontSize: "11px"}}>
+                                {this.state.numPercent}&nbsp;%
+                            </span>
+                            <div style={{background: "#CCC", height: "8px", width: "120px"}}>
+                                <div ref={this.progressBar} className="main-color" style={{width: "30%", height: "8px"}}></div>
+                            </div>
+                        </div>
+
                         <button onClick={this.submit} className="btn-primary" style={{fontSize: "12px"}}>Submit</button>
                         <button onClick={this.props.hide} className="btn-secondary" style={{fontSize: "12px", marginLeft: "10px"}}>Cancel</button>
                     </div>

@@ -128,6 +128,7 @@ export function convertDate_dd_MMM_yyy(date){
     if(dated != "Invalid Date"){
         var month = parseInt(dated.getMonth()) + 1
         var monthName = ""
+        var date = (dated.getDate() < 10) ? "0"+dated.getDate() : dated.getDate()
         
         if(month == 1) monthName = "January"
         if(month == 2) monthName = "February"
@@ -141,7 +142,7 @@ export function convertDate_dd_MMM_yyy(date){
         if(month == 10) monthName = "October"
         if(month == 11) monthName = "November"
         if(month == 12) monthName = "December"
-        return dated.getDate()+" "+monthName+" "+dated.getFullYear()
+        return date+" "+monthName+" "+dated.getFullYear()
     }
 }
 
@@ -257,4 +258,62 @@ function mouseLeaveTheadTab(e){
             widhtsetter.style.display = "none"
         }
     }
+}
+
+export function checkBuffering(tagVideo) {
+    var player = tagVideo
+    var currentPlayPos = player.currentTime
+    var bufferingDetected = false
+    var checkInterval  = 50.0 // check every 50 ms (do not use lower values)
+    var lastPlayPos    = 0
+    // checking offset should be at most the check interval
+    // but allow for some margin
+    var offset = (checkInterval - 20) / 1000
+
+    // if no buffering is currently detected,
+    // and the position does not seem to increase
+    // and the player isn't manually paused...
+    if (
+            !bufferingDetected 
+            && currentPlayPos < (lastPlayPos + offset)
+            && !player.paused
+        ) {
+        console.log("buffering")
+        bufferingDetected = true
+    }
+
+    // if we were buffering but the player has advanced,
+    // then there is no buffering
+    if (
+        bufferingDetected 
+        && currentPlayPos > (lastPlayPos + offset)
+        && !player.paused
+        ) {
+        console.log("not buffering anymore")
+        bufferingDetected = false
+    }
+
+    return bufferingDetected
+}
+
+export function getIconDocFIle(fileName, baseElement){
+    var a = fileName.split(".")
+    var ext = a[a.length - 1]
+    var rtn = ""
+
+    let elm = document.createElement("i")
+    if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
+        rtn = "fa fa-image"
+        elm.setAttribute("class", rtn)
+    }else if(ext.toLowerCase() == "mp4" || ext.toLowerCase() == "3gp" || ext.toLowerCase() == "mkv"){
+        rtn = "fa fa fa-play-circle"
+        elm.setAttribute("class", rtn)
+        elm.style.color = "#F00"
+        elm.style.fontSize = "14px"
+    }else{
+        rtn = "fa fa-file"
+        elm.setAttribute("class", rtn)
+        elm.style.color = "#d4ae2b"
+    }
+    baseElement.append(elm)
 }
