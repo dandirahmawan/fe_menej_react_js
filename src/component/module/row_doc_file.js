@@ -50,7 +50,7 @@ class row_doc_file extends React.Component{
                             ?
                                 this.props.descFile
                             :
-                                'No description for this document file'
+                                ''
                         }
                     </div>
                 </td>

@@ -10,9 +10,13 @@ import {
     updateDataModuleBugsCloseAction,
     updateDataModuleBugsUncloseAction,
     editBugsAction,
-    editNoteAction
+    editNoteAction,
+    editProjectAction,
+    startDataAction,
+    setDataLabelAction,
+    setDataLabelModuleAction,
+    setDataLabelsModuleCurrrentSetAction, setAssignedModulesAction, updataDataChecklistAction
 } from './type_action'
-import note from "../component/note/note";
 
 export function setDataProject(data){
     return{
@@ -80,12 +84,10 @@ export function updateDataModule(moduleId, moduleName, moduleStatus, userId, use
     }
 }
 
-export function startData(userName, userEmail, picProfile){
+export function startData(jsonData){
     return{
-        type : "START_DATA",
-        userName : userName,
-        userEmail : userEmail,
-        picProfile: picProfile
+        type : startDataAction,
+        jsonData : jsonData
     }
 }
 
@@ -200,6 +202,14 @@ export function deleteDataDocFile(moduleId, projectId, fileName, userId){
     }
 }
 
+export function updateDataChecklist(dataChecklist, moduleId){
+    return{
+        type: updataDataChecklistAction,
+        moduleId: moduleId,
+        data: dataChecklist
+    }
+}
+
 export function updateDataModuleBugsClose(moduleId){
     return{
         type: updateDataModuleBugsCloseAction,
@@ -229,3 +239,38 @@ export function editNote(noteId, note){
         note: note
     }
 }
+
+export function editProject(jsonData){
+    return{
+        type: editProjectAction,
+        jsonData: jsonData
+    }
+}
+
+export function setDataLabel(data){
+    return{
+        type: setDataLabelAction,
+        data: data
+    }
+}
+
+export function setDataLabelModule(data){
+    return{
+        type: setDataLabelModuleAction,
+        data: data
+    }
+}
+
+export function setAssignedModules(data){
+    return{
+        type: setAssignedModulesAction,
+        data: data
+    }
+}
+
+// export function setDataLabelsModuleCurrrentSet(data){
+//     return{
+//         type: setDataLabelsModuleCurrrentSetAction,
+//         data: data
+//     } 
+// }

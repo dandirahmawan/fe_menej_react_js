@@ -6,11 +6,18 @@ import {faFolder, faPlusCircle, faCalendarAlt, faExclamationTriangle} from '@for
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { getCookieSessionId, getCookieUserId } from '../function/function'
 import { ApiFetch } from './apiFetch'
-import project from './project/project'
+import {setDataProject} from '../redux/action'
+import { Spinner } from './spinner'
 
 const mapStateToProps = state => {
     return{
         menuProject : state.dataProject
+    }
+}
+
+const mapDispatchToProject = dispatch => {
+    return{
+        setDataProject : (dataProject) => dispatch(setDataProject(dataProject))
     }
 }
 
@@ -20,9 +27,9 @@ class sidebar extends React.Component{
         super();
         this.state = {
             isCollpase: false,
-            dataProject: [],
             createProjectPop:"",
-            projectSelected: null
+            projectSelected: null,
+            isLoad: true
         }
         this.collapseAction = this.collapseAction.bind(this)
         this.createProject = this.createProject.bind(this)
@@ -63,10 +70,11 @@ class sidebar extends React.Component{
             
             let projectId = 0
             if(paths[1] == "project") projectId = paths[2]
-                
+            
+            this.props.setDataProject(result)
             this.setState({
-                dataProject: result,
-                projectSelected: projectId
+                projectSelected: projectId,
+                isLoad: false
             })
         })
     }
@@ -83,20 +91,6 @@ class sidebar extends React.Component{
         })
     }
 
-    bars(){
-        let elm = document.getElementById("main-base-data-wrapper")
-        elm.style.marginLeft = "0px"
-
-        let elm2 = document.getElementById("sidebar")
-        elm2.style.marginLeft = "-"+elm2.offsetWidth+"px"
-
-        let elm3 = document.getElementById("main-header")
-        elm3.style.marginLeft = "0px"
-
-        let btn = document.getElementById("btn-sb-togle")
-        btn.style.display = "block"
-    }
-
     selectProject(projectId){
         this.setState({
             projectSelected: projectId
@@ -104,7 +98,7 @@ class sidebar extends React.Component{
     }
 
     render(){
-        const dataProject = this.state.dataProject.map(dt => {
+        const dataProject = this.props.menuProject.map(dt => {
             const toLink = "/project/"+dt.projectId
             let classBase = (dt.projectId == this.state.projectSelected) 
                             ? 
@@ -135,14 +129,24 @@ class sidebar extends React.Component{
                         <div className="bold second-font-color main-border-bottom" style={{fontSize: "12px", padding: "10px", paddingTop: "10px", overflow: "hidden"}}>
                             <FontAwesomeIcon icon={faFolder} style={{color: "#d4ae2b"}}/>&nbsp;
                             List project
-                            <button className="main-border-left" style={{float: "right", background: "none"}}>
+                            <button onClick={this.createProject} className="main-border-left" style={{float: "right", background: "none"}}>
                                 <FontAwesomeIcon className="main-font-color" icon={faPlusCircle}/>
                             </button>
                         </div>
                     </div>
                     <div id="base-data-project">
                         {
-                            (this.state.dataProject.length > 0)
+                            (this.state.isLoad)
+                            ?
+                                <React.Fragment>
+                                    <Spinner size="20px"/>
+                                    <div className="second-font-colot bold" style={{textAlign: "center", fontSize: "11px"}}>Loading..</div>
+                                </React.Fragment>
+                            :   ""
+                                
+                        }
+                        {
+                            (this.props.menuProject.length > 0 && !this.state.isLoad)
                             ?
                                 dataProject
                             :
@@ -162,4 +166,4 @@ class sidebar extends React.Component{
     }
 }
 
-export default connect(mapStateToProps)(sidebar)
+export default connect(mapStateToProps, mapDispatchToProject)(sidebar)

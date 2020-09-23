@@ -1,10 +1,13 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCircle, faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
+import {faCog} from '@fortawesome/free-solid-svg-icons'
 import PopConfirmation from '../popup_confirmation'
 import {ApiFetch} from '../apiFetch'
 import EditStatus from './edit_status'
 import MemberProject from './member_project'
+import { getCookieUserId } from '../../function/function'
+import ManageStatus from './manage_status'
+import EditProject from './edit_project'
 
 class info_project extends React.Component{
 
@@ -12,8 +15,10 @@ class info_project extends React.Component{
         super();
         this.state = {
             popup: null,
+            dataStatus: [],
             statusDeleteId: null,
-            dataTeam: []
+            dataTeam: [],
+            isPermitionModule: false
         }
         this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -22,12 +27,24 @@ class info_project extends React.Component{
         this.commitDelete = this.commitDelete.bind(this)
         this.editStatus = this.editStatus.bind(this)
         this.commitEditStatus = this.commitEditStatus.bind(this)
+        this.manageStatus = this.manageStatus.bind(this)
+        this.updateDataStatus = this.updateDataStatus.bind(this)
+        this.editProject = this.editProject.bind(this)
+        this.refreshModule = this.refreshModule.bind(this)
     }
     
     componentDidMount() {
         document.addEventListener('mouseup', this.handleClickOutside)
+        console.log(this.props.dataTeam)
         this.setState({
-            dataTeam: this.props.dataTeam
+            dataTeam: this.props.dataTeam,
+            dataStatus: this.props.dataStatus
+        })
+
+        this.props.dataPermition.map(dt => {
+            if(dt.permitionCode == 1 && dt.isChecked == 'Y'){
+                this.state.isPermitionModule = true
+            }            
         })
     }
 
@@ -87,7 +104,7 @@ class info_project extends React.Component{
                     popup: <EditStatus id={dt.id} 
                                     projectId={dt.projectId} 
                                     color={dt.color} 
-                                    status={status} 
+                                    status={status}
                                     updateDataStatus={this.commitEditStatus}
                                     hidePopup={this.hidePopup}/>
                 })
@@ -95,40 +112,59 @@ class info_project extends React.Component{
         })
     }
 
-    commitEditStatus(statusId, statusName, color){
-        this.props.updateDataStatus(statusId, statusName, color)
+    commitEditStatus(jsonData){
+        this.props.updateDataStatus(jsonData)
         this.props.hideInfo()
         this.setState({
             popup: ""
         })
     }
 
+    manageStatus(){
+        this.setState({
+            popup: <ManageStatus dataStatus={this.props.dataStatus} 
+                                projectId={this.props.dataProject.projectId}
+                                updateDataStatus={this.updateDataStatus} 
+                                cancel={this.hidePopup}/>
+        })
+    }
+
+    updateDataStatus(jsonData){
+        this.props.updateDataStatus(jsonData)
+        this.setState({
+            dataStatus: jsonData
+        })
+    }
+
+    editProject(){
+        this.setState({
+            popup: <EditProject dataProject = {this.props.dataProject}
+                                dataTeam={this.state.dataTeam} 
+                                refreshModule = {this.refreshModule} 
+                                cancel={this.hidePopup}/>
+        })
+    }
+
+    refreshModule(){
+        this.props.refreshModule()
+        this.props.hideInfo()
+        this.setState({
+            popup: null
+        })
+    }
+
     render(){
 
-        const data = this.props.dataStatus.map(dt => {
-            return  <div style={{fontSize: "12px", padding: "5px"}}>
-                        <FontAwesomeIcon className="test" 
-                                        style={{color: dt.color}} 
-                                        icon={faCircle}/>&nbsp;&nbsp;{dt.status}&nbsp;&nbsp;
-
-                        {
-                            (dt.projectId != "all")
-                                ?
-                                    <React.Fragment>
-                                        <FontAwesomeIcon 
-                                            onClick={() => this.editStatus(dt.status, dt.id)}
-                                            className="test" 
-                                            style={{color: "rgb(154 154 154)", fontSize: "11px"}} 
-                                            icon={faEdit}/>&nbsp;
-                                        <FontAwesomeIcon 
-                                            onClick={() => this.deleteStatus(dt.status, dt.id)}
-                                            className="test" 
-                                            style={{color: "rgb(154 154 154)", fontSize: "11px"}} 
-                                            icon={faTrashAlt}/>
-                                    </React.Fragment>
-                                :
-                                    ""
-                        }
+        const data = this.state.dataStatus.map(dt => {
+            return  <div style={{fontSize: "11px", 
+                                padding: "5px", 
+                                background: dt.color, 
+                                float: "left", 
+                                borderRadius: "3px", 
+                                marginRight: "5px",
+                                color: "#FFF", 
+                                marginBottom: "5px"}}>
+                        {dt.status}
                     </div>
         })
 
@@ -138,48 +174,53 @@ class info_project extends React.Component{
                 <div className="bold main-border-bottom" style={{padding: "10px", background: "#dcdcdc", fontSize: "12px", color: "#000", border: "1px solid #CCC"}}>
                     Info project
                 </div>
-                <div style={{paddingLeft: "10px", paddingRight: "10px", paddingBottom: "10px"}}>
-                    <div className="main-border" style={{overflow: "hidden", padding: "5px", borderRadius: "5px", background: "#f5f5f5", marginTop: "5px", marginBottom: "5px"}}>
-                        <em class="fa fa-user-circle" style={{float: "left", fontSize: "20px", marginTop: "4px"}}>&nbsp;</em>
-                        <div style={{float: "left", fontSize: "12px"}}>
-                            <span style={{fontSize: "10px", color: "#949494"}}>Project Manager :</span><br/>
-                            <span className="bold" style={{fontSize: "13px"}}>{this.props.picName}</span>
+                <div style={{paddingLeft: "10px", paddingRight: "10px", paddingBottom: "10px", marginTop: "5px"}}>
+                    <div className="main-border" style={{background: "#f5f5f5", borderRadius: "5px"}}>
+                        <div style={{overflow: "hidden", padding: "5px"}}>
+                            {
+                                (getCookieUserId() == this.props.dataProject.pic)
+                                ?
+                                    <a id="btn-edit-project" onClick={this.editProject}>
+                                        <em className="fa fa-edit second-font-color" style={{float: "right", fontSize: "15px", marginTop: "4px"}}>&nbsp;</em>
+                                    </a>
+                                : ""
+                            }
+                            
+                            
+                            <em class="fa fa-folder" style={{float: "left", fontSize: "20px", marginTop: "4px", color: "rgb(212, 174, 43)"}}>&nbsp;</em>
+                            
+                            <div style={{float: "left", fontSize: "12px", marginLeft: "5px"}}>
+                                <span className="bold" style={{fontSize: "12px"}}>{this.props.dataProject.projectName}</span><br/>
+                                <span className="second-font-color" style={{fontSize: "10px"}}>{this.props.dataProject.createdDate}</span>
+                            </div>
+                        </div>
+                        <div style={{overflow: "hidden", padding: "5px"}}>
+                            <em className="fa fa-user-circle" style={{float: "left", fontSize: "20px", marginTop: "4px"}}>&nbsp;</em>
+                            <div style={{float: "left", fontSize: "12px", marginLeft: "5px"}}>
+                                <span style={{fontSize: "10px", color: "#949494"}}>Project Manager :</span><br/>
+                                <span className="bold" style={{fontSize: "12px"}}>{this.props.dataProject.picName}</span>
+                            </div>
                         </div>
                     </div>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td className="bold">Name</td>
-                                <td>:</td>
-                                <td>{this.props.projectName}</td>
-                            </tr>
-                            <tr>
-                                <td className="bold">Create Date</td>
-                                <td>:</td>
-                                <td>{this.props.createDate}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                     <div id="mamber-info-base">
                         <MemberProject
-                            pic={this.props.pic}  
-                            data={this.state.dataTeam} 
+                            pic={this.props.dataProject.pic}  
+                            data={this.state.dataTeam}
+                            dataPermition={this.props.dataPermition} 
                             manageMember={this.props.manageMember}/>
                     </div>
                     <div>
                         <div className="second-font-color bold main-border-top" style={{fontSize: "10px", padding: "5px"}}>
-                            List status
+                            Status module
+                            {
+                                (this.props.dataProject.pic == getCookieUserId() || this.state.isPermitionModule)
+                                ?
+                                    <a onClick={this.manageStatus} style={{float: "right"}}><FontAwesomeIcon icon={faCog}/> Manage</a>
+                                : ""
+                            }
                         </div>
-                        <div>
+                        <div style={{padding: "5px", overflow: "hidden"}}>
                             {data}
-                            <div style={{overflow: "hidden", marginTop: "5px"}}>
-                                <div style={{float: "left", width: "230px"}}>
-                                    <input 
-                                        type="text" placeholder="insert status" 
-                                        style={{padding: "5px", fontSize: "12px", width: "100%", boxSizing: "border-box"}}/>
-                                </div>
-                                <button className="btn-primary" style={{float: "right", fontSize: "12px"}}>Add</button>
-                            </div>
                         </div>
                     </div>
                 </div>

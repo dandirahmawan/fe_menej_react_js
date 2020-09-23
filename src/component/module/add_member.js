@@ -35,7 +35,6 @@ class add_member extends React.Component{
         if(val == 0){
             popUpAlert("Email is empty")
         }else{
-            alert(this.props.projectId)
             e.target.style.opacity = 0.5
             e.target.style.minWidth = "50px"
             ReactDom.render(<SpinnerButton size="12px"/>, e.target)

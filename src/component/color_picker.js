@@ -1,5 +1,6 @@
 import React from 'react'
 import {CompactPicker} from 'react-color'
+import { dataColorPickerNoWhiteGroup } from '../const/const'
 
 class color_picker extends React.Component{
     constructor(){
@@ -9,6 +10,7 @@ class color_picker extends React.Component{
     }
 
     componentDidMount(){
+        console.log(this.props.colors)
         document.addEventListener('mouseup', this.handleClickOutside);
         this.base.current.style.top = this.props.top
         this.base.current.style.left = this.props.left
@@ -35,7 +37,14 @@ class color_picker extends React.Component{
     render(){
         return(
             <div ref={this.base} style={{position: "fixed", width: this.props.width}}>
-                <CompactPicker onChangeComplete={ this.handleChangeComplete }/>
+                {
+                    (this.props.colors === undefined)
+                    ?
+                        <CompactPicker onChangeComplete={ this.handleChangeComplete }/>
+                    :
+                        <CompactPicker colors={dataColorPickerNoWhiteGroup} onChangeComplete={ this.handleChangeComplete }/>
+                }
+                
             </div>
         )
     }

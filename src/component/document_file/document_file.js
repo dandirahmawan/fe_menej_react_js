@@ -226,7 +226,6 @@ class document_file extends React.Component{
                         userName={dt.userName}
                         userId={dt.userId}
                         isBorder={this.state.isBorder}
-                        //action passing param
                         deleteDocFile={this.deleteDocFile}
                         rowClickDocFile={this.rowClickDocFile}
                         moduleClick={this.moduleClick}
@@ -292,7 +291,7 @@ class document_file extends React.Component{
                     }
 
                 </div>
-                <table style={{width: "80%"}}>
+                <table className="main-border-bottom" style={{width: "80%"}}>
                     <thead id="th-doc-file">
                         {
                             (this.state.isBorder)
@@ -331,21 +330,27 @@ class document_file extends React.Component{
                                 (data == "")
                                 ?
                                     <tr>
-                                        <td colSpan="5" className="bold font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}><span style={{fontSize: "16px"}}>
-                                            <i class="fa fa-exclamation-triangle"></i></span><br></br>Load data
+                                        <td colSpan="6" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                            <div style={{marginTop: "10px", marginTop: "25px", marginBottom: "100px"}}>
+                                                <span style={{fontSize: "16px"}}>
+                                                    <i class="fa fa-file" style={{fontSize: "30px"}}></i>
+                                                </span>
+                                                <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
+                                                <div style={{fontSize: "12px"}}>there's no document or file in this project</div>
+                                            </div>
                                         </td>
-                                    </tr>
+                                    </tr> 
                                 :
                                     data
                         }
                     </tbody>
                 </table>
-                <div className="main-border-bottom main-border-top" style={{width: "80%", fontSize: "10px"}}>
+                {/* <div className="main-border-bottom main-border-top" style={{width: "80%", fontSize: "10px"}}>
                     <div style={{padding: "10px", textAlign: "right"}}>
                         Modified by : <span className="bold">Dandi rahmawan</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         Modified date : <span className="bold">10 Jan 2020</span>
                     </div>
-                </div>
+                </div> */}
             </React.Fragment>
         )
     }

@@ -1,3 +1,4 @@
+import { updateDataChecklist } from './action'
 import {
     deleteDataNoteAction,
     selectRowModuleAction,
@@ -9,7 +10,13 @@ import {
     uncloseDataBugsAction,
     updateDataModuleBugsCloseAction,
     updateDataModuleBugsUncloseAction,
-    editBugsAction, editNoteAction
+    editBugsAction, editNoteAction,
+    editProjectAction,
+    startDataAction,
+    setDataLabelAction,
+    setDataLabelModuleAction,
+    setAssignedModulesAction,
+    updataDataChecklistAction
 } from './type_action'
 
 const initState = {
@@ -17,12 +24,13 @@ const initState = {
     dataModule: [],
     dataNote:[],
     dataDocFile:[],
-    userNameLogin:"",
-    userEmailLogin:"",
-    picProfileUserLogin:"",
+    userLoginData:{},
     title:"",
     dataBugs:[],
-    testing:""
+    testing:"",
+    dataLabels: [],
+    dataLabelsModule: [],
+    assignedModules: []
 }
 
 function rootReducer(state = initState, action){
@@ -159,19 +167,45 @@ function rootReducer(state = initState, action){
         }
     }
 
-    if(action.type === updateDataModuleBugsUncloseAction){
-        const newData = state.dataModule.map(dt => {
-            if(dt.modulId == action.moduleId){
-                dt.countBugsClose = dt.countBugsClose - 1      
+    if(action.type === updataDataChecklistAction){
+        /*updating data moudule by moduleId*/
+        let moduleId = action.moduleId
+        let dataChekclist = action.data
+
+        let closeData = 0
+        dataChekclist.map(dt => {
+            if(dt.status.toLowerCase() == "c"){
+                closeData++
+            }
+        })
+
+        let newDataModule = state.dataModule.map(dt => {
+            if(dt.modulId == moduleId){
+                dt.countBugsClose = closeData
+                console.log(dt)
             }
             return dt
         })
 
         return{
             ...state,
-            dataModule: newData
+            dataModule: newDataModule
         }
     }
+
+    // if(action.type === updateDataModuleBugsUncloseAction){
+    //     const newData = state.dataModule.map(dt => {
+    //         if(dt.modulId == action.moduleId){
+    //             dt.countBugsClose = dt.countBugsClose - 1      
+    //         }
+    //         return dt
+    //     })
+
+    //     return{
+    //         ...state,
+    //         dataModule: newData
+    //     }
+    // }
 
     if(action.type === "UPDATE_DATA_MODULE_NOTE"){
         const newData = state.dataModule.map(dt => {
@@ -229,12 +263,10 @@ function rootReducer(state = initState, action){
         }
     }
 
-    if(action.type === 'START_DATA'){
+    if(action.type === startDataAction){
         return{
             ...state,
-            userNameLogin : action.userName,
-            userEmailLogin : action.userEmail,
-            picProfileUserLogin: action.picProfile
+            userLoginData : action.jsonData
         }
     }
 
@@ -387,9 +419,10 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === appendDataDocFileAction){
+        state.dataDocFile.concat(action.jsonObject)
         return{
             ...state,
-            dataDocFile: state.dataDocFile.concat(action.jsonObject)
+            dataDocFile: state.dataDocFile
         }
     }
 
@@ -439,6 +472,54 @@ function rootReducer(state = initState, action){
             dataNote: newData
         }
     }
+
+    if(action.type === editProjectAction){
+        const newData = state.dataProject.map(dt => {
+            let projectId = action.jsonData.projectId
+            if(projectId == dt.projectId){
+                dt = action.jsonData
+            }
+            return dt
+        })
+
+        return{
+            ...state,
+            dataProject: newData
+        }
+    }
+
+    if(action.type === setDataLabelAction){
+        var jsonArray = action.data
+        return{
+            ...state,
+            dataLabels: jsonArray
+        }
+    }
+
+    if(action.type === setDataLabelModuleAction){
+        var jsonArray = action.data
+        return{
+            ...state,
+            dataLabelsModule: jsonArray
+        }
+    }
+
+    if(action.type === setAssignedModulesAction){
+        var jsonArray = action.data
+        return{
+            ...state,
+            assignedModules: jsonArray
+        }
+    }
+
+    // if(action.type === setDataLabelsModuleCurrrentSetAction){
+    //     var jsonArray = action.data
+    //     // console.log(jsonArray)
+    //     return{
+    //         ...state,
+    //         dataLabelsModuleCurrrentSet: jsonArray
+    //     }
+    // }
 
     return state
 }

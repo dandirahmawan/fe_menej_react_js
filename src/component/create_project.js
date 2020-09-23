@@ -2,6 +2,7 @@ import React from 'react'
 import {baseUrl} from '../const/const'
 import {getCookieUserId, popUpAlert} from '../function/function'
 import {Redirect} from 'react-router-dom'
+import { ApiFetch } from './apiFetch'
 
 class create_project extends React.Component{
 
@@ -37,7 +38,7 @@ class create_project extends React.Component{
         var formData = new FormData()
         formData.append("userId", userId)
         formData.append("projectName", this.state.projectName)
-        fetch(baseUrl+"/insert_project",{
+        ApiFetch("/insert_project",{
             method: 'POST',
             body: formData
         }).then(res => res.text())
@@ -61,9 +62,9 @@ class create_project extends React.Component{
         return(
             <React.Fragment>
                 <div onClick={this.props.hidePopUp} className='block' style={{zIndex: "1001"}}></div>
-                <div id='pop_create_project' className='pop' style={{position: "fixed", height: "auto", width: "400px", borderRadius: '5px', overflow: 'hidden',background: '#FFF', zIndex: "1001"}}>
-                    <div style={{width: '264px', padding: '35px', margin: 'auto'}}>
-                        <span className='bold' style={{fontSize: '20px'}}>New project</span>
+                <div id='pop_create_project' className='pop' style={{position: "fixed", height: "auto", borderRadius: '5px', overflow: 'hidden',background: '#FFF', zIndex: "1001"}}>
+                    <div style={{width: '264px', padding: '20px', margin: 'auto'}}>
+                        <span className='bold' style={{fontSize: '20px'}}>Create project</span>
                         <div style={{marginTop: '10px'}}>
                             <input
                                 id='pn_input' 
@@ -71,7 +72,7 @@ class create_project extends React.Component{
                                 value={this.state.projectName} 
                                 onChange={this.handleChange} 
                                 placeholder='project name' 
-                                style={{padding: '7px', fontSize: '14px', boxSizing: 'border-box', width: '100%'}}>    
+                                style={{padding: '10px', fontSize: '14px', boxSizing: 'border-box', width: '100%'}}>    
                             </input>
                             <span 
                                 className='bold' 

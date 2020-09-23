@@ -1,12 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTitleHader} from '../../redux/action'
+import {setTitleHader, setDataLabelModule, setAssignedModules} from '../../redux/action'
 import {baseUrl} from '../../const/const'
 import NotFound from '../404'
 import Module from './module'
 import {Spinner} from '../spinner'
 import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
-import {setDataModule, deleteDataModule, deleteMember} from '../../redux/action'
+import {setDataModule, deleteDataModule, deleteMember, setDataLabel} from '../../redux/action'
 import {ApiFetch} from '../apiFetch'
 
 class list_module extends React.Component{
@@ -75,13 +75,20 @@ class list_module extends React.Component{
                 var dataNote = result[0]['note']
                 var dataTab = result[0]['tabs']
                 var dataStatus = result[0]['statusModules']
-
+                var dataLabel = result[0]['labelsList']
+                var dataLabelModule = result[0]['labelModulelist']
+                var assignedModules = result[0]['assignedModules']
+                
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
                 }
 
                 if(dataProjectFetch === undefined) return false
+                
                 this.props.setDataModule(dataModule)
+                this.props.setDataLabels(dataLabel)
+                this.props.setDataLabelsModule(dataLabelModule)
+                this.props.setAssigndeModules(assignedModules)
                 
                 this.setState({
                     dataTeam: dataTeam,
@@ -122,6 +129,7 @@ class list_module extends React.Component{
     }
 
     commitDeleteModule(dataSelected){
+        console.log(dataSelected)
         for(var i = 0;i<dataSelected.length;i++){
             this.props.deleteDataModule(dataSelected[i])
         }
@@ -190,25 +198,18 @@ class list_module extends React.Component{
     }
 
     commitNewStatus(status){
-        let statusJson = status[0]
+        let statusJson = status
         let arrStatus = this.state.dataStatus
         arrStatus.push(statusJson)
+        console.log(arrStatus)
         this.setState({
             dataStatus: arrStatus
         })
     }
 
-    updateDataStatus(statusId, statusName, color){
-        this.state.dataStatus.map(dt => {
-            if(dt.id == statusId){
-                dt.status = statusName
-                dt.color = color
-            }
-            return dt
-        })
-
+    updateDataStatus(jsonData){
         this.setState({
-            dataStatus: this.state.dataStatus
+            dataStatus: jsonData
         })
     }
 
@@ -245,7 +246,7 @@ class list_module extends React.Component{
 const mapStateToProps = state =>{
     return{
         projectData : state.dataProject,
-        dataModule : state.dataModule
+        dataModule : state.dataModule,
     }
 }
 
@@ -254,7 +255,10 @@ const mapDispatchToProps = dispatch => {
         setTitleHeader : (a) => dispatch(setTitleHader(a)),
         setDataModule : (a) => dispatch(setDataModule(a)),
         deleteDataModule : (a) => dispatch(deleteDataModule(a)),
-        deleteMember : (a) => dispatch(deleteMember(a))
+        deleteMember : (a) => dispatch(deleteMember(a)),
+        setDataLabels : (a) => dispatch(setDataLabel(a)),
+        setDataLabelsModule : (a) => dispatch(setDataLabelModule(a)),
+        setAssigndeModules : (a) => dispatch(setAssignedModules(a))
     }
 }
 

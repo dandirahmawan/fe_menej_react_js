@@ -1,6 +1,5 @@
 import React from 'react'
 import RowDocFile from './row_doc_file'
-import PopConfirmDelete from './pop_confirm_delete'
 import PopupConfirmation from '../popup_confirmation'
 import {popUpAlert, getCookieUserId} from '../../function/function'
 import PreviewImage from '../preview_image'
@@ -66,9 +65,13 @@ class doc_file_module extends React.Component{
         let fileSize = file.size
         let fileType = fileName.substr(fileName.lastIndexOf("."), fileName.length)
 
-        // if(fileSize > 11000000){
-        //     popUpAlert("Maximum file size upload is 10 mb", "warning")
-        // }else{
+        let ext = fileName.lastIndexOf(".")
+        let extName = fileName.substr(parseInt(ext) + 1, fileName.length - 1)
+        
+        if(fileSize > 1100000 && 
+            (extName.toLowerCase() != "jpg" && extName.toLowerCase() != "jpeg") && extName.toLowerCase() != "png"){
+            popUpAlert("Maximum file size upload is 1 mb", "warning")
+        }else{
             var name = file.name
             this.props.documentFileUpload(e)
             this.setState({
@@ -77,7 +80,7 @@ class doc_file_module extends React.Component{
             if(fileType == ".jpg" || fileType == ".jpef" || fileType == ".png"){
                 this.changeImage(e, fileSize)
             }
-        // }
+        }
     }
 
     rowClickDocFile(e, fileName, url){
@@ -140,11 +143,21 @@ class doc_file_module extends React.Component{
         }
     }
 
-    descFileHandler(e){
+    descFileHandler(e, x){
         var value = e.target.value
         this.setState({
             descFile: value
-        })   
+        })
+        
+        if(e.target.value == 0){
+            x.innerText = "description"
+        }else{
+            x.innerText = e.target.value
+        }
+        
+        let h = x.offsetHeight
+        h = h - 11
+        e.target.style.height = h+"px"
     }
 
     yesConfirm(){
@@ -166,11 +179,6 @@ class doc_file_module extends React.Component{
                 fileName: ""
             })
         }
-    }
-
-    txtDocFileClick(e){
-        var t = e.target
-        t.style.height = "40px"
     }
 
     getModWidthHeight(w, h){
@@ -253,12 +261,11 @@ class doc_file_module extends React.Component{
 
     render(){
 
-        const heightMain = (this.props.mainHeight - 40) - 30
         const data = this.props.dataDocFile.map(dt => <RowDocFile 
                                                             rowClickDocFile={this.rowClickDocFile} 
                                                             fileName={dt.fileName} 
                                                             fileSize={dt.fileSize} 
-                                                            descFile={dt.description} 
+                                                            descFile={dt.descriptionFile} 
                                                             delete={this.delete}
                                                             picProject={this.props.picProject}
                                                             isPermition={this.state.isPermition}
@@ -270,36 +277,48 @@ class doc_file_module extends React.Component{
                 {this.state.popConfirmDelete}
                 <canvas id="image_canvas" style={{display: "none"}}/>
                 <div style={{display: "none"}}><img id="base-img-upload"/></div>
-                <div style={{padding: "10px", height: heightMain+"px", overflowY: "scroll"}}>
-                    <table style={{width: "85%"}}>
-                        <thead>
-                            <tr>
-                                <th colSpan="2" className="main-border-right bold second-font-color">Name</th>
-                                <th className="main-border-right bold second-font-color">Size</th>
-                            </tr>
-                        </thead>
+                <div className="main-border-top" style={{padding: "22px", paddingTop: "10px", marginTop: "10px"}}>
+                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Document & file</div>
+                    <table style={{width: "100%"}}>
                         <tbody>
-                            {data}
+                            { 
+                                (this.props.dataDocFile.length > 0)
+                                ?   
+                                    data
+                                :
+                                    <tr>
+                                        <td colSpan="3" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                            <div style={{marginTop: "10px"}}>
+                                                {/* <span style={{fontSize: "16px"}}>
+                                                    <i class="fa fa-file" style={{fontSize: "20px"}}></i>
+                                                </span> */}
+                                                <div className="bold" style={{marginTop: "10px", fontSize: '12px'}}>No data to display</div>
+                                                <div style={{fontSize: "11px"}}>there's no data document or file<br/>in this module</div>
+                                            </div>
+                                        </td>
+                                    </tr> 
+                            }
                         </tbody>
                     </table>
+
+                    {
+                        (this.state.isPermition || this.state.picProject == getCookieUserId())
+                        ?
+                            <DocFileInput
+                                descFileHandler={this.descFileHandler} 
+                                txtDocFileClick={this.txtDocFileClick}
+                                descFile={this.state.descFile} 
+                                attachment={this.attachment}
+                                commit={this.commit}
+                                fileName={this.state.fileName}
+                                inputElement={this.inputElement}
+                                progressBar={this.setRef}
+                                fileUploaHandler={this.fileUploaHandler}
+                            />
+                        :
+                            ""
+                    }
                 </div>
-                {
-                    (this.state.isPermition || this.state.picProject == getCookieUserId())
-                    ?
-                        <DocFileInput
-                            descFileHandler={this.descFileHandler} 
-                            txtDocFileClick={this.txtDocFileClick}
-                            descFile={this.state.descFile} 
-                            attachment={this.attachment}
-                            commit={this.commit}
-                            fileName={this.state.fileName}
-                            inputElement={this.inputElement}
-                            progressBar={this.setRef}
-                            fileUploaHandler={this.fileUploaHandler}
-                        />
-                    :
-                        ""
-                }
             </React.Fragment>
         )
     }

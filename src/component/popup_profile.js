@@ -9,6 +9,7 @@ class popup_profile extends React.Component{
         this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.hidePopUp = this.hidePopUp.bind(this)
+        this.profile = this.profile.bind(this)
     }
 
     componentDidMount() {
@@ -29,6 +30,11 @@ class popup_profile extends React.Component{
         this.props.hidePopUp()
     }
 
+    profile(){
+        this.props.hidePopUp()
+        this.props.seeProfile()
+    }
+
     render(){
         return(
             <div ref={this.setWrapperRef} className="main-border popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", right: "14px", top: "55px", padding: "10px", borderRadius: "5px"}}>
@@ -43,7 +49,8 @@ class popup_profile extends React.Component{
                     </div>
                 </div>
 
-                <Link to="/profile"><a onClick={this.hidePopUp} className="bold" style={{fontSize: "12px"}}>Profile</a></Link><br/>
+                {/* <Link to="/profile"><a onClick={this.hidePopUp} className="bold" style={{fontSize: "12px"}}>Profile</a></Link><br/> */}
+                <a onClick={this.profile} className="bold" style={{fontSize: "12px"}}>Profile</a><br/>
                 <a href="/logout" className="bold" style={{fontSize: "12px"}}>Log out</a>
 
             </div>

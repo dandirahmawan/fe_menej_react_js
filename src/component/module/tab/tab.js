@@ -75,7 +75,7 @@ class tab extends React.Component{
         this.formTab = this.formTab.bind(this)
         this.formAdd = this.formAdd.bind(this)
         this.fetchAction = this.fetchAction.bind(this)
-        this.fetchActionRow = this.fetchActionRow.bind(this)
+        // this.fetchActionRow = this.fetchActionRow.bind(this)
         this.showBorder = this.showBorder.bind(this)
         this.hideBorder = this.hideBorder.bind(this)
         this.appendDataTab = this.appendDataTab.bind(this)
@@ -109,13 +109,11 @@ class tab extends React.Component{
         this.fetchAction(this.props.tabId)
         this.pushHistory()
 
-        let icon = this.privacyIconRender(this.props.privacy)
         this.setState({
             isStarting: true,
             tabId: this.props.tabId,
             popSetting: null,
             createdBy: this.props.createdBy,
-            privacyIcon: icon,
             dataTeam: this.props.dataTeam
         })
         this.isButtonAdditional(this.props.dataTeam, this.props.createdBy)
@@ -127,7 +125,6 @@ class tab extends React.Component{
             this.tableTBody.current.style.width = "auto"
             this.fetchAction(nextProps.tabId)
             this.pushHistory()
-            let icon = this.privacyIconRender(nextProps.privacy)
 
             this.setState({
                 row: [],
@@ -135,7 +132,6 @@ class tab extends React.Component{
                 isStartingRow: true,
                 popSetting: null,
                 createdBy: nextProps.createdBy,
-                privacyIcon: icon,
                 dataTeam: nextProps.dataTeam,
                 btnAdditional: true,
                 dataFilter: [],
@@ -167,7 +163,17 @@ class tab extends React.Component{
         }).then(res => res.json()).then(result => {
             let dataTab = result[0].tab
             let columnTab = (result[0].columnTab != 'no data') ? JSON.parse(result[0].columnTab) : null
-            
+            let iconPrivcy = this.privacyIconRender(dataTab.privacy)
+
+            /*convert string data row tab to*/
+            let jsonDataTab = JSON.parse(result[0].rowTab)
+            let relation = JSON.parse(jsonDataTab.relation_data)
+            let tabData = jsonDataTab.tab_data
+            this.createDataFilter(columnTab, jsonDataTab)
+
+            // console.log(jsonDataTab.tab_data)
+            // console.log(relation)
+
             let userPrivacyTab = []
             result[0].userPrivacyTab.map(dt => {
                 userPrivacyTab.push(dt.userId.toString())
@@ -195,6 +201,7 @@ class tab extends React.Component{
                     userName: dataTab.userName,
                     pic: dataTab.pic,
                     tableReady: false,
+                    privacyIcon: iconPrivcy,
                     userPrivacyData: userPrivacyTab
                 })
 
@@ -221,8 +228,11 @@ class tab extends React.Component{
                     this.tableTBody.current.style.width = tableWidth
                     this.tbody.current.style.width = tableWidth
                     
-                    
-                    this.fetchActionRow(tabIdpar, columnTab)
+                    this.setState({
+                        row: (tabData == null || tabData == "") ? [] : tabData,
+                        relation_data: (relation == null | relation == "") ? [] : relation,
+                    })
+                    // this.fetchActionRow(tabIdpar, columnTab)
                 }
             }
         })
@@ -252,27 +262,27 @@ class tab extends React.Component{
         }
     }
 
-    fetchActionRow(tabId, columnTab){
-        this.setState({
-            isLoadData: true
-        })
-        let form = new FormData()
-        form.append("tabId", tabId)
+    // fetchActionRow(tabId, columnTab){
+    //     this.setState({
+    //         isLoadData: true
+    //     })
+    //     let form = new FormData()
+    //     form.append("tabId", tabId)
 
-        ApiFetch("/row_tab", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
-            let jo = JSON.parse(result)
-            let relation = JSON.parse(jo.relation_data)
-            this.createDataFilter(columnTab, jo)
-            this.setState({
-                row: (jo.tab_data == null || jo.tab_data == "") ? [] : jo.tab_data,
-                relation_data: (relation == null | relation == "") ? [] : relation,
-                isLoadData: false
-            })
-        })
-    }
+    //     ApiFetch("/row_tab", {
+    //         method: "POST",
+    //         body: form
+    //     }).then(res => res.text()).then(result => {
+    //         let jo = JSON.parse(result)
+    //         let relation = JSON.parse(jo.relation_data)
+    //         this.createDataFilter(columnTab, jo)
+    //         this.setState({
+    //             row: (jo.tab_data == null || jo.tab_data == "") ? [] : jo.tab_data,
+    //             relation_data: (relation == null | relation == "") ? [] : relation,
+    //             isLoadData: false
+    //         })
+    //     })
+    // }
 
     cancel(){
         this.setState({
@@ -313,6 +323,7 @@ class tab extends React.Component{
         if(privacy == 'pr' || privacy == null){
             icon = <div><FontAwesomeIcon style={{fontSize: "11px"}} icon={faLock}/></div>
         }else if(privacy == 'pu'){
+            console.log("ajskdlas dlkajsdlka sdlkajslda sdlkajsdlkas dlsjlaskd jksd")
             icon = <div><FontAwesomeIcon style={{fontSize: "11px", marginTop: "3px"}} icon={faGlobe}/></div>
         }else{
             icon = <div><FontAwesomeIcon style={{fontSize: "11px"}} icon={faUser}/></div>
@@ -882,8 +893,6 @@ class tab extends React.Component{
             }
             i++
         })
-        
-        console.log(dataPass)
 
         let scope = this
         let form = new FormData()

@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import Logo from '../images/menej_285e8e.png'
 import {baseUrl} from '../const/const'
+import { pxd } from '../function/function'
 
 class login extends React.Component{
 
@@ -40,7 +41,6 @@ class login extends React.Component{
     }
 
     submit(e){
-
         if(this.state.email.length == 0){
             this.setState({
                 alertLogin: "Email is empty"
@@ -65,7 +65,7 @@ class login extends React.Component{
         
         var form = new FormData()
         form.append("email", this.state.email)
-        form.append("password", this.state.password)
+        form.append("password", pxd(this.state.password))
         
         fetch(baseUrl+"/login", {
             method: "POST",

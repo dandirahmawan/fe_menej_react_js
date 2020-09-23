@@ -2,13 +2,12 @@ import React from 'react'
 import PopupProfile from './popup_profile'
 import {connect} from 'react-redux'
 import PopupNotification from './popup_notification'
-import LeftArrow from '../images/left_arrow.png'
 import Logo from '../images/menej_fff.png'
-// import Logo from '../images/menej_285e8e.png'
 import {backHistory} from '../function/function'
 import {baseUrl} from "../const/const"
 import {faBars} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import Profile from './profile/profile'
 
 class navbar extends React.Component{
     constructor(){
@@ -22,14 +21,16 @@ class navbar extends React.Component{
         this.notification = this.notification.bind(this)
         this.togleSideBar = this.togleSideBar.bind(this)
         this.hidePopUp = this.hidePopUp.bind(this)
+        this.seeProfile = this.seeProfile.bind(this)
     }
 
     popAction(){
         const e = <PopupProfile 
-                    logout={this.logout} 
-                    hidePopUp={this.hidePopUp}
-                    name={this.props.userNameLogin}
-                    email={this.props.userEmailLogin}
+                        logout={this.logout} 
+                        hidePopUp={this.hidePopUp}
+                        name={this.props.userLoginData.name}
+                        email={this.props.userLoginData.email}
+                        seeProfile={this.seeProfile}
                     />
         this.setState({
             popup: e
@@ -122,10 +123,16 @@ class navbar extends React.Component{
         elm3.style.marginLeft =  elm2.offsetWidth+"px"
     }
 
+    seeProfile(){
+        this.setState({
+            popup: <Profile hidePopUp={this.hidePopUp}/>
+        })
+    }
+
     render(){
         return(
             <div id="header" className='navbar main-border-bottom main-color' style={{overflow: 'hidden'}}>
-                {/*<img src={Logo} style={{height: "25px", float: "left", marginTop: "17px"}}/>*/}
+                
                 <div id="main-header" style={{/*marginLeft: "50px"*/}}>
                     <button id="btn-sb-togle" onClick={this.bars}
                         style={{float: "left",
@@ -136,16 +143,10 @@ class navbar extends React.Component{
                                 marginLeft: "15px"}}>
                         <FontAwesomeIcon icon={faBars}/>
                     </button>
-                    {/* <div id="title-header" className="bold second-color" style={{float: "left", fontSize: "20px", padding: "19px"}}>
-                        <img onClick={this.backNavbar} src={LeftArrow} style={{width: "15px", marginRight: "10px", cursor: "pointer",}}></img>
-                        {this.props.title}
-                    </div> */}
 
                     <img style={{marginTop:"18px",marginLeft: "15px", height: "25px"}} src={Logo}></img>            
 
                     <div style={{float: 'right', padding: "12px", paddingRight: "20px"}}>
-                        {/* <input className="main-border" placeholder="Search" type="text" style={{padding: "7px", fontWeight: "bolder", width: "250px", float: "left", marginRight: "100px", background: "#f7f7f7", marginTop: "3px"}}/> */}
-
                         <a onClick={this.notification}>
                             <div style={{float: "left", borderRadius: "18px", marginRight: "20px", paddingTop: "7px", color: "#FFF", transform: "rotate(20deg)"}}>
                                 <em style={{fontSize: "20px"}} class="fa fa-bell"></em>
@@ -155,9 +156,9 @@ class navbar extends React.Component{
                         {this.state.popup}
 
                         <a onClick={this.popAction}>
-                            <div className="bold" style={{height: "21px", width: "30px", borderRadius: "100%", float: "left", background: "#FFF", textAlign: "center", paddingTop: "8px", fontSize: "12px", marginTop: "2px"}}>
-                                {this.firstWord(this.props.userNameLogin)}
-                                <div style={{width: "30px", height: "30px", borderRadius: "20px", background: "url("+baseUrl+"/pic_profile/"+this.props.picProfile+") center center / cover no-repeat", position: "absolute", top: "11px"}}/>
+                            <div className="bold" id="pic-profile-navbar-base" style={styelPicProfileBase}>
+                                <div style={{position: "absolute", width: "30px", textAlign: "center", marginTop: "8px"}}>{this.firstWord(this.props.userLoginData.name)}</div>
+                                <div style={{width: "30px", height: "30px", borderRadius: "20px", position: "absolute", background: "url("+baseUrl+"/pic_profile/"+this.props.userLoginData.picProfile+") center center / cover no-repeat"}}/>
                             </div>
                         </a>
                     </div>
@@ -171,11 +172,18 @@ class navbar extends React.Component{
 
 const mapStateToProps = state => {
     return{
-        title : state.title,
-        userNameLogin : state.userNameLogin,
-        userEmailLogin : state.userEmailLogin,
-        picProfile : state.picProfileUserLogin
+        userLoginData : state.userLoginData,
+        title : state.title
     }
 }
+
+const styelPicProfileBase = {height: "30px", 
+                            width: "30px", 
+                            borderRadius: "100%", 
+                            float: "left", 
+                            background: "#FFF", 
+                            textAlign: "center",
+                            fontSize: "12px", 
+                            marginTop: "2px"}
 
 export default connect(mapStateToProps)(navbar)

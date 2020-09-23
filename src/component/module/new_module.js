@@ -19,7 +19,7 @@ class new_module extends React.Component{
             dueDate:"",
             description:"",
             formAddStatus: "",
-            status: "Not started",
+            status: "",
             idStatus: "N",
             statusChoice: "",
         }
@@ -33,7 +33,6 @@ class new_module extends React.Component{
         this.descChange = this.descChange.bind(this)
         this.selectStatus = this.selectStatus.bind(this)
         this.newStatusCommit = this.newStatusCommit.bind(this)
-        // this.addStatus = this.addStatus.bind(this)
         this.chooseStatus = this.chooseStatus.bind(this)
         this.hideChoice = this.hideChoice.bind(this)
     }
@@ -113,6 +112,8 @@ class new_module extends React.Component{
             let w = target.offsetWidth+"px"
             scope.setState({
                 statusChoice: <ChoiceStatus width={w}
+                                            isManageStatus={true}
+                                            appendDataStatus={this.newStatusCommit}
                                             projectId={this.props.projectId} 
                                             val="N" dataStatus={this.props.dataStatus}
                                             selectStatus={this.selectStatus}
@@ -122,7 +123,7 @@ class new_module extends React.Component{
             clearInterval(itv)
         }, 100)
     }
-
+    
     newStatusCommit(status){
         this.props.commitNewStatus(status)
         this.hideChoice()

@@ -39,7 +39,7 @@ class popup_confrimation extends React.Component{
                     </div>
                     <div className="header-second-background bold" style={{padding: "10px", textAlign: "right"}}>
                         <button ref={this.yesBtn} onClick={this.props.yesAction} className="btn-primary" style={{fontSize: "12px", marginRight: "10px"}}>Yes</button>
-                        <button onClick={this.props.hidePopUp} className="btn-secondary bold" style={{background: "none", fontSize: "12px"}}>No</button>
+                        <button onClick={this.props.hidePopUp} className="btn-secondary bold" style={{background: "none", fontSize: "12px", width: "40px"}}>No</button>
                     </div>
                 </div>
             </React.Fragment>
