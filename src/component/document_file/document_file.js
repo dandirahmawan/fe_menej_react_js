@@ -10,10 +10,10 @@ import PopUpConfirmation from '../../component/popup_confirmation'
 import Filter from './filter'
 import Upload from './upload_document_file'
 import PreviewImage from '../preview_image'
+import PreviewVideo from '../preview_video'
 import {Spinner} from '../spinner'
 import DetailModule from '../module/detail'
 import {ApiFetch} from '../apiFetch'
-// import UserDetail from '../user/detail_user_popup'
 
 class document_file extends React.Component{
 
@@ -30,7 +30,6 @@ class document_file extends React.Component{
         this.upload = this.upload.bind(this)
         this.rowClickDocFile = this.rowClickDocFile.bind(this)
         this.moduleClick = this.moduleClick.bind(this)
-        // this.userClick = this.userClick.bind(this)
 
         this.state = {
             popup: "",
@@ -53,6 +52,7 @@ class document_file extends React.Component{
             }
             return null
         })
+
         this.setState({
             picProject: this.props.pic,
             isPermition: this.state.isPermition
@@ -194,10 +194,15 @@ class document_file extends React.Component{
     rowClickDocFile(e, fileName, url){
         var a = fileName.lastIndexOf(".")
         var ext = fileName.substr(parseInt(a) + 1, fileName.length)
-        if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
+        if(ext.toLowerCase() == 'jpeg' || ext.toLowerCase() == 'jpg' || ext.toLowerCase() == 'png'){
             e.preventDefault()
             this.setState({
                 popup : <PreviewImage image={fileName} hideImage={this.hidePopUp} url={url}/>
+            })
+        }else if(ext.toLowerCase() == "mp4" || ext.toLowerCase() == "3gp" || ext.toLowerCase() == "mkv"){
+            e.preventDefault()
+            this.setState({
+                popup : <PreviewVideo video={fileName} hideVideo={this.hidePopUp} url={url}/>
             })
         }else{
             window.open(baseUrl+"/file/"+url)
@@ -221,11 +226,9 @@ class document_file extends React.Component{
                         userName={dt.userName}
                         userId={dt.userId}
                         isBorder={this.state.isBorder}
-                        //action passing param
                         deleteDocFile={this.deleteDocFile}
                         rowClickDocFile={this.rowClickDocFile}
                         moduleClick={this.moduleClick}
-                        // userClick={this.userClick}
                     />
                 }else{
                     var idx = this.state.moduleNameFilter.indexOf(dt.moduleName)
@@ -288,7 +291,7 @@ class document_file extends React.Component{
                     }
 
                 </div>
-                <table style={{width: "80%"}}>
+                <table className="main-border-bottom" style={{width: "80%"}}>
                     <thead id="th-doc-file">
                         {
                             (this.state.isBorder)
@@ -327,15 +330,27 @@ class document_file extends React.Component{
                                 (data == "")
                                 ?
                                     <tr>
-                                        <td colSpan="5" className="bold font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}><span style={{fontSize: "16px"}}>
-                                            <i class="fa fa-exclamation-triangle"></i></span><br></br>Load data
+                                        <td colSpan="6" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                            <div style={{marginTop: "10px", marginTop: "25px", marginBottom: "100px"}}>
+                                                <span style={{fontSize: "16px"}}>
+                                                    <i class="fa fa-file" style={{fontSize: "30px"}}></i>
+                                                </span>
+                                                <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
+                                                <div style={{fontSize: "12px"}}>there's no document or file in this project</div>
+                                            </div>
                                         </td>
-                                    </tr>
+                                    </tr> 
                                 :
                                     data
                         }
                     </tbody>
                 </table>
+                {/* <div className="main-border-bottom main-border-top" style={{width: "80%", fontSize: "10px"}}>
+                    <div style={{padding: "10px", textAlign: "right"}}>
+                        Modified by : <span className="bold">Dandi rahmawan</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Modified date : <span className="bold">10 Jan 2020</span>
+                    </div>
+                </div> */}
             </React.Fragment>
         )
     }

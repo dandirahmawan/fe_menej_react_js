@@ -1,12 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTitleHader} from '../../redux/action'
+import {setTitleHader, setDataLabelModule, setAssignedModules} from '../../redux/action'
 import {baseUrl} from '../../const/const'
 import NotFound from '../404'
 import Module from './module'
 import {Spinner} from '../spinner'
 import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
-import {setDataModule, deleteDataModule, deleteMember} from '../../redux/action'
+import {setDataModule, deleteDataModule, deleteMember, setDataLabel} from '../../redux/action'
 import {ApiFetch} from '../apiFetch'
 
 class list_module extends React.Component{
@@ -21,6 +21,7 @@ class list_module extends React.Component{
             projectIdHeader:"",
             dataTab:[],
             dataNote:[],
+            dataStatus:[],
             notFound:false
         }
         this.hidePopUp = this.hidePopUp.bind(this)
@@ -32,6 +33,8 @@ class list_module extends React.Component{
         this.updateDataDocumentFile = this.updateDataDocumentFile.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
+        this.commitNewStatus = this.commitNewStatus.bind(this)
+        this.updateDataStatus = this.updateDataStatus.bind(this)
     }
 
     componentDidMount(){
@@ -71,21 +74,29 @@ class list_module extends React.Component{
                 var permition  = result[0]['permitionProjects']
                 var dataNote = result[0]['note']
                 var dataTab = result[0]['tabs']
-
+                var dataStatus = result[0]['statusModules']
+                var dataLabel = result[0]['labelsList']
+                var dataLabelModule = result[0]['labelModulelist']
+                var assignedModules = result[0]['assignedModules']
+                
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
                 }
 
                 if(dataProjectFetch === undefined) return false
-
+                
                 this.props.setDataModule(dataModule)
+                this.props.setDataLabels(dataLabel)
+                this.props.setDataLabelsModule(dataLabelModule)
+                this.props.setAssigndeModules(assignedModules)
                 
                 this.setState({
                     dataTeam: dataTeam,
                     dataProject: dataProjectFetch,
                     permitionProject: permition,
                     dataNote: dataNote,
-                    dataTab: dataTab
+                    dataTab: dataTab,
+                    dataStatus: dataStatus
                 })
             }
         })
@@ -118,6 +129,7 @@ class list_module extends React.Component{
     }
 
     commitDeleteModule(dataSelected){
+        console.log(dataSelected)
         for(var i = 0;i<dataSelected.length;i++){
             this.props.deleteDataModule(dataSelected[i])
         }
@@ -130,7 +142,7 @@ class list_module extends React.Component{
         })
     }
 
-    commitNewModule(userId, mouleName, dueDate, description, pi){
+    commitNewModule(userId, mouleName, dueDate, description, pi, status){
         var userLogin = getCookieUserId()
         var form = new FormData()
         form.append("userId", userId)
@@ -139,6 +151,7 @@ class list_module extends React.Component{
         form.append("dueDate", dueDate)
         form.append("description", description)
         form.append("projectId", pi)
+        form.append("status", status)
 
         var isReady = false
         this.props.dataModule.map(dt => {
@@ -184,21 +197,40 @@ class list_module extends React.Component{
         this.props.deleteMember(userId)
     }
 
+    commitNewStatus(status){
+        let statusJson = status
+        let arrStatus = this.state.dataStatus
+        arrStatus.push(statusJson)
+        console.log(arrStatus)
+        this.setState({
+            dataStatus: arrStatus
+        })
+    }
+
+    updateDataStatus(jsonData){
+        this.setState({
+            dataStatus: jsonData
+        })
+    }
+
     render(){
 
         const data =  <Module 
-                        projectIdHeader = {this.state.projectIdHeader}
-                        dataProject={this.state.dataProject}  
-                        dataModule={this.props.dataModule}
-                        dataTeam={this.state.dataTeam}
-                        dataNote={this.state.dataNote}
-                        dataTab={this.state.dataTab}
-                        dataPermition={this.state.permitionProject}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitNewModule={this.commitNewModule}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitDeleteMember={this.commitDeleteMember}
-                        refreshModule={this.refreshModule}
+                            projectIdHeader = {this.state.projectIdHeader}
+                            dataProject={this.state.dataProject}  
+                            dataModule={this.props.dataModule}
+                            dataTeam={this.state.dataTeam}
+                            dataNote={this.state.dataNote}
+                            dataTab={this.state.dataTab}
+                            dataStatus={this.state.dataStatus}
+                            dataPermition={this.state.permitionProject}
+                            commitDeleteModule={this.commitDeleteModule}
+                            commitNewModule={this.commitNewModule}
+                            commitDeleteModule={this.commitDeleteModule}
+                            commitDeleteMember={this.commitDeleteMember}
+                            commitNewStatus={this.commitNewStatus}
+                            updateDataStatus={this.updateDataStatus}
+                            refreshModule={this.refreshModule}
                         />
 
         return(
@@ -214,7 +246,7 @@ class list_module extends React.Component{
 const mapStateToProps = state =>{
     return{
         projectData : state.dataProject,
-        dataModule : state.dataModule
+        dataModule : state.dataModule,
     }
 }
 
@@ -223,7 +255,10 @@ const mapDispatchToProps = dispatch => {
         setTitleHeader : (a) => dispatch(setTitleHader(a)),
         setDataModule : (a) => dispatch(setDataModule(a)),
         deleteDataModule : (a) => dispatch(deleteDataModule(a)),
-        deleteMember : (a) => dispatch(deleteMember(a))
+        deleteMember : (a) => dispatch(deleteMember(a)),
+        setDataLabels : (a) => dispatch(setDataLabel(a)),
+        setDataLabelsModule : (a) => dispatch(setDataLabelModule(a)),
+        setAssigndeModules : (a) => dispatch(setAssignedModules(a))
     }
 }
 

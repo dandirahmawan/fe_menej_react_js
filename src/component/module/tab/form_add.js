@@ -10,12 +10,15 @@ class form_add extends React.Component{
         super()
         this.state = {
             functionBase : null,
-            functionDataBase : null
+            functionDataBase : null,
+            functionSelectData: []
         }
+        this.baseForm = React.createRef()
         this.submit = this.submit.bind(this)
         this.hidePopUp = this.hidePopUp.bind(this)
         this.keyUpTxtAreaForm = this.keyUpTxtAreaForm.bind(this)
         this.functionSelect = this.functionSelect.bind(this)
+        this.selectFunction = this.selectFunction.bind(this)
     }
 
     componentDidMount(){
@@ -73,7 +76,8 @@ class form_add extends React.Component{
 
     hidePopUp(){
         this.setState({
-            functionBase: null
+            functionBase: null,
+            functionDataBase: null
         })
     }
 
@@ -103,21 +107,38 @@ class form_add extends React.Component{
         }).then(res => res.text()).then(result => {
             if(result == ""){
                 this.props.cancel()
-                this.props.appendDataTab(jo)
+                this.props.appendDataTab(jo, this.state.functionSelectData)
                 popUpAlert("Insert data success", "success")
             }
         })
     }
 
-    functionSelect(x, y, functionName){
+    functionSelect(target, x, y, functionName){
         let x1 = parseInt(x) + 20
         let y1 = parseInt(y) + 50
-        this.setState({
-            functionBase: null,
-            functionDataBase: <FunctionData functionName={functionName}
-                                            x={x1} 
-                                            y={y1}/>
+        if(functionName != "url" && functionName != "URL"){
+            this.setState({
+                functionBase: null,
+                functionDataBase: <FunctionData functionName={functionName}
+                                                hidePopUp={this.hidePopUp}
+                                                startTop={this.baseForm.current.offsetTop}
+                                                target={target}
+                                                selectFunction={this.selectFunction}
+                                                x={x1} 
+                                                y={y1}/>
+            })
+        }
+    }
+
+    selectFunction(jsonValue){
+        var isPush = true
+        this.state.functionSelectData.map(dt => {
+            if(dt.functionText == jsonValue.functionText){
+                isPush = false
+            }
         })
+
+        if(isPush) this.state.functionSelectData.push(jsonValue)
     }
 
     keyUpTxtAreaForm(e){
@@ -156,7 +177,7 @@ class form_add extends React.Component{
         return(
             <React.Fragment>
                 <div className="block"/>
-                <div className="pop" id="base-add-data-form" style={{background: "#FFF", width: "380px"}}>
+                <div className="pop" ref={this.baseForm} id="base-add-data-form" style={{background: "#FFF", width: "380px"}}>
                     {this.state.functionBase}
                     {this.state.functionDataBase}
 

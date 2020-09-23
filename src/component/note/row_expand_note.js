@@ -13,7 +13,7 @@ class row_expand_view extends React.Component{
                     <i class="fa fa-sticky-note tooltip" style={{color: "green", fontSize: "14px"}}></i>
                 </td>
                 <td className="tb-note-expand" style={{paddingRight: "10px"}}>
-                    <div dangerouslySetInnerHTML={ {__html: this.props.note} } />
+                    <div dangerouslySetInnerHTML={ {__html: this.props.note} }/>
                     <div className="bold second-font-color" style={{fontSize: "11px", marginTop: "3px"}}>
                         <FontAwesomeIcon icon={faUser}/> {this.props.userName}
                     </div>
@@ -37,7 +37,7 @@ class row_expand_view extends React.Component{
                             (this.props.userId == getCookieUserId())
                             ?
                                 <React.Fragment>
-                                    <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip" style={{marginRight: "5px"}}>>
+                                    <a onClick={() => this.props.deleteNote(this.props.noteId)} className="tooltip" style={{marginRight: "5px"}}>
                                         <FontAwesomeIcon icon={faTrash} className="tooltip" style={{color: "#000"}}/>
                                     </a>
                                     <a onClick={() => this.props.editNote(this.props.noteId, this.props.note)} className="tooltip">

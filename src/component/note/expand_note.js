@@ -276,8 +276,7 @@ class expand_note extends React.Component{
                         </table>
                     </div>
                     <div id="footer-base-bugs" className="main-border-top" style={{overflow: "hidden", background: "#FFF"}}>
-                        <textarea onChange={this.changeNote} onClick={this.txtNoteClick} value={this.state.textNote} className='main-border-right' placeholder="new note" style={{float: "left", width: "520px", border: "none", outline: "none", resize: "none", fontSize: "12px", padding: "5px", marginTop: "10px", marginBottom: "10px", marginLeft: "10px", borderRight: "#dcdbdb 1px solid", height: "20px"}}></textarea>
-                        
+                        <textarea onChange={this.changeNote} onClick={this.txtNoteClick} value={this.state.textNote} className='main-border-right' placeholder="new note" style={{float: "left", width: "520px", border: "none", outline: "none", resize: "none", fontSize: "12px", padding: "5px", marginTop: "10px", marginBottom: "10px", marginLeft: "10px", borderRight: "#dcdbdb 1px solid", height: "20px"}}></textarea>                  
                         <button onClick={this.commitNote} style={{fontSize: "12px", marginLeft: "5px", marginTop: "15px", background: "none", color: "blue"}}>Kirim</button>
                     </div>
                 </div>

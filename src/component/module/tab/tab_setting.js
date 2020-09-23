@@ -42,11 +42,18 @@ class tab_setting extends React.Component{
         }else{
             icon = <FontAwesomeIcon style={{float: "left", marginTop: "4px"}} icon={faUser}/>
         }
+
+        let arrUserPrivacyTab = []
+        this.props.userPrivacyData.map(dt => {
+            arrUserPrivacyTab.push(dt)
+        })
+
         this.setState({
             tabName : this.props.tabName,
             privacy : (this.props.privacy == null) ? "pr" : this.props.privacy,
             defaultPrivacy: (this.props.privacy == null) ? "pr" : this.props.privacy,
-            iconPrivacy : icon
+            iconPrivacy : icon,
+            userSelectedPrivacy: arrUserPrivacyTab
         })
     }
 
@@ -68,7 +75,7 @@ class tab_setting extends React.Component{
                 body: form
             }).then(res => res.text()).then(result => {
                 if(result == "") {
-                    this.props.editTab(this.state.tabName, this.state.privacy)
+                    this.props.editTab(this.state.tabName, this.state.privacy, this.state.userSelectedPrivacy)
                     this.props.cancel()
                 }
             })
@@ -115,6 +122,7 @@ class tab_setting extends React.Component{
     }
 
     submitUserPrivacyTab(data){
+        console.log(data)
         this.setState({
             privacy: "us",
             iconPrivacy: <FontAwesomeIcon style={{float: "left", marginTop: "4px"}} icon={faUser}/>,

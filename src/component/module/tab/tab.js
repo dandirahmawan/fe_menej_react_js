@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser, faCopy, faUserAlt, faFileExcel, faInfoCircle} from '@fortawesome/free-solid-svg-icons'
+import {faTable, faPlus, faBorderAll, faBorderNone, faTrash, faArrowsAltH, faCog, faGlobe, faLock, faUser, faCopy, faUserAlt, faFileExcel, faInfoCircle, faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import CreateTable from './create_table'
 import {baseUrl} from "../../../const/const";
 import Form from './form_tab'
@@ -15,7 +15,11 @@ import CopyTab from './copy_tab'
 import CellEdit from './cell_edit'
 import {ApiFetch} from '../../apiFetch'
 import PageNotFound from '../../404'
-import {getCookieSessionId, getCookieUserId, popUpAlert, tableHeaderRender} from "../../../function/function";
+import DetailModule from '../detail'
+import PreviewImage from '../../preview_image'
+import PreviewVideo from '../../preview_video'
+import {getCookieSessionId, getCookieUserId, popUpAlert, tableHeaderRender} from "../../../function/function"
+import { Spinner } from '../../spinner'
 
 class tab extends React.Component{
 
@@ -47,7 +51,9 @@ class tab extends React.Component{
             tabExist: false,
             dataFilter: [],
             columnOnFilter: [],
-            lastSeqFilter: null
+            lastSeqFilter: null,
+            relation_data: [],
+            userPrivacyData: []
         }
 
         this.headerTable = React.createRef()
@@ -61,6 +67,7 @@ class tab extends React.Component{
         this.tableBodyScroll = React.createRef()
         this.tabBase = React.createRef()
         this.pageNotFound = React.createRef()
+        this.loadBase = React.createRef()
 
         this.thClick = this.thClick.bind(this)
         this.cancel = this.cancel.bind(this)
@@ -68,7 +75,7 @@ class tab extends React.Component{
         this.formTab = this.formTab.bind(this)
         this.formAdd = this.formAdd.bind(this)
         this.fetchAction = this.fetchAction.bind(this)
-        this.fetchActionRow = this.fetchActionRow.bind(this)
+        // this.fetchActionRow = this.fetchActionRow.bind(this)
         this.showBorder = this.showBorder.bind(this)
         this.hideBorder = this.hideBorder.bind(this)
         this.appendDataTab = this.appendDataTab.bind(this)
@@ -95,19 +102,18 @@ class tab extends React.Component{
         this.submitCellContextMenu = this.submitCellContextMenu.bind(this)
         this.createDataFilter = this.createDataFilter.bind(this)
         this.validationFilter = this.validationFilter.bind(this)
+        this.linkFunction = this.linkFunction.bind(this)
     }
 
     componentDidMount(){
         this.fetchAction(this.props.tabId)
         this.pushHistory()
 
-        let icon = this.privacyIconRender(this.props.privacy)
         this.setState({
             isStarting: true,
             tabId: this.props.tabId,
             popSetting: null,
             createdBy: this.props.createdBy,
-            privacyIcon: icon,
             dataTeam: this.props.dataTeam
         })
         this.isButtonAdditional(this.props.dataTeam, this.props.createdBy)
@@ -119,7 +125,6 @@ class tab extends React.Component{
             this.tableTBody.current.style.width = "auto"
             this.fetchAction(nextProps.tabId)
             this.pushHistory()
-            let icon = this.privacyIconRender(nextProps.privacy)
 
             this.setState({
                 row: [],
@@ -127,7 +132,6 @@ class tab extends React.Component{
                 isStartingRow: true,
                 popSetting: null,
                 createdBy: nextProps.createdBy,
-                privacyIcon: icon,
                 dataTeam: nextProps.dataTeam,
                 btnAdditional: true,
                 dataFilter: [],
@@ -150,17 +154,36 @@ class tab extends React.Component{
         form.append("tabId", tabId)
         form.append("projectId", this.props.projectId)
 
+        //setting when load data base tab data is hidden and loading base is show
+        this.tabBase.current.style.display = "none"
+        this.loadBase.current.style.display = "block"
         ApiFetch("/tab_page", {
             method: "POST",
             body: form,
         }).then(res => res.json()).then(result => {
             let dataTab = result[0].tab
             let columnTab = (result[0].columnTab != 'no data') ? JSON.parse(result[0].columnTab) : null
+            let iconPrivcy = this.privacyIconRender(dataTab.privacy)
+
+            /*convert string data row tab to*/
+            let jsonDataTab = JSON.parse(result[0].rowTab)
+            let relation = JSON.parse(jsonDataTab.relation_data)
+            let tabData = jsonDataTab.tab_data
+            this.createDataFilter(columnTab, jsonDataTab)
+
+            // console.log(jsonDataTab.tab_data)
+            // console.log(relation)
+
+            let userPrivacyTab = []
+            result[0].userPrivacyTab.map(dt => {
+                userPrivacyTab.push(dt.userId.toString())
+            })
 
             if(dataTab == null){
                 this.tabBase.current.style.display = "none"
                 this.pageNotFound.current.style.display = "block"
                 this.tableBase.current.style.display = "none"
+                this.loadBase.current.style.display = "none"
                 this.setState({
                     tabExist: false,
                     tableReady: false,
@@ -169,7 +192,7 @@ class tab extends React.Component{
             }else{
                 this.tabBase.current.style.display = "block"
                 this.pageNotFound.current.style.display = "none"
-
+                this.loadBase.current.style.display = "none"
                 this.setState({
                     tabName: dataTab.tabName,
                     tabId: dataTab.tabId,
@@ -178,6 +201,8 @@ class tab extends React.Component{
                     userName: dataTab.userName,
                     pic: dataTab.pic,
                     tableReady: false,
+                    privacyIcon: iconPrivcy,
+                    userPrivacyData: userPrivacyTab
                 })
 
                 if((columnTab != null)) {
@@ -203,8 +228,11 @@ class tab extends React.Component{
                     this.tableTBody.current.style.width = tableWidth
                     this.tbody.current.style.width = tableWidth
                     
-                    
-                    this.fetchActionRow(tabIdpar, columnTab)
+                    this.setState({
+                        row: (tabData == null || tabData == "") ? [] : tabData,
+                        relation_data: (relation == null | relation == "") ? [] : relation,
+                    })
+                    // this.fetchActionRow(tabIdpar, columnTab)
                 }
             }
         })
@@ -234,27 +262,27 @@ class tab extends React.Component{
         }
     }
 
-    fetchActionRow(tabId, columnTab){
-        this.setState({
-            isLoadData: true
-        })
-        let form = new FormData()
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
-        form.append("tabId", tabId)
+    // fetchActionRow(tabId, columnTab){
+    //     this.setState({
+    //         isLoadData: true
+    //     })
+    //     let form = new FormData()
+    //     form.append("tabId", tabId)
 
-        ApiFetch("/row_tab", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
-            let jo = JSON.parse(result)
-            this.createDataFilter(columnTab, jo)
-            this.setState({
-                row: jo,
-                isLoadData: false
-            })
-        })
-    }
+    //     ApiFetch("/row_tab", {
+    //         method: "POST",
+    //         body: form
+    //     }).then(res => res.text()).then(result => {
+    //         let jo = JSON.parse(result)
+    //         let relation = JSON.parse(jo.relation_data)
+    //         this.createDataFilter(columnTab, jo)
+    //         this.setState({
+    //             row: (jo.tab_data == null || jo.tab_data == "") ? [] : jo.tab_data,
+    //             relation_data: (relation == null | relation == "") ? [] : relation,
+    //             isLoadData: false
+    //         })
+    //     })
+    // }
 
     cancel(){
         this.setState({
@@ -295,6 +323,7 @@ class tab extends React.Component{
         if(privacy == 'pr' || privacy == null){
             icon = <div><FontAwesomeIcon style={{fontSize: "11px"}} icon={faLock}/></div>
         }else if(privacy == 'pu'){
+            console.log("ajskdlas dlkajsdlka sdlkajslda sdlkajsdlkas dlsjlaskd jksd")
             icon = <div><FontAwesomeIcon style={{fontSize: "11px", marginTop: "3px"}} icon={faGlobe}/></div>
         }else{
             icon = <div><FontAwesomeIcon style={{fontSize: "11px"}} icon={faUser}/></div>
@@ -332,20 +361,33 @@ class tab extends React.Component{
         }
     }
 
-    appendDataTab(json){
+    appendDataTab(json, functionData){
+        for(let i = 0;i<functionData.length;i++){
+            let isPush = true
+            for(let x = 0;x<this.state.relation_data.length;x++){
+                let data = this.state.relation_data[x]
+                if(functionData[i].functionText == data.functionText){
+                    isPush = false
+                }
+            }
+            
+            if(isPush) this.state.relation_data.push(functionData[i])
+        }
+
         const newState = this.state.row.concat(json)
         this.setState({
-            row : newState
+            row : newState,
+            relation_data: this.state.relation_data
         })
     }
 
     formAdd(){
         this.setState({
             popup: <FormAdd
-                    col={this.state.col}
-                    tabId={this.props.tabId}
-                    appendDataTab={this.appendDataTab}
-                    cancel={this.cancel}/>
+                        col={this.state.col}
+                        tabId={this.props.tabId}
+                        appendDataTab={this.appendDataTab}
+                        cancel={this.cancel}/>
         })
     }
 
@@ -603,7 +645,7 @@ class tab extends React.Component{
         }
     }
 
-    update(json, seq){
+    update(json, seq, functionData){
         let i = 0;
         const data = this.state.row.map(dt => {
             if(seq == i){
@@ -612,9 +654,22 @@ class tab extends React.Component{
             i++
             return dt
         })
+        
+        for(let i = 0;i<functionData.length;i++){
+            let isPush = true
+            for(let x = 0;x<this.state.relation_data.length;x++){
+                let data = this.state.relation_data[x]
+                if(functionData[i].functionText == data.functionText){
+                    isPush = false
+                }
+            }
+            
+            if(isPush) this.state.relation_data.push(functionData[i])
+        }
 
         this.setState({
             row: data,
+            relation_data: this.state.relation_data,
             isStartingRow: false
         })
     }
@@ -670,19 +725,21 @@ class tab extends React.Component{
         })
     }
 
-    editTab(tabName, privacy){
+    editTab(tabName, privacy, userPrivacyData){
         let icon = this.privacyIconRender(privacy)
         this.props.editTab(this.state.tabId, tabName, privacy)
         this.setState({
             tabName: tabName,
             privacy: privacy,
-            privacyIcon: icon
+            privacyIcon: icon,
+            userPrivacyData: userPrivacyData
         })
     }
 
     setting(){
         this.setState({
             popSetting: <TabSetting
+                            userPrivacyData={this.state.userPrivacyData}
                             dataTeam={this.props.dataTeam}
                             tabId={this.state.tabId}
                             privacy={this.state.privacy}
@@ -801,37 +858,43 @@ class tab extends React.Component{
         }
 
         let val = this.state.row[row][column]
+        let style = (this.state.row[row].style === undefined) ? "" : this.state.row[row].style 
         var x = e.clientX    // Get the horizontal coordinate
         var y = e.clientY    // Get the vertical coordinate
         this.setState({
-            // isCellEdit: false,
             form: null,
             seqSelected: null,
-            // isStartingRow: true,
             popup: <CellEdit x={x}
                         y={y}
                         row={row}
                         column={column}
                         cancel={this.cancel}
                         submitCellContextMenu={this.submitCellContextMenu} 
+                        style={style}
                         value={val}/>
         })
     }
 
-    submitCellContextMenu(row, column, value, color, colorBackground){
+    submitCellContextMenu(row, column, value, styleCell, functionDataSelect){
         let i = 0
         let dataPass = ""
-        
         this.state.row.map(dt => {
             if(i == row){
+                //set style cell
+                if(dt.style !== undefined){
+                    dt.style[column] = styleCell
+                }else{
+                    dt.style = JSON.parse("{}")
+                    dt.style[column] = styleCell
+                }
+
                 dt[column] = value
                 dataPass = dt
             }
             i++
         })
-        
-        let scope = this
 
+        let scope = this
         let form = new FormData()
         form.append("seq", row)
         form.append("tabId", this.state.tabId)
@@ -845,9 +908,46 @@ class tab extends React.Component{
                 isCellEdit: true,
                 popup: null
             })
-            scope.update(dataPass, row)
+            scope.update(dataPass, row, functionDataSelect)
             popUpAlert("Data successfully updated", "success")
         })
+    }
+
+    linkFunction(id, fx, fileName){
+        if(fx == "MOD"){
+            this.setState({
+                popup: <DetailModule
+                            close={this.cancel} 
+                            modulId={id}
+                            projectId={this.props.projectId}
+                            picProject={this.props.pic}
+                            tabParameter="" />
+            })
+        }else if(fx == "DOC"){
+            var url = id.replace("upload", "")
+            var url2 = url.replace("..", "")
+
+            let lastIdx = url.lastIndexOf(".")
+            let ext = url.substring(lastIdx, url.length)
+            
+            if(ext == ".jpg" || ext == ".png"){
+                this.setState({
+                    popup: <PreviewImage url={url2} hideImage={this.cancel}/>
+                })
+            }else if(ext == ".mp4" || ext == ".mkv" || ext == ".3gp"){
+                this.setState({
+                    popup: <PreviewVideo video={fileName} url={url2} hideVideo={this.cancel}/>
+                })
+            }else{
+                window.open(baseUrl+"/file"+url2)
+            }
+        }else if(fx == "URL"){
+            window.open(fileName)
+        }
+    }
+
+    mouseOverRow(){
+        // console.log("s--")
     }
 
     render(){
@@ -859,7 +959,6 @@ class tab extends React.Component{
                 no++
                 let isRender = this.validationFilter(dt)
                 if(isRender == "ok"){
-                    console.log("render")
                     return <Row elm={document.getElementsByClassName("th-tab")}
                                 headerTable={this.headerTable.current}
                                 bodyTable={this.tableBody.current}
@@ -871,9 +970,11 @@ class tab extends React.Component{
                                 isBorder={this.state.isBorder}
                                 key={i}
                                 seq={seq}
+                                relationData={this.state.relation_data}
                                 seqSelected={this.state.seqSelected}
                                 no={no}
                                 cellContextMenu={this.cellContextMenu}
+                                linkFunction={this.linkFunction}
                                 colHeader={this.state.col}
                                 col={dt}
                                 dataFilter={this.state.dataFilter}
@@ -885,9 +986,11 @@ class tab extends React.Component{
         return(
             <React.Fragment>
                 <div ref={this.tabBase}>
-                        {this.state.popup}
+
+                    {this.state.popup}
                     {this.state.form}
                     {this.state.filterHeaderColumn}
+                    
                     <span style={{fontSize: "12px", position: "absolute", opacity: "0", zIndex: "-1"}} ref={this.spanToWidth}/>
                     <div className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "100%", overflow: "hidden"}}>
                         <div style={{float: "left"}}>
@@ -1048,10 +1151,12 @@ class tab extends React.Component{
 
                         {
                             (!this.state.tableReady) ?
-                                <div style={{fontSize: "14px", marginTop: "25px", textAlign: "center", marginBottom: "100px", width: "100%"}}>
+                                <div style={{fontSize: "12px", marginTop: "25px", textAlign: "center", marginBottom: "100px", width: "100%"}}>
                                     <FontAwesomeIcon style={{fontSize: "24px", color: "a07878"}} icon={faInfoCircle}/><br/>
-                                    <span className="bold second-font-color">This tab not have table to display</span><br/>
-                                    <span style={{fontSize: "12px"}}>Click create table to create new</span>
+                                    <div style={{marginTop: "5px"}}>
+                                        <span className="bold second-font-color">This tab not have data to display</span><br/>
+                                        <span style={{fontSize: "11px"}}>please klik create table to make some data</span>
+                                    </div>
                                 </div> : ""
                         }
 
@@ -1073,25 +1178,21 @@ class tab extends React.Component{
                                             {
                                                 (this.state.isLoadData)
                                                     ?
-                                                    <tr>
-                                                        <td colSpan="2" style={{textAlign: "left"}}>
-                                                            <div className="second-font-color bold"
-                                                                 style={{fontSize: "12px", height: "100px"}}>
-                                                                Load data...</div>
-                                                        </td>
-                                                    </tr>
-                                                    : ""
+                                                        <div style={{textAlign: "center"}}>
+                                                            <Spinner size="20px"/>
+                                                            <div className="bold second-font-color" style={{fontSize: "10px"}}>Loading..</div>
+                                                        </div>
+                                                    : 
+                                                        ""
                                             }
                                             {
                                                 (!this.state.isLoadData && row.length == 0 && this.state.tableReady)
-                                                    ?
-                                                    <tr>
-                                                        <td colSpan="2" style={{textAlign: "left"}}>
-                                                            <div style={{fontSize: "12px", height: "100px"}}>
-                                                                No data to display</div>
-                                                        </td>
-                                                    </tr>
-                                                    :
+                                                ?
+                                                    <div className="bold second-font-color" style={{fontSize: "11px", height: "100px", padding: "20px", textAlign: "center"}}>
+                                                        <div style={{fontSize: "20px"}}><FontAwesomeIcon icon={faExclamationCircle}/></div>
+                                                        No data to display
+                                                    </div>
+                                                :
                                                     row
                                             }
                                             </tbody>
@@ -1101,6 +1202,10 @@ class tab extends React.Component{
                             </div>
                         </div>
                     </div>
+                </div>
+                <div ref={this.loadBase} style={{marginTop: "30px", marginLeft: "-20px"}}>
+                    <Spinner size="25px"/>
+                    <div className="second-font-color bold" style={{fontSize: "10px", textAlign: "center"}}>Loading..</div>
                 </div>
                 <div style={{display: "none"}} ref={this.pageNotFound}>
                     <PageNotFound/>

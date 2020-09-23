@@ -2,6 +2,10 @@ import scsAlt from '../images/success_alt_inf.png'
 import wrnAlt from '../images/warn_alert_inf.png'
 import GifLoader from '../gif/Rolling-1s-45px.gif'
 import {pathUrlConst} from '../const/const'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faInfoCircle} from '@fortawesome/free-solid-svg-icons'
+import React from 'react'
+import ReactDom from 'react-dom'
 
 export function getCookieUserId(){
     var c = document.cookie.split(";")
@@ -47,7 +51,13 @@ export function popUpAlert(message, type){
     html.style.padding = "15px"
     html.style.borderRadius = "5px"
     html.style.zIndex = "100000"
-    html.append(img)
+    
+    if(type === 'info'){
+        ReactDom.render(<FontAwesomeIcon className="main-font-color" style={{fontSize: "35px"}} icon={faInfoCircle}/>, html)
+    }else{
+        html.append(img)
+    }
+    
     html.append(messageHtml)
     document.body.append(html)
 
@@ -128,6 +138,7 @@ export function convertDate_dd_MMM_yyy(date){
     if(dated != "Invalid Date"){
         var month = parseInt(dated.getMonth()) + 1
         var monthName = ""
+        var date = (dated.getDate() < 10) ? "0"+dated.getDate() : dated.getDate()
         
         if(month == 1) monthName = "January"
         if(month == 2) monthName = "February"
@@ -141,7 +152,30 @@ export function convertDate_dd_MMM_yyy(date){
         if(month == 10) monthName = "October"
         if(month == 11) monthName = "November"
         if(month == 12) monthName = "December"
-        return dated.getDate()+" "+monthName+" "+dated.getFullYear()
+        return date+" "+monthName+" "+dated.getFullYear()
+    }
+}
+
+export function convertDate_dd_mmm_yyy(date){
+    var dated = new Date(date)
+    if(dated != "Invalid Date"){
+        var month = parseInt(dated.getMonth()) + 1
+        var monthName = ""
+        var date = (dated.getDate() < 10) ? "0"+dated.getDate() : dated.getDate()
+        
+        if(month == 1) monthName = "Jan"
+        if(month == 2) monthName = "Feb"
+        if(month == 3) monthName = "Mar"
+        if(month == 4) monthName = "Apr"
+        if(month == 5) monthName = "May"
+        if(month == 6) monthName = "Jun"
+        if(month == 7) monthName = "Jul"
+        if(month == 8) monthName = "Aug"
+        if(month == 9) monthName = "Sep"
+        if(month == 10) monthName = "Oct"
+        if(month == 11) monthName = "Nov"
+        if(month == 12) monthName = "Dec"
+        return date+" "+monthName+" "+dated.getFullYear()
     }
 }
 
@@ -229,10 +263,10 @@ export function pathValidation(path) {
     }
 }
 
-function mouseOverTheadTab(e){
+export function mouseOverTheadTab(e){
     let child = e.target.children
     if(child[0] !== undefined) {
-        let filter = child[0].children[0]
+        // let filter = child[0].children[0]
         // if(filter !== undefined) {
         //     filter.style.display = "block"
         // }
@@ -244,7 +278,7 @@ function mouseOverTheadTab(e){
     }
 }
 
-function mouseLeaveTheadTab(e){
+export function mouseLeaveTheadTab(e){
     let child = e.target.children
     if(child[0] !== undefined) {
         let filter = child[0].children[0]
@@ -257,4 +291,81 @@ function mouseLeaveTheadTab(e){
             widhtsetter.style.display = "none"
         }
     }
+}
+
+export function checkBuffering(tagVideo) {
+    var player = tagVideo
+    var currentPlayPos = player.currentTime
+    var bufferingDetected = false
+    var checkInterval  = 50.0 // check every 50 ms (do not use lower values)
+    var lastPlayPos    = 0
+    // checking offset should be at most the check interval
+    // but allow for some margin
+    var offset = (checkInterval - 20) / 1000
+
+    // if no buffering is currently detected,
+    // and the position does not seem to increase
+    // and the player isn't manually paused...
+    if (
+            !bufferingDetected 
+            && currentPlayPos < (lastPlayPos + offset)
+            && !player.paused
+        ) {
+        console.log("buffering")
+        bufferingDetected = true
+    }
+
+    // if we were buffering but the player has advanced,
+    // then there is no buffering
+    if (
+        bufferingDetected 
+        && currentPlayPos > (lastPlayPos + offset)
+        && !player.paused
+        ) {
+        console.log("not buffering anymore")
+        bufferingDetected = false
+    }
+
+    return bufferingDetected
+}
+
+export function getIconDocFIle(fileName, baseElement){
+    var a = fileName.split(".")
+    var ext = a[a.length - 1]
+    var rtn = ""
+
+    let elm = document.createElement("i")
+    if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
+        rtn = "fa fa-image"
+        elm.setAttribute("class", rtn)
+    }else if(ext.toLowerCase() == "mp4" || ext.toLowerCase() == "3gp" || ext.toLowerCase() == "mkv"){
+        rtn = "fa fa fa-play-circle"
+        elm.setAttribute("class", rtn)
+        elm.style.color = "#F00"
+        elm.style.fontSize = "14px"
+    }else{
+        rtn = "fa fa-file"
+        elm.setAttribute("class", rtn)
+        elm.style.color = "#d4ae2b"
+    }
+    baseElement.append(elm)
+}
+
+export function pxd(password){
+    const arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                '!','@','#','$','%','^','&','*','(',')','_','+','=','{','}',':',';','<','>','?','/','|']
+    
+    let passLength = password.length
+    let pxc = 3429
+
+    let px = ""
+    for(let i = 0;i<passLength;i++){
+        let idx = arr.indexOf(password[i])
+        let idxs = idx.toString(2)
+        let pxint = parseInt(idxs) * pxc 
+        px += pxint.toString()+'-'
+    }
+    let pxo = px.substr(0, px.length - 1)
+    return pxo
 }

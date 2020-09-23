@@ -1,10 +1,8 @@
-import React from 'react'
+import React, { createRef } from 'react'
+import ReactDom from 'react-dom'
 import RowBugs from './row_bugs'
 import NoData  from './no_data_bugs'
 import {ApiFetch} from '../apiFetch'
-// import CmenuBugs from './cmenu_bugs'
-import PopConfirmDeleteBugs from './pop_confirm_delete_bugs'
-import PopConfirmCloseBugs from './pop_confirm_close_bugs'
 import PopupConfirmation from '../popup_confirmation'
 import {popUpAlert, getCookieUserId, getCookieSessionId} from '../../function/function'
 import {deleteDataBugs, closeDataBugs, uncloseDataBugs} from '../../redux/action'
@@ -12,6 +10,8 @@ import {connect} from 'react-redux'
 import EditBugs from '../bugs/edit_bugs'
 
 class bugs_module extends React.Component{
+
+    readyOperate = false
 
     constructor(){
         super()
@@ -25,15 +25,19 @@ class bugs_module extends React.Component{
         }
 
         this.chBugs = this.chBugs.bind(this)
-        this.commitBugs = this.commitBugs.bind(this)
+        this.commitChecklist = this.commitChecklist.bind(this)
         this.deleteBugs = this.deleteBugs.bind(this)
         this.confirmYesDelete = this.confirmYesDelete.bind(this)
         this.hideConfirm = this.hideConfirm.bind(this)
-        this.closeBugs = this.closeBugs.bind(this)
+        // this.closeBugs = this.closeBugs.bind(this)
         this.confirmYesClose = this.confirmYesClose.bind(this)
-        this.uncloseBugs = this.uncloseBugs.bind(this)
+        // this.uncloseBugs = this.uncloseBugs.bind(this)
         this.confirmYesUnclose = this.confirmYesUnclose.bind(this)
         this.editBugs = this.editBugs.bind(this)
+        this.checkingBugs = this.checkingBugs.bind(this)
+        
+        this.btnCommit = createRef()
+        this.parHgtxtArea = createRef()
     }
 
     componentDidMount(){
@@ -47,19 +51,35 @@ class bugs_module extends React.Component{
                 }
             }
         })
+
+        setTimeout(() => {
+            this.readyOperate = true
+        }, 100)
     }
 
     chBugs(e){
         this.setState({
             bugsText: e.target.value
         })
+
+        if(e.target.value == 0){
+            this.parHgtxtArea.current.innerText = "insert cheklist"
+        }else{
+            this.parHgtxtArea.current.innerText = e.target.value
+        }
+        
+        let h = this.parHgtxtArea.current.offsetHeight
+        h = h - 11
+        e.target.style.height = h+"px"
     }
 
-    commitBugs(){
+    commitChecklist(){
+        let btn = this.btnCommit.current
         if(this.state.bugsText == ""){
             popUpAlert("Description bugs is empty", "warning")
         }else{
-            this.props.commitBugs(this.state.bugsText)
+            ReactDom.render(<div className="second-font-color">Sending..</div>, btn)
+            this.props.commitChecklist(btn, this.state.bugsText)
             this.state.bugsText = ""
         }
     }
@@ -69,7 +89,7 @@ class bugs_module extends React.Component{
             bugsId: bugsId,
             popDelete: <PopupConfirmation
                             titleConfirmation="Delete Bugs"
-                            textPopup="Are you sure, you want delete bugs ?" 
+                            textPopup="Are you sure, you want delete checklist data ?" 
                             yesAction={this.confirmYesDelete} 
                             hidePopUp={this.hideConfirm}/>
         })
@@ -87,27 +107,27 @@ class bugs_module extends React.Component{
         })
     }
 
-    closeBugs(bugsId){
-        this.setState({
-            bugsId: bugsId,
-            popDelete: <PopupConfirmation
-                            titleConfirmation="Close Bugs"
-                            textPopup="Are you sure, you want close bugs ?" 
-                            yesAction={this.confirmYesClose} 
-                            hidePopUp={this.hideConfirm}/>
-        })
-    }
+    // closeBugs(bugsId){
+    //     this.setState({
+    //         bugsId: bugsId,
+    //         popDelete: <PopupConfirmation
+    //                         titleConfirmation="Close Bugs"
+    //                         textPopup="Are you sure, you want close bugs ?" 
+    //                         yesAction={this.confirmYesClose} 
+    //                         hidePopUp={this.hideConfirm}/>
+    //     })
+    // }
 
-    uncloseBugs(bugsId){
-        this.setState({
-            bugsId: bugsId,
-            popDelete: <PopupConfirmation
-                            titleConfirmation="Unclose Bugs"
-                            textPopup="Are you sure, you want unclose bugs ?" 
-                            yesAction={this.confirmYesUnclose} 
-                            hidePopUp={this.hideConfirm}/>
-        })
-    }
+    // uncloseBugs(bugsId){
+    //     this.setState({
+    //         bugsId: bugsId,
+    //         popDelete: <PopupConfirmation
+    //                         titleConfirmation="Unclose Bugs"
+    //                         textPopup="Are you sure, you want unclose bugs ?" 
+    //                         yesAction={this.confirmYesUnclose} 
+    //                         hidePopUp={this.hideConfirm}/>
+    //     })
+    // }
 
     confirmYesDelete(){
         var form = new FormData()
@@ -186,62 +206,72 @@ class bugs_module extends React.Component{
         }
     }
 
-    txtBugsClick(e){
-        var t = e.target
-        t.style.height = "40px"
+    checkingBugs(bugsId){
+        if(this.readyOperate){
+            this.props.dataBugs.map(dt => {
+                if(dt.bugsId == bugsId){
+                    let sts = (dt.bugStatus == "C") ? "P" : "C"
+                    dt.bugStatus = sts
+                }
+            })
+            this.props.checkingBugs(bugsId)
+        }
     }
 
     render(){
-        const heightMain = (this.props.mainHeight - 40) - 30
+        let thereData = 0
         const data = this.props.dataBugs.map(dt => {
             if(dt.isDelete != "Y")
             {
+                thereData++
                 return <RowBugs 
-                        bugsId={dt.bugsId}
-                        bugsText={dt.note}
-                        createDate={dt.createDate}
-                        isPermition={this.state.isPermition}
-                        picProject={this.props.picProject}
-                        deleteBugs={this.deleteBugs}
-                        closeBugs={this.closeBugs}
-                        uncloseBugs={this.uncloseBugs}
-                        editBugs={this.editBugs}
-                        bugStatus={dt.bugStatus}/> 
+                            bugsId={dt.bugsId}
+                            bugsText={dt.note}
+                            createDate={dt.createDate}
+                            isPermition={this.state.isPermition}
+                            picProject={this.props.picProject}
+                            checkingBugs={this.checkingBugs}
+                            deleteBugs={this.deleteBugs}
+                            bugStatus={dt.bugStatus}/> 
             }
         })
-        const thereData = this.props.dataBugs.length
 
         return(
             <React.Fragment>
                 {this.state.contextMn}
                 {this.state.popDelete}
-                <div style={{padding: "10px", height: heightMain+"px", overflowY: "scroll"}}>
+                <div className="main-border-top" style={{padding: "10px", paddingRight: "22px", paddingLeft: "22px", marginTop: "5px"}}>
+                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Checklist</div>
                     <table style={{width: "100%"}}>
-                        <thead>
-                            <tr>
-                                <th colSpan="2" className="main-border-right bold second-font-color">Bugs name</th>
-                                <th className="main-border-right bold second-font-color">Date</th>
-                            </tr>
-                        </thead>
                         <tbody id="body-bugs-table">
-                            {(thereData < 0) ? <NoData/> : data}
+                            {(thereData < 1) ? <NoData/> : data}
                         </tbody>
                     </table>
+                    {
+                        (this.props.picProject == getCookieUserId() || this.state.isPermition)
+                        ?
+                            <div id="footer-base-bugs" className="main-border input-info-mdl" style={{overflow: "hidden", marginTop: "10px", borderRadius: "4px"}}>
+                                <textarea onChange={this.chBugs}
+                                        value={this.state.bugsText}
+                                        className='main-border-right' 
+                                        placeholder="insert checklist" 
+                                        style={{float: "left", width: "520px", border: "none", outline: "none", resize: "none", fontSize: "12px", padding: "5px", marginTop: "5px", marginBottom: "5px", marginLeft: "5px", borderRight: "#dcdbdb 1px solid", height: "15px", background: "none"}}>   
+                                </textarea>
+                                
+                                <div ref={this.parHgtxtArea} 
+                                    className="main-border" 
+                                    style={{width: "520px", padding: "5px", fontSize: "12px", position: "absolute", background: "yellow", opacity: "0"}}>insert checklist</div>
+                                
+                                <button ref={this.btnCommit} 
+                                        onClick={this.commitChecklist} 
+                                        style={{fontSize: "12px", marginLeft: "5px", marginTop: "10px", background: "none", color: "blue", display: "flex"}}>
+                                    Send
+                                </button>
+                            </div>
+                        :
+                            ""
+                    }
                 </div>
-
-                {
-                    (this.props.picProject == getCookieUserId() || this.state.isPermition)
-                    ?
-                        <div id="footer-base-bugs" className="main-border-top" style={{overflow: "hidden", background: "#FFF"}}>
-                            <textarea onChange={this.chBugs} onClick={this.txtBugsClick} value={this.state.bugsText} className='main-border-right' placeholder="new bugs" style={{float: "left", width: "520px", border: "none", outline: "none", resize: "none", fontSize: "12px", padding: "5px", marginTop: "10px", marginBottom: "10px", marginLeft: "10px", borderRight: "#dcdbdb 1px solid", height: "20px"}}>   
-                            </textarea>
-                            <button onClick={this.commitBugs} style={{fontSize: "12px", marginLeft: "5px", marginTop: "15px", background: "none", color: "blue"}}>
-                                Kirim
-                            </button>
-                        </div>
-                    :
-                        ""
-                }
             </React.Fragment>
         )
     }

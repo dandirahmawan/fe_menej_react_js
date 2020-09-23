@@ -1,9 +1,19 @@
 import React from 'react'
 import {baseUrl} from '../../const/const'
 import {Spinner} from '../spinner'
-import { getCookieUserId } from '../../function/function'
+import ReactDom from 'react-dom'
+import { getCookieUserId, getIconDocFIle } from '../../function/function'
 
 class row_doc_file extends React.Component{
+
+    constructor(){
+        super()
+        this.baseIcon = React.createRef()
+    }
+
+    componentDidMount(){
+        getIconDocFIle(this.props.fileName, this.baseIcon.current)
+    }
 
     byteToKb(size){
         var rtn = 0
@@ -13,18 +23,6 @@ class row_doc_file extends React.Component{
             rtn = rtn+" mb"
         }else{
             rtn = mathFLoor+" kb"
-        }
-        return rtn
-    }
-
-    getIconDocFIle(fileName){
-        var a = fileName.split(".")
-        var ext = a[a.length - 1]
-        var rtn = ""
-        if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
-            rtn = "image"
-        }else{
-            rtn = "doc file"
         }
         return rtn
     }
@@ -39,9 +37,10 @@ class row_doc_file extends React.Component{
         return(
             <tr className='tr-selectable row-doc-file'>
                 <td style={{width: "20px", paddingTop: "7px"}}>
-                    {
-                        (this.getIconDocFIle(this.props.fileName) == 'image') ? <i className="fa fa-image"></i> : <i className="fa fa-file" style={{color: "#d4ae2b"}}></i>
-                    }
+                    <div ref={this.baseIcon}></div>
+                    {/* {this.getIconDocFIle(this.props.fileName)} */}
+                    {/* <i className={this.getIconDocFIle(this.props.fileName)} 
+                        style={(this.getIconDocFIle(this.props.fileName) == "fa fa-file" ? {color: "#d4ae2b"} : {})}></i> */}
                 </td>
                 <td style={{width: "70%", paddingRight: "10px"}}>
                     <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.urlPath(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
@@ -51,7 +50,7 @@ class row_doc_file extends React.Component{
                             ?
                                 this.props.descFile
                             :
-                                'No description for this document file'
+                                ''
                         }
                     </div>
                 </td>

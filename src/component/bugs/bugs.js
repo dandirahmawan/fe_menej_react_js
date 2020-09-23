@@ -387,16 +387,28 @@ class bugs extends React.Component{
                                 (data == "")
                                 ?
                                     <tr>
-                                        <td colSpan="5" className="bold font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}><span style={{fontSize: "16px"}}>
-                                            <i class="fa fa-exclamation-triangle"></i></span><br></br>No data
+                                        <td colSpan="6" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                            <div style={{marginTop: "10px", marginTop: "25px", marginBottom: "100px"}}>
+                                                <span style={{fontSize: "16px"}}>
+                                                    <i class="fa fa-exclamation-triangle" style={{fontSize: "30px"}}></i>
+                                                </span>
+                                                <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
+                                                <div style={{fontSize: "12px"}}>there's no data bugs in this project<br/>click + Add for create a new bugs</div>
+                                            </div>
                                         </td>
-                                    </tr>
+                                    </tr> 
                                 :
                                     data
                         }
                         
                     </tbody>
                 </table>
+                {/* <div className="main-border-bottom main-border-top" style={{width: "90%", fontSize: "10px"}}>
+                    <div style={{padding: "10px", textAlign: "right"}}>
+                        Modified by : <span className="bold">Dandi rahmawan</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Modified date : <span className="bold">10 Jan 2020</span>
+                    </div>
+                </div> */}
             </React.Fragment>
         )
     }
