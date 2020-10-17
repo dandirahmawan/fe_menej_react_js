@@ -27,7 +27,7 @@ class function_preview extends React.Component{
 
     itemSelect(val){
         this.props.target.value = "="+val+"()"
-        this.props.select(this.props.x, this.props.y, val)
+        this.props.select(this.props.target, this.props.x, this.props.y, val)
     }
 
     render(){

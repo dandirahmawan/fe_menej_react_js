@@ -1,12 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTitleHader} from '../../redux/action'
-import {baseUrl} from '../../const/const'
+import {setTitleHader, setDataLabelModule, setAssignedModules} from '../../redux/action'
 import NotFound from '../404'
 import Module from './module'
 import {Spinner} from '../spinner'
 import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
-import {setDataModule, deleteDataModule, deleteMember} from '../../redux/action'
+import {setDataModule, deleteDataModule, deleteMember, setDataLabel, setDataStatus} from '../../redux/action'
 import {ApiFetch} from '../apiFetch'
 
 class list_module extends React.Component{
@@ -28,10 +27,11 @@ class list_module extends React.Component{
         this.mapingProjectData = this.mapingProjectData.bind(this)
         this.handleChangeNameModule = this.handleChangeNameModule.bind(this)
         this.commitNewModule = this.commitNewModule.bind(this)
-        this.commitDeleteModule = this.commitDeleteModule.bind(this)
         this.updateDataDocumentFile = this.updateDataDocumentFile.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
+        this.commitNewStatus = this.commitNewStatus.bind(this)
+        this.updateDataStatus = this.updateDataStatus.bind(this)
     }
 
     componentDidMount(){
@@ -51,7 +51,8 @@ class list_module extends React.Component{
     fetchData(userId, projectId){
         this.setState({
             loader: <Spinner textLoader="Load data.."/>,
-            projectIdHeader: projectId
+            projectIdHeader: projectId,
+            notFound: false
         })
 
         var formData = new FormData();
@@ -71,14 +72,22 @@ class list_module extends React.Component{
                 var permition  = result[0]['permitionProjects']
                 var dataNote = result[0]['note']
                 var dataTab = result[0]['tabs']
-
+                var dataStatus = result[0]['statusModules']
+                var dataLabel = result[0]['labelsList']
+                var dataLabelModule = result[0]['labelModulelist']
+                var assignedModules = result[0]['assignedModules']
+                
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
                 }
 
                 if(dataProjectFetch === undefined) return false
-
+                
                 this.props.setDataModule(dataModule)
+                this.props.setDataLabels(dataLabel)
+                this.props.setDataLabelsModule(dataLabelModule)
+                this.props.setAssigndeModules(assignedModules)
+                this.props.setDataStatus(dataStatus)
                 
                 this.setState({
                     dataTeam: dataTeam,
@@ -86,6 +95,7 @@ class list_module extends React.Component{
                     permitionProject: permition,
                     dataNote: dataNote,
                     dataTab: dataTab
+                    // dataStatus: dataStatus
                 })
             }
         })
@@ -118,9 +128,16 @@ class list_module extends React.Component{
     }
 
     commitDeleteModule(dataSelected){
-        for(var i = 0;i<dataSelected.length;i++){
-            this.props.deleteDataModule(dataSelected[i])
+        let newData = []
+        for(let i = 0;i<this.props.dataModule.length;i++){
+            let dt = this.props.dataModule[i]
+            let idx = dataSelected.indexOf(dt.modulId)
+            if(idx == -1){
+                newData.push(dt)
+            }
         }
+        
+        this.props.setDataModule(newData)
     }
 
     handleChangeNameModule(e){
@@ -130,7 +147,7 @@ class list_module extends React.Component{
         })
     }
 
-    commitNewModule(userId, mouleName, dueDate, description, pi){
+    commitNewModule(userId, mouleName, dueDate, description, pi, status){
         var userLogin = getCookieUserId()
         var form = new FormData()
         form.append("userId", userId)
@@ -139,6 +156,7 @@ class list_module extends React.Component{
         form.append("dueDate", dueDate)
         form.append("description", description)
         form.append("projectId", pi)
+        form.append("status", status)
 
         var isReady = false
         this.props.dataModule.map(dt => {
@@ -153,8 +171,16 @@ class list_module extends React.Component{
                 body:form
             }).then(res => res.json())
             .then((result) => {
-                var append = this.props.dataModule.concat(result[0])
+                let dataModule = result[0].module
+                let dataAssignTo = result[0].assignTo
+                
+                var append = this.props.dataModule.concat(dataModule)
                 this.props.setDataModule(append)
+                
+                dataAssignTo.map(dt => {
+                    var appendAssign = this.props.assignedModules.concat(dt)
+                    this.props.setAssigndeModules(appendAssign)
+                })
             })
         }else{
             popUpAlert("Module name already exists", "warning")
@@ -184,37 +210,73 @@ class list_module extends React.Component{
         this.props.deleteMember(userId)
     }
 
+    commitNewStatus(status){
+        // let statusJson = status
+        // let arrStatus = this.state.dataStatus
+        // arrStatus.push(statusJson)
+        // this.setState({
+        //     dataStatus: arrStatus
+        // })
+    }
+
+    /*unused function*/
+    updateDataStatus(jsonData){
+        // this.props.setDataStatus(jsonData)
+    }
+
     render(){
+        let listExistData = "not exist"
+        this.props.projectData.map(dt => {
+            let paramId = this.props.match.params.id
+            if(dt.projectId == paramId) {
+                listExistData = "exists"
+            }
+        })
 
         const data =  <Module 
-                        projectIdHeader = {this.state.projectIdHeader}
-                        dataProject={this.state.dataProject}  
-                        dataModule={this.props.dataModule}
-                        dataTeam={this.state.dataTeam}
-                        dataNote={this.state.dataNote}
-                        dataTab={this.state.dataTab}
-                        dataPermition={this.state.permitionProject}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitNewModule={this.commitNewModule}
-                        commitDeleteModule={this.commitDeleteModule}
-                        commitDeleteMember={this.commitDeleteMember}
-                        refreshModule={this.refreshModule}
+                            projectIdHeader = {this.state.projectIdHeader}
+                            dataProject={this.state.dataProject}
+                            dataTeam={this.state.dataTeam}
+                            dataNote={this.state.dataNote}
+                            dataTab={this.state.dataTab}
+                            // dataStatus={this.state.dataStatus}
+                            dataPermition={this.state.permitionProject}
+                            commitDeleteModule={this.commitDeleteModule}
+                            commitNewModule={this.commitNewModule}
+                            commitDeleteMember={this.commitDeleteMember}
+                            commitNewStatus={this.commitNewStatus}
+                            // updateDataStatus={this.updateDataStatus}
+                            refreshModule={this.refreshModule}
                         />
 
         return(
-            <div id="main-base-data" style={{marginBottom: "100px"}}>
+            <div id="main-base-data">
                 {this.state.loader}
                 {(this.state.notFound) ? <NotFound/> : ""}
-                {(this.state.dataProject.length > 0) ? data : ""}
+                {
+                    (this.state.dataProject.length > 0) 
+                    ? 
+                        (listExistData == "exists")
+                        ?
+                            data
+                        :
+                            <div style={{textAlign: "center", marginTop: "50px"}}>
+                                <div className="bold" style={{fontSize: "24px"}}>Data project is not available anymore</div>
+                                <div className="second-font-color" style={{fontSize: "13px"}}>Please select another project on existing list, or create new project</div>
+                            </div>
+                    : 
+                        ""}
             </div> 
         )
     }
 }
 
-const mapStateToProps = state =>{
+const mapStateToProps = state => {
+    console.log(state)
     return{
         projectData : state.dataProject,
-        dataModule : state.dataModule
+        dataModule: state.dataModule,
+        assignedModules: state.assignedModules
     }
 }
 
@@ -223,7 +285,11 @@ const mapDispatchToProps = dispatch => {
         setTitleHeader : (a) => dispatch(setTitleHader(a)),
         setDataModule : (a) => dispatch(setDataModule(a)),
         deleteDataModule : (a) => dispatch(deleteDataModule(a)),
-        deleteMember : (a) => dispatch(deleteMember(a))
+        deleteMember : (a) => dispatch(deleteMember(a)),
+        setDataLabels : (a) => dispatch(setDataLabel(a)),
+        setDataLabelsModule : (a) => dispatch(setDataLabelModule(a)),
+        setAssigndeModules : (a) => dispatch(setAssignedModules(a)),
+        setDataStatus : (data) => dispatch(setDataStatus(data))
     }
 }
 

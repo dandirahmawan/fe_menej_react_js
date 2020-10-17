@@ -1,45 +1,56 @@
 import React from 'react'
-import ModuleDetail from './module_detail'
-import BugsDetail from './bugs_detail'
-import DocumentFileDetail from './document_file_detail'
+import {popCenterPosition, getCookieUserId, getCookieSessionId, convertDate_dd_MMM_yyy} from '../../function/function'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCalendarAlt, faTrashAlt, faUserAlt, faPlus, faInfoCircle, faTimes, faTimesCircle} from '@fortawesome/free-solid-svg-icons'
+import {connect} from 'react-redux'
+import {setDataModule, setDataBugs, setDataDocFile} from '../../redux/action'
+import { baseUrl } from '../../const/const'
 import {ApiFetch} from '../apiFetch'
-import {getCookieSessionId, getCookieUserId} from '../../function/function'
-import Detail from '../module/detail'
-import {setDataModule} from '../../redux/action'
-import { connect } from 'react-redux'
-import PreviewImage from '../preview_image'
+import RowModule from './row_module_detail_popup'
+import Detail from '../module/detail_module/detail'
+import RowBugs from './row_bugs_user_detail_pop'
+import RowDocFile from './row_doc_file_user_detail_pop'
+import PopupConfirmation from '../popup_confirmation'
+import { Spinner } from '../spinner'
+import Row from "./row_module_detail";
 
 class detail_user extends React.Component{
-
+    
     constructor(){
         super()
+        this.refBase = React.createRef()
+        this.block = React.createRef()
+        this.loaderBase = React.createRef()
+        this.baseDataDetail = React.createRef()
         this.state = {
-            dataBugs:[],
-            dataDocFile:[],
-            popup:"",
-            popImage:""
+            popup: ""
         }
+
         this.rowModuleClick = this.rowModuleClick.bind(this)
-        this.hidePopUp = this.hidePopUp.bind(this)
-        this.rowClickDocFile = this.rowClickDocFile.bind(this)
-        this.hideImage = this.hideImage.bind(this)
+        this.closeModuleDetail = this.closeModuleDetail.bind(this)
+        this.delete = this.delete.bind(this)
+        this.commitDelete = this.commitDelete.bind(this)
+        this.fetchAction = this.fetchAction.bind(this)
     }
 
     componentDidMount(){
-        var h1 = document.getElementById("header").offsetHeight
-        var h2 = document.getElementById("header-detail-user-base").offsetHeight
-        // var h = parseInt(h1) + h2
-        var heightDetailBase = window.innerHeight - h1
-        document.getElementById("detail-user-base").style.height = heightDetailBase+"px"
-        document.getElementById("main-base-detail").style.height = heightDetailBase - h2+"px"
-        // document.getElementById("main-base-detail").style.height = heightDetailBase - 59+"px"
+        this.fetchAction(this.props.userId)
+    }
 
-        document.getElementById("base-module-detail").style.display = "block"
-        document.getElementById("base-bugs-detail").style.display = "none"
-        document.getElementById("base-doc-file-detail").style.display = "none"
+    componentWillReceiveProps(nextProps){
+        if(nextProps.userId != this.props.userId){
+            this.fetchAction(nextProps.userId)
+        }
+    }
+
+    fetchAction(userId){
+        var wh = window.innerHeight
+        var ch = this.refBase.current
+        ch.style.minHeight = wh - 100+"px"
+        popCenterPosition("base-pop-usr-dtl")
 
         var form = new FormData()
-        form.append("userId", this.props.userId)
+        form.append("userId", userId)
         form.append("user", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
@@ -52,55 +63,41 @@ class detail_user extends React.Component{
             var modul = result[0].modul
             var docFile = result[0].documentFile
 
-            this.setState({
-                dataBugs: bugs,
-                dataDocFile: docFile
-            })
-
             this.props.setDataModule(modul)
+            this.props.setDataDocFile(docFile)
+            this.props.setDataBugs(bugs)
+            this.loaderBase.current.remove()
+            this.baseDataDetail.current.style.display = "block"
         })
     }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.userId != this.props.userId){
-            var form = new FormData()
-            form.append("userId", nextProps.userId)
-            form.append("user", getCookieUserId())
-            form.append("sessionId", getCookieSessionId())
-
-            ApiFetch("/user_detail", {
-                method: "POST",
-                body: form
-            }).then(res => res.json())
-            .then(result => {
-                var bugs = result[0].bugs
-                var modul = result[0].modul
-                var docFile = result[0].documentFile
-                
-                this.setState({
-                    dataBugs: bugs,
-                    dataDocFile: docFile,
-                })
-                this.props.setDataModule(modul)
-            })
+    btnNavUser(e, type){
+        var elm = document.getElementsByClassName("btn-nav-usr-dtl")
+        for(var i = 0;i<elm.length;i++){
+            var curAtt = elm[i].getAttribute("class")
+            curAtt = curAtt.replace("btn-primary", "btn-secondary")
+            elm[i].setAttribute("class", curAtt)
         }
-    }
 
-    rowClickDocFile(e, fileName){
-        var a = fileName.lastIndexOf(".")
-        var ext = fileName.substr(parseInt(a) + 1, fileName.length)
-        if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
-            e.preventDefault()
-            this.setState({
-                popImage : <PreviewImage image={fileName} hideImage={this.hideImage}/>
-            })
+        var elm = document.getElementsByClassName("base-nav-usr-dtl-pop")
+        for(var i = 0;i<elm.length;i++){
+            elm[i].style.display = "none"
         }
-    }
 
-    hideImage(){
-        this.setState({
-            popImage: ""
-        })
+        if(type == "bugs"){
+            var el = document.getElementById("base-data-bugs-user-dtl-pop")
+            el.style.display = "block"
+        }else if(type == "doc file"){
+            var el = document.getElementById("base-data-doc-file-user-dtl-pop")
+            el.style.display = "block"
+        }else{
+            var el = document.getElementById("base-data-module-user-dtl-pop")
+            el.style.display = "block"
+        }
+
+        var cur = e.target.getAttribute("class")
+        var setCur = cur.replace("btn-secondary", "btn-primary")
+        e.target.setAttribute("class", setCur)
     }
 
     rowModuleClick(moduleId){
@@ -108,7 +105,7 @@ class detail_user extends React.Component{
             if(dt.modulId == moduleId){
                 this.setState({
                     popup: <Detail 
-                                close={this.hidePopUp} 
+                                close={this.closeModuleDetail} 
                                 modulId={dt.modulId}
                                 projectId={dt.projectId}
                             />
@@ -117,114 +114,208 @@ class detail_user extends React.Component{
         })
     }
 
-    hidePopUp(){
+    closeModuleDetail(){
         this.setState({
             popup: ""
         })
     }
 
-    menuDetail(e, menu){
-        var c = e.target.getAttribute("class")
-        var t = e.target
-        if(c != "bold mn-dtl"){
-            t = t.parentElement
-        }
+    delete(userName){
+        let textPopup = "Are you sure, you want remove <span class='bold'>"+userName+"</span> ?"
+        this.setState({
+            popup: <PopupConfirmation 
+                        titleConfirmation="Remove user"
+                        textPopup={textPopup}
+                        hidePopUp={this.closeModuleDetail}
+                        yesAction={this.commitDelete}/>
+        })
+    }
 
-        var cl = document.getElementsByClassName("mn-dtl")
-        for(var i = 0;i<cl.length;i++){
-            cl[i].style.borderBottom = "none"
-        }
+    commitDelete(){
+        var form = new FormData()
+        form.append("userId", this.props.userId)
+        form.append("sessionId", getCookieSessionId())
+        form.append("userIdLogin", getCookieUserId())
 
-        t.style.borderBottom = "2px solid #386384"
+        ApiFetch("/delete_user", {
+            method: "POST",
+            body: form
+        })
+        this.props.deleteUser(this.props.userId)
+    }
 
-        if(menu == "module"){
-            document.getElementById("base-module-detail").style.display = "block"
-            document.getElementById("base-bugs-detail").style.display = "none"
-            document.getElementById("base-doc-file-detail").style.display = "none"
-            document.getElementById("base-permition-detail").style.display = "none"
-        }else if(menu == "bugs"){
-            document.getElementById("base-module-detail").style.display = "none"
-            document.getElementById("base-bugs-detail").style.display = "block"
-            document.getElementById("base-doc-file-detail").style.display = "none"
-            document.getElementById("base-permition-detail").style.display = "none"
-        }else if(menu == "permition"){
-            document.getElementById("base-module-detail").style.display = "none"
-            document.getElementById("base-bugs-detail").style.display = "none"
-            document.getElementById("base-doc-file-detail").style.display = "none"
-            document.getElementById("base-permition-detail").style.display = "block"
-        }else{
-            document.getElementById("base-module-detail").style.display = "none"
-            document.getElementById("base-bugs-detail").style.display = "none"
-            document.getElementById("base-doc-file-detail").style.display = "block"
-            document.getElementById("base-permition-detail").style.display = "none"
-        }  
+    invite(emailUser){
+        let form = new FormData()
+        form.append("email", emailUser)
+        form.append("userId", getCookieUserId())
+
+        ApiFetch("/invitation", {
+            method: "POST",
+            body: form
+        })
     }
 
     render(){
+
+        const dataModule = this.props.dataModule.map(dt => {
+            return <RowModule 
+                        moduleName={dt.modulName} 
+                        projectName={dt.projectName} 
+                        moduleId={dt.modulId}
+                        rowClick={this.rowModuleClick}
+                        countDoc={dt.countDoc}
+                        countBugs={dt.countBugs}
+                        countBugsClose={dt.countBugsClose}
+                    />
+        })
+
+        const dataBugs = this.props.dataBugs.map(dt => {
+            return <RowBugs note={dt.note} moduleName={dt.modulName} status={dt.bugStatus}/>
+        })
+
+        const dataDocFile = this.props.dataDocFile.map(dt => {
+            return <RowDocFile fileName={dt.fileName} path={dt.path} description={dt.descriptionFile}/>
+        })
+
         return(
             <React.Fragment>
-
                 {this.state.popup}
-                {this.state.popImage}
-
-                <div id="detail-user-base" className="main-border-left" style={{width: "35%", position: "fixed", right: "0px", height: "100%", background:"#FFF", /*marginTop: "59px"*/}}>
-                    <div id="header-detail-user-base" className="main-border-bottom" style={{padding: "10px"}}>
-                        <span className="bold second-font-color" style={{fontSize: "14px"}}>
-                            <a onClick={this.props.hideDetail} className="second-font-color" style={{marginRight: "10px"}}><i class="fa fa-times"></i></a> Detail user
-                        </span>
+                {/* <div className="block" ref={this.block} onClick={this.props.hide}/> */}
+                <div ref={this.refBase} id="base-pop-usr-dtl" 
+                    className="main-border" 
+                    style={{width: "500px", borderRadius: "5px", background: "#FFF", minHeight: "400px", margin: "auto", marginTop: "100px", borderRadius: "4px", overflow: "hidden", marginBottom: "-10px"}}>
+                    <div className="bold main-border-bottom second-font-color"  
+                        style={{padding: "10px", background: "#FFF", fontSize: "12px"}}>
+                        <FontAwesomeIcon icon={faUserAlt}/>&nbsp;&nbsp;Detail user
                     </div>
-                    <div id="main-base-detail" style={{overflowY: "scroll"}}>
-                        <div style={{width: "80px", height: "80px", borderRadius: "40px", background: "#CCC", margin: "auto", marginTop: "20px"}}></div>
-                        <div style={{textAlign: "center", padding: "10px"}}>
-                            <span className="bold">{this.props.userName}</span><br/>
-                            <span style={{fontSize: "12px"}}>{this.props.emailUser}</span><br/>
-                            <span className="bold second-font-color" style={{fontSize: "12px"}}>
-                                <i class="fa fa-calendar">&nbsp;</i>12 january 2019
-                            </span>
+                    <div style={{padding: "10px", overflow: "hidden", marginTop: "20px"}}>
+                        <div style={{width: "100px", height:"100px", margin: "auto", borderRadius: "100%", textAlign: "center", background: "#CCC", overflow: "hidden"}}>
+                            {
+                                (this.props.picProfileDetail != "" && this.props.picProfileDetail != null)
+                                ?
+                                    <div style={{background: "url("+baseUrl+"/pic_profile/"+this.props.picProfileDetail+") center center / cover no-repeat", height: "100px", width: "100px"}}/>
+                                :
+                                    <FontAwesomeIcon className="second-font-color" style={{fontSize: "80px", marginTop: "21px"}} icon={faUserAlt}/>
+                            }
                         </div>
-                        <div style={{paddingLeft: "10px", paddingRight: "10px"}}>
-                            <div className="main-border-bottom" style={{marginTop: "20px", overflow: "hidden"}}>
-                                <a onClick={(e) => this.menuDetail(e, "module")}>
-                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px", borderBottom: "2px solid #386384"}}>
-                                        <em class="fa fa-clipboard">&nbsp;</em>Module
-                                    </div>
-                                </a>
-                                <a onClick={(e) => this.menuDetail(e, "bugs")}>
-                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
-                                        <i class="fa fa-exclamation-triangle">&nbsp;</i>Bugs
-                                    </div>
-                                </a>
-                                <a onClick={(e) => this.menuDetail(e, "doc_file")}>
-                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
-                                        <i class="fa fa-file">&nbsp;</i>Document file
-                                    </div>  
-                                </a>
-                                <a onClick={(e) => this.menuDetail(e, "permition")}>
-                                    <div className="bold mn-dtl" style={{width: "25%", float: "left", textAlign: "center", fontSize: "12px", paddingTop: "10px", paddingBottom: "10px"}}>
-                                        <i class="fa fa-key">&nbsp;</i>Permition
-                                    </div>  
-                                </a>
+                        <div style={{marginTop: "5px", textAlign: "center"}}>
+                            <span className="bold" style={{fontSize: "25px"}}>{this.props.userName}</span>
+                            <div className="second-font-color" style={{fontSize: "12px"}}>{this.props.emailUser}</div>
+                            
+                            {
+                                (this.props.isRelated == "Y")
+                                ?   
+                                    <React.Fragment>
+                                        <span className="bold second-font-color" style={{fontSize: "11px"}}>
+                                            <FontAwesomeIcon icon={faCalendarAlt}/>
+                                            &nbsp;{convertDate_dd_MMM_yyy(this.props.relateDate)}
+                                        </span><br/>
+                                        <button onClick={() => this.delete(this.props.userName)} className="btn-primary bold" style={{fontSize: "11px", marginTop: "10px"}}>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Remove
+                                        </button>
+                                    </React.Fragment>
+                                :
+                                    <React.Fragment>
+                                        {/* <span className="bold main-font-color" style={{fontSize: "11px"}}>
+                                            <FontAwesomeIcon icon={faInfoCircle}/>
+                                            &nbsp;Related by project
+                                        </span><br/> */}
+                                        {
+                                            (this.props.isInvited == "Y")
+                                            ?
+                                                <button onClick={() => this.invite(this.props.emailUser)} className="btn-secondary bold" style={{fontSize: "11px", marginTop: "10px", color: "#999999"}}>
+                                                    <FontAwesomeIcon icon={faTimesCircle}/>&nbsp;Cancel request
+                                                </button>
+                                            :
+                                                <button onClick={() => this.invite(this.props.emailUser)} className="btn-primary bold" style={{fontSize: "11px", marginTop: "10px", background: "green", width: "100px"}}>
+                                                    <FontAwesomeIcon icon={faPlus}/>&nbsp;invite
+                                                </button>
+                                        }
+                                        
+                                    </React.Fragment>
+                            }
+                            
+                        </div>
+                    </div>
+
+                    {/*main navition user detail*/}
+                    <div id="menu-usr-dtl" style={{padding: "10px", overflow: "hidden", marginTop: "20px", marginRight: "-1px", marginLeft: "-1px", borderBottom: "10px solid rgb(230, 230, 230)", textAlign: "center"}}>
+                        <a onClick={(e) => this.btnNavUser(e, "module")} className="bold btn-nav-usr-dtl" style={{fontSize: "12px", padding: "10px"}}>
+                            <i className="fa fa-clipboard"/>&nbsp;Module
+                        </a>
+                        
+                        <a onClick={(e) => this.btnNavUser(e, "bugs")} className="bold second-font-color btn-nav-usr-dtl" style={{fontSize: "12px", padding: "10px"}}>
+                            <i className="fa fa-exclamation-triangle"/>&nbsp;Bugs
+                        </a>
+                        
+                        <a onClick={(e) => this.btnNavUser(e, "doc file")} className="bold second-font-color btn-nav-usr-dtl" style={{fontSize: "12px", padding: "10px"}}>
+                            <i className="fa fa-file"/>&nbsp;Doc & File
+                        </a>
+                    </div>
+                    
+                    <div ref={this.loaderBase}><Spinner size="25px" textLoader="load data.."/></div>
+                    <div ref={this.baseDataDetail} style={{display: "none"}}>
+                        <div id="base-data-module-user-dtl-pop" className="base-nav-usr-dtl-pop" style={{padding: "10px"}}>
+                            <div className="bold second-font-color" style={{fontSize: "12px", padding: "5px", marginBottom: "5px"}}>
+                                <i className="fa fa-clipboard"/>&nbsp;&nbsp;List module
                             </div>
-                            <div id="base-module-detail">
-                                <ModuleDetail
-                                    rowModuleClick={this.rowModuleClick}
-                                    data={this.props.dataModule}
-                                />
+                            <table style={{width: "100%"}}> 
+                                <tbody>
+                                    {
+                                        (dataModule != "")
+                                        ?
+                                            dataModule
+                                        :
+                                            <div className="bold second-font-color" style={{textAlign: "center", marginTop: "20px", fontSize: "14px"}}>
+                                                <i className="fa fa-exclamation-triangle second-font-color" style={{fontSize: "20px"}}></i>
+                                                <br/>
+                                                <span style={{fontSize: "12px"}}>No data to display</span>
+                                            </div> 
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="base-data-bugs-user-dtl-pop" className="base-nav-usr-dtl-pop" style={{padding: "10px", display: "none"}}>
+                            <div className="bold second-font-color" style={{fontSize: "12px", padding: "5px", marginBottom: "5px"}}>
+                                <i className="fa fa-exclamation-triangle second-font-color"/>&nbsp;&nbsp;List bugs
                             </div>
-                            <div id="base-bugs-detail">
-                                <BugsDetail
-                                    data={this.state.dataBugs}
-                                />
+                            <table style={{width: "100%"}}> 
+                                <tbody>
+                                    {
+                                        (dataBugs != "")
+                                        ?
+                                            dataBugs
+                                        :
+                                            <div className="bold second-font-color" style={{textAlign: "center", marginTop: "20px", fontSize: "14px"}}>
+                                                <i className="fa fa-exclamation-triangle second-font-color" style={{fontSize: "20px"}}></i>
+                                                <br/>
+                                                <span style={{fontSize: "12px"}}>No data to display</span>
+                                            </div>  
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="base-data-doc-file-user-dtl-pop" className="base-nav-usr-dtl-pop" style={{padding: "10px", display: "none"}}>
+                            <div className="bold second-font-color" style={{fontSize: "12px", padding: "5px", marginBottom: "5px"}}>
+                                <i className="fa fa-file second-font-color"/>&nbsp;&nbsp;List document & file
                             </div>
-                            <div id="base-doc-file-detail">
-                                <DocumentFileDetail
-                                    data={this.state.dataDocFile}
-                                    rowClickDocFile={this.rowClickDocFile}
-                                />
-                            </div>
-                            <div id="base-permition-detail">
-                                halaman permition
-                            </div>
+                            <table style={{width: "100%"}}> 
+                                <tbody>
+                                    {
+                                        (dataDocFile != "")
+                                        ?
+                                            dataDocFile
+                                        :
+                                            <div className="bold second-font-color" style={{textAlign: "center", marginTop: "20px", fontSize: "14px"}}>
+                                                <i className="fa fa-exclamation-triangle second-font-color" style={{fontSize: "20px"}}></i>
+                                                <br/>
+                                                <span style={{fontSize: "12px"}}>No data to display</span>
+                                            </div>    
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -235,13 +326,17 @@ class detail_user extends React.Component{
 
 const mapStateToProps = state => {
     return{
-        dataModule: state.dataModule
+        dataModule: state.dataModule,
+        dataBugs: state.dataBugs,
+        dataDocFile: state.dataDocFile
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return{
-        setDataModule: (data) => dispatch(setDataModule(data))
+        setDataModule: (dataJosnArray) => dispatch(setDataModule(dataJosnArray)),
+        setDataBugs: (dataJosnArray) => dispatch(setDataBugs(dataJosnArray)),
+        setDataDocFile: (dataJosnArray) => dispatch(setDataDocFile(dataJosnArray))
     }
 }
 

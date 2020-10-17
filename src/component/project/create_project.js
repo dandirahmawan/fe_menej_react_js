@@ -1,14 +1,18 @@
 import React from 'react'
-import {baseUrl} from '../const/const'
-import {getCookieUserId, popUpAlert} from '../function/function'
+import {baseUrl} from '../../const/const'
+import {getCookieUserId, popUpAlert} from '../../function/function'
 import {Redirect} from 'react-router-dom'
+import { ApiFetch } from '../apiFetch'
+import ReactDom from 'react-dom'
+import {SpinnerButton} from '../spinner'
 
 class create_project extends React.Component{
 
     constructor(){
         super()
         this.state = {
-            projectName: ""
+            projectName: "",
+            onProcess: false
         }
         this.handleChange = this.handleChange.bind(this)
     }
@@ -27,17 +31,27 @@ class create_project extends React.Component{
         elm.style.left = left+"px"
     }
 
-    commitProject(){
+    commitProject(e){
         var userId = getCookieUserId()
         if(this.state.projectName == ""){
             popUpAlert("Project name is empty", "warning");
             return false;
         }
 
+        if(this.state.onProcess){
+            return false
+        }
+
+        e.target.style.opacity = "0.5"
+        ReactDom.render(<SpinnerButton size="14px"/>, e.target)
+        this.setState({
+            onProcess: true
+        })
+
         var formData = new FormData()
         formData.append("userId", userId)
         formData.append("projectName", this.state.projectName)
-        fetch(baseUrl+"/insert_project",{
+        ApiFetch("/insert_project",{
             method: 'POST',
             body: formData
         }).then(res => res.text())
@@ -61,17 +75,19 @@ class create_project extends React.Component{
         return(
             <React.Fragment>
                 <div onClick={this.props.hidePopUp} className='block' style={{zIndex: "1001"}}></div>
-                <div id='pop_create_project' className='pop' style={{position: "fixed", height: "auto", width: "400px", borderRadius: '5px', overflow: 'hidden',background: '#FFF', zIndex: "1001"}}>
-                    <div style={{width: '264px', padding: '35px', margin: 'auto'}}>
-                        <span className='bold' style={{fontSize: '20px'}}>New project</span>
-                        <div style={{marginTop: '10px'}}>
+                <div id='pop_create_project' className='pop' style={{position: "fixed", height: "auto", overflow: 'hidden',background: '#FFF', zIndex: "1001"}}>
+                    <div style={{width: '264px', margin: 'auto'}}>
+                        <div className='bold' style={{fontSize: '14px', padding: "10px"}}>
+                            Create project
+                        </div>
+                        <div style={{padding: "10px"}}>
                             <input
                                 id='pn_input' 
                                 type='text' 
                                 value={this.state.projectName} 
                                 onChange={this.handleChange} 
                                 placeholder='project name' 
-                                style={{padding: '7px', fontSize: '14px', boxSizing: 'border-box', width: '100%'}}>    
+                                style={{padding: '8px', fontSize: '12px', boxSizing: 'border-box', width: '100%', borderRadius: "0px"}}>    
                             </input>
                             <span 
                                 className='bold' 
@@ -79,11 +95,11 @@ class create_project extends React.Component{
                                     * Insert your project name
                             </span>
                         </div>
-                        <div style={{textAlign: 'right'}}>
-                            <button onClick={this.commitProject.bind(this)} className='btn-primary' style={{marginTop: '20px', fontSize: '12px', marginRight: '5px'}}>
+                        <div className="main-border-top" style={{textAlign: 'right', padding: "10px"}}>
+                            <button onClick={this.commitProject.bind(this)} className='btn-primary' style={{fontSize: '11px', marginRight: '5px'}}>
                                 Create
                             </button>
-                            <button onClick={this.props.hidePopUp} style={{marginTop: '20px', background: 'none',fontSize: '12px'}}>Cancel</button>
+                            <button className="btn-secondary" onClick={this.props.hidePopUp} style={{fontSize: '11px'}}>Cancel</button>
                         </div>
                     </div>
                 </div>

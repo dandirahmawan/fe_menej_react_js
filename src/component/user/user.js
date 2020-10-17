@@ -1,15 +1,13 @@
 import React from 'react'
-import DetailUser from './detail_user'
 import {connect} from 'react-redux'
 import {baseUrl} from '../../const/const'
 import {ApiFetch} from '../apiFetch'
 import {setTitleHader} from '../../redux/action'
-import RowUser from './row_user'
 import InviteUser from './invite_user'
-import {getCookieSessionId, getCookieUserId} from '../../function/function'
-import CardView from './card_view_user'
-import DetailUserPopup from './detail_user_popup'
-import PopupConfirmation from "../popup_confirmation";
+import {getCookieSessionId, getCookieUserId, convertDate_dd_MMM_yyy} from '../../function/function'
+import DetailUser from './detail_user'
+import {faCalendarAlt, faUserAlt, faPlus, faInfoCircle} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 class user extends React.Component{
 
@@ -23,6 +21,9 @@ class user extends React.Component{
             popup:""
         }
 
+        this.infoDetail = React.createRef()
+        this.sideBarListUser = React.createRef()
+        this.baseUserDetail = React.createRef()
         this.rowClick = this.rowClick.bind(this)
         this.hideDetail = this.hideDetail.bind(this)
         this.inviteUser = this.inviteUser.bind(this)
@@ -45,31 +46,30 @@ class user extends React.Component{
             })
         })
 
-        var w = document.getElementById("main-base-data").offsetWidth
-        var hub = document.getElementById('header-user-base')
-        var w = w - 30
-        hub.style.width = w+"px"
-        var hmb = hub.children
-        var h = hmb[0].offsetHeight
-        document.getElementById('tbl-list-user').style.marginTop = parseInt(h)+"px"
+        let windowHeight = window.innerHeight
+        let h = windowHeight - 60
+        this.sideBarListUser.current.style.height = h+"px"
+
+        let mainBase = document.getElementById("main-base-data")
+        let mainBaseWidth = mainBase.offsetWidth
+        let detailBaseWidth = mainBaseWidth - 245
+        
+        this.baseUserDetail.current.style.width = detailBaseWidth+"px"
+        this.baseUserDetail.current.style.height = h+"px"
+        this.baseUserDetail.current.style.background = "rgb(230 230 230)"
+        this.baseUserDetail.current.style.marginRight = "-10px"
     }
 
     rowClick(userId){
-        var tbl = document.getElementById("tbl-list-user")
-        // tbl.style.width = "65%"
         this.state.data.map(dt => {
             if(dt.userId == userId){
                 this.setState({
-                    // detailUser: <DetailUser 
-                    //                 userName={userName}
-                    //                 emailUser={emailUser}
-                    //                 hideDetail={this.hideDetail}
-                    //                 userId={userId}
-                    //             />
-                    detailUser: <DetailUserPopup
+                    detailUser: <DetailUser
                                     userName={dt.userName}
                                     emailUser={dt.emailUser}
                                     relateDate={dt.relateDate}
+                                    isInvited={dt.isInvited}
+                                    isRelated={dt.isRelated}
                                     picProfileDetail={dt.picProfileDetail}
                                     hideDetail={this.hideDetail}
                                     userId={dt.userId}
@@ -82,8 +82,6 @@ class user extends React.Component{
     }
 
     hideDetail(){
-        var tbl = document.getElementById("tbl-list-user")
-        tbl.style.width = "80%"
         this.setState({
             detailUser: ""
         })
@@ -118,73 +116,103 @@ class user extends React.Component{
     render(){
 
         const dataView = this.state.data.map(dt => {
+            let picProfile = baseUrl+"/pic_profile/"+dt.picProfile
             if(dt.isDelete != "Y")
             {
-                return <RowUser
-                        userName={dt.userName}
-                        emailUser={dt.emailUser}
-                        rowClick={this.rowClick}
-                        userId={dt.userId}
-                        picProfile={dt.picProfile}
-                        delete={this.deleteUser}
-                        countModule={dt.countModule}
-                        countBugs = {dt.countBugs}
-                        countDocFile = {dt.countDocFile}
-                    />
+                return <div onClick={() => this.rowClick(dt.userId)} className="main-border-bottom  tr-selectable" style={{padding: "5px", overflow: "hidden", marginRight: "5px", cursor: "pointer"}}>
+                            <div style={{float: "left", width: "40px", height: "40px", background: "#CCC", borderRadius: "3px", overflow: "hidden", textAlign: "center"}}>
+                                {
+                                    (dt.picProfile != "" && dt.picProfile != null)
+                                    ?
+                                        <div style={{background: "url("+picProfile+") no-repeat center", width: "40px", height: "40px", backgroundSize: "cover"}}/>
+                                    :
+                                        <FontAwesomeIcon className="second-font-color" style={{fontSize: "30px", marginTop: "5px"}} icon={faUserAlt}/>
+                                }
+                                
+                            </div>
+                            <div style={{float: "right", width: "195px", minHeight: "40px"}}>
+                                <span className="bold" style={{fontSize: "14px"}}>
+                                    {dt.userName}
+                                </span>
+                                <div className="second-font-color" style={{fontSize: "11px"}}>
+                                    {dt.emailUser}
+                                </div>
+                                <div className="bold" style={{fontSize: "11px", color: "rgb(144 144 144)", marginTop: "5px"}}>
+                                    {
+                                        (dt.relateDate != null)
+                                        ?
+                                            <React.Fragment>
+                                                <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(dt.relateDate)}
+                                            </React.Fragment>
+                                        : 
+                                            <span className="main-font-color">
+                                                <FontAwesomeIcon icon={faInfoCircle}/> Related by project
+                                            </span> 
+                                    }
+                                </div>
+                            </div>
+                        </div>
             }
         })
-
-        // const dataCardView = this.state.data.map(dt => <CardView
-        //                         // userName={dt.userName}
-        //                         // emailUser={dt.emailUser}
-        //                         // rowClick={this.rowClick}
-        //                         // userId={dt.userId}
-        //                     />)
-        //
-        // const styleUserItem = {
-        //     width: "140px",
-        //     height: '160px',
-        //     marginTop:"10px",
-        //     background: "#FFF",
-        //     borderRadius: "5px",
-        //     float: "left",
-        //     marginRight: "10px",
-        //     padding: "10px",
-        // }
 
         return(
             <div id='main-base-data'>
                 {this.state.popup}
-                <div id="header-user-base" style={{width: "100%", background: "#FFF", position: "fixed", top: "61px"}}>
-                    <div className="main-border-bottom" style={{paddingTop: "20px", fontSize: "14px", paddingBottom: "15px", overflow: "hidden"}}>
-                        <div style={{width: "80%", float: "left"}}>
-                            <i class="fa fa-users" aria-hidden="true"></i> <span className="bold">List User</span>
-                            <input placeholder="search user" type="text" style={{float: "right", padding: "5px", marginTop: "-5px", marginRight: "10px"}}></input>
+
+                <div ref={this.sideBarListUser} 
+                    className="main-border-right scrollbar-white-bck" 
+                    style={{width: "280px", marginLeft: "-20px", background: "#FFF", position: "fixed", overflowY: "scroll"}}>
+                    <div className="main-border-bottom" 
+                        style={{padding: "10px", 
+                                paddingLeft: "15px", 
+                                paddingRight: "5px",
+                                position: "fixed", 
+                                width: "250px",
+                                background: "#FFF",
+                                overflow: "hidden"}}>
+                        <div className="bold second-font-color" style={{fontSize: "12px", float: "left"}}>
+                            <FontAwesomeIcon icon={faUserAlt}/>&nbsp;List user
                         </div>
-                        <button onClick={this.inviteUser} className="bold main-font-color" style={{marginLeft: "50px", background: "none", float: "left"}}>
-                            <i class="fa fa-plus"></i> Invite user
+                        <button onClick={this.inviteUser} className="second-font-color main-border-left" 
+                            style={{float: "right", background: "none", marginTop: "-2px"}}>
+                            <FontAwesomeIcon style={{fontSize: "13px"}} icon={faPlus}/> <span style={{fontSize: "12px"}}>Invite</span>
                         </button>
                     </div>
+                    <div id="base-dt-lst-usr" style={{paddingLeft: "10px", marginTop: "40px"}}>
+                        {
+                            (dataView.length > 0)
+                            ?
+                                dataView
+                            :
+                                <div className="second-font-color" style={{textAlign: "center", fontSize: "12px", padding: "20px"}}>
+                                    <FontAwesomeIcon icon={faUserAlt} style={{fontSize: "20px"}}/><br/>
+                                    <span className="bold">No data to display</span>
+                                    <div style={{fontSize: "11px"}}>You can invite someone to colaborate with you in menej</div>
+                                    <button className="btn-primary" style={{fontSize: "10px", width: "50px", marginTop: "10px"}}>+ Invite</button>
+                                </div>
+                        }
+                    </div>
+                    
                 </div>
 
-                {this.state.detailUser}
+                <div ref={this.baseUserDetail} style={{float: "right", overflowY: "scroll"}}>
+                    {
+                        (this.state.detailUser == "")
+                        ?
+                            <div ref={this.infoDetail}>
+                                <div style={{width: "300px", margin: "auto", textAlign: "center", marginTop: "100px"}} 
+                                    className="second-font-color">
+                                    <FontAwesomeIcon style={{fontSize: "100px", color: "#CCC"}} icon={faUserAlt}/><br/>
+                                    <span style={{fontSize: "12px", }}>
+                                        Select user on list user to see detail user<br/>by 'click' the data
+                                    </span>
+                                </div>
+                            </div>
+                        : ""
+                    }
 
-                <div id="tbl-list-user" style={{width: "80%"}}>
-                    <table style={{width: "100%"}}>
-                        <thead className="second-background-grs main-border-bottom">
-                            <tr>
-                                <td className="bold" colSpan="2" style={{paddingTop: "10px"}}>Name</td>
-                                <td className="bold" style={{paddingTop: "10px"}}>Date</td>
-                                <td className="bold" style={{paddingTop: "10px"}}>Moduled</td>
-                                <td className="bold" style={{paddingTop: "10px"}}>Bugs</td>
-                                <td className="bold" style={{paddingTop: "10px"}}>Doc File</td>
-                                <td className="bold" style={{paddingTop: "10px"}}></td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataView}
-                        </tbody>
-                    </table>
+                    {this.state.detailUser}
+                
                 </div>
                 
             </div>

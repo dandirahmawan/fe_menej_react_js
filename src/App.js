@@ -1,188 +1,173 @@
 import React from 'react'
-import ReactDom from 'react-dom'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Login from './component/login'
 import Navbar from './component/navbar'
 import Sidebar from './component/sidebar'
-import Dashboard from './component/dashboard/dashboard'
-import User from './component/user/user'
 import Project from './component/project/project'
 import ListModule from './component/module/list_module'
 import StartPage from './component/start_page'
 import Register from './component/register/register'
 import Invitation from './component/invitation/invitation'
 import Logout from './component/logout'
-import Profile from './component/profile/profile'
 import ForgotPassword from './component/forgot_password'
 import AccountRecover from './component/account_recover'
 import PageNotFound from './component/404'
+import Email from './component/email'
+import ConfirmationEmail from './component/confirmation_email/confirmation_email'
 import {startData} from './redux/action'
 import {connect} from 'react-redux'
 import './css/style.css'
 import './App.css'
-import { baseUrl , pathUrlConst } from './const/const';
-import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function';
-import {isMobile, MobileView, isBrowser, BrowserView} from 'react-device-detect'
-import {SpinnerButton} from "./component/spinner";
+import { baseUrl } from './const/const'
+import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function'
 
 class App extends React.Component{
   
-  constructor(){
-    super()
-    this.state = {
-        userNameLogin: "",
-        emailLogin: "",
-        isLoad: true,
-        pathIndex: true,
-        invalidPath: false
+    mCookie = document.cookie
+
+    constructor(){
+        super()
+        this.state = {
+            userNameLogin: "",
+            emailLogin: "",
+            isLoad: true,
+            pathIndex: true,
+            invalidPath: false
+        }
     }
-  }
 
-  componentDidMount(){
-      let form = new FormData();
-      var userId =  getCookieUserId()
-      var sessionId = getCookieSessionId()
+    componentDidMount(){
+        let form = new FormData();
+        var userId =  getCookieUserId()
+        var sessionId = getCookieSessionId()
 
-      let path = window.location.pathname
-      if(pathValidation(path) == "invalid"){
-          this.setState({
-              invalidPath: true
-          })
-      }
-
-    //   let scope = this
-    //   document.addEventListener("click", function (e) {
-    //       if(scope.state.invalidPath){
-    //           let elm = document.getElementById("page-not-found-base")
-    //           if(elm != null) elm.remove()
-    //       }
-    //   })
-
-      form.append("userId", userId)
-      form.append("sessionId", sessionId);
-
-      fetch(baseUrl+"/start_data", {
-            method : "POST",
-            body : form
-      }).then(rst => rst.text())
-      .then(result => {
-        console.log(result)
-        if(result != ""){
-            let jsonData = JSON.parse(result)
-            if(jsonData.name != null && jsonData.email != null){
-                this.props.dispatchStartData(jsonData.name, jsonData.email, jsonData.picProfile)
-            }
+        let path = window.location.pathname
+        if(pathValidation(path) == "invalid"){
             this.setState({
-                userNameLogin: jsonData.name,
-                emailLogin: jsonData.email,
-                isLoad: false
+                invalidPath: true
             })
         }
-      })
-  }
 
-  render(){
-    var a = document.cookie
-    var path = window.location.pathname
+        if(this.mCookie !== ""){
+            form.append("userId", userId)
+            form.append("sessionId", sessionId)
 
-    if(path == "/account_recovery"){
-        return(
-            <BrowserRouter>
-                <Route path="/account_recovery"  exact component={AccountRecover} />
-            </BrowserRouter>
-        )
+            fetch(baseUrl+"/start_data", {
+                    method : "POST",
+                    body : form
+            }).then(rst => rst.text())
+            .then(result => {
+                    if(result != ""){
+                        let jsonData = JSON.parse(result)
+                        this.props.dispatchStartData(jsonData)
+                        this.setState({
+                            userNameLogin: jsonData.name,
+                            emailLogin: jsonData.email,
+                            isLoad: false
+                        })
+                    }
+            })
+        }
     }
-    else{
-        if(a === ""){
-            return (
-                <div>
-                    <BrowserRouter>
-                        <Redirect to="/login"/>
-                        <Route path="/login"  exact component={Login} />
-                        <Route path="/account_recovery"  exact component={AccountRecover} />
-                        <Route path="/forgot_password"  exact component={ForgotPassword} />
-                        <Route path="/register"  exact component={Register} />
-                    </BrowserRouter>
-                </div>
+
+    render(){
+        var a = document.cookie
+        var path = window.location.pathname
+
+        if(path == "/account_recovery" || path == "/email"){
+            return(
+                <BrowserRouter>
+                    <Route path="/account_recovery"  exact component={AccountRecover} />
+                    <Route path="/email"  exact component={Email} />
+                </BrowserRouter>
             )
-        }else{
-            if(
-                (this.state.userNameLogin == null &&
-                    this.state.emailLogin == null &&
-                    this.state.isLoad == false
-                ) || this.state.userNameLogin == "" && this.state.emailLogin == "" && this.state.isLoad == false){
-                return(
-                    <BrowserRouter>
-                        <Redirect to="/logout" component={Logout}></Redirect>
-                    </BrowserRouter>
-                )
-            }
-            if(
-                (this.props.userEmailLogin == "" ||
-                    this.props.userNameLogin == "" ||
-                    this.props.userEmailLogin === undefined ||
-                    this.props.userNameLogin === undefined
-                ) && path != '/logout'){
-                return(
-                    <StartPage/>
+        }
+        else{
+            if(a === ""){
+                return (
+                    <div>
+                        <BrowserRouter>
+                            <Redirect to="/login"/>
+                            <Route path="/login"  exact component={Login} />
+                            <Route path="/account_recovery"  exact component={AccountRecover} />
+                            <Route path="/forgot_password"  exact component={ForgotPassword} />
+                            <Route path="/register"  exact component={Register} />
+                        </BrowserRouter>
+                    </div>
                 )
             }else{
-                if(path == '/invitation'){
+                if(
+                    (this.state.userNameLogin == null &&
+                        this.state.emailLogin == null &&
+                        this.state.isLoad == false
+                    ) || this.state.userNameLogin == "" && this.state.emailLogin == "" && this.state.isLoad == false){
                     return(
-                        <Invitation/>
+                        <BrowserRouter>
+                            <Redirect to="/logout" component={Logout}></Redirect>
+                        </BrowserRouter>
                     )
                 }
-                else if(path == '/logout'){
+                if(Object.keys(this.props.userLoginData).length == 0 && path != "/logout"){
                     return(
-                        <BrowserRouter>
-                            {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
-                        </BrowserRouter>
-
+                        <StartPage/>
                     )
                 }else{
-                    const path = window.location.pathname
-                    const redirect = (path === '/login') ? <Redirect to="/project"></Redirect> : ""
-                    return (
-                        <BrowserRouter>
-                            {redirect}
-                            <Navbar/>
-                            <Sidebar/>
-                            <div id="main-base-data-wrapper">
-                                {
-                                    (pathValidation(path) == "invalid")
-                                    ?
-                                        <Route path='*' exact={true} component={PageNotFound} />
-                                    :
-                                        ""
-                                }
-                                <Route path="/dashboard" exact={true} component={Dashboard} />
-                                <Route path="/users/" exact={true} component={User} />
-                                <Route path="/project/" exact={true} component={Project} />
-                                <Route path="/project/:id" exact={true} component={ListModule} />
-                                <Route path="/logout" exact={true} component={Logout} />
-                                <Route path="/profile" exact={true} component={Profile} />
-                                <Route path='/not_found' exact={true} component={PageNotFound} />
-                            </div>
-                        </BrowserRouter>
-                    )
+                    if(path == '/invitation' || path == '/confirmation_email'){
+                        return(
+                            <BrowserRouter>
+                                <Route path="/invitation" exact={true} component={Invitation} />
+                                <Route path="/confirmation_email" exact={true} component={ConfirmationEmail} />
+                            </BrowserRouter>
+                        )
+                    }
+                    else if(path == '/logout'){
+                        return(
+                            <BrowserRouter>
+                                {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
+                            </BrowserRouter>
+                        )
+                    }else{
+                        const path = window.location.pathname
+                        const redirect = (path === '/login' || path === "/") ? <Redirect to="/project"></Redirect> : ""
+                        return (  
+                                (pathValidation(path) == "invalid")
+                                ?
+                                    <BrowserRouter>
+                                        <Navbar/>
+                                        <div id='main-base-data-wrapper' style={{marginLeft: "0px"}}>
+                                            <Route path='*' exact={true} component={PageNotFound} />
+                                        </div>
+                                    </BrowserRouter>
+                                :
+                                    <BrowserRouter>
+                                        {redirect}
+                                        <Navbar/>
+                                        <Sidebar/>
+                                        <div id="main-base-data-wrapper">
+                                            <Route path="/project/" exact={true} component={Project} />
+                                            <Route path="/project/:id" exact={true} component={ListModule} />
+                                            <Route path="/logout" exact={true} component={Logout} />
+                                            <Route path="/project/:id/*" exact={true} component={PageNotFound} />
+                                        </div>
+                                    </BrowserRouter> 
+                        )
+                    }
                 }
             }
         }
     }
-  }
-}
+    }
 
-const mapStateToProps = state => {
-  return{
-    userNameLogin : state.userNameLogin,
-    userEmailLogin : state.userEmailLogin
-  }
-}
+    const mapStateToProps = state => {
+        return{
+            userLoginData : state.userLoginData
+        }
+    }
 
-const mapDispatchToProps = dispatch => {
-  return{
-    dispatchStartData : (userName, userEmail, picProfile) => dispatch(startData(userName, userEmail, picProfile))
-  }
-}
+    const mapDispatchToProps = dispatch => {
+        return{
+            dispatchStartData : (jsonData) => dispatch(startData(jsonData))
+        }
+    }
 
 export default connect(mapStateToProps, mapDispatchToProps) (App);

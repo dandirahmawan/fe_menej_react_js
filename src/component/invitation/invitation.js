@@ -1,6 +1,6 @@
 import React from 'react'
-import Logo from '../../images/menej_fff.png'
-import { baseUrl } from '../../const/const'
+import Logo from '../../images/menej_285e8e.png'
+import InvitationReady from './invitation_ready'
 import { getCookieSessionId, getCookieUserId } from '../../function/function'
 import wrnAlt from '../../images/warn_alert_inf.png'
 import scsAlt from '../../images/success_alt_inf.png'
@@ -22,9 +22,10 @@ class invitation extends React.Component{
         var get = href.lastIndexOf("?")
         var get = href.substring(parseInt(get) + 1, href.length)
         var nameGet = get.split("=")[0]
+        document.body.style.background = '#e1e1e1'
 
-        var sessionId = getCookieSessionId();
-        var userId = getCookieUserId();
+        var sessionId = getCookieSessionId()
+        var userId = getCookieUserId()
 
         if(nameGet === "conf"){
             var parGet = get.split("=")[1]
@@ -41,11 +42,12 @@ class invitation extends React.Component{
                 method: "POST",
                 body: form,
                 headers: header
-            }).then(res => res.text())
+            }).then(res => res.json())
             .then(result => {
+                console.log(result)
                 this.setState({
                     resultInv: result,
-                    isload: false
+                    isload: false,
                 })
             }) 
         }
@@ -54,10 +56,10 @@ class invitation extends React.Component{
     render(){
         return(
             <React.Fragment>
-                <div id="header" style={{background: "#FFF", overflow: 'hidden', borderTop: "none"}}>
-                    <div id="main-header" className="main-color">
-                        <div style={{height:"60px", textAlign: "center"}}>
-                            <img style={{marginTop:"17px",marginLeft: "15px", width: "80px"}} src={Logo}></img>
+                <div id="header" style={{borderTop: "none"}}>
+                    <div id="main-header">
+                        <div style={{height:"60px", textAlign: "center", marginTop: "30px"}}>
+                            <img style={{marginTop:"17px",marginLeft: "15px", width: "100px"}} src={Logo}></img>
                         </div>
                     </div>
                 </div>
@@ -69,32 +71,19 @@ class invitation extends React.Component{
                                 <Spinner size="30px" textLoader="processing invitation..."/>
                             </div>
                         :
-                            (this.state.resultInv == 0)
+                            (this.state.resultInv.viewInvitation == null)
                             ?
                                 <div style={{width: "300px", margin: "auto", marginTop: "50px", textAlign: "center"}}>
                                     <div><img src={wrnAlt}/></div>
                                     <div>
                                         <span className="bold">Opps</span><br/>
                                         <span style={{fontSize: "12px"}}>
-                                            Invitation not available or expired, invitation will be expired in 24 hours
+                                            Invitation not available or expired, invitation will be expired in 3 hours
                                         </span>
                                     </div>
                                 </div>
                             : 
-                                <div style={{width: "300px", margin: "auto", marginTop: "50px", textAlign: "center"}}>
-                                    <div><img src={scsAlt}/></div>
-                                    <div>
-                                        <span className="bold">Accepted</span><br/>
-                                        <span style={{fontSize: "12px"}}>
-                                            Invitation has been accpeted, lets start with your new partners in menej
-                                        </span><br></br>
-                                        <a href="/dashboard">
-                                            <button className="btn-primary" style={{fontSize: "10px", marginTop: "10px"}}>
-                                                Go to Menej
-                                            </button>
-                                        </a>
-                                    </div>
-                                </div>
+                                <InvitationReady data={this.state.resultInv}/>
                     }
                 </div>
             </React.Fragment>

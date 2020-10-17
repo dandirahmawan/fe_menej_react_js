@@ -2,8 +2,18 @@ import React from 'react'
 import {convertDate} from  '../../function/function'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons'
+import {getIconDocFIle} from '../../function/function'
 
 class row_document_file extends React.Component{
+
+    constructor(){
+        super()
+        this.baseIcon = React.createRef()
+    }
+
+    componentDidMount(){
+        getIconDocFIle(this.props.fileName, this.baseIcon.current)
+    }
 
     byteToKb(size){
         var rtn = 0
@@ -23,34 +33,18 @@ class row_document_file extends React.Component{
         return url21
     }
 
-    getIconDocFIle(fileName){
-        var a = fileName.split(".")
-        var ext = a[a.length - 1]
-        var rtn = ""
-        if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
-            rtn = "image"
-        }else{
-            rtn = "doc file"
-        }
-        return rtn
-    }
-
     render(){
         return(
             (!this.props.isBorder)
             ?
                 <tr className="tb-doc-file tr-selectable" valign="top">
                     <td className="tb-doc-file" style={{width: "20px"}}>
-                        {
-                            (this.getIconDocFIle(this.props.fileName) == "image")
-                                ? <i className="fa fa-image"></i>
-                                : <i className="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i>
-                        }
-
+                        <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file" style={{paddingRight: "10px"}}>
                         <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
+                            <div style={{fontSize: "11px"}}>
                             {
                                 (this.props.descriptionFile != null && this.props.descriptionFile != "")
                                 ?
@@ -58,6 +52,7 @@ class row_document_file extends React.Component{
                                 : 
                                     "No description for this document file"
                             }
+                            </div>
                         </div>
                     </td>
                     <td className="tb-doc-file">
@@ -77,15 +72,12 @@ class row_document_file extends React.Component{
             :
                 <tr className="tb-doc-file tr-selectable main-border" valign="top">
                     <td className="tb-doc-file main-border" style={{width: "20px"}}>
-                        {
-                            (this.getIconDocFIle(this.props.fileName) == "image")
-                                ? <i className="fa fa-image"></i>
-                                : <i className="fa fa-file" style={{color: "rgb(212, 174, 43)"}}></i>
-                        }
+                        <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file main-border" style={{paddingRight: "10px"}}>
                         <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
+                            <div style={{fontSize: "11px"}}>
                             {
                                 (this.props.descriptionFile != null && this.props.descriptionFile != "")
                                 ?
@@ -93,6 +85,7 @@ class row_document_file extends React.Component{
                                 : 
                                     "No description for this document file"
                             }
+                            </div>
                         </div>
                     </td>
                     <td className="tb-doc-file main-border">

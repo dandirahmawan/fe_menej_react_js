@@ -193,9 +193,11 @@ class bugs_module extends React.Component{
 
     render(){
         const heightMain = (this.props.mainHeight - 40) - 30
+        let thereData = 0
         const data = this.props.dataBugs.map(dt => {
             if(dt.isDelete != "Y")
             {
+                thereData++
                 return <RowBugs 
                         bugsId={dt.bugsId}
                         bugsText={dt.note}
@@ -209,7 +211,6 @@ class bugs_module extends React.Component{
                         bugStatus={dt.bugStatus}/> 
             }
         })
-        const thereData = this.props.dataBugs.length
 
         return(
             <React.Fragment>
@@ -224,7 +225,7 @@ class bugs_module extends React.Component{
                             </tr>
                         </thead>
                         <tbody id="body-bugs-table">
-                            {(thereData < 0) ? <NoData/> : data}
+                            {(thereData < 1) ? <NoData/> : data}
                         </tbody>
                     </table>
                 </div>

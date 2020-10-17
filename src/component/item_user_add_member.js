@@ -1,5 +1,7 @@
 import React from 'react'
 import {baseUrl} from '../const/const'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 class item_user_add_member extends React.Component{
     render(){
@@ -23,8 +25,16 @@ class item_user_add_member extends React.Component{
                         }
                     </div>
                     <div style={{marginLeft: "35px", marginTop: "-30px"}}>
-                        <span className="bold" style={{fontSize: "12px"}}>{this.props.userName}</span>
+                        <span className="bold" style={{fontSize: "12px"}}>{this.props.userName}</span> 
                         <div className="reguler-font" style={{fontSize: "11px"}}>{this.props.userEmail}</div>
+                        {
+                            (this.props.isMember == "Y")
+                            ?   
+                                <span className="bold" style={{fontSize: "10px", color: "green"}}>
+                                    <FontAwesomeIcon icon={faCheckCircle}/>&nbsp;Already as member
+                                </span>
+                            : ""
+                        }
                     </div>
                 </div>
             </div></a>

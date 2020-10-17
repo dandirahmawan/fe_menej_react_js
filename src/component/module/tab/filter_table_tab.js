@@ -14,7 +14,8 @@ class filter_table_tab extends React.Component{
             filterSearch: "",
             selectAll: false,
             btnFilter: null,
-            inputRefs: []
+            inputRefs: [],
+            filterValLength: 0
         }
         this.selectAllButton = React.createRef()
         this.setWrapperRef = React.createRef()
@@ -111,7 +112,8 @@ class filter_table_tab extends React.Component{
 
         let val = e.target.value
         this.setState({
-            filterSearch : val
+            filterSearch : val,
+            filterValLength : 0
         })
     }
 
@@ -136,7 +138,9 @@ class filter_table_tab extends React.Component{
 
     render(){
         const filterVal = this.state.dataFilter.map(dt => {
-            if(dt.match(this.state.filterSearch)){
+            let srcData = this.state.filterSearch.replace(/\\/g, "\\\\");
+            if(dt.match(srcData)){
+                this.state.filterValLength++
                 if(this.state.filterSelected.indexOf(dt) == -1){
                     return <Row
                                 isChecked={false}
@@ -180,8 +184,14 @@ class filter_table_tab extends React.Component{
                             -- Select all --
                         </div>
                     </div>
-
-                    {filterVal}
+                    {
+                        (this.state.filterValLength > 0)
+                        ?
+                            filterVal
+                        :
+                            <div className="second-font-color bold" 
+                                style={{fontSize: '12px', padding: "10px", textAlign: "center", marginTop: "20px"}}>Data not found</div>
+                    }
                 </div>
                 <div className="main-border-top" style={{textAlign: "right", padding: "5px"}}>
                     <button onClick={this.submitFilter} className="btn-primary" style={{fontSize: "11px"}}>Ok</button>&nbsp;
