@@ -46,10 +46,10 @@ export function popUpAlert(message, type){
 
     var html = document.createElement("div")
     html.setAttribute("id", "alert")
-    html.setAttribute("class", "alert main-border")
+    html.setAttribute("class", "alert main-border shadow")
     html.style.textAlign = "center"
     html.style.padding = "15px"
-    html.style.borderRadius = "5px"
+    html.style.borderRadius = "3px"
     html.style.zIndex = "100000"
     
     if(type === 'info'){
@@ -91,6 +91,16 @@ export function backHistory(){
 
 export function getBaseUrl(){
     return "http://localhost:8088"
+}
+
+export function setInitialName(userName){
+    let initial = ""
+    let name = userName.split(" ")
+    
+    initial += name[0].substr(0, 1)
+    initial += (name[1] != null && name[1] != "") ? name[1].substr(0, 1) : ""
+
+    return initial
 }
 
 export function getLoaderImage(){

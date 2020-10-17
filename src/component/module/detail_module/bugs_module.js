@@ -1,13 +1,13 @@
 import React, { createRef } from 'react'
 import ReactDom from 'react-dom'
 import RowBugs from './row_bugs'
-import NoData  from './no_data_bugs'
-import {ApiFetch} from '../apiFetch'
-import PopupConfirmation from '../popup_confirmation'
-import {popUpAlert, getCookieUserId, getCookieSessionId} from '../../function/function'
-import {deleteDataBugs, closeDataBugs, uncloseDataBugs} from '../../redux/action'
+import NoData  from '../no_data_bugs'
+import {ApiFetch} from '../../apiFetch'
+import PopupConfirmation from '../../popup_confirmation'
+import {popUpAlert, getCookieUserId, getCookieSessionId} from '../../../function/function'
+import {deleteDataBugs, closeDataBugs, uncloseDataBugs} from '../../../redux/action'
 import {connect} from 'react-redux'
-import EditBugs from '../bugs/edit_bugs'
+import EditBugs from '../../bugs/edit_bugs'
 
 class bugs_module extends React.Component{
 
@@ -29,9 +29,7 @@ class bugs_module extends React.Component{
         this.deleteBugs = this.deleteBugs.bind(this)
         this.confirmYesDelete = this.confirmYesDelete.bind(this)
         this.hideConfirm = this.hideConfirm.bind(this)
-        // this.closeBugs = this.closeBugs.bind(this)
         this.confirmYesClose = this.confirmYesClose.bind(this)
-        // this.uncloseBugs = this.uncloseBugs.bind(this)
         this.confirmYesUnclose = this.confirmYesUnclose.bind(this)
         this.editBugs = this.editBugs.bind(this)
         this.checkingBugs = this.checkingBugs.bind(this)
@@ -46,15 +44,11 @@ class bugs_module extends React.Component{
                 if(dt.isChecked == 'Y'){
                     this.setState({
                         isPermition: true,
-                        picProject: this.props.picProject
+                        picProject: this.props.picProject,
                     })
                 }
             }
         })
-
-        setTimeout(() => {
-            this.readyOperate = true
-        }, 100)
     }
 
     chBugs(e){
@@ -107,28 +101,6 @@ class bugs_module extends React.Component{
         })
     }
 
-    // closeBugs(bugsId){
-    //     this.setState({
-    //         bugsId: bugsId,
-    //         popDelete: <PopupConfirmation
-    //                         titleConfirmation="Close Bugs"
-    //                         textPopup="Are you sure, you want close bugs ?" 
-    //                         yesAction={this.confirmYesClose} 
-    //                         hidePopUp={this.hideConfirm}/>
-    //     })
-    // }
-
-    // uncloseBugs(bugsId){
-    //     this.setState({
-    //         bugsId: bugsId,
-    //         popDelete: <PopupConfirmation
-    //                         titleConfirmation="Unclose Bugs"
-    //                         textPopup="Are you sure, you want unclose bugs ?" 
-    //                         yesAction={this.confirmYesUnclose} 
-    //                         hidePopUp={this.hideConfirm}/>
-    //     })
-    // }
-
     confirmYesDelete(){
         var form = new FormData()
         form.append("bugsId", this.state.bugsId)
@@ -156,41 +128,41 @@ class bugs_module extends React.Component{
     }
 
     confirmYesClose(){
-        var form = new FormData()
-        form.append("bugsId", this.state.bugsId)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
+        // var form = new FormData()
+        // form.append("bugsId", this.state.bugsId)
+        // form.append("userId", getCookieUserId())
+        // form.append("sessionId", getCookieSessionId())
 
-        ApiFetch("/close_bugs",{
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            this.setState({
-                popDelete: ""
-            })
-            this.props.closeDataBugs(this.state.bugsId)
-            this.props.closeBugs(this.state.bugsId)
-        })
+        // ApiFetch("/close_bugs",{
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     this.setState({
+        //         popDelete: ""
+        //     })
+        //     this.props.closeDataBugs(this.state.bugsId)
+        //     this.props.closeBugs(this.state.bugsId)
+        // })
     }
 
     confirmYesUnclose(){
-        var form = new FormData()
-        form.append("bugsId", this.state.bugsId)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
+        // var form = new FormData()
+        // form.append("bugsId", this.state.bugsId)
+        // form.append("userId", getCookieUserId())
+        // form.append("sessionId", getCookieSessionId())
 
-        ApiFetch("/unclose_bugs",{
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            this.setState({
-                popDelete: ""
-            })
-            this.props.uncloseDataBugs(this.state.bugsId)
-            this.props.uncloseBugs(this.state.bugsId)
-        })
+        // ApiFetch("/unclose_bugs",{
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     this.setState({
+        //         popDelete: ""
+        //     })
+        //     this.props.uncloseDataBugs(this.state.bugsId)
+        //     this.props.uncloseBugs(this.state.bugsId)
+        // })
     }
 
     hideConfirm(){
@@ -207,14 +179,10 @@ class bugs_module extends React.Component{
     }
 
     checkingBugs(bugsId){
-        if(this.readyOperate){
-            this.props.dataBugs.map(dt => {
-                if(dt.bugsId == bugsId){
-                    let sts = (dt.bugStatus == "C") ? "P" : "C"
-                    dt.bugStatus = sts
-                }
-            })
+        if(getCookieUserId() == this.props.picProject || this.state.isPermition){
             this.props.checkingBugs(bugsId)
+        }else{
+            popUpAlert("You did not have permition to change data checklist", "info")
         }
     }
 

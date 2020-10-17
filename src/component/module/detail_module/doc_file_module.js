@@ -1,11 +1,11 @@
 import React from 'react'
 import RowDocFile from './row_doc_file'
-import PopupConfirmation from '../popup_confirmation'
-import {popUpAlert, getCookieUserId} from '../../function/function'
-import PreviewImage from '../preview_image'
-import PreviewVideo from '../preview_video'
+import PopupConfirmation from '../../popup_confirmation'
+import {popUpAlert, getCookieUserId} from '../../../function/function'
+import PreviewImage from '../../preview_image'
+import PreviewVideo from '../../preview_video'
 import DocFileInput from './doc_file_input'
-import { baseUrl } from '../../const/const'
+import { baseUrl } from '../../../const/const'
 import {EXIF} from "exif-js";
 
 class doc_file_module extends React.Component{
@@ -14,6 +14,7 @@ class doc_file_module extends React.Component{
         super()
         this.state = {
             fileName:"",
+            filaNameProgress:"",
             popConfirmDelete:"",
             fileNameDelete:"",
             rowSelected:"",
@@ -68,19 +69,20 @@ class doc_file_module extends React.Component{
         let ext = fileName.lastIndexOf(".")
         let extName = fileName.substr(parseInt(ext) + 1, fileName.length - 1)
         
-        if(fileSize > 1100000 && 
-            (extName.toLowerCase() != "jpg" && extName.toLowerCase() != "jpeg") && extName.toLowerCase() != "png"){
-            popUpAlert("Maximum file size upload is 1 mb", "warning")
-        }else{
+        // if(fileSize > 1100000 && 
+        //     (extName.toLowerCase() != "jpg" && extName.toLowerCase() != "jpeg") && extName.toLowerCase() != "png"){
+        //     popUpAlert("Maximum file size upload is 1 mb", "warning")
+        // }else{
             var name = file.name
             this.props.documentFileUpload(e)
             this.setState({
-                fileName: name
+                fileName: name,
+                filaNameProgress: name
             })
             if(fileType == ".jpg" || fileType == ".jpef" || fileType == ".png"){
                 this.changeImage(e, fileSize)
             }
-        }
+        // }
     }
 
     rowClickDocFile(e, fileName, url){
@@ -311,8 +313,11 @@ class doc_file_module extends React.Component{
                                 attachment={this.attachment}
                                 commit={this.commit}
                                 fileName={this.state.fileName}
+                                fileNameProgress={this.state.filaNameProgress}
                                 inputElement={this.inputElement}
                                 progressBar={this.setRef}
+                                baseProgressBar={this.props.baseProgressBar}
+                                uploadedFileIndicator={this.props.uploadedFileIndicator}
                                 fileUploaHandler={this.fileUploaHandler}
                             />
                         :

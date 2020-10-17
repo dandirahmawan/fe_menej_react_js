@@ -15,7 +15,7 @@ import {
     startDataAction,
     setDataLabelAction,
     setDataLabelModuleAction,
-    setDataLabelsModuleCurrrentSetAction, setAssignedModulesAction, updataDataChecklistAction
+    setDataLabelsModuleCurrrentSetAction, setAssignedModulesAction, updataDataChecklistAction, setDataStatuAction, setVIewModuleAction
 } from './type_action'
 
 export function setDataProject(data){
@@ -265,6 +265,20 @@ export function setAssignedModules(data){
     return{
         type: setAssignedModulesAction,
         data: data
+    }
+}
+
+export function setDataStatus(data){
+    return{
+        type: setDataStatuAction,
+        data: data
+    }
+}
+
+export function setViewModule(type){
+    return{
+        type: setVIewModuleAction,
+        data: type
     }
 }
 

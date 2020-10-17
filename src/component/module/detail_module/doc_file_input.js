@@ -1,4 +1,5 @@
-import { Create } from '@material-ui/icons'
+import { faCheckCircle, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { createRef, Fragment } from 'react'
 
 class doc_file_input extends React.Component{
@@ -8,6 +9,31 @@ class doc_file_input extends React.Component{
     render(){
         return(
             <Fragment>
+                {/*base upload progress*/}
+                <div ref={this.props.baseProgressBar} className="main-border second-background-grs" 
+                    style={{display: "none", 
+                            alignItems: "center", 
+                            padding: "5px", 
+                            paddingLeft: "10px", 
+                            borderRadius: "5px",
+                            position: "fixed",
+                            bottom: "10px",
+                            right: "20px",
+                            width: "250px", 
+                            marginTop: "10px"}}>
+
+                    <FontAwesomeIcon icon={faUpload} className="second-font-color"/>
+                    <div className="main-font-size main-border-left" style={{marginLeft: "10px", paddingLeft: "10px", wordBreak: "break-word"}}>
+                        {this.props.fileNameProgress}
+                        <div style={{background: "#CCC", border: "1px solid #b0b0b0", height: "8px", width: "150px", marginTop: "5px", borderRadius: "4px", overflow: "hidden"}}>
+                            <div ref={(e) => this.props.progressBar(e)} className="main-color" style={{width: "0%", height: "8px"}}></div>
+                        </div>
+                        <div className="bold" ref={this.props.uploadedFileIndicator} style={{fontSize: "12px", color: "green", marginTop: "5px", display: "none"}}>
+                            <FontAwesomeIcon icon={faCheckCircle}/> File uploaded
+                        </div>
+                    </div>
+                </div>
+
                 <div id="footer-base-bugs" className="main-border input-info-mdl" style={{height: "auto", borderRadius: "3px", marginTop: "10px"}}>
                     <div style={{overflow: "hidden"}}>
                         <textarea
@@ -39,10 +65,6 @@ class doc_file_input extends React.Component{
                                 style={{fontSize: "12px", marginLeft: "5px", marginTop: "10px", background: "none", color: "blue"}}>
                             Send
                         </button>
-
-                        <div style={{background: "#CCC", height: "4px", width: "105px", float: "right", marginRight: "27px", marginTop: "5px", borderRadius: "10px", display: "none"}}>
-                            <div ref={(e) => this.props.progressBar(e)} className="main-color" style={{width: "0%", height: "4px", borderRadius: "10px"}}></div>
-                        </div>
 
                     </div>
                     <div id='base-doc-file-name-upload' style={{fontSize: "12px", overflow: "hidden"}}>

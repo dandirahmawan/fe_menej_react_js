@@ -12,7 +12,7 @@ import Upload from './upload_document_file'
 import PreviewImage from '../preview_image'
 import PreviewVideo from '../preview_video'
 import {Spinner} from '../spinner'
-import DetailModule from '../module/detail'
+import DetailModule from '../module/detail_module/detail'
 import {ApiFetch} from '../apiFetch'
 
 class document_file extends React.Component{

@@ -1,4 +1,3 @@
-import { updateDataChecklist } from './action'
 import {
     deleteDataNoteAction,
     selectRowModuleAction,
@@ -16,7 +15,9 @@ import {
     setDataLabelAction,
     setDataLabelModuleAction,
     setAssignedModulesAction,
-    updataDataChecklistAction
+    updataDataChecklistAction, 
+    setDataStatuAction, 
+    setVIewModuleAction
 } from './type_action'
 
 const initState = {
@@ -30,7 +31,9 @@ const initState = {
     testing:"",
     dataLabels: [],
     dataLabelsModule: [],
-    assignedModules: []
+    assignedModules: [],
+    dataStatus: [],
+    viewModule: "list"
 }
 
 function rootReducer(state = initState, action){
@@ -87,11 +90,11 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === 'DELETE_PROJECT'){
-        const newData = state.dataProject.map(dt => {
-            if(dt.projectId == action.param){
-                dt.isDelete = "Y"
+        let newData = []
+        state.dataProject.map(dt => {
+            if(dt.projectId != action.param){
+                newData.push(dt)
             }
-            return dt
         })
 
         return{
@@ -114,6 +117,13 @@ function rootReducer(state = initState, action){
         }
     }
 
+    if(action.type === setVIewModuleAction){
+        return{
+            ...state,
+            viewModule: action.data
+        }
+    }
+
     if(action.type === 'DELETE_DATA_MODULE'){
         state.dataModule.map(dt => {
             if(dt.modulId == action.modulId){
@@ -121,17 +131,21 @@ function rootReducer(state = initState, action){
                 state.dataModule.splice(idx, 1)
             }
         })
+
+        let newDataModule = state.dataModule
         
-        const newDataBugs = state.dataBugs.map(dt => {
-            if(dt.modulId == action.modulId){
-                dt.isDelete = "Y"
-            }
-            return dt
-        })
+        /*untuk saat ini tidak diperluka karena halama all bugs di sembunyikam*/
+        // const newDataBugs = state.dataBugs.map(dt => {
+        //     if(dt.modulId == action.modulId){
+        //         dt.isDelete = "Y"
+        //     }
+        //     return dt
+        // })
 
         return{
             ...state,
-            dataBugs: newDataBugs
+            // dataBugs: newDataBugs,
+            dataModule: newDataModule
         }
     }
 
@@ -143,20 +157,6 @@ function rootReducer(state = initState, action){
                 }else{
                     dt.countBugs = dt.countBugs - 1
                 }       
-            }
-            return dt
-        })
-
-        return{
-            ...state,
-            dataModule: newData
-        }
-    }
-
-    if(action.type === updateDataModuleBugsCloseAction){
-        const newData = state.dataModule.map(dt => {
-            if(dt.modulId == action.moduleId){
-                dt.countBugsClose = parseInt(dt.countBugsClose) + 1      
             }
             return dt
         })
@@ -193,6 +193,20 @@ function rootReducer(state = initState, action){
         }
     }
 
+     // if(action.type === updateDataModuleBugsCloseAction){
+    //     const newData = state.dataModule.map(dt => {
+    //         if(dt.modulId == action.moduleId){
+    //             dt.countBugsClose = parseInt(dt.countBugsClose) + 1      
+    //         }
+    //         return dt
+    //     })
+
+    //     return{
+    //         ...state,
+    //         dataModule: newData
+    //     }
+    // }
+    
     // if(action.type === updateDataModuleBugsUncloseAction){
     //     const newData = state.dataModule.map(dt => {
     //         if(dt.modulId == action.moduleId){
@@ -512,14 +526,13 @@ function rootReducer(state = initState, action){
         }
     }
 
-    // if(action.type === setDataLabelsModuleCurrrentSetAction){
-    //     var jsonArray = action.data
-    //     // console.log(jsonArray)
-    //     return{
-    //         ...state,
-    //         dataLabelsModuleCurrrentSet: jsonArray
-    //     }
-    // }
+    if(action.type === setDataStatuAction){
+        var jsonArray = action.data
+        return{
+            ...state,
+            dataStatus: jsonArray
+        }
+    }
 
     return state
 }

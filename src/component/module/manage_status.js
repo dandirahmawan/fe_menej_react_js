@@ -14,7 +14,6 @@ class manage_status extends Component{
     constructor(){
         super()
         this.state = {
-            dataStatus: [],
             colorStatus: "#000",
             colorPickerBase: null,
             popup: null,
@@ -52,8 +51,8 @@ class manage_status extends Component{
                 method: "POST",
                 body: form
             }).then(res => res.json()).then(result => {
-                this.props.appendDataStatus(result[0])
-                // alert(result)
+                let newData = this.props.dataStatus.concat(result[0])
+                this.props.updateDataStatus(newData)
             })
         }
     }
@@ -104,16 +103,17 @@ class manage_status extends Component{
             body: form
         }).then(res => res.text()).then(result => {
             if(result == 'true'){
-                this.state.dataStatus.map(dt => {
-                    if(dt.id == this.state.statusId){
-                        this.state.dataStatus.splice(idx, 1)
+                let newDataStatus = []
+                this.props.dataStatus.map(dt => {
+                    if(dt.id != this.state.statusId){
+                        newDataStatus.push(dt)
                     }
                     idx++
                 })
         
-                this.props.updateDataStatus(this.state.dataStatus)
+                this.props.updateDataStatus(newDataStatus)
                 this.setState({
-                    dataStatus: this.state.dataStatus,
+                    dataStatus: newDataStatus,
                     popup: null
                 })
             }
@@ -142,7 +142,7 @@ class manage_status extends Component{
                 return dt    
             })
             
-            //set new status for info_projcet_component
+            //set new status for info_project_component
             this.props.updateDataStatus(newData)
 
             //set new state
@@ -156,7 +156,7 @@ class manage_status extends Component{
 
     render(){
 
-        const dataView = this.state.dataStatus.map(dt => {
+        const dataView = this.props.dataStatus.map(dt => {
             return <div className="tr-selectable" style={{padding: "8px", marginLeft: "-10px", marginRight: "-10px", paddingLeft: "10px"}}>
                         <div className="bold" style={{fontSize: "12px", borderLeft: "14px solid "+dt.color, paddingLeft: "5px", color: "#717171"}}>
                             <a onClick={() => this.delete(dt.status, dt.id)} style={{float: "right", fontSize: "10px"}}>
@@ -204,7 +204,8 @@ class manage_status extends Component{
 
 const mapStateToProps = state => {
     return{
-        dataModuleRedux : state.dataModule
+        dataModuleRedux : state.dataModule,
+        dataStatus: state.dataStatus
     }
 }
 

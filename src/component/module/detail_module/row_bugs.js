@@ -1,21 +1,25 @@
 import { faCalendarAlt, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { Fragment } from 'react'
-import { getCookieUserId, convertDate_dd_mmm_yyy } from '../../function/function'
+import { getCookieUserId, convertDate_dd_mmm_yyy } from '../../../function/function'
 
 class row_bugs extends React.Component{
 
     checkBox = React.createRef()
-    
-    componentDidMount(){
-        if(this.props.bugStatus == "C") this.checkBox.current.click()
-    }
 
     render(){
         return(
             <tr className='tr-selectable' /*onContextMenu={(e) => this.props.ctxMenu(e, this.props.bugsText)}*/>
                 <td valign="top" style={{width: "20px"}}>
-                    <input ref={this.checkBox} onClick={() => this.props.checkingBugs(this.props.bugsId)} type="checkbox"/>
+                    <a ref={this.checkBox} onClick={() => this.props.checkingBugs(this.props.bugsId)}>
+                        {
+                            (this.props.bugStatus == "C")
+                            ?
+                                <i class="fa fa-check-square ck-box-fa-checked"></i>
+                            :
+                                <i class="far fa-square ck-box-fa"></i>
+                        }
+                    </a>
                 </td>
                 <td valign="top" style={{paddingRight: "10px", paddingTop: "8px"}}>
                     {this.props.bugsText}
@@ -37,9 +41,6 @@ class row_bugs extends React.Component{
                         }
                     </div>
                 </td>
-                {/* <td valign="top" className='second-font-color'>
-                    {convertDate(this.props.createDate)}
-                </td> */}
             </tr>
         )
     }

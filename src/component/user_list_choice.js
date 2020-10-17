@@ -12,11 +12,14 @@ class userListChoice extends React.Component{
     constructor(){
         super()
         this.state = {
-            dataUser: []
+            dataUser: [],
+            userIdSelected:[]
         }
 
         this.baseLoader = React.createRef()
         this.baseDataSelect = React.createRef()
+        this.select = this.select.bind(this)
+        this.submit = this.submit.bind(this)
     }
 
     componentDidMount(){
@@ -39,10 +42,31 @@ class userListChoice extends React.Component{
         })
     }
 
+    select(userId){
+        let idx = this.state.userIdSelected.indexOf(userId)
+        if(idx == -1){
+            this.state.userIdSelected.push(userId)
+        }else{
+            this.state.userIdSelected.splice(idx, 1)
+        }
+    }
+
+    submit(){
+        let dataSubmit = []
+        this.state.dataUser.map(dt => {
+            if(this.state.userIdSelected.indexOf(dt.userId) != -1){
+                dataSubmit.push(dt)
+            }
+        })
+
+        this.props.submit(dataSubmit)
+    }
+
     render(){
 
         const dataSelect = this.state.dataUser.map(dt => 
-            <ItemUserChoice 
+            <ItemUserChoice
+                select={this.select} 
                 userName={dt.userName}
                 userId={dt.userId}
                 userEmail={dt.mailUser}
@@ -51,7 +75,7 @@ class userListChoice extends React.Component{
         )
 
         return(
-            <div className="main-border" style={{width: "280px", height: "250px", background: "#FFF", position: "fixed", overflowY: "scroll"}}>
+            <div className="main-border" style={{width: "280px", background: "#FFF", position: "fixed", overflowY: "auto", zIndex: "1"}}>
                 <div className='main-border-bottom bold' style={{padding: "10px", position: "fixed", width: "260px", background: "#FFF"}}>
                     Choose user
                     <a onClick={this.props.xSelected}><i style={{float: "right", marginRight: "3px", fontSize: "14px", color: "#CCC"}} class="fa fa-times"></i></a>
@@ -65,11 +89,16 @@ class userListChoice extends React.Component{
                         ?
                             dataSelect
                         :
-                            <div className="second-font-color" style={{textAlign: "center", marginTop: "60px"}}>
+                            <div className="second-font-color" style={{textAlign: "center", padding: "20px"}}>
                                 <div style={{fontSize: "20px"}}><FontAwesomeIcon icon={faUsers}/></div>
                                 <div style={{fontSize: "11px"}}>no data to display</div>
                             </div>
                     }
+                </div>
+                <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
+                    <button onClick={this.submit} className="btn-primary" style={{fontSize: "11px"}}>Submit</button>
+                    &nbsp;&nbsp;
+                    <button className="btn-secondary" style={{fontSize: "11px"}}>Cancel</button>
                 </div>
             </div>
         )

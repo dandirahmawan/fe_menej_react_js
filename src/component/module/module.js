@@ -1,18 +1,16 @@
-import React from 'react'
-import RowModule from './row_module'
+import React, { Fragment } from 'react'
 import NewModule from './new_module'
 import PopupConfirmation from '../popup_confirmation'
-import ProjectMember from '../project/project_member_team'
-import Detail from './detail'
+import Detail from './detail_module/detail'
 import ManageMember from './manage_member'
 import Permition from './permition'
 import {ApiFetch} from '../apiFetch'
-import { getCookieUserId, getCookieSessionId } from '../../function/function'
+import { getCookieUserId } from '../../function/function'
 import {connect} from 'react-redux'
-import {setDataNote, selectRowModule, deleteMember} from '../../redux/action'
+import {setDataNote, selectRowModule, deleteMember, setDataStatus, setViewModule} from '../../redux/action'
 import Bugs from '../bugs/bugs'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBorderAll, faBorderNone, faHandshake, faPlusCircle, faCaretDown, faCog, faVrCardboard, faSimCard} from '@fortawesome/free-solid-svg-icons'
+import {faBorderAll, faBorderNone, faPlusCircle, faCaretDown, faCog,} from '@fortawesome/free-solid-svg-icons'
 import DocumentFile from '../document_file/document_file'
 import InfoProject from './info_project'
 import HandoverModule from './handover_module'
@@ -20,28 +18,22 @@ import NewTab from './tab/new_tab'
 import Tab from './tab/tab'
 import DropDownMenuTab from './dropdown_tab_menu'
 import MenuTab from './menu_tab'
+import ListView from './list_view/list_view'
+import CardView from './card_view/card_view'
+import ContextMenuModule from './context_menu_module'
 
 class modulePage extends React.Component{
     
     constructor(){
         super()
         this.state = {
-            dataDetail:"",
-            newModulName:"",
-            newDueDate:"",
-            newUser:"",
-            newDescitiopn:"",
             infoPop:"",
             addMember:"",
             dataTeam:[],
             dataPermition:[],
             dataTab:[],
-            dataStatus:[],
-            userIdAccess:"",
             createdByProject:"",
-            userSetTeamMember:"",
             permition:"",
-            appendsNote:[],
             dataNote:[],
             bugsBase:"",
             isBorder:"",
@@ -54,8 +46,8 @@ class modulePage extends React.Component{
             dropDownMenuTabItem: [],
             isUpadateDataTab: false,
             isRecreteMenuTab: false,
-            ctrlClick: false,
-            arrSelected: []
+            arrSelected: [],
+            contextMenuBase: ""
         }
 
         this.refBugs = React.createRef()
@@ -81,7 +73,6 @@ class modulePage extends React.Component{
         this.cancelAddMember = this.cancelAddMember.bind(this)
         this.refreshDataTeam = this.refreshDataTeam.bind(this)
         this.deleteMember = this.deleteMember.bind(this)
-        // this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.setTeamMember = this.setTeamMember.bind(this)
         this.setPermition = this.setPermition.bind(this)
         this.cancelPermition = this.cancelPermition.bind(this)
@@ -113,9 +104,12 @@ class modulePage extends React.Component{
         this.updateDataStatus = this.updateDataStatus.bind(this)
         this.startingTab = this.startingTab.bind(this)
         this.setDataModulePage = this.setDataModulePage.bind(this)
-        this.holdDown = this.holdDown.bind(this)
-        this.holdUp = this.holdUp.bind(this)
         this.readDataLabel = this.readDataLabel.bind(this)
+        this.card = this.card.bind(this)
+        this.list = this.list.bind(this)
+        this.contextMenuModule = this.contextMenuModule.bind(this)
+        this.commitDeleteModuleCtx = this.commitDeleteModuleCtx.bind(this)
+        this.deleteModuleDelCtx = this.deleteModuleDelCtx.bind(this)
     }
 
     componentDidMount(){
@@ -127,25 +121,15 @@ class modulePage extends React.Component{
         document.addEventListener("keyup", this.holdUp)
     }
 
-    holdDown(event){
-        if (event.keyCode == 17) {
-            this.state.ctrlClick = true
-        }
-    }
-
-    holdUp(event){
-        if (event.keyCode == 17) {
-            this.state.ctrlClick = false
-        }
-    }
-
     componentWillReceiveProps(nextProps){
         if(this.props !== nextProps){
-            this.state.arrSelected = []
             this.setDataModulePage(nextProps)
             this.startingTab()
         }
-        this.startingTab()
+
+        if(this.props.projectIdHeader != nextProps.projectIdHeader){
+            this.state.arrSelected = []
+        }
     }
 
     setDataModulePage(dataProps){
@@ -208,8 +192,7 @@ class modulePage extends React.Component{
         })
     }
 
-    selectedRow(a, data){
-        var t = a.target.parentElement
+    selectedRow(data){
         if(this.state.ctrlClick){
             //no action
         }else{
@@ -229,24 +212,10 @@ class modulePage extends React.Component{
         }
     }
 
-    selectedRow2(a, data){
-        if(this.state.ctrlClick){
-            this.props.dataModule.map(dt => {
-                if(dt.modulId === data){
-                    if(dt.isSelected){
-                        var idx = this.state.arrSelected.indexOf(data)
-                        this.state.arrSelected.splice(idx, 1)
-                    }else{
-                        this.state.arrSelected.push(data)
-                    }
-                    this.props.selectRowModule(data)
-                }
-            })
-
-            this.setState({
-                arrSelected: this.state.arrSelected
-            })
-        }
+    selectedRow2(arrSelected){
+        this.setState({
+            arrSelected: arrSelected
+        })
     }
 
     updateStateDataNote(jsonObj){
@@ -438,6 +407,27 @@ class modulePage extends React.Component{
         })
     }
 
+    commitDeleteModuleCtx(moduleId){
+        var userId = getCookieUserId()
+        var form = new FormData()
+        form.append("userId", userId)
+        form.append("moduleId", moduleId)
+        
+        let arrModuleId = []
+        arrModuleId.push(moduleId)
+
+        ApiFetch("/delete_module", {
+            method: "POST",
+            body: form
+        }).then(res => res.text())
+        .then(result => {
+            this.props.commitDeleteModule(arrModuleId)
+            this.setState({
+                infoPop: ""
+            })
+        })
+    }
+
     commitNewModule(idUser, moduleName, dueDate, description, pi, status){
         this.props.commitNewModule(idUser, moduleName, dueDate, description, pi, status)
         this.setState({
@@ -510,8 +500,10 @@ class modulePage extends React.Component{
         }
 
         var cr = this.theadModule.current
-        cr.setAttribute("class", "second-background-grs main-border")
-        cr.style.borderTop = "none"
+        if(cr != null){
+            cr.setAttribute("class", "second-background-grs main-border")
+            cr.style.borderTop = "none"
+        }
 
         this.setState({
             isBorder: true
@@ -525,8 +517,10 @@ class modulePage extends React.Component{
         }
 
         var cr = this.theadModule.current
-        cr.setAttribute("class", "")
-        cr.style.borderTop = "none"
+        if(cr != null){
+            cr.setAttribute("class", "")
+            cr.style.borderTop = "none"
+        }
 
         this.setState({
             isBorder: false
@@ -542,7 +536,7 @@ class modulePage extends React.Component{
                                     dataPermition={this.state.dataPermition}
                                     refreshModule={this.props.refreshModule}
                                     dataProject={dt}
-                                    updateDataStatus={this.updateDataStatus}
+                                    // updateDataStatus={this.updateDataStatus}
                                     manageMember={this.addMember}
                                     hideInfo={this.hideInfoProject}/>
             })
@@ -729,11 +723,9 @@ class modulePage extends React.Component{
         }
     }
 
+    /*unuser function*/
     updateDataStatus(jsonData){
-        this.setState({
-            dataStatus: jsonData
-        })
-        this.props.updateDataStatus(jsonData)
+        // this.props.updateDataStatus(jsonData)
     }
 
     readDataLabel(moduleId){
@@ -746,52 +738,46 @@ class modulePage extends React.Component{
         return data
     }
 
-    render(){
-        const dataModule = this.props.dataModule.map(dt => {
+    card(){
+        this.props.setViewModule("card")
+    }
 
-            /*set data assigned each module*/
-            let assigned = []
-            this.props.assignedModules.map(dta => {
-                if(dta.moduleId == dt.modulId){
-                    assigned.push(dta)
-                }
-            })
+    list(){
+        this.props.setViewModule("list")
+    }
 
-            return <RowModule
-                        dataStatus={this.state.dataStatus}
-                        detail = {this.detail}
-                        isDelete = {dt.isTrash}
-                        selected = {this.selectedRow}
-                        selectedRow = {this.selectedRow2}
-                        moduleId = {dt.modulId}
-                        modulName = {dt.modulName}
-                        description = {dt.description}
-                        endDate = {dt.endDate}
-                        modulStatus = {dt.modulStatus}
-                        countBugs = {dt.countBugs}
-                        countBugsClose = {dt.countBugsClose}
-                        countDoc = {dt.countDoc}
-                        countNote = {dt.countNote}
-                        userName = {dt.userName}
-                        isMember = {dt.isMember}
-                        note = {this.state.dataNote}
-                        assigned = {assigned}
-                        bugsIconClick = {this.bugsIconClick}
-                        isSelected={dt.isSelected}
-                        docFileIconClick = {this.docFileIconClick}
-                        noteClick={this.noteClick}
-                        appendsNote={this.state.appendsNote}
-                        updateStateDataNote={this.updateStateDataNote}
-                        dataLabelModule={this.readDataLabel(dt.modulId)}
-                        isBorder={this.state.isBorder}/>
+    contextMenuModule(e, moduleId){
+        e.preventDefault()
+
+        var x = e.clientX;     // Get the horizontal coordinate
+        var y = e.clientY;     // Get the vertical coordinate
+
+        this.setState({
+            infoPop: <ContextMenuModule viewDetail={this.selectedRow} 
+                                        delete={this.deleteModuleDelCtx}
+                                        moduleId={moduleId}
+                                        hide={this.hidePopUp}
+                                        left={x} 
+                                        top={y}/>
         })
+    }
 
+    deleteModuleDelCtx(moduleId){
+        this.setState({ 
+            infoPop: <PopupConfirmation textPopup="Are you sure, you want delete this module ?" 
+                                        titleConfirmation="Delete module" 
+                                        hidePopUp={this.hidePopUp} 
+                                        yesAction={() => this.commitDeleteModuleCtx(moduleId)}/>
+        })
+    }
+
+    render(){
         return(
             <React.Fragment>
-                {/* {dataProject} */}
                 {this.state.infoPop}
                 {this.state.addMember}
                 {this.state.permition}
+
                 <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" style={{paddingTop: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px", overflow: "hidden"}}>
                     <div id="inf-project-module" style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
                         <a onClick={this.infoProject} className="bold" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", color: "#000"}}>
@@ -867,23 +853,36 @@ class modulePage extends React.Component{
                             (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
                             ?
                                 <div style={{float: "right", display: "flex", marginTop: "2px"}}>
-                                    <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
-                                        {/* <i class="fa fa-check"></i>  */}
-                                        Mark All
-                                    </button>
-                                    <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
-                                        {/* <i class="fa fa-times"></i>  */}
-                                        Unmark All
-                                    </button>
-                                    <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <i class="fa fa-trash"></i>  */}
-                                        Delete
-                                    </button>
-                                    <button style={{background:"none", fontSize: "12px"}}>
+                                    {
+                                        (this.props.viewModule == "list")
+                                        ?
+                                            <Fragment>
+                                                <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
+                                                    {/* <i class="fa fa-check"></i>  */}
+                                                    Mark All
+                                                </button>
+                                                <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
+                                                    {/* <i class="fa fa-times"></i>  */}
+                                                    Unmark All
+                                                </button>
+                                                <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                    {/* <i class="fa fa-trash"></i>  */}
+                                                    Delete
+                                                </button>
+                                                <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                    {/* <i class="fa fa-trash"></i>  */}
+                                                    Filter
+                                                </button>
+                                            </Fragment>
+                                        :
+                                            ""
+                                    }
+                                    
+                                    <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
                                         {/* <FontAwesomeIcon icon={faSimCard}/>  */}
                                         Card
                                     </button>
-                                    <button style={{background:"none", fontSize: "12px", display: "none"}}>
+                                    <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
                                         {/* <i class="fa fa-times"></i>  */}
                                         List
                                     </button>
@@ -892,68 +891,64 @@ class modulePage extends React.Component{
                                         New Module
                                     </button>
                                     {
-                                        (this.state.isBorder)
-                                            ?
-                                            <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
-                                                <FontAwesomeIcon icon={faBorderNone}/>
-                                                <span className="tooltiptext">Hide border</span>
-                                            </button>
-                                            :
-                                            <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
-                                                <FontAwesomeIcon icon={faBorderAll}/>
-                                                <span className="tooltiptext">Show border</span>
-                                            </button>
+                                        (this.props.viewModule == "list")
+                                        ?
+                                            (this.state.isBorder)
+                                                ?
+                                                <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
+                                                    <FontAwesomeIcon icon={faBorderNone}/>
+                                                    <span className="tooltiptext">Hide border</span>
+                                                </button>
+                                                :
+                                                <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                                    <FontAwesomeIcon icon={faBorderAll}/>
+                                                    <span className="tooltiptext">Show border</span>
+                                                </button>
+                                        :
+                                            ""
                                     }
                                 </div>
                             :
-                                <div style={{float: "right"}}>
+                                <div id="base-btn-no-usr-acc" style={{float: "right"}}>
+                                    <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
+                                        {/* <FontAwesomeIcon icon={faSimCard}/>  */}
+                                        Card
+                                    </button>
+                                    <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
+                                        {/* <i class="fa fa-times"></i>  */}
+                                        List
+                                    </button>
+                                    
                                     {
                                         (this.state.isBorder)
                                         ?
                                             <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
                                                 <FontAwesomeIcon icon={faBorderNone}/>
-                                                <span className="tooltiptext">Hide border</span> Hide border
+                                                <span className="tooltiptext">Hide border</span>
                                             </button>
                                         :
-                                            <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                            <button onClick={this.showBorder} className="main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
                                                 <FontAwesomeIcon icon={faBorderAll}/>
-                                                <span className="tooltiptext">Show border</span> Show border
+                                                <span className="tooltiptext">Show border</span>
                                             </button>
                                     }
                                 </div>
                         }
                     </div>
                     
-                    <table className="main-border-bottom" style={{width: "80%"}}>
-                        <thead ref={this.theadModule}>
-                            <tr>
-                                <th colSpan="2" style={{width: "400px"}} className="main-border-right second-font-color bold">Module</th>
-                                <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px"}} className="main-border-right second-font-color bold">Assign to</th>
-                                <th className="main-border-right second-font-color bold">Due date</th>
-                                <th className="main-border-right second-font-color bold">Status</th>
-                            <th className="second-font-color bold"></th>
-                            </tr>
-                        </thead>
-                        <tbody style={{overflow: "auto"}}>
-                            {
-                                (dataModule == "") 
-                                ? 
-                                    <tr>
-                                        <td colSpan="5" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
-                                            <div style={{marginTop: "25px", marginBottom: "100px"}}>
-                                                <span style={{fontSize: "16px"}}>
-                                                    <i class="fa fa-clipboard" style={{fontSize: "30px"}}></i>
-                                                </span>
-                                                <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
-                                                <div style={{fontSize: "12px"}}>please click new module button<br/>to create a new module</div>
-                                            </div>
-                                        </td>
-                                    </tr> 
-                                : 
-                                    dataModule
-                            }
-                        </tbody>
-                    </table>
+                    {
+                        (this.props.viewModule == "list")
+                        ?
+                            <ListView isBorder={this.state.isBorder}
+                                contextMenuModule={this.contextMenuModule}
+                                selectedRow={this.selectedRow}
+                                selectedRow2={this.selectedRow2}/>
+                        :
+                            <CardView contextMenuModule={this.contextMenuModule}
+                                selectedRow={this.selectedRow}
+                                selectedRow2={this.selectedRow2}/>
+                    }
+
                 </div>
                 
                 <div ref={this.refBugs} id="base-tab-bugs" style={{display: "none"}}>
@@ -971,14 +966,18 @@ const mapDispatchToProps = dispatch => {
     return{
         setDataNote: (dataNote) => dispatch(setDataNote(dataNote)),
         selectRowModule: (moduleId) => dispatch(selectRowModule(moduleId)),
-        deleteMemberRedux: (userId) => dispatch(deleteMember(userId))
+        deleteMemberRedux: (userId) => dispatch(deleteMember(userId)),
+        setViewModule: (type) => dispatch(setViewModule(type))
     }
 }
 
 const mapStateToProps = state => {
     return{
         dataLabelModule: state.dataLabelsModule,
-        assignedModules: state.assignedModules
+        assignedModules: state.assignedModules,
+        dataModule: state.dataModule,
+        dataStatus: state.dataStatus,
+        viewModule: state.viewModule
     }
 }
 
