@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import UserListChoice from '../user_list_choice'
-import { getCookieUserId,  convertDate_dd_MMM_yyy} from '../../function/function'
+import { getCookieUserId,  convertDate_dd_MMM_yyy, popUpAlert} from '../../function/function'
 import {SelectBox} from '../custom_element'
 import ChoiceStatus from '../module/status_choice'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCalendarAlt, faStickyNote, faTag, faTrashAlt, faEdit, faCog, faUserEdit, faUserCog, faPlus, faPlusSquare} from '@fortawesome/free-solid-svg-icons'
+import {faCalendarAlt, faUserCog, faPlusSquare} from '@fortawesome/free-solid-svg-icons'
 import NewLabel from './new_label'
 import {connect} from 'react-redux'
 import {ApiFetch} from '../apiFetch'
@@ -25,9 +25,8 @@ class module_info extends React.Component{
             idStatus: "",
             status: "",
             popup: "",
-            label: "",
-            dataLabelModule: [],
-            readyOperate: false
+            // label: "",
+            dataLabelModule: []
         }
         this.SelectBox = React.createRef()
         this.labelBase = React.createRef()
@@ -60,13 +59,9 @@ class module_info extends React.Component{
 
         this.setState({
             idStatus : this.props.moduleStatus,
-            dataLabelModule : jsonArray,
-            dataLabel: this.props.dataLabelRedux,
+            dataLabelModule : (this.props.dataLabelModuleRedux.length == 0) ? jsonArray : this.props.dataLabelModuleRedux,
+            // dataLabel: this.props.dataLabelRedux,
         })
-
-        setTimeout(() => {
-            this.readyOperate = true
-        }, 100)
 
         if(this.txtArea.current != null) this.txtArea.current.style.height = this.dvTxtArea.current.offsetHeight+"px"
     }
@@ -226,43 +221,53 @@ class module_info extends React.Component{
 
     selectLabel(label){
         let jsonObject = {}
-        let ready = false
+        let ready = false;
 
-        if(!this.readyOperate) return false
-        
-        /*get data label selected*/
-        for(let i = 0;i<this.props.dataLabelRedux.length;i++){
-            let dt = this.props.dataLabelRedux[i]
-            if(dt.label == label){
-                jsonObject.moduleId = this.props.moduleId
-                jsonObject.projectId = this.props.projectId
-                jsonObject.label = label
-                jsonObject.color = dt.color
+        if(getCookieUserId() == this.props.pic || this.props.modulePermition){
+            /*get data label selected*/
+            for(let i = 0;i<this.props.dataLabelRedux.length;i++){
+                let dt = this.props.dataLabelRedux[i]
+                if(dt.label == label){
+                    jsonObject.moduleId = this.props.moduleId
+                    jsonObject.projectId = this.props.projectId
+                    jsonObject.label = label
+                    jsonObject.color = dt.color
+                }
             }
-        }
 
-        /*set data label selected*/
-        for(let i = 0;i<this.state.dataLabelModule.length;i++){
-            let dt = this.state.dataLabelModule[i]
-            if(dt.label == label && dt.moduleId == this.props.moduleId){
-                ready = true
-                this.state.dataLabelModule.splice(i, 1)
+            /*set data label selected*/
+            for(let i = 0;i<this.state.dataLabelModule.length;i++){
+                let dt = this.state.dataLabelModule[i]
+                if(dt.label == label && dt.moduleId == this.props.moduleId){
+                    ready = true
+                    this.state.dataLabelModule.splice(i, 1)
+                }
             }
-        }
-        
-        if(!ready){
-            this.state.dataLabelModule.push(jsonObject)
+            
+            if(!ready){
+                this.state.dataLabelModule.push(jsonObject)
+            }
+
+            this.setState({
+                dataLabelModule: this.state.dataLabelModule
+            })
+
+            // console.log(this.state.dataLabelModule)
+            /*set new label selected to parent jsx 'detail.js'*/
+            this.props.selectLabelModule(this.state.dataLabelModule)
+        }else{
+            popUpAlert("You did not have permition to change data", "info")
         }
 
-        /*set new label selected to parent jsx 'detail.js'*/
-        this.props.selectLabelModule(this.state.dataLabelModule)
+        
     }
 
     render(){
         const dataLabel = this.props.dataLabelRedux.map(dt => {
                 let isChecked = false
-                
-                this.props.dataLabelModuleRedux.map(dtt => {
+                let labelPermition = (this.props.modulePermition || this.props.pic == getCookieUserId()) ? true : false
+                // this.props.dataLabelModuleRedux.map(dtt => {
+                this.props.dataLabelModule.map(dtt => {
                     if(dtt.moduleId == this.props.moduleId && dtt.label == dt.label){
                         isChecked = true
                     }
@@ -271,6 +276,7 @@ class module_info extends React.Component{
                 return <LabelModuleDetailItem isChecked={isChecked} 
                                         label={dt.label} 
                                         color={dt.color}
+                                        labelPermition={labelPermition}
                                         selectLabel={this.selectLabel}
                                         deleteLabel={this.deleteLabel}/>
         }) 
@@ -327,7 +333,9 @@ class module_info extends React.Component{
                                             <SelectBox ref={this.SelectBox} click={this.chooseStatus} 
                                                 style={{padding: "7px", overflow: "hidden", border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
                                                 value={this.statusName(this.state.idStatus)}/>
-                                            {this.state.statusChoice}
+                                            <div id="sc-dtl-sts" style={{position: "relative"}}>
+                                                {this.state.statusChoice}
+                                            </div>
                                         </td>
                                     :
                                         <td>
@@ -403,11 +411,18 @@ class module_info extends React.Component{
                                                         </div>
                                                 }
                                             </div>
-                                            <div style={{width: "17px", textAlign: "center"}}>
-                                                <a id="btn-set-assign-module" onClick={this.newLabel}>
-                                                    <FontAwesomeIcon style={{fontSize: "16px"}} icon={faPlusSquare}/>
-                                                </a>
-                                            </div>
+
+                                            {
+                                                (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                                ?
+                                                    <div style={{width: "17px", textAlign: "center"}}>
+                                                        <a id="btn-set-assign-module" onClick={this.newLabel}>
+                                                            <FontAwesomeIcon style={{fontSize: "16px"}} icon={faPlusSquare}/>
+                                                        </a>
+                                                    </div>
+                                                :
+                                                    ""
+                                            }
                                         </div>
                                     </div>
                                 </td>
@@ -416,10 +431,9 @@ class module_info extends React.Component{
                     </table>
                 </div>
                 <div ref={this.labelBase} className="main-border-left" style={{width: "180px", paddingLeft: "10px", paddingRight: "10px"}}>
-                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "10px"}}>Assigned</div>
-                    <div className="scrollbar" style={{fontSize: "11px", maxHeight: "200px", overflowY: "scroll"}}>
+                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "10px"}}>Assign To</div>
+                    <div className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
                         {assigned}
-                        
                     </div>
                     {
                         (this.props.pic == getCookieUserId() || this.props.modulePermition)

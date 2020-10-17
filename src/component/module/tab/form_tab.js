@@ -8,7 +8,6 @@ import {getCookieSessionId, getCookieUserId, popUpAlert} from "../../../function
 import FunctionPreview from './function_preview'
 import FunctionData from './function_data'
 import ColorPicker from '../../color_picker'
-import { baseUrl } from '../../../const/const';
 
 class form_tab extends React.Component{
 

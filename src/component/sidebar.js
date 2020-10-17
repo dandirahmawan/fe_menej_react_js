@@ -1,7 +1,7 @@
 import React from  'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import CreateProject from './create_project'
+import CreateProject from './project/create_project'
 import {faFolder, faPlusCircle, faCalendarAlt, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { getCookieSessionId, getCookieUserId } from '../function/function'

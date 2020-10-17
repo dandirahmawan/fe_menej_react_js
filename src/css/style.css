@@ -50,6 +50,41 @@ input{
     overflow: hidden;
 }
 
+#base-dt-label-card{
+    overflow: hidden;
+}
+
+.card-item{
+    cursor: pointer;
+    box-shadow: rgb(204, 204, 204) 0px 3px 3px;
+}
+
+.shadow{
+    box-shadow: rgb(204, 204, 204) 0px 3px 3px;
+}
+
+.card-item:hover{
+    box-shadow: #c9d1d3 0px 3px 3px 2px;
+}
+
+.base-card-mod{
+    width: 320px; 
+    height: 100%;
+    margin-right: 20px; 
+    float: left;
+    overflow-y: hidden;
+}
+
+.base-card-mod-itm{
+    width: 320px; 
+    overflow-y: hidden !important;
+    padding-bottom: 10px;
+}
+
+.base-card-mod-itm:hover{
+    width: 320px; 
+    overflow-y: auto !important;
+}
 /* .flex-container{
     display: flex;
     flex-wrap: nowrap;
@@ -346,6 +381,7 @@ button{
 .scrollbar{
     scrollbar-width: thin;
     scrollbar-color: #CCC #e6e6e6;
+    overflow-y: auto;
 }
 
 .hvr-lbl-bs .btn-del-lbl{
@@ -405,6 +441,25 @@ button{
     padding-left: 20px;
 }
 
+.main-font-size{
+    font-size: 12px;
+}
+
+.ck-box-fa{
+    font-size: 15px;
+    color: #a5a5a5;
+}
+
+.ck-box-fa:hover{
+    font-size: 15px;
+    color: #000;
+}
+
+.ck-box-fa-checked{
+    font-size: 15px;
+    color: rgb(52, 144, 214);
+}
+
 thead{
     font-size: 12px;
 }
@@ -445,7 +500,7 @@ tr.tr_border_bottom td {
 
 .tooltip {
     position: relative;
-  }
+}
   
 .tooltip .tooltiptext {
     visibility: hidden;
@@ -461,6 +516,7 @@ tr.tr_border_bottom td {
     font-size: 11px;
     /* Position the tooltip */
     position: absolute;
+    box-shadow: rgb(204, 204, 204) 0px 3px 3px;
 }
 
 .tooltip:hover .tooltiptext {
@@ -484,6 +540,7 @@ tr.tr_border_bottom td {
     width: 117px;
     text-align: center;
     z-index: 1;
+    box-shadow: rgb(204, 204, 204) 0px 3px 3px;
 }
 
 .m-tooltip:hover .m-tooltiptext{
@@ -508,11 +565,37 @@ tr.tr_border_bottom td {
     min-width: 100px;
     z-index: 1;
     color: #000;
+    box-shadow: rgb(204, 204, 204) 0px 3px 3px;
 }
 
 .ass-tooltip:hover .ass-tooltiptext{
     visibility: visible;
 }
+
+.ass-tooltip-nm {
+    position: relative;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+.ass-tooltip-nm .ass-tooltiptext-nm {
+    visibility: hidden;
+    font-size: 12px;
+    padding: 10px;
+    background: rgb(255, 255, 255);
+    border-radius: 3px;
+    position: absolute;
+    margin-left: 38px;
+    margin-top: -27px;
+    min-width: 100px;
+    z-index: 1;
+    color: #000;
+}
+
+.ass-tooltip-nm:hover .ass-tooltiptext-nm{
+    visibility: visible;
+}
+
 
 
 blockquote{
@@ -669,4 +752,14 @@ thead {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+  }
+
+  .menu-item{
+    color: #000;
+    background: #FFF;
+  }
+
+  .menu-item:hover{
+    color: #FFF;
+    background: #4da1b5;
   }

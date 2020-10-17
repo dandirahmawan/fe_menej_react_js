@@ -1,8 +1,8 @@
 import React from 'react'
-import {baseUrl} from '../../const/const'
-import {Spinner} from '../spinner'
+import {baseUrl} from '../../../const/const'
+import {Spinner} from '../../spinner'
 import ReactDom from 'react-dom'
-import { getCookieUserId, getIconDocFIle } from '../../function/function'
+import { getCookieUserId, getIconDocFIle } from '../../../function/function'
 
 class row_doc_file extends React.Component{
 
@@ -61,7 +61,9 @@ class row_doc_file extends React.Component{
                     {
                         (this.props.isPermition || this.props.picProject == getCookieUserId())
                         ?
-                            <button onClick={(e) => this.props.delete(e, this.props.fileName)} style={{background: "none", padding: "0px"}}><i class="fa fa-trash"></i></button>
+                            <button onClick={(e) => this.props.delete(e, this.props.fileName)} style={{background: "none", padding: "0px"}}>
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         :
                             ""
                     }

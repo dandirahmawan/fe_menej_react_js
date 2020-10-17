@@ -1,6 +1,6 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCog} from '@fortawesome/free-solid-svg-icons'
+import {faCog, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import PopConfirmation from '../popup_confirmation'
 import {ApiFetch} from '../apiFetch'
 import EditStatus from './edit_status'
@@ -8,6 +8,8 @@ import MemberProject from './member_project'
 import { getCookieUserId } from '../../function/function'
 import ManageStatus from './manage_status'
 import EditProject from './edit_project'
+import { connect } from 'react-redux'
+import { setDataStatus, deleteProject } from '../../redux/action'
 
 class info_project extends React.Component{
 
@@ -28,14 +30,15 @@ class info_project extends React.Component{
         this.editStatus = this.editStatus.bind(this)
         this.commitEditStatus = this.commitEditStatus.bind(this)
         this.manageStatus = this.manageStatus.bind(this)
-        this.updateDataStatus = this.updateDataStatus.bind(this)
         this.editProject = this.editProject.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
+        this.updateDataStatus = this.updateDataStatus.bind(this)
+        this.deleteProject = this.deleteProject.bind(this)
+        this.commitDeleteProject = this.commitDeleteProject.bind(this)
     }
     
     componentDidMount() {
         document.addEventListener('mouseup', this.handleClickOutside)
-        console.log(this.props.dataTeam)
         this.setState({
             dataTeam: this.props.dataTeam,
             dataStatus: this.props.dataStatus
@@ -86,6 +89,21 @@ class info_project extends React.Component{
         }  )
     }
 
+    commitDeleteProject(){
+        let form = new FormData()
+        form.append("projectId", this.props.dataProject.projectId)
+        form.append("userId", getCookieUserId())
+    
+        ApiFetch("/delete_project", {
+            method: "POST",
+            body: form
+        }).then(res => res.text()).then(result => {
+            if(result == "success"){
+                this.props.deleteProject(this.props.dataProject.projectId)
+            }
+        })
+    }
+
     deleteStatus(status, id){
         let text = "Are you sure you want delete <span class='bold'>"+status+"</span> as a status? make sure that no module on this status"
         this.setState({
@@ -129,11 +147,9 @@ class info_project extends React.Component{
         })
     }
 
+
     updateDataStatus(jsonData){
-        this.props.updateDataStatus(jsonData)
-        this.setState({
-            dataStatus: jsonData
-        })
+        this.props.setDataStatus(jsonData)
     }
 
     editProject(){
@@ -153,9 +169,19 @@ class info_project extends React.Component{
         })
     }
 
+    deleteProject(){
+        let text = "Are you sure you want delete this project ?"
+        this.setState({
+            popup: <PopConfirmation titleConfirmation="Delete project" 
+                                    textPopup={text}
+                                    yesAction={this.commitDeleteProject}
+                                    hidePopUp={this.hidePopup}/>
+        })
+    }
+
     render(){
 
-        const data = this.state.dataStatus.map(dt => {
+        const data = this.props.dataStatus.map(dt => {
             return  <div style={{fontSize: "11px", 
                                 padding: "5px", 
                                 background: dt.color, 
@@ -223,10 +249,32 @@ class info_project extends React.Component{
                             {data}
                         </div>
                     </div>
+                    <div>
+                        <div className="second-font-color bold main-border-top" 
+                            style={{fontSize: "11px", padding: "5px", paddingTop: "10px"}}>
+                            <a onClick={this.deleteProject}>
+                                <FontAwesomeIcon icon={faTrashAlt}/> Delete project
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-export default info_project
+const mapStateToProps = state => {
+    console.log(state)
+    return{
+        dataStatus: state.dataStatus
+    }
+}
+
+const mapDispatchToProps = dispatsh => {
+    return{
+        setDataStatus: (data) => dispatsh(setDataStatus(data)),
+        deleteProject: (projectId) => dispatsh(deleteProject(projectId))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (info_project)

@@ -1,14 +1,21 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import ModuleInfo from './module_info'
+import ModuleInfo from '../module_info'
 import BugsModule from './bugs_module'
 import DocFileModule from './doc_file_module'
-import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
-import {ApiFetch} from '../apiFetch'
+import {getCookieUserId, getCookieSessionId, popUpAlert, convertDate_dd_mmm_yyy} from '../../../function/function'
+import {ApiFetch} from '../../apiFetch'
 import {connect} from 'react-redux'
-import {updateDataModuleBugs, updateDataModuleDocFile, updateDataModule, appendDataBugs, appendDataDocFile, deleteDataDocFile, setDataLabelModule, updateDataChecklist} from '../../redux/action'
-import {Spinner, SpinnerButton} from '../spinner'
-import { baseUrl } from '../../const/const'
+import {updateDataModuleBugs, 
+        updateDataModuleDocFile, 
+        updateDataModule, 
+        appendDataBugs, 
+        appendDataDocFile, 
+        deleteDataDocFile, 
+        setDataLabelModule, 
+        updateDataChecklist} from '../../../redux/action'
+import {Spinner, SpinnerButton} from '../../spinner'
+import { baseUrl } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarAlt, faSave } from '@fortawesome/free-solid-svg-icons'
 
@@ -50,6 +57,8 @@ class detail extends React.Component{
         }
         
         this.btnSaveChange = React.createRef()
+        this.baseProgressBar = React.createRef()
+        this.uploadedFileIndicator = React.createRef()
         this.navDetail = this.navDetail.bind(this)
         this.changeNameModul = this.changeNameModul.bind(this)
         this.changeUserSelected = this.changeUserSelected.bind(this)
@@ -123,6 +132,15 @@ class detail extends React.Component{
                 }
             })
 
+            /*set data label*/
+            let dataLabel = []
+            if(this.props.dataLabelModule.length > 0){
+                dataLabel = this.props.dataLabelModule
+            }else{
+                dataLabel = result.labelModules
+            }
+            // if(this.props.dataLabelModule)
+
             this.setState({
                 dataBugs: result.bugs,
                 dataDocFile: result.documentFile,
@@ -145,7 +163,8 @@ class detail extends React.Component{
                 miDisplay: miDisplay,
                 mbDisplay: mbDisplay,
                 dfmDisplay: dfmDisplay,
-                dataLabelModule: this.props.dataLabelModule,
+                dataLabelModule: dataLabel,
+                dataLabelModuleToUpdate: result.labelModules,
                 assignedModules: result.assignedModules
             })
         })
@@ -310,11 +329,20 @@ class detail extends React.Component{
             body: form
         }).then(res => res.json())
         .then(result => {
-            var newState = this.state.dataBugs.concat(result)
+            /*set new data bugs*/
+            this.state.dataBugs.push(result)
+            
+            /*set param to state*/
+            let arrDataChecklist = []
+            this.state.dataBugs.map(dt => {
+                arrDataChecklist.push(dt)
+            })
+            
             this.props.updateDataModuleBugs(this.state.moduleId, "add")
             this.setState({
-                dataBugs: newState
+                dataBugs: arrDataChecklist
             })
+
             ReactDom.render("Send", btn)
             this.props.appendDataBugs(result)
         })
@@ -331,7 +359,7 @@ class detail extends React.Component{
         while (stream.state === "readable") {
           var data = stream.read()
           total += data.byteLength;
-          console.log("received " + data.byteLength + " bytes (" + total + " bytes in total).")
+        //   console.log("received " + data.byteLength + " bytes (" + total + " bytes in total).")
         }
         if (stream.state === "waiting") {
           stream.ready.then(() => this.consume(stream, total))
@@ -340,8 +368,24 @@ class detail extends React.Component{
     }
 
     commitDocFileUpload(descFile, bs64, ort, fileName){
-        let progressBar = this.state.progressBar.parentElement
-        progressBar.style.display = "block"
+        let progressBar = this.baseProgressBar.current
+        progressBar.style.display = "flex"
+
+        var bottom = -10;
+        var si = setInterval(
+            () => {
+                bottom++
+                var bottom2 = bottom * 2
+                progressBar.style.bottom = bottom2+"px"
+                if(bottom > 10){
+                    clearInterval(si)
+                }
+            },
+            5 
+        )
+
+        this.uploadedFileIndicator.current.style.display = "none"
+        this.state.progressBar.parentElement.style.display = "block"
 
         let form = new FormData()
         let file = (bs64 == "") ? this.state.documentFileUploadData : ""
@@ -354,8 +398,6 @@ class detail extends React.Component{
         form.append('base64', bs64)
         form.append('fileName', fileName)
         form.append('ort', ort)
-        
-        alert(ort)
         
         const xhr = new XMLHttpRequest()
         xhr.upload.onprogress = (e) => {
@@ -376,12 +418,20 @@ class detail extends React.Component{
                 var result = JSON.parse(xhr.responseText)
                 var newState = this.state.dataDocFile.concat(result)
                 
-                progressBar.style.display = "none"
+                // progressBar.style.display = "none"
+                this.uploadedFileIndicator.current.style.display = "block"
+                this.state.progressBar.parentElement.style.display = "none"
                 this.setState({
                     dataDocFile : newState,
                     documentFileUploadData : ""
                 })
                 this.props.appendDataDocFile(result)
+                
+                /*hide progress base upload when upload finish*/
+                setTimeout(() => {
+                    progressBar.style.display = "none"
+                    progressBar.style.bottom = "-10px"
+                }, 2500)
             }
         }
 
@@ -435,6 +485,7 @@ class detail extends React.Component{
     deleteBugs(bugsId){
         var mi = this.state.moduleId
         var pi = this.state.projectId
+
         const newData = this.state.dataBugs.map(dt => {
             if(dt.modulId === mi && dt.projectId === pi && dt.bugsId === bugsId){
                 dt.isDelete = "Y"
@@ -506,7 +557,7 @@ class detail extends React.Component{
         return data
     }
 
-    selectLabelModule(dataJson){    
+    selectLabelModule(dataJson){
         this.setBtnPrimarySaveActive()    
         let dataToUpdate = []
         for(let i = 0;i<dataJson.length;i++){
@@ -522,7 +573,21 @@ class detail extends React.Component{
         })
     }
 
-    checkingBugs(){
+    checkingBugs(bugsId){
+        this.setState(prev => {
+            const newData = prev.dataBugs.map(dt => {
+                if(dt.bugsId == bugsId){
+                    let sts = (dt.bugStatus == "C") ? "P" : "C"
+                    dt.bugStatus = sts
+                }
+                return dt
+            })
+
+            return{
+                dataBugs: newData
+            }
+        })
+        
         this.setBtnPrimarySaveActive() 
     }
 
@@ -538,7 +603,6 @@ class detail extends React.Component{
         for(let i = 0;i<this.props.assignedModuleRdx.length;i++){
             let dt = this.props.assignedModuleRdx[i]
             if(dt.moduleId == this.state.moduleId){
-                console.log(dt)
                 idxArrRemove.push(i)
             }
         }
@@ -555,14 +619,13 @@ class detail extends React.Component{
     }
 
     render(){
-    
         return(
             <React.Fragment>
                 <div onClick={this.props.hide} className="block" style={{zIndex: "10001"}}></div>
                 <div id="detail-modul-base" style={{width: "650px", minHeight: "400px", background: "#FFF", position: "fixed", zIndex: "10002"}}> 
                     <div id="header-dtl" className="main-border-bottom" style={{position: "fixed", width: "650px"}}>
                         <div style={{padding: "20px", background: "#FFF"}}>
-                            <i style={{fontSize: "18px", color: "#d4ae2b"}} class="fa fa-clipboard"></i>
+                            <i style={{fontSize: "18px", color: "#d4ae2b"}} className="fas fa-clipboard"></i>
                             &nbsp;&nbsp;
                             <span className='bold' style={{fontSize: "18px"}}>{this.state.moduleName}</span>
                             
@@ -576,7 +639,7 @@ class detail extends React.Component{
 
                             <div style={{paddingLeft: "26px"}}>
                                 <div className="second-font-color bold" style={{fontSize: "10px"}}>
-                                    <FontAwesomeIcon icon={faCalendarAlt}/> 12 Jan 2020
+                                    <FontAwesomeIcon icon={faCalendarAlt}/> {convertDate_dd_mmm_yyy(this.state.dueDate)}
                                 </div>
                             </div>
                         </div>
@@ -645,6 +708,8 @@ class detail extends React.Component{
                                             picProject={this.state.picProject}
                                             dataPermition={this.state.dataPermition}
                                             bindProgressBar={this.setRef}
+                                            uploadedFileIndicator={this.uploadedFileIndicator}
+                                            baseProgressBar={this.baseProgressBar}
                                         />
                                     </div>
                                 </React.Fragment>

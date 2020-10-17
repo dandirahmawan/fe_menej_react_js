@@ -15,7 +15,7 @@ import CopyTab from './copy_tab'
 import CellEdit from './cell_edit'
 import {ApiFetch} from '../../apiFetch'
 import PageNotFound from '../../404'
-import DetailModule from '../detail'
+import DetailModule from '../detail_module/detail'
 import PreviewImage from '../../preview_image'
 import PreviewVideo from '../../preview_video'
 import {getCookieSessionId, getCookieUserId, popUpAlert, tableHeaderRender} from "../../../function/function"
@@ -162,17 +162,14 @@ class tab extends React.Component{
             body: form,
         }).then(res => res.json()).then(result => {
             let dataTab = result[0].tab
-            let columnTab = (result[0].columnTab != 'no data') ? JSON.parse(result[0].columnTab) : null
-            let iconPrivcy = this.privacyIconRender(dataTab.privacy)
+            let columnTab = (result[0].columnTab != 'no data') ? JSON.parse(result[0].columnTab) : 'no data'
 
             /*convert string data row tab to*/
+            let iconPrivcy = (dataTab != null) ? this.privacyIconRender(dataTab.privacy) : null
             let jsonDataTab = JSON.parse(result[0].rowTab)
             let relation = JSON.parse(jsonDataTab.relation_data)
             let tabData = jsonDataTab.tab_data
             this.createDataFilter(columnTab, jsonDataTab)
-
-            // console.log(jsonDataTab.tab_data)
-            // console.log(relation)
 
             let userPrivacyTab = []
             result[0].userPrivacyTab.map(dt => {
@@ -205,7 +202,7 @@ class tab extends React.Component{
                     userPrivacyData: userPrivacyTab
                 })
 
-                if((columnTab != null)) {
+                if((columnTab != "no data")) {
                     this.setState({
                         tabExist: true,
                         tableReady: true,
@@ -219,7 +216,7 @@ class tab extends React.Component{
                     let elm = document.createElement("btn")
                     ReactDom.render(<FontAwesomeIcon icon={faArrowsAltH}/>, elm)
                     
-                    //create table heeader design
+                    /*create table tab*/
                     tableHeaderRender(columnTab, "header-table-render", this.thClick, this.thClickFilter, this.tableBodyScroll)
                     let tableWidth = this.tableHeader.current.style.width
                     //set table body width base tabelWidth
@@ -232,7 +229,6 @@ class tab extends React.Component{
                         row: (tabData == null || tabData == "") ? [] : tabData,
                         relation_data: (relation == null | relation == "") ? [] : relation,
                     })
-                    // this.fetchActionRow(tabIdpar, columnTab)
                 }
             }
         })
@@ -240,8 +236,6 @@ class tab extends React.Component{
 
     pushHistory(){
         let href = window.location.href
-        // alert(href)
-        // window.history.pushState("", )
     }
 
     createDataFilter(columnTab, row){
@@ -1155,7 +1149,7 @@ class tab extends React.Component{
                                     <FontAwesomeIcon style={{fontSize: "24px", color: "a07878"}} icon={faInfoCircle}/><br/>
                                     <div style={{marginTop: "5px"}}>
                                         <span className="bold second-font-color">This tab not have data to display</span><br/>
-                                        <span style={{fontSize: "11px"}}>please klik create table to make some data</span>
+                                        <span style={{fontSize: "11px"}}>please click create table to make some data</span>
                                     </div>
                                 </div> : ""
                         }
