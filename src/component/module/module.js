@@ -21,6 +21,7 @@ import MenuTab from './menu_tab'
 import ListView from './list_view/list_view'
 import CardView from './card_view/card_view'
 import ContextMenuModule from './context_menu_module'
+import SidebarModule from './sibebar_module'
 
 class modulePage extends React.Component{
     
@@ -225,17 +226,20 @@ class modulePage extends React.Component{
         })
     }
 
-    mainMenu(e, tab){
+    mainMenu(e, tab, isSideBar){
         this.pushHistory(tab)
         var c = document.getElementsByClassName("main-menu-module")
-        for(var i = 0;i<c.length;i++){
-            c[i].style.borderBottom = "none"
-            c[i].setAttribute("class", "bold main-menu-module second-font-color")
-        }
+        
+        if(isSideBar != true){
+            for(var i = 0;i<c.length;i++){
+                c[i].style.borderBottom = "none"
+                c[i].setAttribute("class", "bold main-menu-module second-font-color")
+            }
 
-        var t = e.target
-        t.setAttribute("class", "bold main-menu-module")
-        t.style.borderBottom = "2px solid #386384"
+            var t = e.target
+            t.setAttribute("class", "bold main-menu-module")
+            t.style.borderBottom = "2px solid #386384"
+        }
 
         this.refModule.current.style.display = "none"
         this.refBugs.current.style.display = "none"
@@ -777,185 +781,127 @@ class modulePage extends React.Component{
                 {this.state.infoPop}
                 {this.state.addMember}
                 {this.state.permition}
-
-                <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" style={{paddingTop: "10px", marginLeft: "-20px", marginRight: "-10px", paddingLeft: "20px", overflow: "hidden"}}>
-                    <div id="inf-project-module" style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
-                        <a onClick={this.infoProject} className="bold" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", color: "#000"}}>
-                            <FontAwesomeIcon icon={faCog}/>&nbsp;Info Project
-                        </a>
-                        {this.state.infoProjectPop}
-                    </div>
-
-                    {/*menu module, bugs, doc file*/}
-                    <div id="main-menu-module" style={{float: "left"}}>
-                        <a ref={this.menuModule} onClick={(e) => this.mainMenu(e, "module")}
-                           className="bold main-menu-module"
-                           style={{fontSize: "12px",
-                               marginRight: "20px",
-                               paddingBottom: "10px",
-                               borderBottom: "2px solid #386384",
-                               display: "inline-block"}}>
-                            Module
-                        </a>
-                        {/* <a ref={this.menuBugs} onClick={(e) => this.mainMenu(e, "bugs")}
-                           className="bold main-menu-module second-font-color"
-                           style={{fontSize: "12px",
-                                marginRight: "20px",
-                                paddingBottom: "10px",
-                                display: "none"}}>
-                            Bugs
-                        </a> */}
-                        <a ref={this.menuDocFile} onClick={(e) => this.mainMenu(e, "doc file")}
-                           className="bold main-menu-module second-font-color"
-                           style={{fontSize: "12px",
-                                marginRight: "20px",
-                                paddingBottom: "10px",
-                                display: "inline-block"}}>
-                            Doc File
-                        </a>
-                    </div>
-
-                    <div id="base-tab-menu" ref={this.tabBaseMenu} style={{float: "left"}}>
-
-                        <MenuTab
-                            dataTab={this.state.dataTab}
-                            isRecreate={this.state.isRecreteMenuTab}
-                            action={this.tabMenu}
-                            baseMenuTab={this.tabBaseMenu}
-                            resetDropDown={this.resetDropDownTabMenu}
-                            setDropDownData={this.setDropDownTabMenuData}
-                            setRecreateMenuTabFalse={this.setRecreateMenuTabFalse}
-                        />
-
-                        <div ref={this.dropdownBase} style={{display: "none", paddingBottom: "10px"}}>
-                            <button onClick={this.dropDownMenuTabAction}
-                                    id="dropdown-menu-tab"
-                                    className="main-border-left"
-                                    style={{background: "none"}}>
-                                <FontAwesomeIcon icon={faCaretDown}/>
-                            </button>
-                            {this.state.dropDownMenuTabBase}
-                        </div>
-                        <a id="btn-new-tab" onClick={this.newTab}
-                           className="main-menu-module second-font-color"
-                           style={{fontSize: "12px", marginRight: "20px", borderLeft: "2px solid #CCC", paddingLeft: "10px"}}>
-                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;
-                            New Tab
-                        </a>
-                    </div>
-
-                </div>
-                {this.state.tabBase}
-                <div ref={this.refModule} id="base-tab-module">
-                    <div id="header-base-tab-module" className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
-                        <span className="bold">Modules / Tasks</span>
-                        {
-                            (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
-                            ?
-                                <div style={{float: "right", display: "flex", marginTop: "2px"}}>
-                                    {
-                                        (this.props.viewModule == "list")
-                                        ?
-                                            <Fragment>
-                                                <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
-                                                    {/* <i class="fa fa-check"></i>  */}
-                                                    Mark All
-                                                </button>
-                                                <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
-                                                    {/* <i class="fa fa-times"></i>  */}
-                                                    Unmark All
-                                                </button>
-                                                <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                    {/* <i class="fa fa-trash"></i>  */}
-                                                    Delete
-                                                </button>
-                                                <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                    {/* <i class="fa fa-trash"></i>  */}
-                                                    Filter
-                                                </button>
-                                            </Fragment>
-                                        :
-                                            ""
-                                    }
-                                    
-                                    <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <FontAwesomeIcon icon={faSimCard}/>  */}
-                                        Card
-                                    </button>
-                                    <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <i class="fa fa-times"></i>  */}
-                                        List
-                                    </button>
-                                    <button onClick={this.newModule.bind(this)} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <i class="fa fa-plus"></i> */}
-                                        New Module
-                                    </button>
-                                    {
-                                        (this.props.viewModule == "list")
-                                        ?
+                
+                <SidebarModule
+                    moduleClick={(e) => this.mainMenu(e, "module", true)} 
+                    documentFileClick={(e) => this.mainMenu(e, "doc file", true)}
+                    dataCollection={this.props.dataTab}
+                    dataTeam={this.props.dataTeam}/>
+                
+                <div id="base-data-module" style={{marginLeft: "260px"}}>
+                    
+                    {this.state.tabBase}
+                    <div ref={this.refModule} id="base-tab-module">
+                        <div id="header-base-tab-module" className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
+                            <span className="bold">Modules / Tasks</span>
+                            {
+                                (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
+                                ?
+                                    <div style={{float: "right", display: "flex", marginTop: "2px"}}>
+                                        {
+                                            (this.props.viewModule == "list")
+                                            ?
+                                                <Fragment>
+                                                    <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
+                                                        {/* <i class="fa fa-check"></i>  */}
+                                                        Mark All
+                                                    </button>
+                                                    <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
+                                                        {/* <i class="fa fa-times"></i>  */}
+                                                        Unmark All
+                                                    </button>
+                                                    <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                        {/* <i class="fa fa-trash"></i>  */}
+                                                        Delete
+                                                    </button>
+                                                    <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                        {/* <i class="fa fa-trash"></i>  */}
+                                                        Filter
+                                                    </button>
+                                                </Fragment>
+                                            :
+                                                ""
+                                        }
+                                        
+                                        <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
+                                            {/* <FontAwesomeIcon icon={faSimCard}/>  */}
+                                            Card
+                                        </button>
+                                        <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
+                                            {/* <i class="fa fa-times"></i>  */}
+                                            List
+                                        </button>
+                                        <button onClick={this.newModule.bind(this)} style={{background:"none", fontSize: "12px"}}>
+                                            {/* <i class="fa fa-plus"></i> */}
+                                            New Module
+                                        </button>
+                                        {
+                                            (this.props.viewModule == "list")
+                                            ?
+                                                (this.state.isBorder)
+                                                    ?
+                                                    <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
+                                                        <FontAwesomeIcon icon={faBorderNone}/>
+                                                        <span className="tooltiptext">Hide border</span>
+                                                    </button>
+                                                    :
+                                                    <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                                        <FontAwesomeIcon icon={faBorderAll}/>
+                                                        <span className="tooltiptext">Show border</span>
+                                                    </button>
+                                            :
+                                                ""
+                                        }
+                                    </div>
+                                :
+                                    <div id="base-btn-no-usr-acc" style={{float: "right"}}>
+                                        <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
+                                            {/* <FontAwesomeIcon icon={faSimCard}/>  */}
+                                            Card
+                                        </button>
+                                        <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
+                                            {/* <i class="fa fa-times"></i>  */}
+                                            List
+                                        </button>
+                                        
+                                        {
                                             (this.state.isBorder)
-                                                ?
+                                            ?
                                                 <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
                                                     <FontAwesomeIcon icon={faBorderNone}/>
                                                     <span className="tooltiptext">Hide border</span>
                                                 </button>
-                                                :
-                                                <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                            :
+                                                <button onClick={this.showBorder} className="main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
                                                     <FontAwesomeIcon icon={faBorderAll}/>
                                                     <span className="tooltiptext">Show border</span>
                                                 </button>
-                                        :
-                                            ""
-                                    }
-                                </div>
+                                        }
+                                    </div>
+                            }
+                        </div>
+                        
+                        {
+                            (this.props.viewModule == "list")
+                            ?
+                                <ListView isBorder={this.state.isBorder}
+                                    contextMenuModule={this.contextMenuModule}
+                                    selectedRow={this.selectedRow}
+                                    selectedRow2={this.selectedRow2}/>
                             :
-                                <div id="base-btn-no-usr-acc" style={{float: "right"}}>
-                                    <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <FontAwesomeIcon icon={faSimCard}/>  */}
-                                        Card
-                                    </button>
-                                    <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
-                                        {/* <i class="fa fa-times"></i>  */}
-                                        List
-                                    </button>
-                                    
-                                    {
-                                        (this.state.isBorder)
-                                        ?
-                                            <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
-                                                <FontAwesomeIcon icon={faBorderNone}/>
-                                                <span className="tooltiptext">Hide border</span>
-                                            </button>
-                                        :
-                                            <button onClick={this.showBorder} className="main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
-                                                <FontAwesomeIcon icon={faBorderAll}/>
-                                                <span className="tooltiptext">Show border</span>
-                                            </button>
-                                    }
-                                </div>
+                                <CardView contextMenuModule={this.contextMenuModule}
+                                    selectedRow={this.selectedRow}
+                                    selectedRow2={this.selectedRow2}/>
                         }
+
                     </div>
                     
-                    {
-                        (this.props.viewModule == "list")
-                        ?
-                            <ListView isBorder={this.state.isBorder}
-                                contextMenuModule={this.contextMenuModule}
-                                selectedRow={this.selectedRow}
-                                selectedRow2={this.selectedRow2}/>
-                        :
-                            <CardView contextMenuModule={this.contextMenuModule}
-                                selectedRow={this.selectedRow}
-                                selectedRow2={this.selectedRow2}/>
-                    }
-
-                </div>
-                
-                <div ref={this.refBugs} id="base-tab-bugs" style={{display: "none"}}>
-                    {this.state.bugsBase}
-                </div>
-                <div ref={this.refDocFile} id="base-tab-doc-file" style={{display: "none"}}>
-                    {this.state.documentFileBase}
+                    <div ref={this.refBugs} id="base-tab-bugs" style={{display: "none"}}>
+                        {this.state.bugsBase}
+                    </div>
+                    <div ref={this.refDocFile} id="base-tab-doc-file" style={{display: "none"}}>
+                        {this.state.documentFileBase}
+                    </div>
                 </div>
             </React.Fragment>
         )

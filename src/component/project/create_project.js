@@ -57,7 +57,7 @@ class create_project extends React.Component{
         }).then(res => res.text())
         .then(result => {
             if(result != 'exists'){
-                window.location = '/project/'+result
+                // window.location = '/project/'+result
             }else{
                 popUpAlert("project name already exists")
             }

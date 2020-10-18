@@ -3,7 +3,7 @@ import wrnAlt from '../images/warn_alert_inf.png'
 import GifLoader from '../gif/Rolling-1s-45px.gif'
 import {pathUrlConst} from '../const/const'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons'
+import {faInfoCircle, faFilePdf, faFileExcel, faFileWord, faFilePowerpoint, faFile, faImage, faPlayCircle, faFileVideo} from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import ReactDom from 'react-dom'
 
@@ -342,23 +342,22 @@ export function checkBuffering(tagVideo) {
 export function getIconDocFIle(fileName, baseElement){
     var a = fileName.split(".")
     var ext = a[a.length - 1]
-    var rtn = ""
 
-    let elm = document.createElement("i")
     if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
-        rtn = "fa fa-image"
-        elm.setAttribute("class", rtn)
+        ReactDom.render(<FontAwesomeIcon icon={faImage}/>, baseElement)
     }else if(ext.toLowerCase() == "mp4" || ext.toLowerCase() == "3gp" || ext.toLowerCase() == "mkv"){
-        rtn = "fa fa fa-play-circle"
-        elm.setAttribute("class", rtn)
-        elm.style.color = "#F00"
-        elm.style.fontSize = "14px"
+        ReactDom.render(<FontAwesomeIcon icon={faFileVideo} style={{fontSize: "14px", color: "red"}}/>, baseElement)
+    }else if(ext.toLowerCase() == "pdf"){
+        ReactDom.render(<FontAwesomeIcon icon={faFilePdf} style={{color: "red", fontSize: "14px"}}/>, baseElement)
+    }else if(ext.toLowerCase() == "docx" || ext.toLowerCase == "doc"){
+        ReactDom.render(<FontAwesomeIcon icon={faFileWord} style={{color: "#0087ba", fontSize: "14px"}}/>, baseElement)
+    }else if(ext.toLowerCase() == "xls" || ext.toLowerCase() == "xlsx"){
+        ReactDom.render(<FontAwesomeIcon icon={faFileExcel} style={{color: "green", fontSize: "14px"}}/>, baseElement)
+    }else if(ext.toLowerCase() == "pptx"){
+        ReactDom.render(<FontAwesomeIcon icon={faFilePowerpoint} style={{color: "#ff4600", fontSize: "14px"}}/>, baseElement)
     }else{
-        rtn = "fa fa-file"
-        elm.setAttribute("class", rtn)
-        elm.style.color = "#d4ae2b"
+        ReactDom.render(<FontAwesomeIcon icon={faFile} style={{color: "rgb(171 190 199)", fontSize: "14px"}}/>, baseElement)
     }
-    baseElement.append(elm)
 }
 
 export function pxd(password){

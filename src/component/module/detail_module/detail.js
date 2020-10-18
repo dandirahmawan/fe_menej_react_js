@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import ModuleInfo from '../module_info'
+import ModuleInfo from './module_info'
 import BugsModule from './bugs_module'
 import DocFileModule from './doc_file_module'
 import {getCookieUserId, getCookieSessionId, popUpAlert, convertDate_dd_mmm_yyy} from '../../../function/function'

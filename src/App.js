@@ -142,7 +142,7 @@ class App extends React.Component{
                                     <BrowserRouter>
                                         {redirect}
                                         <Navbar/>
-                                        <Sidebar/>
+                                        {/* <Sidebar/> */}
                                         <div id="main-base-data-wrapper">
                                             <Route path="/project/" exact={true} component={Project} />
                                             <Route path="/project/:id" exact={true} component={ListModule} />

@@ -55,6 +55,9 @@ class list_module extends React.Component{
             notFound: false
         })
 
+        let bd = document.getElementsByTagName("body")
+        bd[0].style.background = "#FFF"
+
         var formData = new FormData();
         formData.append("projectId", projectId)
         formData.append("userId", userId)
@@ -226,7 +229,7 @@ class list_module extends React.Component{
 
     render(){
         let listExistData = "not exist"
-        this.props.projectData.map(dt => {
+        this.state.dataProject.map(dt => {
             let paramId = this.props.match.params.id
             if(dt.projectId == paramId) {
                 listExistData = "exists"
@@ -272,9 +275,7 @@ class list_module extends React.Component{
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return{
-        projectData : state.dataProject,
         dataModule: state.dataModule,
         assignedModules: state.assignedModules
     }

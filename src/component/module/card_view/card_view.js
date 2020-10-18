@@ -101,7 +101,7 @@ class card_view extends Component{
 
         return(
             <div className="main-border-top" 
-                style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", marginRight: "-10px", background: "#efefef"}}>
+                style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", background: "#efefef"}}>
                 <div ref={this.baseCard} style={{marginTop: "10px", overflow: "hidden", position: "relative"}}>
                     {baseGroup}
                 </div>

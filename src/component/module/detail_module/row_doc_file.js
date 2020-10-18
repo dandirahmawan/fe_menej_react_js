@@ -1,7 +1,4 @@
 import React from 'react'
-import {baseUrl} from '../../../const/const'
-import {Spinner} from '../../spinner'
-import ReactDom from 'react-dom'
 import { getCookieUserId, getIconDocFIle } from '../../../function/function'
 
 class row_doc_file extends React.Component{

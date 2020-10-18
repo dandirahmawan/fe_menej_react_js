@@ -264,7 +264,6 @@ class info_project extends React.Component{
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return{
         dataStatus: state.dataStatus
     }
