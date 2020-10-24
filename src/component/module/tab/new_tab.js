@@ -8,8 +8,8 @@ import {faGlobe, faLock, faUser} from "@fortawesome/free-solid-svg-icons";
 
 class new_tab extends React.Component{
 
-    constructor(props) {
-        super(props);
+    constructor(){
+        super()
         this.state = {
             privacyIcon : <FontAwesomeIcon style={{float: "left", marginTop: "4px"}} icon={faLock}/>,
             privacy: "pr",
@@ -62,7 +62,7 @@ class new_tab extends React.Component{
                             method: "POST",
                             body: form
                         }).then(res => res.json()).then(result => {
-                            this.props.updateDataTab(result)
+                            this.props.updateDataCollection(result)
                         })
                         this.props.cancel();
                     }
@@ -97,14 +97,14 @@ class new_tab extends React.Component{
             <React.Fragment>
                 <div className="block"/>
                 <div id="base-new-tab" className="pop" style={{background: "#FFF", borderRadius: "4px", overflow: "hidden"}}>
-                    <div className="bold main-border-bottom second-background-grs" style={{padding: "10px"}}>New tab</div>
+                    <div className="bold main-border-bottom second-background-grs" style={{padding: "10px", fontSize: "12px"}}>New collection</div>
                     <div style={{padding: "11px"}}>
                         <div ref={this.divPrevTabName}
                              className="bold"
                              style={{fontSize: "12px", position: "fixed", opacity: "0"}}>
                             {this.state.tabName}
                         </div>
-                        <span className="bold" style={{fontSize: "11px"}}>Tab name :</span><br/>
+                        <span className="bold" style={{fontSize: "11px"}}>Collection name :</span><br/>
                         <input
                             ref={this.inputTabName}
                             type="text"

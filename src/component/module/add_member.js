@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import ReactDom from 'react-dom'
 import { popCenterPosition, popUpAlert, getCookieUserId } from '../../function/function'
 import { SpinnerButton } from '../spinner'
@@ -57,20 +57,23 @@ class add_member extends React.Component{
 
     render(){
         return(
-            <div id="pop-bs-add-member" className="pop" style={{padding: "10px", borderRadius: "3px", width: "300px", background: "#FFF"}}>
-                <div className="bold" style={{fontSize: "12px"}}>Add member</div>
-                <input ref={this.inputEmail} 
-                    placeholder="insert email" 
-                    type="text" 
-                    style={{padding: "7px", marginTop: "10px", width: "100%", boxSizing: "border-box"}}/>
-                <div style={{fontSize: "11px", marginTop: "3px", color: "#8d8d8d"}}>
-                    Insert email and we will send the request invitaion
+           <Fragment>
+               <div className="block"></div>
+                <div id="pop-bs-add-member" className="pop" style={{padding: "10px", borderRadius: "3px", width: "300px", background: "#FFF"}}>
+                    <div className="bold" style={{fontSize: "12px"}}>Add member</div>
+                    <input ref={this.inputEmail} 
+                        placeholder="insert email" 
+                        type="text" 
+                        style={{padding: "7px", marginTop: "10px", width: "100%", boxSizing: "border-box"}}/>
+                    <div style={{fontSize: "11px", marginTop: "3px", color: "#8d8d8d"}}>
+                        Insert email and we will send the request invitaion
+                    </div>
+                    <div style={{marginTop: "15px", textAlign: "right"}}>
+                        <button onClick={this.sendRequest} className="btn-primary" style={{fontSize: "10px"}}>Send request</button>
+                        <button onClick={this.props.cancel} className="btn-secondary" style={{fontSize: "10px", marginLeft: "10px"}}>Cancel</button>
+                    </div>
                 </div>
-                <div style={{marginTop: "15px", textAlign: "right"}}>
-                    <button onClick={this.sendRequest} className="btn-primary" style={{fontSize: "10px"}}>Send request</button>
-                    <button onClick={this.props.cancel} className="btn-secondary" style={{fontSize: "10px", marginLeft: "10px"}}>Cancel</button>
-                </div>
-            </div>
+           </Fragment>
         )
     }
 }

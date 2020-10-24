@@ -6,6 +6,7 @@ import AddMember from './add_member'
 import { faUserAlt, faUsers, faCog, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { ApiFetch } from '../apiFetch'
 import Permiton from './permition'
+import { connect } from 'react-redux'
 
 class add_member extends React.Component{    
 
@@ -25,7 +26,6 @@ class add_member extends React.Component{
 
     componentDidMount(){
         popCenterPosition("base-member-team-project")
-        console.log(this.props.dataModuleRedux)
         this.setState({
             dataTeam: this.props.dataTeam
         })
@@ -157,4 +157,10 @@ class add_member extends React.Component{
     }
 }
 
-export default add_member
+const mapStateToProps = state => {
+    return{
+        dataTeam : state.dataTeam
+    }
+}
+
+export default connect(mapStateToProps) (add_member)

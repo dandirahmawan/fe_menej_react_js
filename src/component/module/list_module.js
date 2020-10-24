@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTitleHader, setDataLabelModule, setAssignedModules} from '../../redux/action'
+import {setTitleHader, setDataLabelModule, setAssignedModules, setDataTeam} from '../../redux/action'
 import NotFound from '../404'
 import Module from './module'
 import {Spinner} from '../spinner'
@@ -91,9 +91,10 @@ class list_module extends React.Component{
                 this.props.setDataLabelsModule(dataLabelModule)
                 this.props.setAssigndeModules(assignedModules)
                 this.props.setDataStatus(dataStatus)
+                this.props.setDataTeam(dataTeam)
                 
                 this.setState({
-                    dataTeam: dataTeam,
+                    // dataTeam: dataTeam,
                     dataProject: dataProjectFetch,
                     permitionProject: permition,
                     dataNote: dataNote,
@@ -290,7 +291,8 @@ const mapDispatchToProps = dispatch => {
         setDataLabels : (a) => dispatch(setDataLabel(a)),
         setDataLabelsModule : (a) => dispatch(setDataLabelModule(a)),
         setAssigndeModules : (a) => dispatch(setAssignedModules(a)),
-        setDataStatus : (data) => dispatch(setDataStatus(data))
+        setDataStatus : (data) => dispatch(setDataStatus(data)),
+        setDataTeam : (data) => dispatch(setDataTeam(data))
     }
 }
 

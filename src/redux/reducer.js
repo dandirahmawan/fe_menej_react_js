@@ -7,8 +7,8 @@ import {
     deleteDataDocFileAction,
     closeDataBugsAction,
     uncloseDataBugsAction,
-    updateDataModuleBugsCloseAction,
-    updateDataModuleBugsUncloseAction,
+    // updateDataModuleBugsCloseAction,
+    // updateDataModuleBugsUncloseAction,
     editBugsAction, editNoteAction,
     editProjectAction,
     startDataAction,
@@ -17,7 +17,8 @@ import {
     setAssignedModulesAction,
     updataDataChecklistAction, 
     setDataStatuAction, 
-    setVIewModuleAction
+    setVIewModuleAction,
+    setDataTeamAction
 } from './type_action'
 
 const initState = {
@@ -28,6 +29,7 @@ const initState = {
     userLoginData:{},
     title:"",
     dataBugs:[],
+    dataTeam:[],
     testing:"",
     dataLabels: [],
     dataLabelsModule: [],
@@ -124,6 +126,14 @@ function rootReducer(state = initState, action){
         }
     }
 
+    if(action.type === setDataTeamAction){
+        let data = action.data
+        return{
+            ...state,
+            dataTeam: data
+        }
+    }
+
     if(action.type === 'DELETE_DATA_MODULE'){
         state.dataModule.map(dt => {
             if(dt.modulId == action.modulId){
@@ -133,18 +143,8 @@ function rootReducer(state = initState, action){
         })
 
         let newDataModule = state.dataModule
-        
-        /*untuk saat ini tidak diperluka karena halama all bugs di sembunyikam*/
-        // const newDataBugs = state.dataBugs.map(dt => {
-        //     if(dt.modulId == action.modulId){
-        //         dt.isDelete = "Y"
-        //     }
-        //     return dt
-        // })
-
         return{
             ...state,
-            // dataBugs: newDataBugs,
             dataModule: newDataModule
         }
     }

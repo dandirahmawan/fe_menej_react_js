@@ -23,6 +23,11 @@ class function_data extends React.Component{
     }
 
     componentDidMount(){
+        let url = window.location.href
+        let lastIndex = url.lastIndexOf("/")
+        let lastString = url.substr(lastIndex + 1, url.length)
+        let projectId = lastString.split("?")[0]
+
         document.addEventListener('mouseup', this.handleClickOutside)
         this.base.current.style.top = this.props.x+"px"
         this.base.current.style.left = this.props.y+"px"
@@ -33,7 +38,7 @@ class function_data extends React.Component{
         let functionName = this.props.functionName.replace("=", "") 
         if(functionName != "url" && functionName != "URL"){
             let form = new FormData()
-            form.append("projectId", 72)
+            form.append("projectId", projectId)
             form.append("type", functionName)
             ApiFetch("/function_data", {
                 method: "POST",
@@ -114,7 +119,7 @@ class function_data extends React.Component{
                             data
                         :
                             <div className="second-font-color bold" 
-                                style={{padding: "20px", fontSize: "12px", textAlign: "center"}}>Data not foun</div>
+                                style={{padding: "20px", fontSize: "12px", textAlign: "center"}}>Data not found</div>
                     }
                 </div>
             </div>

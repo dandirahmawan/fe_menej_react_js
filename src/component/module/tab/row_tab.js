@@ -106,7 +106,7 @@ class row_tab extends React.Component{
                 })
                 
                 icon = document.createElement("i")
-                icon.setAttribute("class", "fa fa-clipboard")
+                icon.setAttribute("class", "fas fa-clipboard")
                 icon.setAttribute("style", "font-size: 14px;color: #d4ae2b")
             }else if(fxName == "DOC" || fxName == "doc"){
                 this.props.relationData.map(dt => {
@@ -142,17 +142,20 @@ class row_tab extends React.Component{
                 baseName.append(link)
             }
 
+            let elmReturnBase = document.createElement("div")
             let elmReturn = document.createElement("div")
             if(fxName == "MOD" || fxName == "mod"){ 
-                elmReturn.append(icon) 
+                getIconDocFIle(name, elmReturn)
+                elmReturnBase.append(icon) 
             }else if(fxName == "URL" || fxName == "url"){ 
-                elmReturn.append(icon) 
+                elmReturnBase.append(icon) 
             }else{
                 getIconDocFIle(name, elmReturn)
+                elmReturnBase.append(elmReturn)
             }
 
-            elmReturn.append(baseName)
-            return elmReturn
+            elmReturnBase.append(baseName)
+            return elmReturnBase
         }else{
             return val
         }

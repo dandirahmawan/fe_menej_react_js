@@ -366,6 +366,10 @@ button{
     color: #FFF !important
 }
 
+.tr-selectable-menu:hover a{
+    color: #FFF;
+}
+
 .tr-selectable-project{
     background: #FFF;
 }

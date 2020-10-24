@@ -144,7 +144,7 @@ class list_view extends Component{
                                     <td colSpan="5" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
                                         <div style={{marginTop: "25px", marginBottom: "100px"}}>
                                             <span style={{fontSize: "16px"}}>
-                                                <i class="fa fa-clipboard" style={{fontSize: "30px"}}></i>
+                                                <i class="fas fa-clipboard" style={{fontSize: "30px"}}></i>
                                             </span>
                                             <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
                                             <div style={{fontSize: "12px"}}>please click new module button<br/>to create a new module</div>

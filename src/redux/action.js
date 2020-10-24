@@ -14,8 +14,12 @@ import {
     editProjectAction,
     startDataAction,
     setDataLabelAction,
-    setDataLabelModuleAction,
-    setDataLabelsModuleCurrrentSetAction, setAssignedModulesAction, updataDataChecklistAction, setDataStatuAction, setVIewModuleAction
+    setDataLabelModuleAction, 
+    setAssignedModulesAction, 
+    updataDataChecklistAction, 
+    setDataStatuAction, 
+    setVIewModuleAction,
+    setDataTeamAction
 } from './type_action'
 
 export function setDataProject(data){
@@ -282,9 +286,9 @@ export function setViewModule(type){
     }
 }
 
-// export function setDataLabelsModuleCurrrentSet(data){
-//     return{
-//         type: setDataLabelsModuleCurrrentSetAction,
-//         data: data
-//     } 
-// }
+export function setDataTeam(data){
+    return{
+        type: setDataTeamAction,
+        data: data
+    }
+}

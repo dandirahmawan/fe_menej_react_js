@@ -14,7 +14,7 @@ import {faBorderAll, faBorderNone, faPlusCircle, faCaretDown, faCog,} from '@for
 import DocumentFile from '../document_file/document_file'
 import InfoProject from './info_project'
 import HandoverModule from './handover_module'
-import NewTab from './tab/new_tab'
+import NewCollection from './tab/new_tab'
 import Tab from './tab/tab'
 import DropDownMenuTab from './dropdown_tab_menu'
 import MenuTab from './menu_tab'
@@ -22,6 +22,7 @@ import ListView from './list_view/list_view'
 import CardView from './card_view/card_view'
 import ContextMenuModule from './context_menu_module'
 import SidebarModule from './sibebar_module'
+import ManageStatus from './manage_status'
 
 class modulePage extends React.Component{
     
@@ -30,9 +31,8 @@ class modulePage extends React.Component{
         this.state = {
             infoPop:"",
             addMember:"",
-            dataTeam:[],
             dataPermition:[],
-            dataTab:[],
+            dataCollection:[],
             createdByProject:"",
             permition:"",
             dataNote:[],
@@ -48,7 +48,8 @@ class modulePage extends React.Component{
             isUpadateDataTab: false,
             isRecreteMenuTab: false,
             arrSelected: [],
-            contextMenuBase: ""
+            contextMenuBase: "",
+            popup: null
         }
 
         this.refBugs = React.createRef()
@@ -89,8 +90,8 @@ class modulePage extends React.Component{
         this.handOver = this.handOver.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
         this.selectedRow2 = this.selectedRow2.bind(this)
-        this.newTab = this.newTab.bind(this)
-        this.updateDataTab = this.updateDataTab.bind(this)
+        this.newCollection = this.newCollection.bind(this)
+        this.updateDataCollection = this.updateDataCollection.bind(this)
         this.tabMenu = this.tabMenu.bind(this)
         this.tabMenuDp = this.tabMenuDp.bind(this)
         this.editTab = this.editTab.bind(this)
@@ -111,6 +112,7 @@ class modulePage extends React.Component{
         this.contextMenuModule = this.contextMenuModule.bind(this)
         this.commitDeleteModuleCtx = this.commitDeleteModuleCtx.bind(this)
         this.deleteModuleDelCtx = this.deleteModuleDelCtx.bind(this)
+        this.manageStatus = this.manageStatus.bind(this)
     }
 
     componentDidMount(){
@@ -143,7 +145,7 @@ class modulePage extends React.Component{
                 dataPermition: dataProps.dataPermition,
                 dataNote: dataProps.dataNote,
                 picProject: dt.pic,
-                dataTab: dataProps.dataTab,
+                dataCollection: dataProps.dataTab,
                 dataStatus: dataProps.dataStatus
             })
         })
@@ -165,9 +167,9 @@ class modulePage extends React.Component{
         let scope = this
         var itv = setInterval(function(){
             if(currentTab == "bugs") {
-                scope.menuBugs.current.click()
+                if(scope.menuBugs.current != null) scope.menuBugs.current.click()
             }else if(currentTab == "doc file"){
-                scope.menuDocFile.current.click()
+                if(scope.menuDocFile.current != null) scope.menuDocFile.current.click()
             }else if(currentTab == "" || currentTab == "module"){
                 //do nothing
             }else{
@@ -346,7 +348,8 @@ class modulePage extends React.Component{
 
     hidePopUp(){
         this.setState({
-            infoPop: ""
+            infoPop: "",
+            popup: null
         })
     }
 
@@ -444,7 +447,7 @@ class modulePage extends React.Component{
             infoProjectPop: "",
             addMember: <ManageMember
                             projectId={this.props.projectIdHeader}
-                            dataTeam={this.state.dataTeam} 
+                            // dataTeam={this.props.dataTeam} 
                             projectId={this.props.projectIdHeader}
                             deleteMember={this.deleteMember} 
                             cancel={this.cancelAddMember}
@@ -460,18 +463,16 @@ class modulePage extends React.Component{
     }
 
     deleteMember(userId){
-        const data = this.state.dataTeam.map(dt => {
+        let i = 0
+        let index = 0
+        this.props.dataTeam.map(dt => {
             if(dt.userId == userId){
-                dt.isDelete = "Y"
+                index = i
             }
-            return dt
+            i++
         })
         
-        this.props.deleteMemberRedux(userId)
-        this.setState({
-            dataTeam: data
-        })
-        console.log(this.state.dataTeam)
+        this.props.dataTeam.splice(index, 1)
     }
 
     setTeamMember(userId){
@@ -536,7 +537,7 @@ class modulePage extends React.Component{
             this.setState({
                 infoProjectPop: <InfoProject
                                     dataStatus={this.props.dataStatus} 
-                                    dataTeam={this.state.dataTeam}
+                                    dataTeam={this.props.dataTeam}
                                     dataPermition={this.state.dataPermition}
                                     refreshModule={this.props.refreshModule}
                                     dataProject={dt}
@@ -554,19 +555,19 @@ class modulePage extends React.Component{
         })
     }
 
-    newTab(){
+    newCollection(){
         this.setState({
-            infoPop: <NewTab
+            infoPop: <NewCollection
                             cancel={this.hidePopUp}
                             projectId={this.props.projectIdHeader}
-                            updateDataTab={this.updateDataTab}
+                            updateDataCollection={this.updateDataCollection}
                         />
         })
     }
 
-    updateDataTab(jsonData){
+    updateDataCollection(jsonData){
         this.setState({
-            dataTab: jsonData,
+            dataCollection: jsonData,
             isUpadateDataTab: true
         })
     }
@@ -578,14 +579,17 @@ class modulePage extends React.Component{
             c[i].setAttribute("class", "bold main-menu-module second-font-color")
         }
 
-        this.dropdownBase.current.style.borderBottom = "none"
+        if(this.dropdownBase.current != null){
+            this.dropdownBase.current.style.borderBottom = "none"
 
-        if(e != null) {
-            var t = e.target
-            t.setAttribute("class", "bold main-menu-module")
-            t.style.borderBottom = "2px solid #386384"
+            if(e != null) {
+                var t = e.target
+                t.setAttribute("class", "bold main-menu-module")
+                t.style.borderBottom = "2px solid #386384"
+            }
         }
 
+        /*hide page module, doc file and bugs*/
         this.refModule.current.style.display = "none"
         this.refBugs.current.style.display = "none"
         this.refDocFile.current.style.display = "none"
@@ -594,7 +598,7 @@ class modulePage extends React.Component{
         let privacy = null
         let createdBy = null
         let userName = null
-        this.state.dataTab.map(dt => {
+        this.state.dataCollection.map(dt => {
             if(dt.tabId == tabId){
                 tabName = dt.tabName
                 privacy = dt.privacy
@@ -605,10 +609,10 @@ class modulePage extends React.Component{
 
         this.setState({
             tabBase: <Tab
-                        updateDataTab={this.updateDataTab}
+                        updateDataCollection={this.updateDataCollection}
                         editTab={this.editTab}
                         projectId={this.props.projectIdHeader}
-                        dataTeam={this.state.dataTeam}
+                        dataTeam={this.props.dataTeam}
                         tabId={tabId}
                         refreshDelete={this.refreshTabMenu}
                         pic={this.state.picProject}
@@ -634,7 +638,7 @@ class modulePage extends React.Component{
         let privacy = null
         let createdBy = null
         let userName = null
-        this.state.dataTab.map(dt => {
+        this.state.dataCollection.map(dt => {
             if(dt.tabId == tabId){
                 tabName = dt.tabName
                 privacy = dt.privacy
@@ -645,10 +649,10 @@ class modulePage extends React.Component{
 
         this.setState({
             tabBase: <Tab
-                updateDataTab={this.updateDataTab}
+                updateDataCollection={this.updateDataCollection}
                 editTab={this.editTab}
                 projectId={this.props.projectIdHeader}
-                dataTeam={this.state.dataTeam}
+                dataTeam={this.props.dataTeam}
                 tabId={tabId}
                 pic={this.state.picProject}
                 createdBy={createdBy}
@@ -660,7 +664,7 @@ class modulePage extends React.Component{
     }
 
     editTab(tabId, tabName, privacy){
-        const data = this.state.dataTab.map(dt => {
+        const data = this.state.dataCollection.map(dt => {
             if(dt.tabId == tabId){
                 dt.tabName = tabName
                 dt.privacy = privacy
@@ -669,13 +673,13 @@ class modulePage extends React.Component{
         })
 
         this.setState({
-            dataTab: data
+            dataCollection: data
         })
     }
 
     refreshTabMenu(tabId){
-        let data = this.state.dataTab
-        this.state.dataTab.map(dt => {
+        let data = this.state.dataCollection
+        this.state.dataCollection.map(dt => {
             if(dt.tabId == tabId){
                 let idx = data.indexOf(dt)
                 data.splice(idx, 1)
@@ -683,10 +687,11 @@ class modulePage extends React.Component{
             return dt
         })
 
-        this.menuModule.current.click()
+        // console.log(this.menuModule)
+        if(this.menuModule.current != null) this.menuModule.current.click()
         this.setState({
             isRecreteMenuTab: true,
-            dataTab: data
+            dataCollection: data
         })
     }
 
@@ -775,18 +780,34 @@ class modulePage extends React.Component{
         })
     }
 
+    manageStatus(){
+        this.setState({
+            popup: <ManageStatus dataStatus={this.props.dataStatus} 
+                                 projectId={this.props.projectIdHeader}
+                                 updateDataStatus={this.updateDataStatus} 
+                                 cancel={this.hidePopUp}/>
+        })
+    }
+
     render(){
         return(
             <React.Fragment>
                 {this.state.infoPop}
                 {this.state.addMember}
                 {this.state.permition}
+                {this.state.popup}
                 
                 <SidebarModule
                     moduleClick={(e) => this.mainMenu(e, "module", true)} 
                     documentFileClick={(e) => this.mainMenu(e, "doc file", true)}
-                    dataCollection={this.props.dataTab}
-                    dataTeam={this.props.dataTeam}/>
+                    tabMenu={this.tabMenu}
+                    projectId={this.props.projectIdHeader}
+                    newCollection={this.newCollection}
+                    dataStatus={this.props.dataStatus}
+                    dataCollection={this.state.dataCollection}
+                    deleteMember={this.deleteMember}
+                    manageStatus={this.manageStatus}
+                    manageMember={this.addMember}/>
                 
                 <div id="base-data-module" style={{marginLeft: "260px"}}>
                     
@@ -923,7 +944,8 @@ const mapStateToProps = state => {
         assignedModules: state.assignedModules,
         dataModule: state.dataModule,
         dataStatus: state.dataStatus,
-        viewModule: state.viewModule
+        viewModule: state.viewModule,
+        dataTeam: state.dataTeam
     }
 }
 

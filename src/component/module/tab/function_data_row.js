@@ -10,7 +10,7 @@ export default class funtion_data_row extends React.Component{
     componentDidMount(){
         if(this.props.functionName == "MOD" || this.props.functionName == "mod"){
             let elm = document.createElement("i")
-            elm.setAttribute("class", "fa fa-clipboard")
+            elm.setAttribute("class", "fas fa-clipboard")
             elm.setAttribute("style", "fontSize: 14px; color: #d4ae2b")
             this.baseIcon.current.append(elm)
         }else{

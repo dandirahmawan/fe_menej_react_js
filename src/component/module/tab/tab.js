@@ -986,7 +986,13 @@ class tab extends React.Component{
                     {this.state.filterHeaderColumn}
                     
                     <span style={{fontSize: "12px", position: "absolute", opacity: "0", zIndex: "-1"}} ref={this.spanToWidth}/>
-                    <div className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "100%", overflow: "hidden"}}>
+                    <div className="main-border-bottom" 
+                        style={{paddingBottom: "10px", 
+                                paddingTop: "10px", 
+                                width: "100%",
+                                paddingLeft: "10px",
+                                marginLeft: "-10px", 
+                                overflow: "hidden"}}>
                         <div style={{float: "left"}}>
                             <div className="second-font-color"
                                  style={{fontSize: "13px", marginRight: "5px", float: "left", marginTop: "2px"}}>
