@@ -1,6 +1,6 @@
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 import React from 'react'
 
 class not_found_data extends React.Component{

@@ -21,7 +21,6 @@ import CardView from './card_view/card_view'
 import ContextMenuModule from './context_menu_module'
 import SidebarModule from './sibebar_module'
 import ManageStatus from './manage_status'
-import { CheckBox } from '@material-ui/icons'
 
 class modulePage extends React.Component{
     
@@ -800,10 +799,6 @@ class modulePage extends React.Component{
         this.setState({
             showDescription: !this.state.showDescription
         })
-    }
-
-    deleteProject(){
-
     }
 
     render(){

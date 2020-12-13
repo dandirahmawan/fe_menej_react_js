@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import RowModule from './list_row'
 import { selectRowModule } from '../../../redux/action'
+import { Fragment } from 'react'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class list_view extends Component{
 
@@ -152,7 +155,21 @@ class list_view extends Component{
                                         </td>
                                     </tr> 
                                 : 
-                                    dataModule
+                                    <Fragment>
+                                        <tr className='second-background-grs'>
+                                            <td colSpan='7' className='bold' style={{paddingTop: "10px", paddingBottom: "10px"}}>
+                                                TO DO&nbsp;&nbsp;<FontAwesomeIcon icon={faArrowDown}/>
+                                            </td>
+                                        </tr>
+                                        {dataModule}
+                                        <tr className='second-background-grs'>
+                                            <td colSpan='7' className='bold' style={{paddingTop: "10px", paddingBottom: "10px"}}>
+                                                DEPLOYMENT&nbsp;&nbsp;<FontAwesomeIcon icon={faArrowDown}/>
+                                            </td>
+                                        </tr>
+                                        {dataModule}
+                                    </Fragment>
+                                    
                             }
                         </tbody>
                     </table>

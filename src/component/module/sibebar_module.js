@@ -10,6 +10,7 @@ import AddMember from './add_member'
 import EditProject from './edit_project'
 import {check_circle as CheckCircle} from '../icon/icon'
 import { getCookieUserId } from '../../function/function'
+import {popUpAlert} from '../../function/function'
 
 class sidebar_module extends React.Component{
 
@@ -120,6 +121,11 @@ class sidebar_module extends React.Component{
         }).then(res => res.text()).then(result => {
             if(result == "success"){
                 this.props.deleteProject()
+            }else{
+                this.setState({
+                    popup: ""
+                })
+                popUpAlert(result);
             }
         })
     }
