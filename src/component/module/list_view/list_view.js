@@ -105,19 +105,17 @@ class list_view extends Component{
                             countNote = {dt.countNote}
                             userName = {dt.userName}
                             isMember = {dt.isMember}
-                            // note = {this.state.dataNote}
                             note = ""
                             assigned = {assigned}
                             bugsIconClick = {this.bugsIconClick}
                             isSelected={dt.isSelected}
                             docFileIconClick = {this.docFileIconClick}
                             noteClick={this.noteClick}
-                            // appendsNote={this.state.appendsNote}
                             appendsNote=""
-                            // updateStateDataNote={this.updateStateDataNote}
                             updateStateDataNote=""
                             dataLabelModule={this.readDataLabel(dt.modulId)}
                             contextMenuModule={this.props.contextMenuModule}
+                            showDescription={this.props.showDescription}
                             isBorder={this.props.isBorder}/>
             }
             
@@ -125,37 +123,40 @@ class list_view extends Component{
 
         return(
             <React.Fragment>
-                {this.state.popup}
-                <table className="main-border-bottom" style={{width: "80%", marginBottom: "50px"}}>
-                    <thead ref={this.theadModule}>
-                        <tr>
-                            <th colSpan="2" style={{width: "400px"}} className="main-border-right second-font-color bold">Module</th>
-                            <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px"}} className="main-border-right second-font-color bold">Assign to</th>
-                            <th className="main-border-right second-font-color bold">Due date</th>
-                            <th className="main-border-right second-font-color bold">Status</th>
-                        <th className="second-font-color bold"></th>
-                        </tr>
-                    </thead>
-                    <tbody style={{overflow: "auto"}}>
-                        {
-                            (dataModule == "") 
-                            ? 
-                                <tr>
-                                    <td colSpan="5" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
-                                        <div style={{marginTop: "25px", marginBottom: "100px"}}>
-                                            <span style={{fontSize: "16px"}}>
-                                                <i class="fas fa-clipboard" style={{fontSize: "30px"}}></i>
-                                            </span>
-                                            <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
-                                            <div style={{fontSize: "12px"}}>please click new module button<br/>to create a new module</div>
-                                        </div>
-                                    </td>
-                                </tr> 
-                            : 
-                                dataModule
-                        }
-                    </tbody>
-                </table>
+                <div style={{marginLeft: "15px"}}>
+                    {this.state.popup}
+                    <table className="main-border-bottom" style={{width: "89%", marginBottom: "50px", minWidth: "755px"}}>
+                        <thead ref={this.theadModule}>
+                            <tr className="main-border-bottom">
+                                <th colSpan="2" style={{maxWidth: "400px"}} className="main-border-right second-font-color bold">Module</th>
+                                <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px", paddingTop: "15px", paddingBottom: "15px"}} className="main-border-right second-font-color bold">Labels</th>
+                                <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px"}} className="main-border-right second-font-color bold">Assign to</th>
+                                <th className="main-border-right second-font-color bold">Due date</th>
+                                <th style={{textAlign: "center"}} className="main-border-right second-font-color bold">Status</th>
+                            <th className="second-font-color bold"></th>
+                            </tr>
+                        </thead>
+                        <tbody style={{overflow: "auto"}}>
+                            {
+                                (dataModule == "") 
+                                ? 
+                                    <tr>
+                                        <td colSpan="5" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                            <div style={{marginTop: "25px", marginBottom: "100px"}}>
+                                                <span style={{fontSize: "16px"}}>
+                                                    <i class="fas fa-clipboard" style={{fontSize: "30px"}}></i>
+                                                </span>
+                                                <div className="bold" style={{marginTop: "10px", fontSize: '14px'}}>No data to display</div>
+                                                <div style={{fontSize: "12px"}}>please click new module button<br/>to create a new module</div>
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                : 
+                                    dataModule
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </React.Fragment>
         )
     }

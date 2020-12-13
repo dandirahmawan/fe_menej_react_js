@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import Logo from '../images/menej_285e8e.png'
 import {baseUrl} from '../const/const'
 import { pxd } from '../function/function'
+import cookieReact from 'react-cookies'
 
 class login extends React.Component{
 
@@ -34,10 +35,9 @@ class login extends React.Component{
 
     setCookies(data){
         for(var i = 0;i<data.length;i++){
-            document.cookie = "userId = "+data[i]['userId'];
-            document.cookie = "sessionId = "+data[i]['sessionId'];
-        }
-        window.location.reload()    
+            cookieReact.save("userId", data[i]['userId'], {path: '/'})
+            cookieReact.save("sessionId", data[i]['sessionId'], {path: '/'})
+        }  
     }
 
     submit(e){
@@ -67,6 +67,16 @@ class login extends React.Component{
         form.append("email", this.state.email)
         form.append("password", pxd(this.state.password))
         
+        /*set redirection location after
+        specialy for invitaion redirection page*/
+        
+        let redirect = ""
+        if(window.location.pathname == "/login/invitation"){
+            let url = window.location.href
+            let lastIndexUrl = url.lastIndexOf("/") + 1
+            redirect = url.substring(lastIndexUrl, url.length)
+        }
+
         fetch(baseUrl+"/login", {
             method: "POST",
             headers : new Headers(),
@@ -75,7 +85,12 @@ class login extends React.Component{
         .then((result) => {
             var l = result.length;
             if(l > 0){
-                this.setCookies(result);
+                this.setCookies(result)
+                if(redirect == ""){ 
+                    window.location.reload()
+                }else{
+                    window.location = window.location.origin+"/"+redirect 
+                }
             }else{
                 this.setState({
                     alertLogin: "Email and password is not match"

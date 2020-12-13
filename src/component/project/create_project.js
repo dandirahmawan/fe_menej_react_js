@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import {baseUrl} from '../../const/const'
 import {getCookieUserId, popUpAlert} from '../../function/function'
-import {Redirect} from 'react-router-dom'
+import {BrowserRouter, Link, Redirect, Route} from 'react-router-dom'
 import { ApiFetch } from '../apiFetch'
+import ListModule from '../module/list_module'
 import ReactDom from 'react-dom'
 import {SpinnerButton} from '../spinner'
 
@@ -14,6 +15,8 @@ class create_project extends React.Component{
             projectName: "",
             onProcess: false
         }
+
+        this.redirectLink = createRef()
         this.handleChange = this.handleChange.bind(this)
     }
     
@@ -46,21 +49,6 @@ class create_project extends React.Component{
         ReactDom.render(<SpinnerButton size="14px"/>, e.target)
         this.setState({
             onProcess: true
-        })
-
-        var formData = new FormData()
-        formData.append("userId", userId)
-        formData.append("projectName", this.state.projectName)
-        ApiFetch("/insert_project",{
-            method: 'POST',
-            body: formData
-        }).then(res => res.text())
-        .then(result => {
-            if(result != 'exists'){
-                // window.location = '/project/'+result
-            }else{
-                popUpAlert("project name already exists")
-            }
         })
     }
 
@@ -102,6 +90,7 @@ class create_project extends React.Component{
                             <button className="btn-secondary" onClick={this.props.hidePopUp} style={{fontSize: '11px'}}>Cancel</button>
                         </div>
                     </div>
+                    <div id="bs-rlinl-cmt"></div>
                 </div>
             </React.Fragment>
         )

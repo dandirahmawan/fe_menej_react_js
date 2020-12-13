@@ -1,6 +1,6 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faFilter, faPlus, faBorderAll, faBorderNone} from '@fortawesome/free-solid-svg-icons'
+import {faFilter, faPlus, faBorderAll, faBorderNone, faPaperclip} from '@fortawesome/free-solid-svg-icons'
 import Row from './row_document_file'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import { baseUrl } from '../../const/const'
@@ -259,8 +259,16 @@ class document_file extends React.Component{
         return(
             <React.Fragment>
                 {this.state.popup}
-                <div className="main-border-bottom" style={{paddingTop: "10px", paddingBottom: "10px", width: "80%"}}>
-                    <span className="bold">List Document File</span>
+                <div className="main-border-bottom-drk" 
+                    style={{paddingTop: "20px", 
+                            paddingBottom: "20px",
+                            paddingLeft: "20px",
+                            paddingRight: "50px", 
+                            marginLeft: "-10px"}}>
+
+                    <span className="bold" style={{fontSize: "14px"}}>
+                        <FontAwesomeIcon className="second-font-color" icon={faPaperclip}/> List Attachment
+                    </span>
                     {
                         (this.state.isBorder)
                         ?
@@ -291,12 +299,12 @@ class document_file extends React.Component{
                     }
 
                 </div>
-                <table className="main-border-bottom" style={{width: "80%"}}>
+                <table className="main-border-bottom" style={{width: "80%", marginLeft: "10px"}}>
                     <thead id="th-doc-file">
                         {
                             (this.state.isBorder)
                             ?
-                                <tr>
+                                <tr className="main-border-bottom">
                                     <th className="bold second-font-color main-border th-doc-file tb-doc-file" colSpan="2">Name</th>
                                     <th className="bold second-font-color main-border th-doc-file tb-doc-file" style={{width: "100px"}}>Module</th>
                                     <th className="bold second-font-color main-border th-doc-file tb-doc-file" style={{width: "100px"}}>Upload By</th>
@@ -307,13 +315,14 @@ class document_file extends React.Component{
                                 </tr>
                             :
                                 <tr>
-                                    <th className="bold second-font-color main-border-right th-doc-file tb-doc-file" colSpan="2">Name</th>
-                                    <th className="bold second-font-color main-border-right th-doc-file tb-doc-file" style={{width: "100px"}}>Module</th>
-                                    <th className="bold second-font-color main-border-right th-doc-file tb-doc-file" style={{width: "100px"}}>Upload By</th>
-                                    <th className="bold second-font-color main-border-right th-doc-file tb-doc-file" style={{width: "50px"}}>
+                                    <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" colSpan="2">Name</th>
+                                    <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "100px"}}>Module</th>
+                                    <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "100px"}}>Upload By</th>
+                                    <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "50px"}}>
                                         Size
                                     </th>
-                                    <th className="bold second-font-color th-doc-file tb-doc-file" colSpan="2">Date</th>
+                                    <th className="bold second-font-color
+                                     main-border-bottom th-doc-file tb-doc-file" colSpan="2">Date</th>
                                 </tr>
                         }
                     </thead>

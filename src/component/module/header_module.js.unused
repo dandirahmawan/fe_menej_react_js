@@ -28,7 +28,7 @@ class header_module extends React.Component{
                     <span className="bold">{this.props.countMember}</span>
                 </div>
                 <div className="bold" style={{paddingTop: "20px", paddingBottom: "20px", marginRight: "20px", float: "left", textAlign: "center"}}>
-                    <span className="second-font-color" style={{fontSize: "11px"}}>Perentage</span><br/>
+                    <span className="second-font-color" style={{fontSize: "11px"}}>Percentage</span><br/>
                     <span className="bold">{this.props.percentage}</span>
                 </div>
             </div>

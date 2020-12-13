@@ -31,7 +31,7 @@ class pic_picker extends Component{
 
         const data = this.props.dataTeam.map(dt => {
             return <a onClick={() => this.select(dt.userId)} style={{textDecoration: "none"}}>
-                        <div className="tr-selectable" style={{padding: "10px", paddingTop: "5px", paddingBottom: "5px"}}>
+                        <div className="tr-selectable" style={{padding: "10px"}}>
                             <UserItemList userName={dt.userName} 
                                         picProfile={dt.picProfile}
                                         emailUser={dt.emailUser}/>

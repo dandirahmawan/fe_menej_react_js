@@ -7,6 +7,9 @@ import {Spinner} from '../spinner'
 import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
 import {setDataModule, deleteDataModule, deleteMember, setDataLabel, setDataStatus} from '../../redux/action'
 import {ApiFetch} from '../apiFetch'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
 
 class list_module extends React.Component{
 
@@ -20,7 +23,8 @@ class list_module extends React.Component{
             projectIdHeader:"",
             dataTab:[],
             dataNote:[],
-            notFound:false
+            notFound:false,
+            isDeleteProject: false
         }
         this.hidePopUp = this.hidePopUp.bind(this)
         this.commitDeleteModule = this.commitDeleteModule.bind(this)
@@ -32,6 +36,7 @@ class list_module extends React.Component{
         this.refreshModule = this.refreshModule.bind(this)
         this.commitNewStatus = this.commitNewStatus.bind(this)
         this.updateDataStatus = this.updateDataStatus.bind(this)
+        this.deleteProject = this.deleteProject.bind(this)
     }
 
     componentDidMount(){
@@ -214,6 +219,12 @@ class list_module extends React.Component{
         this.props.deleteMember(userId)
     }
 
+    deleteProject(){
+        this.setState({
+            isDeleteProject: true
+        })
+    }
+
     commitNewStatus(status){
         // let statusJson = status
         // let arrStatus = this.state.dataStatus
@@ -249,6 +260,7 @@ class list_module extends React.Component{
                             commitNewModule={this.commitNewModule}
                             commitDeleteMember={this.commitDeleteMember}
                             commitNewStatus={this.commitNewStatus}
+                            deleteProject={this.deleteProject}
                             // updateDataStatus={this.updateDataStatus}
                             refreshModule={this.refreshModule}
                         />
@@ -262,9 +274,35 @@ class list_module extends React.Component{
                     ? 
                         (listExistData == "exists")
                         ?
-                            data
+                            (!this.state.isDeleteProject)
+                            ?
+                                data
+                            : 
+                                <div style={{textAlign: "center", marginTop: "80px"}}>
+                                    <div className="bold" style={{fontSize: "24px"}}>Data project is not available anymore</div>
+                                    <div className="second-font-color" style={{fontSize: "13px"}}>You have deleted this project, please select another<br/>project on existing list, or create new project</div>
+                                    <div style={{marginTop: "20px"}}>
+                                        <Link to="/project">
+                                            <div className="btn-primary-otl main-font-color main-border" style={{padding: "10px", display: "inline-block"}}>
+                                                <FontAwesomeIcon style={{fontSize: "16px", color: "#d4ae2b"}} icon={faFolder}/><br/>
+                                                <span className="bold" style={{fontSize: "11px"}}>
+                                                    Select project
+                                                </span>
+                                            </div>
+                                        </Link>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a>
+                                            <div className="btn-primary-otl main-font-color main-border" style={{padding: "10px", display: "inline-block"}}>
+                                                <FontAwesomeIcon style={{fontSize: "16px", color: "#000"}} icon={faPlus}/><br/>
+                                                <span className="bold" style={{fontSize: "11px"}}>
+                                                    Create project
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
                         :
-                            <div style={{textAlign: "center", marginTop: "50px"}}>
+                            <div style={{textAlign: "center", marginTop: "80px"}}>
                                 <div className="bold" style={{fontSize: "24px"}}>Data project is not available anymore</div>
                                 <div className="second-font-color" style={{fontSize: "13px"}}>Please select another project on existing list, or create new project</div>
                             </div>

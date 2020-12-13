@@ -1,14 +1,15 @@
-import { faBullseye, faChevronDown, faClipboard, faCog, faFile, faInfoCircle, faPlus, faUserCog } from '@fortawesome/free-solid-svg-icons'
+import { faBullseye, faChevronDown, faClipboard, faCog, faFile, faInfoCircle, faPaperclip, faPlus, faUserCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { Fragment } from 'react'
-import ItemUser from '../item_user_list'
 import {plusCircleLight as Plus} from '../svg-icon'
 import {connect} from 'react-redux'
 import ItemUserListMember from './item_user_list_member'
 import PopupConfirmation from '../popup_confirmation'
 import { ApiFetch } from '../apiFetch'
 import AddMember from './add_member'
-import { Add } from '@material-ui/icons'
+import EditProject from './edit_project'
+import {check_circle as CheckCircle} from '../icon/icon'
+import { getCookieUserId } from '../../function/function'
 
 class sidebar_module extends React.Component{
 
@@ -24,12 +25,17 @@ class sidebar_module extends React.Component{
         this.hidePopUp = this.hidePopUp.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.addMember = this.addMember.bind(this)
+        this.editProject = this.editProject.bind(this)
+        this.refreshModule = this.refreshModule.bind(this)
+        this.deleteProject = this.deleteProject.bind(this)
+        this.commitDeleteProject = this.commitDeleteProject.bind(this)
     }
 
     componentDidMount(){
         let elm = this.sideBar.current
         let setHeight = window.innerHeight - 60
         elm.style.height = setHeight+"px"
+        console.log(this.props.dataProject[0])
     }
 
     menuClick(accordName){
@@ -84,6 +90,45 @@ class sidebar_module extends React.Component{
         })
     }
 
+    editProject(){
+        this.setState({
+            popup: <EditProject dataProject={this.props.dataProject[0]}
+                                dataTeam={this.props.dataTeam}
+                                deleteProject={this.deleteProject}
+                                editDataProject={() => alert("dandi")}
+                                refreshModule={this.refreshModule}
+                                cancel={this.hidePopUp}/>
+        })
+    }
+
+    deleteProject(){
+        this.setState({
+            popup: <PopupConfirmation titleConfirmation="Delete project"
+                                    hidePopUp={this.hidePopUp}
+                                    textPopup={"Are you sure, you want delete project <span class='bold'>"+this.props.dataProject[0].projectName+"</span>"}
+                                    yesAction={this.commitDeleteProject}/>
+        })
+    }
+
+    commitDeleteProject(){
+        let form = new FormData()
+        form.append("projectId", this.props.projectId)
+        form.append("userId", getCookieUserId())
+        ApiFetch("/delete_project", {
+            method: "POST",
+            body: form
+        }).then(res => res.text()).then(result => {
+            if(result == "success"){
+                this.props.deleteProject()
+            }
+        })
+    }
+
+    refreshModule(){
+        this.props.refreshModule()
+        this.hidePopUp()
+    }
+
     render(){
 
         const dataCollection = this.props.dataCollection.map(dt => {
@@ -113,6 +158,7 @@ class sidebar_module extends React.Component{
             return <div style={{padding: "10px", paddingLeft: "25px"}}>
                         <ItemUserListMember picProfile={null}
                                     deleteMember={this.deleteMember}
+                                    setPermition={this.props.setPermition}
                                     userId={dt.userId}
                                     emailUser={dt.emailUser}
                                     userName={dt.userName}/>
@@ -123,9 +169,9 @@ class sidebar_module extends React.Component{
             <Fragment>
                 {this.state.popup}
 
-                <div ref={this.sideBar} className="main-border-right second-background-grs" 
-                style={{width: "250px", position: "fixed", height: "100%", zIndex: "1", overflowY: "auto"}}>
-                    <div className="main-border-bottom" style={{background: "#f3f2f1", padding: "10px"}}>
+                <div ref={this.sideBar} className="second-background-grs" 
+                style={{width: "250px", position: "fixed", height: "100%", zIndex: "1", overflowY: "auto", borderRight: "1px solid #dcdcdc"}}>
+                    <div style={{background: "#f3f2f1", padding: "10px", borderBottom: "1px solid #dcdcdc"}}>
                         <div style={{overflow: "hidden", padding: "5px"}}>
                             <a id="btn-edit-project" onClick={this.editProject}>
                                 <em className="fa fa-edit second-font-color" style={{float: "right", fontSize: "15px", marginTop: "4px"}}>&nbsp;</em>
@@ -135,10 +181,10 @@ class sidebar_module extends React.Component{
                             
                             <div style={{float: "left", fontSize: "12px", marginLeft: "5px"}}>
                                 <span className="bold" style={{fontSize: "12px"}}>
-                                    Project name
+                                    {this.props.dataProject[0].projectName}
                                 </span><br/>
                                 <span className="second-font-color" style={{fontSize: "10px"}}>
-                                    12 Jan 2020
+                                    {this.props.dataProject[0].createdDate}
                                 </span>
                             </div>
                         </div>
@@ -146,27 +192,30 @@ class sidebar_module extends React.Component{
                             <em className="fa fa-user-circle" style={{float: "left", fontSize: "20px", marginTop: "4px"}}>&nbsp;</em>
                             <div style={{float: "left", fontSize: "12px", marginLeft: "5px"}}>
                                 <span style={{fontSize: "10px", color: "#949494"}}>Project Manager :</span><br/>
-                                <span className="bold" style={{fontSize: "12px"}}>Project manager</span>
+                                <span className="bold" style={{fontSize: "12px"}}>
+                                    {this.props.dataProject[0].picName}
+                                </span>
                             </div>
                         </div>
                     </div>
                     
                     <a onClick={this.props.moduleClick} style={{textDecoration: "none", color: "#000"}}>
-                        <div className="main-border-bottom tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
+                        <div className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px", borderBottom: "1px solid #dcdcdc"}}>
                             <div style={{width: "100%"}}>
-                                <FontAwesomeIcon icon={faClipboard}/>&nbsp;&nbsp;&nbsp;&nbsp;Module
+                                {/* <FontAwesomeIcon icon={faClipboard}/> */}
+                                <CheckCircle style={{fontSize: "13px"}}/>&nbsp;&nbsp;&nbsp;Task list
                             </div>
                         </div>
                     </a>
                     <a onClick={this.props.documentFileClick} style={{textDecoration: "none", color: "#000"}}>
-                        <div className="main-border-bottom tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
+                        <div className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px", borderBottom: "1px solid #dcdcdc"}}>
                             <div style={{width: "100%"}}>
-                                <FontAwesomeIcon icon={faFile}/>&nbsp;&nbsp;&nbsp;&nbsp;Document & File
+                                <FontAwesomeIcon icon={faPaperclip}/>&nbsp;&nbsp;&nbsp;&nbsp;Attachment
                             </div>
                         </div>
                     </a>
 
-                    <div className="main-border-bottom">
+                    <div style={{borderBottom: "1px solid #dcdcdc"}}>
                         <a style={{textDecoration: "none", color: "#000"}}>
                             <div onClick={() => this.menuClick("member-project")} className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
                                 <div style={{width: "100%", display: "flex"}}>
@@ -186,7 +235,7 @@ class sidebar_module extends React.Component{
                         </div>
                     </div>
                         
-                    <div className="main-border-bottom">
+                    <div style={{borderBottom: "1px solid #dcdcdc"}}>
                         <a style={{textDecoration: "none", color: "#000"}}>
                             <div onClick={() => this.menuClick("status")} className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
                                 <div style={{width: "100%", display: "flex"}}>
@@ -206,7 +255,7 @@ class sidebar_module extends React.Component{
                         </div>
                     </div>
                     
-                    <div className="main-border-bottom">
+                    <div style={{borderBottom: "1px solid #dcdcdc"}}>
                         <a style={{textDecoration: "none", color: "#000"}}>
                             <div onClick={() => this.menuClick("collection")} className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
                                 <div style={{width: "100%", display: "flex"}}>

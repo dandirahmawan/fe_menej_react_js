@@ -1,3 +1,5 @@
+import { faInfo, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -59,6 +61,14 @@ class card_view extends Component{
                     </div>
                     
                     <div className="base-card-mod-itm scrollbar">
+
+                        {/* <div className="second-font-color bold" 
+                            style={{textAlign: "center", padding: "20px", position: "absolute", width: "270px", zIndex: "1"}}>
+                            <div><FontAwesomeIcon icon={faInfoCircle} style={{fontSize: "16px"}}/></div>
+                            The task data, will be display here<br/>
+                            according status name
+                        </div> */}
+                        
                     {
                         this.props.dataModule.map(dtt => {  
                             
@@ -94,7 +104,6 @@ class card_view extends Component{
                         })
                     }
                     </div>
-
                 </div>
             
         })

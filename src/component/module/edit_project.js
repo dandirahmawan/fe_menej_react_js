@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { popCenterPosition } from '../../function/function'
-import {faUserCog} from '@fortawesome/free-solid-svg-icons'
+import {faTrashAlt, faUserCog} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {connect} from 'react-redux'
 import {editProject} from '../../redux/action'
@@ -25,6 +25,7 @@ class edit_project extends React.Component{
     changePic           = this.changePic.bind(this)
     hidePicPicker       = this.hidePicPicker.bind(this)
     selectPic           = this.selectPic.bind(this)
+    deleteProject       = this.deleteProject.bind(this)
 
     componentDidMount(){
         let dt = this.props.dataProject
@@ -94,6 +95,10 @@ class edit_project extends React.Component{
         })
     }
 
+    deleteProject(){
+        this.props.deleteProject()
+    }
+
     render(){
         return(
             <Fragment>
@@ -116,7 +121,7 @@ class edit_project extends React.Component{
                                 </div>
 
                                 {this.state.picPickerBase}
-
+                                
                                 <a onClick={this.changePic}  
                                     className="main-font-color" 
                                     style={{minWidth: "24px",
@@ -127,9 +132,17 @@ class edit_project extends React.Component{
                             </div>
                         </div>
                     </div>
-                    <div className="main-border-top" style={{textAlign: "right", marginTop: "10px", padding: "10px"}}>
-                        <button onClick={this.submitEdit} className="btn-primary" style={{fontSize: "12px", marginRight: "5px"}}>Save</button>
-                        <button onClick={this.props.cancel} className="btn-secondary" style={{fontSize: "12px"}}>Cancel</button>
+                    <div className="main-border-top" 
+                        style={{textAlign: "right", display: "flex", alignItems: "center", marginTop: "10px", padding: "10px"}}>
+                        <div style={{width: "100%", textAlign: "left"}}>
+                            <a className="second-font-color bold" style={{fontSize: "11px"}} onClick={this.deleteProject}>
+                                <FontAwesomeIcon icon={faTrashAlt}/>&nbsp;&nbsp;Delete project
+                            </a>
+                        </div>
+                        <div style={{width: "145px"}}>
+                            <button onClick={this.submitEdit} className="btn-primary" style={{fontSize: "12px", marginRight: "5px"}}>Save</button>
+                            <button onClick={this.props.cancel} className="btn-secondary" style={{fontSize: "12px"}}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             </Fragment>

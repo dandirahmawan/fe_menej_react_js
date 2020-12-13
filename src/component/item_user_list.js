@@ -20,20 +20,6 @@ class item_user_list extends React.Component{
         })
     }
 
-    // componentWillReceiveProps(nextProps){
-    //     if(this.props != nextProps){
-    //         let initial = ""
-    //         let name = nextProps.userName.userName.split(" ")
-            
-    //         initial += name[0].substr(0, 1)
-    //         initial += (name[1] != null && name[1] != "") ? name[1].substr(0, 1) : ""
-
-    //         this.setState({
-    //             initial: initial
-    //         })
-    //     }
-    // }
-
     render(){
         return(
             <React.Fragment>

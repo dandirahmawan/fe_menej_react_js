@@ -5,9 +5,10 @@ import PopupNotification from './popup_notification'
 import Logo from '../images/menej_fff.png'
 import {backHistory} from '../function/function'
 import {baseUrl} from "../const/const"
-import {faBars} from '@fortawesome/free-solid-svg-icons'
+import {faBars, faFolder} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import Profile from './profile/profile'
+import { Link } from 'react-router-dom'
 
 class navbar extends React.Component{
     constructor(){
@@ -55,6 +56,7 @@ class navbar extends React.Component{
     }
 
     firstWord(userNameLogin){
+        console.log(userNameLogin)
         var a = userNameLogin.split(" ")
         var b = ""
         for(var i = 0;i<a.length;i++){
@@ -146,10 +148,16 @@ class navbar extends React.Component{
 
                     <img style={{marginTop:"18px",marginLeft: "15px", height: "25px"}} src={Logo}></img>            
 
-                    <div style={{float: 'right', padding: "12px", paddingRight: "20px"}}>
+                    <div style={{float: 'right', paddingRight: "20px", display: "flex", alignItems: "center", height: "55px"}}>
+                        <Link to="/project">
+                            <div style={{float: "left", borderRadius: "18px", marginRight: "20px", paddingTop: "7px", color: "#FFF", display: "flex", alignItems: "center"}}>
+                                <FontAwesomeIcon icon={faFolder} style={{fontSize: "16px"}}/>&nbsp;&nbsp;
+                                <span className="bold" style={{fontSize: "11px"}}>Project</span>
+                            </div>
+                        </Link>
                         <a onClick={this.notification}>
                             <div style={{float: "left", borderRadius: "18px", marginRight: "20px", paddingTop: "7px", color: "#FFF", transform: "rotate(20deg)"}}>
-                                <em style={{fontSize: "20px"}} class="fa fa-bell"></em>
+                                <em style={{fontSize: "16px"}} class="fa fa-bell"></em>
                             </div>
                         </a>
 
@@ -157,12 +165,11 @@ class navbar extends React.Component{
 
                         <a onClick={this.popAction}>
                             <div className="bold" id="pic-profile-navbar-base" style={styelPicProfileBase}>
-                                <div style={{position: "absolute", width: "30px", textAlign: "center", marginTop: "8px"}}>{this.firstWord(this.props.userLoginData.name)}</div>
+                                <div style={{position: "absolute", width: "30px", textAlign: "center", marginTop: "8px"}}>{this.firstWord("")}</div>
                                 <div style={{width: "30px", height: "30px", borderRadius: "20px", position: "absolute", background: "url("+baseUrl+"/pic_profile/"+this.props.userLoginData.picProfile+") center center / cover no-repeat"}}/>
                             </div>
                         </a>
                     </div>
-                
                 </div>
                 {this.props.popup}
             </div>

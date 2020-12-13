@@ -46,7 +46,7 @@ class item_user_list_member extends React.Component{
                         </div>
                     </div>
                     <div className="bold" style={{fontSize: "10px", display: "flex", alignItems: "center"}}>
-                        <a><FontAwesomeIcon icon={faCog}/></a>
+                        <a onClick={() => this.props.setPermition(this.props.userId)}><FontAwesomeIcon icon={faCog}/></a>
                         &nbsp;&nbsp;&nbsp;
                         <a onClick={() => this.props.deleteMember(this.props.userId, this.props.userName)}><FontAwesomeIcon icon={faTrashAlt}/></a>
                     </div>

@@ -98,7 +98,7 @@ class function_data extends React.Component{
         })
 
         return(
-            <div ref={this.base} className="main-border" style={style.styleBase}>
+            <div ref={this.base} className="main-border shadow" style={style.styleBase}>
                 <div ref={this.baseHeader}>
                     <div className="main-border-bottom second-background-grs" style={{padding: "5px", paddingLeft: "10px", paddingRight: "10px", fontSize: "12px"}}>
                         <img src={FunctionImage} style={{width: "15px"}}/>&nbsp; 

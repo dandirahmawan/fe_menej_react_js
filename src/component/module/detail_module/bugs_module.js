@@ -8,6 +8,8 @@ import {popUpAlert, getCookieUserId, getCookieSessionId} from '../../../function
 import {deleteDataBugs, closeDataBugs, uncloseDataBugs} from '../../../redux/action'
 import {connect} from 'react-redux'
 import EditBugs from '../../bugs/edit_bugs'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 class bugs_module extends React.Component{
 
@@ -233,6 +235,7 @@ class bugs_module extends React.Component{
                                 <button ref={this.btnCommit} 
                                         onClick={this.commitChecklist} 
                                         style={{fontSize: "12px", marginLeft: "5px", marginTop: "10px", background: "none", color: "blue", display: "flex"}}>
+                                    {/* <FontAwesomeIcon icon={faPaperPlane}/> */}
                                     Send
                                 </button>
                             </div>

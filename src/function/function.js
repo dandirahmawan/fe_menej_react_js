@@ -12,7 +12,7 @@ export function getCookieUserId(){
     var userId = "";
     for(var a = 0;a<c.length;a++){
         var d = c[a].split("=")
-        if(d[0] === 'userId'){
+        if(d[0].replace(" ", "") === 'userId'){
             userId = d[1]
         }
     }

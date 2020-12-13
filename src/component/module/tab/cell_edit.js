@@ -172,7 +172,6 @@ class cell_edit extends React.Component{
             functionDataBase : null,
             colorPickerColor : null,
             colorPicker : null
-            
         })
     }
 
@@ -180,8 +179,8 @@ class cell_edit extends React.Component{
         return(
             <React.Fragment>
                 <div ref={this.base} id="cell-edit-base" 
-                    className="pop main-border" 
-                    style={{width: "200px", background: "#FFF", position: "fixed", boxShadow: "2px 2px #eaeaea"}}>
+                    className="pop main-border shadow" 
+                    style={{width: "200px", background: "#FFF", position: "fixed"}}>
                     
                     {this.state.functionBase}
                     {this.state.functionDataBase}
@@ -190,7 +189,7 @@ class cell_edit extends React.Component{
                     <div className="bold main-border-bottom" style={{fontSize: "12px", padding: "5px"}}>
                         Cell edit
                     </div>
-                    <textarea ref={this.barBackgrundPicker} className="main-border-bottom" 
+                    <textarea ref={this.barBackgrundPicker} 
                         onKeyUp={this.keyUpTxtAreaForm}
                         style={{height: "100px", 
                                 fontSize: "12px",
@@ -199,7 +198,9 @@ class cell_edit extends React.Component{
                                 background: this.state.colorCellBackground,
                                 borderRadius: "0px",
                                 boxSizing: "border-box", 
-                                resize: "none", 
+                                resize: "none",
+                                border: "none",
+                                borderBottom: "1px solid #CCC", 
                                 padding: "5px"}}>
                     </textarea>
                     <div style={{textAlign: "right", padding: "5px"}}>

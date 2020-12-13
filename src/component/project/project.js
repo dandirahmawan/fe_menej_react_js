@@ -94,44 +94,20 @@ class project extends React.Component{
                             New project
                         </button> */}
                     </div>
-                    <div className="main-border-bottom" style={{display: "none"}}>
-                        <div style={{width: '270px', margin: 'auto', background: "#FFF"}}>
-                            <div className='bold' style={{fontSize: '14px', paddingTop: "10px"}}>
-                                Create project
-                            </div>
-                            <div style={{paddingTop: "10px", paddingBottom: "10px"}}>
-                                <input
-                                    id='pn_input' 
-                                    type='text'
-                                    placeholder='project name' 
-                                    style={{padding: '8px', fontSize: '12px', boxSizing: 'border-box', width: '100%', borderRadius: "0px"}}>    
-                                </input>
-                                <span 
-                                    className='bold' 
-                                    style={{fontSize: '10px', color: '#a2a2a2'}}>
-                                        * Insert your project name
-                                </span>
-                            </div>
-                            <div className="main-border-top" style={{textAlign: 'right', padding: "10px", display: "none"}}>
-                                <button /*onClick={this.commitProject.bind(this)}*/ className='btn-primary' style={{fontSize: '11px', marginRight: '5px'}}>
-                                    Create
-                                </button>
-                                {/* <button className="btn-secondary" onClick={this.props.hidePopUp} style={{fontSize: '11px'}}>Cancel</button> */}
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div style={{width: "300px", margin: "auto", marginTop: "75px"}}>
                         <div className="main-border-bottom second-font-color" 
                             style={{fontSize: "12px", paddingBottom: "10px", marginBottom: "10px", display: "flex", alignItems: "center"}}>
                             <FontAwesomeIcon icon={faInfoCircle} style={{fontSize: "14px"}}/> 
                             <div style={{marginLeft: "10px"}}>Please select project from the list bellow</div>
                         </div>
+
                         {data}
 
-                        <a onClick={this.newProject}>
-                            <div className="main-color" 
+                        <a onClick={this.newProject} id="btn-new-project">
+                            <div className="main-color shadow" 
                                 style={{width: "40px", height: "40px", borderRadius: "100%", position: "fixed", bottom: "100px", marginLeft: "330px"}}>
-                                <div style={{textAlign: "center", paddingTop: "10px"}}>
+                                <div style={{textAlign: "center", paddingTop: "12px"}}>
                                     <FontAwesomeIcon icon={faPlus} style={{color: "#FFF"}}/>
                                 </div>
                             </div>

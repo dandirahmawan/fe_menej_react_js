@@ -46,7 +46,7 @@ input{
     width: 300px; 
     height: auto; 
     background: #FFF;
-    border-radius: 5px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
@@ -85,6 +85,12 @@ input{
     width: 320px; 
     overflow-y: auto !important;
 }
+
+.btn-primary-otl{
+    border-radius: 3px; border: 1px solid rgb(172, 180, 208);
+    background: #FFF;
+}
+
 /* .flex-container{
     display: flex;
     flex-wrap: nowrap;
@@ -107,7 +113,17 @@ input{
 }
 
 .main-border{
+    /* border: #dcdbdb 1px solid; */
+    border: 1px solid #e8ecee;
+}
+
+.main-border-drk{
+    border: 1px solid #cbd4db
+}
+
+td > .main-border{
     border: #dcdbdb 1px solid;
+    /* border: 1px solid #e8ecee; */
 }
 
 .second-background-grs{
@@ -125,19 +141,35 @@ input{
 }
 
 .main-border-bottom{
-    border-bottom: #dcdbdb 1px solid;
+    border-bottom: #e8ecee 1px solid;
+}
+
+.main-border-bottom-drk{
+    border-bottom: 1px solid #cbd4db;
 }
 
 .main-border-top{
-    border-top: #dcdbdb 1px solid;
+    border-top: #e8ecee 1px solid;
+}
+
+.main-border-top-drk{
+    border-top: 1px solid #cbd4db;
 }
 
 .main-border-right{
-    border-right: #dcdbdb 1px solid;
+    border-right: #e8ecee 1px solid;
+}
+
+.main-border-right-drk{
+    border-right: 1px solid #cbd4db;
 }
 
 .main-border-left{
-    border-left: #dcdbdb 1px solid;
+    border-left: #e8ecee 1px solid;
+}
+
+.main-border-left-drk{
+    border-left: 1px solid #cbd4db;
 }
 
 .second-border{
@@ -353,7 +385,8 @@ button{
 }
 
 .tr-selectable:hover{
-    background: #ddf0ff !important;
+    /* background: #ddf0ff !important; */
+    background: #eaeaea !important;
 }
 
 .tr-selectable-menu{
@@ -487,6 +520,8 @@ table{
 th{
     padding: 5px;
     padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     text-align: left;
 }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { faCalendarAlt, faCheckCircle, faFile, faTag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDate_dd_mmm_yyy } from '../../../function/function';
+import {check_circle as CheckCircle} from '../../icon/icon'
 
 class card_item extends React.Component{
     render(){
@@ -37,7 +38,8 @@ class card_item extends React.Component{
                 style={{marginTop: "10px", padding: "10px", borderRadius: "3px", width: "280px", background: "#FFF"}}>
                 
                 <div style={{display: "flex"}}>
-                    <i class="fas fa-clipboard" style={{color: "rgb(212, 174, 43)", marginTop: "5px"}}></i>
+                    {/* <i class="fas fa-clipboard" style={{color: "rgb(212, 174, 43)", marginTop: "5px"}}></i> */}
+                    <CheckCircle style={{fontSize: "16px", color: "#777777"}}/>
                     <div style={{marginLeft: "10px"}}>
                         <div id="base-dt-label-card" style={{overflow: "hidde"}}>{labelView}</div>
                         

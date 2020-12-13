@@ -35,7 +35,7 @@ const initState = {
     dataLabelsModule: [],
     assignedModules: [],
     dataStatus: [],
-    viewModule: "list"
+    viewModule: "card"
 }
 
 function rootReducer(state = initState, action){

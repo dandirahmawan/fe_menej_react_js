@@ -9,10 +9,8 @@ import { getCookieUserId } from '../../function/function'
 import {connect} from 'react-redux'
 import {setDataNote, selectRowModule, deleteMember, setDataStatus, setViewModule} from '../../redux/action'
 import Bugs from '../bugs/bugs'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBorderAll, faBorderNone, faPlusCircle, faCaretDown, faCog,} from '@fortawesome/free-solid-svg-icons'
 import DocumentFile from '../document_file/document_file'
-import InfoProject from './info_project'
+// import InfoProject from './info_project.js'
 import HandoverModule from './handover_module'
 import NewCollection from './tab/new_tab'
 import Tab from './tab/tab'
@@ -23,6 +21,7 @@ import CardView from './card_view/card_view'
 import ContextMenuModule from './context_menu_module'
 import SidebarModule from './sibebar_module'
 import ManageStatus from './manage_status'
+import { CheckBox } from '@material-ui/icons'
 
 class modulePage extends React.Component{
     
@@ -49,7 +48,9 @@ class modulePage extends React.Component{
             isRecreteMenuTab: false,
             arrSelected: [],
             contextMenuBase: "",
-            popup: null
+            popup: null,
+            showDescription: false,
+            isDeleteProject: false
         }
 
         this.refBugs = React.createRef()
@@ -113,6 +114,7 @@ class modulePage extends React.Component{
         this.commitDeleteModuleCtx = this.commitDeleteModuleCtx.bind(this)
         this.deleteModuleDelCtx = this.deleteModuleDelCtx.bind(this)
         this.manageStatus = this.manageStatus.bind(this)
+        this.showDescription = this.showDescription.bind(this)
     }
 
     componentDidMount(){
@@ -485,6 +487,7 @@ class modulePage extends React.Component{
         this.setState({
             userSetTeamMember: "",
             permition: <Permition
+                            dataPermition={[]}
                             userId={userId}
                             projectId={this.props.projectIdHeader}
                             cancelPermition={this.cancelPermition}
@@ -533,19 +536,19 @@ class modulePage extends React.Component{
     }
 
     infoProject(){
-        this.props.dataProject.map(dt =>
-            this.setState({
-                infoProjectPop: <InfoProject
-                                    dataStatus={this.props.dataStatus} 
-                                    dataTeam={this.props.dataTeam}
-                                    dataPermition={this.state.dataPermition}
-                                    refreshModule={this.props.refreshModule}
-                                    dataProject={dt}
-                                    // updateDataStatus={this.updateDataStatus}
-                                    manageMember={this.addMember}
-                                    hideInfo={this.hideInfoProject}/>
-            })
-        )
+        // this.props.dataProject.map(dt =>
+        //     this.setState({
+        //         infoProjectPop: <InfoProject
+        //                             dataStatus={this.props.dataStatus} 
+        //                             dataTeam={this.props.dataTeam}
+        //                             dataPermition={this.state.dataPermition}
+        //                             refreshModule={this.props.refreshModule}
+        //                             dataProject={dt}
+        //                             // updateDataStatus={this.updateDataStatus}
+        //                             manageMember={this.addMember}
+        //                             hideInfo={this.hideInfoProject}/>
+        //     })
+        // )
         
     }
 
@@ -687,8 +690,12 @@ class modulePage extends React.Component{
             return dt
         })
 
-        // console.log(this.menuModule)
+
         if(this.menuModule.current != null) this.menuModule.current.click()
+        
+        /*untuk mengalihkan ke data task atau module*/
+        this.mainMenu(null, "module", true)
+
         this.setState({
             isRecreteMenuTab: true,
             dataCollection: data
@@ -789,6 +796,16 @@ class modulePage extends React.Component{
         })
     }
 
+    showDescription(){
+        this.setState({
+            showDescription: !this.state.showDescription
+        })
+    }
+
+    deleteProject(){
+
+    }
+
     render(){
         return(
             <React.Fragment>
@@ -801,106 +818,147 @@ class modulePage extends React.Component{
                     moduleClick={(e) => this.mainMenu(e, "module", true)} 
                     documentFileClick={(e) => this.mainMenu(e, "doc file", true)}
                     tabMenu={this.tabMenu}
+                    refreshModule={this.props.refreshModule}
                     projectId={this.props.projectIdHeader}
                     newCollection={this.newCollection}
                     dataStatus={this.props.dataStatus}
+                    dataProject={this.props.dataProject}
                     dataCollection={this.state.dataCollection}
+                    deleteProject={this.props.deleteProject}
                     deleteMember={this.deleteMember}
                     manageStatus={this.manageStatus}
+                    setPermition={this.setPermition}
                     manageMember={this.addMember}/>
                 
                 <div id="base-data-module" style={{marginLeft: "260px"}}>
                     
                     {this.state.tabBase}
                     <div ref={this.refModule} id="base-tab-module">
-                        <div id="header-base-tab-module" className="main-border-bottom" style={{paddingBottom: "10px", paddingTop: "10px", width: "80%"}}>
-                            <span className="bold">Modules / Tasks</span>
-                            {
-                                (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
-                                ?
-                                    <div style={{float: "right", display: "flex", marginTop: "2px"}}>
-                                        {
-                                            (this.props.viewModule == "list")
-                                            ?
-                                                <Fragment>
-                                                    <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
-                                                        {/* <i class="fa fa-check"></i>  */}
-                                                        Mark All
-                                                    </button>
-                                                    <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
-                                                        {/* <i class="fa fa-times"></i>  */}
-                                                        Unmark All
-                                                    </button>
-                                                    <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                        {/* <i class="fa fa-trash"></i>  */}
-                                                        Delete
-                                                    </button>
-                                                    <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                        {/* <i class="fa fa-trash"></i>  */}
-                                                        Filter
-                                                    </button>
-                                                </Fragment>
-                                            :
-                                                ""
-                                        }
-                                        
-                                        <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <FontAwesomeIcon icon={faSimCard}/>  */}
-                                            Card
-                                        </button>
-                                        <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <i class="fa fa-times"></i>  */}
-                                            List
-                                        </button>
-                                        <button onClick={this.newModule.bind(this)} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <i class="fa fa-plus"></i> */}
-                                            New Module
-                                        </button>
-                                        {
-                                            (this.props.viewModule == "list")
-                                            ?
-                                                (this.state.isBorder)
+                        <div id="header-base-tab-module" className="main-border-bottom-drk" 
+                            style={{paddingBottom: "20px", paddingTop: "20px", minWidth: "745px", marginLeft: "-10px", paddingLeft: "10px"}}>
+                            
+                            <div style={{width: "90%", paddingLeft: "10px"}}>
+                                <span className="bold" style={{fontSize: "14px"}}>Task list</span>
+                                    {
+                                        // (this.state.picProject == getCookieUserId() || this.state.createdByProject == getCookieUserId() || this.state.isPermitionModule)
+                                        // ?
+                                            <div style={{float: "right", display: "flex", marginTop: "-8px"}}>
+                                                {
+                                                    (this.props.viewModule == "list")
                                                     ?
-                                                    <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
-                                                        <FontAwesomeIcon icon={faBorderNone}/>
-                                                        <span className="tooltiptext">Hide border</span>
-                                                    </button>
+                                                        <Fragment>
+                                                            {/* <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
+                                                                <i class="fa fa-check"></i> 
+                                                                Mark All
+                                                            </button>
+                                                            <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
+                                                                <i class="fa fa-times"></i> 
+                                                                Unmark All
+                                                            </button>
+                                                            <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                                <i class="fa fa-trash"></i> 
+                                                                Delete
+                                                            </button> */}
+                                                            <div className="main-border-right" style={{display: "flex", alignItems: "center", marginRight: "10px", paddingRight: "10px"}}>
+                                                                <input type="checkbox" onClick={this.showDescription}/>&nbsp;&nbsp;
+                                                                <div className="bold" style={{marginTop: "1px", fontSize: "11px"}}>Show Description</div>
+                                                            </div>
+                                                            {/* <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
+                                                                {/* <i class="fa fa-trash"></i>  */}
+                                                                {/* Filter */}
+                                                            {/* </button> */} 
+                                                        </Fragment>
                                                     :
-                                                    <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
-                                                        <FontAwesomeIcon icon={faBorderAll}/>
-                                                        <span className="tooltiptext">Show border</span>
-                                                    </button>
-                                            :
-                                                ""
-                                        }
-                                    </div>
-                                :
-                                    <div id="base-btn-no-usr-acc" style={{float: "right"}}>
-                                        <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <FontAwesomeIcon icon={faSimCard}/>  */}
-                                            Card
-                                        </button>
-                                        <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <i class="fa fa-times"></i>  */}
-                                            List
-                                        </button>
-                                        
-                                        {
-                                            (this.state.isBorder)
-                                            ?
-                                                <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
-                                                    <FontAwesomeIcon icon={faBorderNone}/>
-                                                    <span className="tooltiptext">Hide border</span>
+                                                        ""
+                                                }
+                                                
+                                                {/* <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
+                                                    {/* <FontAwesomeIcon icon={faSimCard}/>  */}
+                                                    {/* Card */}
+                                                {/* </button> */}
+                                                <button className="main-border-drk"
+                                                    onClick={this.card} 
+                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                        <i class="fa fa-filter"></i>
+                                                    </div>
+                                                    <div style={{marginLeft: "5px"}}>Filter</div>
                                                 </button>
-                                            :
-                                                <button onClick={this.showBorder} className="main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
-                                                    <FontAwesomeIcon icon={faBorderAll}/>
-                                                    <span className="tooltiptext">Show border</span>
+
+                                                <button className="main-border-drk"
+                                                    onClick={this.card} 
+                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                        <i class="fa fa-square"></i>
+                                                    </div>
+                                                    <div style={{marginLeft: "5px"}}>Card</div>
                                                 </button>
-                                        }
-                                    </div>
-                            }
-                        </div>
+
+                                                <button className="main-border-drk" 
+                                                    onClick={this.list} 
+                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                        <i class="fa fa-list-alt"></i>
+                                                    </div>
+                                                    <div style={{marginLeft: "5px"}}>List</div>
+                                                </button>
+                                                {/* <button onClick={this.list} style={{background:"none", fontSize: "12px"}}> */}
+                                                    {/* <i class="fa fa-times"></i>  */}
+                                                    {/* List */}
+                                                {/* </button> */}
+                                                <button className="main-border-drk" 
+                                                    onClick={this.newModule.bind(this)} 
+                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                    <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
+                                                    <div style={{marginLeft: "5px"}}>Add task</div>
+                                                </button>
+                                                {/* {
+                                                    (this.props.viewModule == "list")
+                                                    ?
+                                                        (this.state.isBorder)
+                                                            ?
+                                                            <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
+                                                                <FontAwesomeIcon icon={faBorderNone}/>
+                                                                <span className="tooltiptext">Hide border</span>
+                                                            </button>
+                                                            :
+                                                            <button onClick={this.showBorder} className="bold main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                                                <FontAwesomeIcon icon={faBorderAll}/>
+                                                                <span className="tooltiptext">Show border</span>
+                                                            </button>
+                                                    :
+                                                        ""
+                                                } */}
+                                            </div>
+                                        // :
+                                            // <div id="base-btn-no-usr-acc" style={{float: "right"}}>
+                                            //     <button onClick={this.card} style={{background:"none", fontSize: "12px"}}>
+                                            //         {/* <FontAwesomeIcon icon={faSimCard}/>  */}
+                                            //         Card
+                                            //     </button>
+                                            //     <button onClick={this.list} style={{background:"none", fontSize: "12px"}}>
+                                            //         {/* <i class="fa fa-times"></i>  */}
+                                            //         List
+                                            //     </button>
+                                                
+                                            //     {
+                                            //         (this.state.isBorder)
+                                            //         ?
+                                            //             <button onClick={this.hideBorder} className="bold main-font-color tooltip" onClick={this.hideBorder} style={{background: "none", fontSize: "12px"}}>
+                                            //                 <FontAwesomeIcon icon={faBorderNone}/>
+                                            //                 <span className="tooltiptext">Hide border</span>
+                                            //             </button>
+                                            //         :
+                                            //             <button onClick={this.showBorder} className="main-font-color tooltip" onClick={this.showBorder} style={{background: "none", fontSize: "12px"}}>
+                                            //                 <FontAwesomeIcon icon={faBorderAll}/>
+                                            //                 <span className="tooltiptext">Show border</span>
+                                            //             </button>
+                                            //     }
+                                            // </div>
+                                    }
+                                </div>
+                            </div>
+                            
                         
                         {
                             (this.props.viewModule == "list")
@@ -908,6 +966,7 @@ class modulePage extends React.Component{
                                 <ListView isBorder={this.state.isBorder}
                                     contextMenuModule={this.contextMenuModule}
                                     selectedRow={this.selectedRow}
+                                    showDescription={this.state.showDescription}
                                     selectedRow2={this.selectedRow2}/>
                             :
                                 <CardView contextMenuModule={this.contextMenuModule}

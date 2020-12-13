@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import Row from './row_permition'
 import {ApiFetch} from '../apiFetch'
-import {getCookieSessionId, getCookieUserId, popUpAlert} from '../../function/function'
+import {popUpAlert} from '../../function/function'
 import {SpinnerButton} from "../spinner";
 import {baseUrl} from "../../const/const";
 
@@ -44,7 +44,7 @@ class permition extends React.Component{
         var form = new FormData()
         form.append('userId', this.props.userId)
         form.append('projectId', this.props.projectId)
-
+    
         ApiFetch("/permition_project",{
             method: "POST",
             body: form
@@ -57,27 +57,13 @@ class permition extends React.Component{
                     this.state.permitionSelected.push(result.dataPermition[i]['permitionCode'])
                 }   
             }
-            
-            //set selected permition
-            if(this.props.dataPermition.length <= 0){
-                result.dataPermition.map(dt => {
-                    if(dt.isChecked == "Y"){
-                        let idx = this.state.permitionSelected.indexOf(dt.permitionCode)
-                        if(idx == -1){
-                            this.state.permitionSelected.push(dt.permitionCode)
-                        }
-                    }
-                })
-            }
 
             this.setState({
                 dataPermition: result.dataPermition,
                 userId: result.dataUser.userId,
                 userName: result.dataUser.userName,
                 userEmail: result.dataUser.emailUser,
-                picProfile: result.dataUser.picProfile,
-                permitionSelected: (this.props.dataPermition.length > 0) 
-                                    ? this.props.dataPermition : this.state.permitionSelected
+                picProfile: result.dataUser.picProfile
             })
 
         })
@@ -142,27 +128,27 @@ class permition extends React.Component{
         }
 
         const data = this.state.dataPermition.map(dt => {
-            let isChecked = "N"
-            let permitionParam = this.props.dataPermition
-            if(dt.isChecked == "Y" && permitionParam.length == 0){
-                isChecked = "Y"
-            }else{
-                let idx = this.props.dataPermition.indexOf(dt.permitionCode)
-                if(idx != -1) isChecked = "Y"
-            }
+            // let isChecked = "N"
+            // // let permitionParam = this.props.dataPermition
+            // if(dt.isChecked == "Y"){
+            //     isChecked = "Y"
+            // }else{
+            //     // let idx = this.props.dataPermition.indexOf(dt.permitionCode)
+            //     // if(idx != -1) isChecked = "Y"
+            // }
             
             return <Row
                         permitionName={dt.permitionName}
                         permitionDescription={dt.permitionDescription}
                         permitionCode={dt.permitionCode}
-                        isChecked={isChecked}
+                        isChecked={dt.isChecked}
                         checkClick={this.checkClick}
                     />
         })
 
         return(
             <React.Fragment>
-                {/* <div className="block"></div> */}
+                <div className="block"></div>
                 <div id="base-permition" className="main-border pop" style={styleBase}>
                     <div id="head-base-permition" className="bold main-border-bottom" style={{padding: "10px", fontSize: "14px"}}>
                         Permition

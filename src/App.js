@@ -84,11 +84,21 @@ class App extends React.Component{
         }
         else{
             if(a === ""){
+
+                let redirectUrl = "/login"
+                if(path == "/invitation" || path == "/login/invitation"){
+                    let href = window.location.href
+                    let lastIdx = href.lastIndexOf("/")
+                    let strLastIdx = href.substr(lastIdx + 1, href.length)
+                    redirectUrl = "/login/"+strLastIdx
+                }
+
                 return (
                     <div>
                         <BrowserRouter>
-                            <Redirect to="/login"/>
+                            <Redirect to={redirectUrl}/>
                             <Route path="/login"  exact component={Login} />
+                            <Route path="/login/*"  exact component={Login} />
                             <Route path="/account_recovery"  exact component={AccountRecover} />
                             <Route path="/forgot_password"  exact component={ForgotPassword} />
                             <Route path="/register"  exact component={Register} />

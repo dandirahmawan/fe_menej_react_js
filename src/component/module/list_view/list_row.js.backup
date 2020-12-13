@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import NoteModule from '../../note/note'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarAlt, faClipboard, faTag, faCheckCircle, faFile } from '@fortawesome/free-solid-svg-icons'
-import {check_circle as CkCIrcle} from '../../icon/icon'
 
 class list_row extends React.Component{
 
@@ -57,15 +56,9 @@ class list_row extends React.Component{
     render(){
         const classNameRow = (this.props.isSelected) ? "tr-module-data tr-selectable selected-row main-border-bottom" : "tr-module-data tr-selectable main-border-bottom"
         const labelView = this.props.dataLabelModule.map(dt => {
-            return <span style={{padding: "3px", 
-                                background: dt.color, 
-                                color: "#FFF", 
-                                fontSize: "11px", 
-                                borderRadius: "3px",
-                                alignItems: "center", 
-                                marginRight: "2px"}}>
-                         <FontAwesomeIcon icon={faTag}/>
-                    </span>
+            return <div style={{float: "left", padding: "5px", background: dt.color, color: "#FFF", fontSize: "11px", borderRadius: "3px", display: "flex", alignItems: "center", marginRight: "5px", marginBottom: "3px"}}>
+                         <FontAwesomeIcon icon={faTag}/>&nbsp;{dt.label}
+                    </div>
         })
 
         /*set assigned kolom data*/
@@ -79,12 +72,12 @@ class list_row extends React.Component{
 
             return <Fragment>
                         <div className="main-color ass-tooltip" 
-                            style={{width: "25px", 
-                                    height: "25px", 
+                            style={{width: "30px", 
+                                    height: "30px", 
                                     borderRadius: "100%",
                                     color: "#FFF",
                                     marginRight: "5px"}}>
-                             <div style={{with: "30px", textAlign: "center", marginTop: "5px", fontSize: "11px"}}>{initial}</div>
+                             <div style={{with: "30px", textAlign: "center", marginTop: "7px"}}>{initial}</div>
                              <div className="ass-tooltiptext main-border">
                                 <div className="bold">{dt.userName}</div>
                                 <div className="second-font-color" style={{fontSize: "11px"}}>{dt.emailUser}</div>
@@ -100,17 +93,23 @@ class list_row extends React.Component{
                     ? 
                         (this.props.isBorder)
                         ?
-                            <tr onClick={() => this.props.selectedRow(this.props.moduleId)} 
-                                valign="center"
-                                style={{background: "#e6e6e6"}}
-                                className={classNameRow+" main-border"} 
-                                valign="middle" is-selected="false">
-                                
+                            <tr onClick={() => this.props.selectedRow(this.props.moduleId)} className={classNameRow+" main-border"} valign="top" is-selected="false">
                                 <td className="tb-border-mod main-border" style={{width: "20px"}}>
                                     <i className="fas fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i>
+                                        {/* {
+                                            (this.props.countNote > 0) 
+                                            ?
+                                                <i onClick={this.noteClick} className="fa fa-sticky-note tooltip" style={{marginLeft: "5px", color: "green", fontSize: "14px"}}>
+                                                    <span className="tooltiptext">This module have notes</span>
+                                                </i>
+                                            :
+                                                <i onClick={this.noteClick} className="fa fa-sticky-note second-font-color tooltip" style={{marginLeft: "5px", fontSize: "14px"}}>
+                                                    <span className="tooltiptext">Add notes</span>
+                                                </i>  
+                                        } */}
                                 </td>
                                 <td className="tb-border-mod main-border">
-                                    {/* {
+                                    {
                                         (this.props.dataLabelModule.length > 0)
                                         ?
                                             <div style={{overflow: "hidden", marginBottom: "3px"}}>
@@ -118,10 +117,12 @@ class list_row extends React.Component{
                                             </div>
                                         :
                                             ""
-                                    } */}
+                                    }
 
-                                    <span className="bold">{this.props.modulName}</span>
-                                    {/* <div style={{width: "400px", color: "#8e8e8e"}}>
+                                    {/* <a onClick={() => this.props.selected(this.props.moduleId)} className="bold"> */}
+                                        <span className="bold">{this.props.modulName}</span>
+                                    {/* </a> */}
+                                    <div style={{width: "400px", color: "#8e8e8e"}}>
                                         {
                                             (this.props.description != null && this.props.description != "")
                                             ?   
@@ -129,7 +130,7 @@ class list_row extends React.Component{
                                             :
                                                 <span style={{fontSize: "12px", color: "#CCC"}}>No description for this module</span>
                                         }
-                                    </div> */}
+                                    </div>
                                     {
                                         (this.state.noteBaseVisible) 
                                         ?
@@ -150,8 +151,8 @@ class list_row extends React.Component{
                                     <FontAwesomeIcon style={{marginRight: "5px"}} className="second-font-color" icon={faCalendarAlt}/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="tb-border-mod main-border" style={{background: this.colorStatus(this.props.modulStatus), textAlign: "center"}}>
-                                    <div style={{color: "#FFF", padding: "5px", borderRadius: "3px", float: "left", fontSize: "11px"}}>
+                                <td className="tb-border-mod main-border">
+                                    <div style={{background: this.colorStatus(this.props.modulStatus), color: "#FFF", padding: "5px", borderRadius: "3px", float: "left", fontSize: "11px"}}>
                                         {this.moduleStatus(this.props.modulStatus)}
                                     </div>
                                 </td>
@@ -194,15 +195,26 @@ class list_row extends React.Component{
                             <tr onClick={() => this.props.selectedRow(this.props.moduleId)} 
                                 onContextMenu={(e) => this.props.contextMenuModule(e, this.props.moduleId)}
                                 className={classNameRow} 
-                                valign="middle" 
+                                valign="top" 
                                 data-module={this.props.modulId} 
                                 is-selected="false">
                                 
-                                <td className="tb-border-mod" style={{width: "25px"}}>
-                                    <CkCIrcle style={{fontSize: "16px", color: "#757575"}}/>
+                                <td className="tb-border-mod" style={{width: "20px"}}>
+                                    <em className="fas fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}/>
+                                    {/* {
+                                        (this.props.countNote > 0) 
+                                        ?
+                                            <i onClick={this.noteClick} className="fa fa-sticky-note tooltip" style={{marginLeft: "5px", color: "green", fontSize: "14px"}}>
+                                                <span className="tooltiptext">This module have notes</span>
+                                            </i>
+                                        :
+                                            <i onClick={this.noteClick} className="fa fa-sticky-note second-font-color tooltip" style={{marginLeft: "5px", fontSize: "14px"}}>
+                                                <span className="tooltiptext">Add notes</span>
+                                            </i>  
+                                    } */}
                                 </td>
                                 <td className="tb-border-mod">
-                                    {/* {
+                                    {
                                         (this.props.dataLabelModule.length > 0)
                                         ?
                                             <div style={{overflow: "hidden", marginBottom: "3px"}}>
@@ -210,27 +222,23 @@ class list_row extends React.Component{
                                             </div>
                                         :
                                             ""
-                                    } */}
-                                    
-                                    <span className="bold">{this.props.modulName}</span>
-                                    {
-                                        (this.props.showDescription)
-                                        ?
-                                            <div style={{width: "400px", color: "#8e8e8e"}}>
-                                                {
-                                                    (this.props.description != null && this.props.description != "")
-                                                    ?   
-                                                        <div style={{marginTop: "3px", fontSize: "12px"}}>{this.props.description}</div>
-                                                    :
-                                                        ""
-                                                }
-                                            </div>
-                                        :
-                                            ""
                                     }
-                                   
+                                    
+                                    {/* <a onClick={() => this.props.selected(this.props.moduleId)} className="bold"> */}
+                                        <span className="bold">{this.props.modulName}</span>
+                                    {/* </a> */}
 
-                                    {/* {
+                                    <div style={{width: "400px", color: "#8e8e8e"}}>
+                                        {
+                                            (this.props.description != null && this.props.description != "")
+                                            ?   
+                                                <div style={{marginTop: "3px", fontSize: "12px"}}>{this.props.description}</div>
+                                            :
+                                                <span style={{fontSize: "11px", color: "#CCC"}}>No description for this module</span>
+                                        }
+                                    </div>
+
+                                    {
                                         (this.state.noteBaseVisible) 
                                         ?
                                             <NoteModule
@@ -239,35 +247,24 @@ class list_row extends React.Component{
                                                 moduleName={this.props.modulName}
                                             />
                                         : ""
-                                    } */}
-                                    
-                                </td>
-                                <td style={{textAlign: "center"}}>
-                                     {
-                                        (this.props.dataLabelModule.length > 0)
-                                        ?
-                                            <div style={{overflow: "hidden", display: "flex", justifyContent: "center"}}>
-                                                {labelView} 
-                                            </div>
-                                        :
-                                            ""
                                     }
+                                    
                                 </td>
                                 <td className="tb-border-mod">
                                     <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                                         {assigned}
                                     </div>
                                 </td>
-                                <td style={{width: "100px"}} className="tb-border-mod">
+                                <td className="tb-border-mod">
                                     <FontAwesomeIcon icon={faCalendarAlt} style={{marginRight: "5px"}} className="second-font-color"/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="tb-border-mod" style={{background: this.colorStatus(this.props.modulStatus), textAlign: "center", paddingLeft: "0px"}}>
-                                    <div style={{color: "#FFF", fontSize: "11px"}}>
+                                <td className="tb-border-mod">
+                                    <div style={{background: this.colorStatus(this.props.modulStatus), color: "#FFF", padding: "5px", borderRadius: "3px", float: "left", fontSize: "11px"}}>
                                         {this.moduleStatus(this.props.modulStatus)}
                                     </div>
                                 </td>
-                                <td className="bold tb-border-mod" style={{width: "40px"}}>
+                                <td className="bold tb-border-mod">
                                     {
                                         (this.props.countBugs > 0) 
                                         ? 
