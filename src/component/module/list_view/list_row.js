@@ -213,11 +213,11 @@ class list_row extends React.Component{
                                             ""
                                     } */}
                                     
-                                    <span className="bold">{this.props.modulName}</span>
+                                    <div className="bold">{this.props.modulName}</div>
                                     {
                                         (this.props.showDescription)
                                         ?
-                                            <div style={{width: "400px", color: "#8e8e8e"}}>
+                                            <div style={{color: "#8e8e8e"}}>
                                                 {
                                                     (this.props.description != null && this.props.description != "")
                                                     ?   
@@ -243,7 +243,7 @@ class list_row extends React.Component{
                                     } */}
                                     
                                 </td>
-                                <td style={{textAlign: "center"}}>
+                                <td style={{width: "100px"}}>
                                      {
                                         (this.props.dataLabelModule.length > 0)
                                         ?
@@ -254,16 +254,16 @@ class list_row extends React.Component{
                                             ""
                                     }
                                 </td>
-                                <td className="tb-border-mod">
+                                <td className="tb-border-mod" style={{width: "150px"}}>
                                     <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                                         {assigned}
                                     </div>
                                 </td>
-                                <td style={{width: "100px"}} className="tb-border-mod">
+                                <td style={{width: "90px", textAlign: "center"}} className="tb-border-mod">
                                     <FontAwesomeIcon icon={faCalendarAlt} style={{marginRight: "5px"}} className="second-font-color"/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="tb-border-mod" style={{/*background: this.colorStatus(this.props.modulStatus),*/ textAlign: "center", paddingLeft: "0px"}}>
+                                <td className="tb-border-mod" style={{/*background: this.colorStatus(this.props.modulStatus),*/ textAlign: "center", paddingLeft: "0px", width: "100px"}}>
                                     <div className="bold" style={{color: "#000", fontSize: "12px"}}>
                                         {this.moduleStatus(this.props.modulStatus)}
                                     </div>

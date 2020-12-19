@@ -1,5 +1,5 @@
-export const baseUrl = "http://localhost:8088"
-// export const baseUrl = "http://192.168.43.128:8088"
+// export const baseUrl = "http://localhost:8088"
+export const baseUrl = "http://192.168.43.128:8088"
 // export const baseUrl = "http://localhost:8010/manej"
 
 export const pathUrlConst = [

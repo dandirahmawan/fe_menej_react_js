@@ -919,10 +919,10 @@ class modulePage extends React.Component{
                                                                             background: "#FFF", 
                                                                             marginLeft: "35px", marginTop: "43px"}}>
                                                                     <a onClick={() => this.groupByAct("section")} style={{textDecoration: "none"}}>
-                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px"}}>Section</div>
+                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px", fontSize: "12px"}}>Section</div>
                                                                     </a>
                                                                     <a onClick={() => this.groupByAct("status")} style={{textDecoration: "none"}}>
-                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px"}}>Status</div>
+                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px", fontSize: "12px"}}>Status</div>
                                                                     </a>
                                                                 </div>
                                                             </div>
