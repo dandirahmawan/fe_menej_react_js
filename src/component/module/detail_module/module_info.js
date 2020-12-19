@@ -312,12 +312,12 @@ class module_info extends React.Component{
                                     (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                     ?
                                         <td colSpan="2">
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Module name</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Module name</div>
                                             <input className="input-info-mdl" onChange={this.props.changeName} value={this.props.moduleName} style={{padding: "7px", width: "100%", boxSizing: "border-box"}} placeholder="module name" type='text'></input>
                                         </td>
                                     :
                                         <td colSpan="2">
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Module name</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Module name</div>
                                             <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>
                                                 {this.props.moduleName}
                                             </div>
@@ -329,7 +329,7 @@ class module_info extends React.Component{
                                     (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                     ?
                                         <td>
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Status</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Status</div>
                                             <SelectBox ref={this.SelectBox} click={this.chooseStatus} 
                                                 style={{padding: "7px", overflow: "hidden", border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
                                                 value={this.statusName(this.state.idStatus)}/>
@@ -339,7 +339,7 @@ class module_info extends React.Component{
                                         </td>
                                     :
                                         <td>
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Status</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Status</div>
                                             <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC", width: "212px"}}>
                                                 {(this.props.moduleStatus == 'C') ? 'Close' : 'On Progress'}
                                             </div>
@@ -350,12 +350,12 @@ class module_info extends React.Component{
                                     (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                     ?
                                         <td style={{paddingLeft: "20px"}}>
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Due date</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Due date</div>
                                             <input className="input-info-mdl" style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input>
                                         </td>
                                     :
                                         <td style={{paddingLeft: "20px"}}>
-                                            <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Due date</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Due date</div>
                                             <div className="bold second-background-grs second-font-color" 
                                                 style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
                                                 <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(this.props.dueDate)}
@@ -364,8 +364,30 @@ class module_info extends React.Component{
                                 }
                             </tr>
                             <tr>
+                                {
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                    ?
+                                        <td>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Section</div>
+                                            <SelectBox ref={this.SelectBox} click={this.chooseStatus} 
+                                                style={{padding: "7px", overflow: "hidden", border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
+                                                value={this.statusName(this.state.idStatus)}/>
+                                            <div id="sc-dtl-sts" style={{position: "relative"}}>
+                                                {this.state.statusChoice}
+                                            </div>
+                                        </td>
+                                    :
+                                        <td>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Section</div>
+                                            <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC", width: "212px"}}>
+                                                {(this.props.moduleStatus == 'C') ? 'Close' : 'On Progress'}
+                                            </div>
+                                        </td>
+                                }
+                            </tr>
+                            <tr>
                                 <td colSpan="2">
-                                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Description</div>
+                                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Description</div>
                                     <div>
                                     {
                                         (this.props.pic == getCookieUserId() || this.props.modulePermition)
@@ -392,7 +414,7 @@ class module_info extends React.Component{
                             </tr>
                             <tr>
                                 <td colSpan="2" style={{paddingBottom: "10px"}}>
-                                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Label</div>
+                                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Label</div>
                                     
                                     <div className="main-border-top" style={{padding: "7px", paddingBottom: "0px"}}>
                                         <div style={{display: "flex"}}>
@@ -431,7 +453,7 @@ class module_info extends React.Component{
                     </table>
                 </div>
                 <div ref={this.labelBase} className="main-border-left" style={{width: "180px", paddingLeft: "10px", paddingRight: "10px"}}>
-                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "10px"}}>Assign To</div>
+                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "10px"}}>Assign To</div>
                     <div className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
                         {assigned}
                     </div>

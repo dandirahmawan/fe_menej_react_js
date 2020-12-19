@@ -43,6 +43,7 @@ class detail extends React.Component{
             mbDisplay:"none",
             dfmDisplay: "none",
             mainBaseHeight: "",
+            sectionId:"",
             pic:"",
             picProject:"",
             documentFileUploadData:"",
@@ -163,6 +164,7 @@ class detail extends React.Component{
                 miDisplay: miDisplay,
                 mbDisplay: mbDisplay,
                 dfmDisplay: dfmDisplay,
+                sectionId: dm.sectionId,
                 dataLabelModule: dataLabel,
                 dataLabelModuleToUpdate: result.labelModules,
                 assignedModules: result.assignedModules
@@ -275,6 +277,7 @@ class detail extends React.Component{
         form.append("status", this.state.moduleStatus)
         form.append("desc", this.state.descriptionModule)
         form.append("moduleName", this.state.moduleName)
+        form.append("section", this.state.sectionId)
         form.append("labelModule", JSON.stringify(this.state.dataLabelModuleToUpdate))
         form.append("checklist", JSON.stringify(dataCheckilst))
         form.append("assigned", JSON.stringify(this.state.assignedModules))
@@ -286,7 +289,8 @@ class detail extends React.Component{
         .then(result => {
             if(result == 'success'){
                 this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
-                    this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, this.state.dueDate)
+                    this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
+                    this.state.dueDate, this.state.sectionId)
                 
                 this.setState({
                     infoPop: ""
@@ -726,7 +730,7 @@ const mapDispatchToProps = dispatch => {
     return{
         updateDataModuleBugs: (moduleId, type) => dispatch(updateDataModuleBugs(moduleId, type)),
         updateDataModuleDocFile: (moduleId, type) => dispatch(updateDataModuleDocFile(moduleId, type)),
-        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate)),
+        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section)),
         appendDataBugs: (jsonObjectBugs) => dispatch(appendDataBugs(jsonObjectBugs)),
         appendDataDocFile: (jsonObject) => dispatch(appendDataDocFile(jsonObject)),
         deleteDataDocFile: (mi, pi, fn, ui) => dispatch(deleteDataDocFile(mi, pi, fn, ui)),

@@ -18,7 +18,8 @@ import {
     updataDataChecklistAction, 
     setDataStatuAction, 
     setVIewModuleAction,
-    setDataTeamAction
+    setDataTeamAction,
+    setSectionModuleAction
 } from './type_action'
 
 const initState = {
@@ -35,7 +36,8 @@ const initState = {
     dataLabelsModule: [],
     assignedModules: [],
     dataStatus: [],
-    viewModule: "card"
+    sectionModule: [],
+    viewModule: "list"
 }
 
 function rootReducer(state = initState, action){
@@ -102,6 +104,13 @@ function rootReducer(state = initState, action){
         return{
             ...state,
             dataProject: newData
+        }
+    }
+
+    if(action.type === setSectionModuleAction){
+        return{
+            ...state,
+            sectionModule: action.data
         }
     }
     
@@ -259,14 +268,19 @@ function rootReducer(state = initState, action){
 
     if(action.type === "UPDATE_DATA_MODULE"){
         const newData = state.dataModule.map(dt => {
-            if(dt.modulId == action.moduleId){
-                dt.modulName = action.moduleName
-                dt.modulStatus = action.moduleStatus
-                dt.description = action.descriptionModule
-                dt.userName = action.userName
-                dt.endDate = new Date(action.dueDate)   
-                dt.isMember = (dt.userId != action.userId) ? 1 : dt.isMember 
-                dt.userId = action.userId
+            if(dt.id == action.section){
+                dt.sectionModule.map(dtt => {
+                    if(dtt.modulId == action.moduleId){
+                        dtt.modulName = action.moduleName
+                        dtt.modulStatus = action.moduleStatus
+                        dtt.description = action.descriptionModule
+                        dtt.userName = action.userName
+                        dtt.endDate = new Date(action.dueDate)   
+                        dtt.isMember = (dt.userId != action.userId) ? 1 : dt.isMember 
+                        dtt.userId = action.userId
+                        return dtt
+                    }
+                })
             }
             return dt
         })

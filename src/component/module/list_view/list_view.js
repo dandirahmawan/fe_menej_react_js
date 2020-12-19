@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import RowModule from './list_row'
 import { selectRowModule } from '../../../redux/action'
 import { Fragment } from 'react'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class list_view extends Component{
@@ -79,47 +79,69 @@ class list_view extends Component{
 
 
     render(){
-
         const dataModule = this.props.dataModule.map(dt => {
-
             if(dt.isDelete != "Y"){
-                /*set data assigned each module*/
-                let assigned = []
-                this.props.assignedModules.map(dta => {
-                    if(dta.moduleId == dt.modulId){
-                        assigned.push(dta)
-                    }
-                })
+                return <Fragment>
+                            <tr>
+                                <td colSpan='7' 
+                                    className='bold second-font-color' 
+                                    style={{paddingTop: "10px", paddingBottom: "10px", textTransform: "uppercase"}}>
+                                    <FontAwesomeIcon icon={faChevronDown}/>&nbsp;&nbsp;{dt.section}
+                                </td>
+                            </tr>
 
-                return <RowModule
-                            dataStatus={this.props.dataStatus}
-                            detail = {this.detail}
-                            isDelete = {dt.isTrash}
-                            selected = {this.selectedRow}
-                            selectedRow = {this.selectedRow2}
-                            moduleId = {dt.modulId}
-                            modulName = {dt.modulName}
-                            description = {dt.description}
-                            endDate = {dt.endDate}
-                            modulStatus = {dt.modulStatus}
-                            countBugs = {dt.countBugs}
-                            countBugsClose = {dt.countBugsClose}
-                            countDoc = {dt.countDoc}
-                            countNote = {dt.countNote}
-                            userName = {dt.userName}
-                            isMember = {dt.isMember}
-                            note = ""
-                            assigned = {assigned}
-                            bugsIconClick = {this.bugsIconClick}
-                            isSelected={dt.isSelected}
-                            docFileIconClick = {this.docFileIconClick}
-                            noteClick={this.noteClick}
-                            appendsNote=""
-                            updateStateDataNote=""
-                            dataLabelModule={this.readDataLabel(dt.modulId)}
-                            contextMenuModule={this.props.contextMenuModule}
-                            showDescription={this.props.showDescription}
-                            isBorder={this.props.isBorder}/>
+                            {
+                                (dt.sectionModule.length == 0)
+                                ?
+                                    <tr className="main-border-bottom">
+                                        <td colSpan="7" style={{fontSize: "14px", color: "#a2a2a2"}}>
+                                            <div style={{padding: "5px", paddingLeft: "15px", display: "flex", alignItems: "center"}}>
+                                                <FontAwesomeIcon style={{fontSize: "14px"}} icon={faInfoCircle}/>&nbsp;&nbsp;
+                                                <div>
+                                                    <div className="bold" style={{fontSize: '11px'}}>No data to display</div>
+                                                    <div style={{fontSize: "11px"}}>This section did not have data to display</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                : 
+                                    ""
+                            }
+
+                            {dt.sectionModule.map(dt => {
+                                return <RowModule
+                                            dataStatus={this.props.dataStatus}
+                                            detail = {this.detail}
+                                            isDelete = {dt.isTrash}
+                                            selected = {this.selectedRow}
+                                            selectedRow = {this.selectedRow2}
+                                            moduleId = {dt.modulId}
+                                            modulName = {dt.modulName}
+                                            description = {dt.description}
+                                            endDate = {dt.endDate}
+                                            modulStatus = {dt.modulStatus}
+                                            countBugs = {dt.countBugs}
+                                            countBugsClose = {dt.countBugsClose}
+                                            countDoc = {dt.countDoc}
+                                            countNote = {dt.countNote}
+                                            userName = {dt.userName}
+                                            isMember = {dt.isMember}
+                                            note = ""
+                                            assigned = {this.props.assignedModules}
+                                            bugsIconClick = {this.bugsIconClick}
+                                            isSelected={dt.isSelected}
+                                            docFileIconClick = {this.docFileIconClick}
+                                            noteClick={this.noteClick}
+                                            appendsNote=""
+                                            updateStateDataNote=""
+                                            dataLabelModule={this.readDataLabel(dt.modulId)}
+                                            contextMenuModule={this.props.contextMenuModule}
+                                            showDescription={this.props.showDescription}
+                                            isBorder={this.props.isBorder}/>
+                                })
+                            }
+                            <tr><td colSpan="7" style={{padding: "10px"}}></td></tr>
+                        </Fragment>
             }
             
         })
@@ -128,7 +150,7 @@ class list_view extends Component{
             <React.Fragment>
                 <div style={{marginLeft: "15px"}}>
                     {this.state.popup}
-                    <table className="main-border-bottom" style={{width: "89%", marginBottom: "50px", minWidth: "755px"}}>
+                    <table style={{width: "89%", marginBottom: "50px", minWidth: "755px"}}>
                         <thead ref={this.theadModule}>
                             <tr className="main-border-bottom">
                                 <th colSpan="2" style={{maxWidth: "400px"}} className="main-border-right second-font-color bold">Module</th>
@@ -144,7 +166,7 @@ class list_view extends Component{
                                 (dataModule == "") 
                                 ? 
                                     <tr>
-                                        <td colSpan="5" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                        <td colSpan="7" style={{paddingTop: "20px", paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
                                             <div style={{marginTop: "25px", marginBottom: "100px"}}>
                                                 <span style={{fontSize: "16px"}}>
                                                     <i class="fas fa-clipboard" style={{fontSize: "30px"}}></i>
@@ -155,21 +177,7 @@ class list_view extends Component{
                                         </td>
                                     </tr> 
                                 : 
-                                    <Fragment>
-                                        <tr className='second-background-grs'>
-                                            <td colSpan='7' className='bold' style={{paddingTop: "10px", paddingBottom: "10px"}}>
-                                                TO DO&nbsp;&nbsp;<FontAwesomeIcon icon={faArrowDown}/>
-                                            </td>
-                                        </tr>
-                                        {dataModule}
-                                        <tr className='second-background-grs'>
-                                            <td colSpan='7' className='bold' style={{paddingTop: "10px", paddingBottom: "10px"}}>
-                                                DEPLOYMENT&nbsp;&nbsp;<FontAwesomeIcon icon={faArrowDown}/>
-                                            </td>
-                                        </tr>
-                                        {dataModule}
-                                    </Fragment>
-                                    
+                                    dataModule  
                             }
                         </tbody>
                     </table>

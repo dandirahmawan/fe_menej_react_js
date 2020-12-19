@@ -69,28 +69,29 @@ class list_row extends React.Component{
         })
 
         /*set assigned kolom data*/
-        let assigned = this.props.assigned.map(dt => {
-
-            let initial = ""
-            let name = dt.userName.split(" ")
-            
-            initial += name[0].substr(0, 1)
-            initial += (name[1] != null && name[1] != "") ? name[1].substr(0, 1) : ""
-
-            return <Fragment>
-                        <div className="main-color ass-tooltip" 
-                            style={{width: "25px", 
-                                    height: "25px", 
-                                    borderRadius: "100%",
-                                    color: "#FFF",
-                                    marginRight: "5px"}}>
-                             <div style={{with: "30px", textAlign: "center", marginTop: "5px", fontSize: "11px"}}>{initial}</div>
-                             <div className="ass-tooltiptext main-border">
-                                <div className="bold">{dt.userName}</div>
-                                <div className="second-font-color" style={{fontSize: "11px"}}>{dt.emailUser}</div>
+        let assigned = this.props.assigned.map(dt => {            
+            if(dt.moduleId == this.props.moduleId){
+                let initial = ""
+                let name = dt.userName.split(" ")
+                
+                initial += name[0].substr(0, 1)
+                initial += (name[1] != null && name[1] != "") ? name[1].substr(0, 1) : ""
+                
+                return <Fragment>
+                            <div className="main-color ass-tooltip" 
+                                style={{width: "25px", 
+                                        height: "25px", 
+                                        borderRadius: "100%",
+                                        color: "#FFF",
+                                        marginRight: "5px"}}>
+                                <div style={{with: "30px", textAlign: "center", marginTop: "5px", fontSize: "11px"}}>{initial}</div>
+                                <div className="ass-tooltiptext main-border">
+                                    <div className="bold">{dt.userName}</div>
+                                    <div className="second-font-color" style={{fontSize: "11px"}}>{dt.emailUser}</div>
+                                </div>
                             </div>
-                        </div>
-                </Fragment>
+                        </Fragment>
+            }
         })
 
         return(
@@ -199,7 +200,7 @@ class list_row extends React.Component{
                                 is-selected="false">
                                 
                                 <td className="tb-border-mod" style={{width: "25px"}}>
-                                    <CkCIrcle style={{fontSize: "16px", color: "#757575"}}/>
+                                    <CkCIrcle style={{color: this.colorStatus(this.props.modulStatus), fontSize: "16px"}}/>
                                 </td>
                                 <td className="tb-border-mod">
                                     {/* {
@@ -262,8 +263,8 @@ class list_row extends React.Component{
                                     <FontAwesomeIcon icon={faCalendarAlt} style={{marginRight: "5px"}} className="second-font-color"/>
                                     {this.convertDate(this.props.endDate)}
                                 </td>
-                                <td className="tb-border-mod" style={{background: this.colorStatus(this.props.modulStatus), textAlign: "center", paddingLeft: "0px"}}>
-                                    <div style={{color: "#FFF", fontSize: "11px"}}>
+                                <td className="tb-border-mod" style={{/*background: this.colorStatus(this.props.modulStatus),*/ textAlign: "center", paddingLeft: "0px"}}>
+                                    <div className="bold" style={{color: "#000", fontSize: "12px"}}>
                                         {this.moduleStatus(this.props.modulStatus)}
                                     </div>
                                 </td>

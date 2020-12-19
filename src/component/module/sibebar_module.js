@@ -36,7 +36,7 @@ class sidebar_module extends React.Component{
         let elm = this.sideBar.current
         let setHeight = window.innerHeight - 60
         elm.style.height = setHeight+"px"
-        console.log(this.props.dataProject[0])
+        // console.log(this.props.dataProject[0])
     }
 
     menuClick(accordName){
@@ -241,7 +241,7 @@ class sidebar_module extends React.Component{
                         </div>
                     </div>
                         
-                    <div style={{borderBottom: "1px solid #dcdcdc"}}>
+                    <div style={{borderBottom: "1px solid #dcdcdc", display: "none"}}>
                         <a style={{textDecoration: "none", color: "#000"}}>
                             <div onClick={() => this.menuClick("status")} className="tr-selectable-menu" style={{fontSize: "12px", padding: "10px"}}>
                                 <div style={{width: "100%", display: "flex"}}>

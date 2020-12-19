@@ -19,7 +19,8 @@ import {
     updataDataChecklistAction, 
     setDataStatuAction, 
     setVIewModuleAction,
-    setDataTeamAction
+    setDataTeamAction,
+    setSectionModuleAction
 } from './type_action'
 
 export function setDataProject(data){
@@ -74,7 +75,7 @@ export function updateDataModuleDocFile(moduleId, typeUpdate){
     }
 }
 
-export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate){
+export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate, section){
     return{
         type: "UPDATE_DATA_MODULE",
         moduleId : moduleId, 
@@ -84,7 +85,8 @@ export function updateDataModule(moduleId, moduleName, moduleStatus, userId, use
         userName: userName, 
         emailUser: emailUser, 
         descriptionModule: descriptionModule, 
-        dueDate: dueDate
+        dueDate: dueDate,
+        section: section
     }
 }
 
@@ -289,6 +291,13 @@ export function setViewModule(type){
 export function setDataTeam(data){
     return{
         type: setDataTeamAction,
+        data: data
+    }
+}
+
+export function setSectionModule(data){
+    return{
+        type: setSectionModuleAction,
         data: data
     }
 }

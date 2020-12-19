@@ -1,12 +1,11 @@
 import React from 'react'
 import UserListChoice from '../user_list_choice'
-import { tsAnyKeyword } from '@babel/types'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faPlus, faUserEdit} from '@fortawesome/free-solid-svg-icons'
-import FormAddStatus from './form_add_status'
+import {faUserEdit} from '@fortawesome/free-solid-svg-icons'
 import ChoiceStatus from './status_choice'
 import {SelectBox} from '../custom_element'
 import { popUpAlert, setInitialName } from '../../function/function'
+import ChoiceSection from './choice_section'
 
 class new_module extends React.Component{
 
@@ -23,6 +22,9 @@ class new_module extends React.Component{
             status: "",
             idStatus: "N",
             statusChoice: "",
+            sectionChoice: "",
+            section:"",
+            idSection:""
         }
         this.baseStatus = React.createRef()
         this.selectUser = this.selectUser.bind(this)
@@ -37,6 +39,8 @@ class new_module extends React.Component{
         this.chooseStatus = this.chooseStatus.bind(this)
         this.hideChoice = this.hideChoice.bind(this)
         this.submitUserAsigning = this.submitUserAsigning.bind(this)
+        this.chooseSection = this.chooseSection.bind(this)
+        this.selectSection = this.selectSection.bind(this)
     }
 
     componentDidMount(){
@@ -96,7 +100,8 @@ class new_module extends React.Component{
         var desc = this.state.description
         var pi = this.props.projectId
         var status = this.state.idStatus
-        this.props.commit(iu, pn, dd, desc, pi, status)
+        var section = this.state.idSection
+        this.props.commit(iu, pn, dd, desc, pi, status, section)
     }
 
     chName(e){
@@ -160,7 +165,28 @@ class new_module extends React.Component{
 
     hideChoice(){
         this.setState({
-            statusChoice: ""
+            statusChoice: "",
+        })
+    }
+
+    hideSection(){
+        this.setState({
+            sectionChoice: ""
+        })
+    }
+
+    chooseSection(){
+        this.setState({
+            sectionChoice: <ChoiceSection data={this.props.section} 
+                                        selectSection={this.selectSection}
+                                        hideSection={this.hideSection.bind(this)}/>
+        })
+    }
+
+    selectSection(id, section){
+        this.setState({
+            idSection: id,
+            section: section
         })
     }
 
@@ -191,55 +217,66 @@ class new_module extends React.Component{
                     </div>
                     <div style={{background: "#FFF", width: "480px", height: "auto", padding: '10px'}}>
                         <table>
-                            <tr>
-                                <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Name <span style={{color: "red"}}>*</span></td>
-                                <td><input onChange={this.chName} placeholder="module name" value={this.state.projectName} style={{padding: "5px", width: "250px"}} type="text"></input></td>
-                            </tr>
-                            <tr>
-                                <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Assign to <span style={{color: "red"}}>*</span></td>
-                                <td>
-                                    {this.state.popupListChoice}
-                                    {
-                                        (this.state.userSelected.length == 0)
-                                        ?
-                                            <a className="bold" onClick={this.selectUser}>Select user</a>
-                                        :
-                                            <div style={{display: "flex"}}>
-                                                <div id="bs-user-selected-nm" style={{display: "flex"}}>
-                                                    {userAssignTo}
+                            <tbody>
+                                <tr>
+                                    <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Name <span style={{color: "red"}}>*</span></td>
+                                    <td><input onChange={this.chName} placeholder="module name" value={this.state.projectName} style={{padding: "7px", width: "250px"}} type="text"></input></td>
+                                </tr>
+                                <tr>
+                                    <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Assign to <span style={{color: "red"}}>*</span></td>
+                                    <td>
+                                        {this.state.popupListChoice}
+                                        {
+                                            (this.state.userSelected.length == 0)
+                                            ?
+                                                <a className="bold" onClick={this.selectUser}>Select user</a>
+                                            :
+                                                <div style={{display: "flex"}}>
+                                                    <div id="bs-user-selected-nm" style={{display: "flex"}}>
+                                                        {userAssignTo}
+                                                    </div>
+                                                    <div className="main-border-left" style={{paddingLeft: "5px"}}>
+                                                        <a onClick={this.selectUser}><FontAwesomeIcon icon={faUserEdit}/></a>
+                                                    </div>
                                                 </div>
-                                                <div className="main-border-left" style={{paddingLeft: "5px"}}>
-                                                    <a onClick={this.selectUser}><FontAwesomeIcon icon={faUserEdit}/></a>
-                                                </div>
-                                            </div>
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Status <span style={{color: "red"}}>*</span></td>
-                                <td ref={this.baseStatus}>
-                                    <SelectBox click={this.chooseStatus} 
-                                        style={{padding: "7px", overflow: "hidden",border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
-                                        value={this.state.status}/>
-                                    {this.state.statusChoice}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Due date <span style={{color: "red"}}>*</span></td>
-                                <td><input onChange={this.ddChange} style={{padding: "5px"}} type="date"></input></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td style={{fontSize:"11px"}}><span style={{color: "red"}}>*</span> Mandatory, must be filled</td>
-                            </tr>
-                            <tr>
-                                <td valign="top" className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Description</td>
-                                <td style={{padding: "5px"}}>
-                                    <textarea placeholder="module description" 
-                                            onChange={this.descChange} 
-                                            style={{height: "50px", width: "350px", fontSize: "12px"}}/>
-                                </td>
-                            </tr>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Status <span style={{color: "red"}}>*</span></td>
+                                    <td ref={this.baseStatus}>
+                                        <SelectBox click={this.chooseStatus} 
+                                            style={{padding: "7px", overflow: "hidden",border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
+                                            value={this.state.status}/>
+                                        {this.state.statusChoice}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Section<span style={{color: "red"}}>*</span></td>
+                                    <td ref={this.baseStatus}>
+                                        <SelectBox click={this.chooseSection} 
+                                            style={{padding: "7px", overflow: "hidden",border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
+                                            value={this.state.section}/>
+                                        {this.state.sectionChoice}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Due date <span style={{color: "red"}}>*</span></td>
+                                    <td><input onChange={this.ddChange} style={{padding: "5px"}} type="date"></input></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style={{fontSize:"11px"}}><span style={{color: "red"}}>*</span> Mandatory, must be filled</td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" className="bold" style={{width: "80px", textAlign: "right", paddingRight: "10px"}}>Description</td>
+                                    <td style={{padding: "5px"}}>
+                                        <textarea placeholder="module description" 
+                                                onChange={this.descChange} 
+                                                style={{height: "50px", width: "350px", fontSize: "12px"}}/>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div className="header-second-background bold" style={{padding: '10px', textAlign: 'right'}}>

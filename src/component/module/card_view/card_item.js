@@ -5,8 +5,23 @@ import { convertDate_dd_mmm_yyy } from '../../../function/function';
 import {check_circle as CheckCircle} from '../../icon/icon'
 
 class card_item extends React.Component{
-    render(){
 
+    colorStatus(a){
+        let color =  ""
+        let a2 = parseInt(a)
+        // console.log(a+" "+a2)
+        this.props.dataStatus.map(dt => {
+            // console.log(dt.id)
+            if(a2 == dt.id){
+                // console.log("sasasasasa")
+                let colorStatus = (dt.color == null) ? "#000" : dt.color
+                color = colorStatus
+            }
+        })
+        return color
+    }
+
+    render(){
         const labelView = this.props.labelModule.map(dt => {
             return <div style={{float: "left", padding: "5px", background: dt.color, color: "#FFF", fontSize: "11px", borderRadius: "3px", display: "flex", alignItems: "center", marginRight: "5px", marginBottom: "3px"}}>
                          <FontAwesomeIcon icon={faTag}/>&nbsp;{dt.label}
@@ -39,7 +54,7 @@ class card_item extends React.Component{
                 
                 <div style={{display: "flex"}}>
                     {/* <i class="fas fa-clipboard" style={{color: "rgb(212, 174, 43)", marginTop: "5px"}}></i> */}
-                    <CheckCircle style={{fontSize: "16px", color: "#777777"}}/>
+                    <CheckCircle style={{fontSize: "16px", color: this.colorStatus(this.props.status) /*color: "#777777"*/}}/>
                     <div style={{marginLeft: "10px"}}>
                         <div id="base-dt-label-card" style={{overflow: "hidde"}}>{labelView}</div>
                         

@@ -23,7 +23,8 @@ class card_view extends Component{
     }
 
     setBaseCardView(props){
-        let sizeStatus = props.dataStatus.length
+        // let sizeStatus = props.dataStatus.length
+        let sizeStatus = props.dataModule.length
         let w = (parseInt(320) + 20) * sizeStatus
         
         let wh = window.innerHeight
@@ -61,46 +62,43 @@ class card_view extends Component{
                     </div>
                     
                     <div className="base-card-mod-itm scrollbar">
-
-                        {/* <div className="second-font-color bold" 
-                            style={{textAlign: "center", padding: "20px", position: "absolute", width: "270px", zIndex: "1"}}>
-                            <div><FontAwesomeIcon icon={faInfoCircle} style={{fontSize: "16px"}}/></div>
-                            The task data, will be display here<br/>
-                            according status name
-                        </div> */}
                         
                     {
-                        this.props.dataModule.map(dtt => {  
-                            
-                            /*set data label for each card*/
-                            let dataLabel = []
-                            this.props.dataLabelModule.map(dtm => {
-                                if(dtm.moduleId == dtt.modulId){
-                                    dataLabel.push(dtm)
-                                }
-                            })
+                        this.props.dataModule.map(dtt => {
+                            const cardItem = dtt.sectionModule.map(dtta => {
+                                /*set data label for each card*/
+                                let dataLabel = []
+                                this.props.dataLabelModule.map(dtm => {
+                                    if(dtm.moduleId == dtta.modulId){
+                                        dataLabel.push(dtm)
+                                    }
+                                })
 
-                            /*set data assigned for each card*/
-                            let dataAssigned = []
-                            this.props.assignedModules.map(dtas => {
-                                if(dtas.moduleId == dtt.modulId){
-                                    dataAssigned.push(dtas)
-                                }
-                            })
+                                /*set data assigned for each card*/
+                                let dataAssigned = []
+                                this.props.assignedModules.map(dtas => {
+                                    if(dtas.moduleId == dtta.modulId){
+                                        dataAssigned.push(dtas)
+                                    }
+                                })
 
-                            if(dtt.modulStatus == dt.id){
-                                return <CardItem moduleId={dtt.modulId}
+                                if(dtta.modulStatus == dt.id){
+                                    return <CardItem moduleId={dtta.modulId}
+                                                dataStatus={this.props.dataStatus}
+                                                status={dtta.modulStatus}
                                                 select={this.selectCard}
-                                                moduleName={dtt.modulName}
-                                                description={dtt.description}
-                                                countDocFile={dtt.countDoc}
-                                                countBugs={dtt.countBugs}
-                                                countBugsClose={dtt.countBugsClose}
+                                                moduleName={dtta.modulName}
+                                                description={dtta.description}
+                                                countDocFile={dtta.countDoc}
+                                                countBugs={dtta.countBugs}
+                                                countBugsClose={dtta.countBugsClose}
                                                 labelModule={dataLabel}
                                                 assignedModule={dataAssigned}
-                                                dueDate={dtt.endDate}
+                                                dueDate={dtta.endDate}
                                                 contextMenuModule={this.props.contextMenuModule}/>
-                            }
+                                }
+                            })
+                            return cardItem
                         })
                     }
                     </div>
@@ -108,11 +106,70 @@ class card_view extends Component{
             
         })
 
+
+        const baseSection = this.props.dataModule.map(dt => {
+            return <div className="base-card-mod">
+                        <div className="bold second-font-color" 
+                            style={{fontSize: "12px", 
+                                    padding: "10px", 
+                                    background: "#FFF",
+                                    boxShadow: "1px 3px 3px #CCC", 
+                                    border: "1px solid #e8e8e8", 
+                                    borderRadius: "3px",
+                                    width: "280px"}}>
+                            {dt.section}
+                        </div>
+            
+                        <div className="base-card-mod-itm scrollbar">
+                            {
+                                dt.sectionModule.map(dtta => {
+                                    /*set data label for each card*/
+                                    console.log(dtta)
+                                    let dataLabel = []
+                                    this.props.dataLabelModule.map(dtm => {
+                                        if(dtm.moduleId == dtta.modulId){
+                                            dataLabel.push(dtm)
+                                        }
+                                    })
+
+                                    /*set data assigned for each card*/
+                                    let dataAssigned = []
+                                    this.props.assignedModules.map(dtas => {
+                                        if(dtas.moduleId == dtta.modulId){
+                                            dataAssigned.push(dtas)
+                                        }
+                                    })
+
+                                    return <CardItem moduleId={dtta.modulId}
+                                                dataStatus={this.props.dataStatus}
+                                                status={dtta.modulStatus}
+                                                select={this.selectCard}
+                                                moduleName={dtta.modulName}
+                                                description={dtta.description}
+                                                countDocFile={dtta.countDoc}
+                                                countBugs={dtta.countBugs}
+                                                countBugsClose={dtta.countBugsClose}
+                                                labelModule={dataLabel}
+                                                assignedModule={dataAssigned}
+                                                dueDate={dtta.endDate}
+                                                contextMenuModule={this.props.contextMenuModule}/>
+                                })
+                            }
+                        </div>
+                    </div>
+        })
+
         return(
             <div className="main-border-top" 
                 style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", background: "#efefef"}}>
                 <div ref={this.baseCard} style={{marginTop: "10px", overflow: "hidden", position: "relative"}}>
-                    {baseGroup}
+                    {
+                        (this.props.groupType == 'section')
+                        ?
+                            baseSection
+                        :
+                            baseGroup
+                    }
                 </div>
             </div>
             
@@ -129,4 +186,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps) (card_view)
+export default connect(mapStateToProps) (card_view) 

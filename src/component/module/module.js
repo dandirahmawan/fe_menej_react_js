@@ -7,7 +7,7 @@ import Permition from './permition'
 import {ApiFetch} from '../apiFetch'
 import { getCookieUserId } from '../../function/function'
 import {connect} from 'react-redux'
-import {setDataNote, selectRowModule, deleteMember, setDataStatus, setViewModule} from '../../redux/action'
+import {setDataNote, selectRowModule, deleteMember, setViewModule} from '../../redux/action'
 import Bugs from '../bugs/bugs'
 import DocumentFile from '../document_file/document_file'
 // import InfoProject from './info_project.js'
@@ -21,6 +21,10 @@ import CardView from './card_view/card_view'
 import ContextMenuModule from './context_menu_module'
 import SidebarModule from './sibebar_module'
 import ManageStatus from './manage_status'
+import NewSection from './new_section'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faObjectGroup } from '@fortawesome/free-solid-svg-icons'
+import Triangle from '../../images/triangle.png'
 
 class modulePage extends React.Component{
     
@@ -49,7 +53,8 @@ class modulePage extends React.Component{
             contextMenuBase: "",
             popup: null,
             showDescription: false,
-            isDeleteProject: false
+            isDeleteProject: false,
+            groupType: "section"
         }
 
         this.refBugs = React.createRef()
@@ -64,6 +69,7 @@ class modulePage extends React.Component{
         this.dropdownBase = React.createRef()
         this.menuBugs = React.createRef()
         this.menuDocFile = React.createRef()
+        this.popGroupBy = React.createRef()
  
         this.hidePopUp = this.hidePopUp.bind(this)
         this.deleteModule = this.deleteModule.bind(this)
@@ -114,6 +120,8 @@ class modulePage extends React.Component{
         this.deleteModuleDelCtx = this.deleteModuleDelCtx.bind(this)
         this.manageStatus = this.manageStatus.bind(this)
         this.showDescription = this.showDescription.bind(this)
+        this.groupByAct = this.groupByAct.bind(this)
+        this.groupByPop = this.groupByPop.bind(this)
     }
 
     componentDidMount(){
@@ -197,23 +205,13 @@ class modulePage extends React.Component{
     }
 
     selectedRow(data){
-        if(this.state.ctrlClick){
-            //no action
-        }else{
-            this.props.dataModule.map(dt => {
-                if(dt.modulId == data){
-                    this.setState({
-                        infoPop: <Detail
-                                    close={this.hidePopUp}
-                                    modulId={dt.modulId}
-                                    projectId={dt.projectId}
-                                    description={dt.description}
-                                    tabParameter="info"
-                                />
-                    })
-                }
-            })
-        }
+        this.setState({
+            infoPop: <Detail
+                        close={this.hidePopUp}
+                        modulId={data}
+                        projectId={this.props.projectIdHeader}
+                    />
+         })
     }
 
     selectedRow2(arrSelected){
@@ -337,9 +335,20 @@ class modulePage extends React.Component{
                         projectId={this.props.projectIdHeader}
                         hcName={this.handleChangeNameModule}
                         dataStatus={this.props.dataStatus}
+                        section={this.props.sectionModule}
                         commit={this.commitNewModule}
                         commitNewStatus={this.commitNewStatus}
                         hide={this.hidePopUp}/>
+        })
+    }
+
+    newSection(){
+        this.setState({
+            infoPop: <NewSection 
+                        // commit={this.commitNewModule}
+                        // commitNewStatus={this.commitNewStatus}
+                        projectId={this.props.projectIdHeader}
+                        cancel={this.hidePopUp}/>
         })
     }
 
@@ -436,8 +445,8 @@ class modulePage extends React.Component{
         })
     }
 
-    commitNewModule(idUser, moduleName, dueDate, description, pi, status){
-        this.props.commitNewModule(idUser, moduleName, dueDate, description, pi, status)
+    commitNewModule(idUser, moduleName, dueDate, description, pi, status, section){
+        this.props.commitNewModule(idUser, moduleName, dueDate, description, pi, status, section)
         this.setState({
             infoPop: ""
         })
@@ -801,6 +810,17 @@ class modulePage extends React.Component{
         })
     }
 
+    groupByAct(type){
+        this.setState({
+            groupType: type
+        })
+    }
+
+    groupByPop(){
+        this.popGroupBy.current.style.display = "block"
+        return false
+    }
+
     render(){
         return(
             <React.Fragment>
@@ -826,7 +846,6 @@ class modulePage extends React.Component{
                     manageMember={this.addMember}/>
                 
                 <div id="base-data-module" style={{marginLeft: "260px"}}>
-                    
                     {this.state.tabBase}
                     <div ref={this.refModule} id="base-tab-module">
                         <div id="header-base-tab-module" className="main-border-bottom-drk" 
@@ -872,31 +891,67 @@ class modulePage extends React.Component{
                                                     {/* Card */}
                                                 {/* </button> */}
                                                 <button className="main-border-drk"
-                                                    onClick={this.card} 
+                                                    // onClick={this.card} 
                                                     style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                                     <div className="main-border-right" style={{paddingRight: "5px"}}>
                                                         <i class="fa fa-filter"></i>
                                                     </div>
                                                     <div style={{marginLeft: "5px"}}>Filter</div>
                                                 </button>
+                                                
+                                                {
+                                                    (this.props.viewModule != "list")
+                                                    ?
+                                                        <Fragment>
+                                                            <button className="main-border-drk"
+                                                                onClick={this.groupByPop} 
+                                                                style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                                <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                                    <FontAwesomeIcon icon={faObjectGroup}/>
+                                                                </div>
+                                                                <div style={{marginLeft: "5px"}}>Group By</div>
+                                                            </button>
 
-                                                <button className="main-border-drk"
-                                                    onClick={this.card} 
-                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
-                                                        <i class="fa fa-square"></i>
-                                                    </div>
-                                                    <div style={{marginLeft: "5px"}}>Card</div>
-                                                </button>
+                                                            <div ref={this.popGroupBy} className="pop-elm" style={{position: "fixed",zIndex: "1"}}>   
+                                                                <img src={Triangle} style={{width: "15px", zIndex: "2", position: "fixed", marginTop: "30px", marginLeft: "105px"}}/>
+                                                                <div className="main-border shadow " 
+                                                                    style={{width: "150px", 
+                                                                            background: "#FFF", 
+                                                                            marginLeft: "35px", marginTop: "43px"}}>
+                                                                    <a onClick={() => this.groupByAct("section")} style={{textDecoration: "none"}}>
+                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px"}}>Section</div>
+                                                                    </a>
+                                                                    <a onClick={() => this.groupByAct("status")} style={{textDecoration: "none"}}>
+                                                                        <div className="main-border-bottom bold menu-item" style={{padding: "7px"}}>Status</div>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </Fragment>
+                                                    :
+                                                        ""
+                                                }
 
-                                                <button className="main-border-drk" 
-                                                    onClick={this.list} 
-                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
-                                                        <i class="fa fa-list-alt"></i>
-                                                    </div>
-                                                    <div style={{marginLeft: "5px"}}>List</div>
-                                                </button>
+                                                {
+                                                    (this.props.viewModule == "list")
+                                                    ?
+                                                        <button className="main-border-drk"
+                                                            onClick={this.card} 
+                                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                            <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                                <i class="fa fa-square"></i>
+                                                            </div>
+                                                            <div style={{marginLeft: "5px"}}>Card</div>
+                                                        </button>
+                                                    :
+                                                        <button className="main-border-drk" 
+                                                            onClick={this.list} 
+                                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                            <div className="main-border-right" style={{paddingRight: "5px"}}>
+                                                                <i class="fa fa-list-alt"></i>
+                                                            </div>
+                                                            <div style={{marginLeft: "5px"}}>List</div>
+                                                        </button>
+                                                }
                                                 {/* <button onClick={this.list} style={{background:"none", fontSize: "12px"}}> */}
                                                     {/* <i class="fa fa-times"></i>  */}
                                                     {/* List */}
@@ -905,7 +960,14 @@ class modulePage extends React.Component{
                                                     onClick={this.newModule.bind(this)} 
                                                     style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                                     <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
-                                                    <div style={{marginLeft: "5px"}}>Add task</div>
+                                                    <div style={{marginLeft: "5px"}}>Task</div>
+                                                </button>
+
+                                                <button className="main-border-drk" 
+                                                    onClick={this.newSection.bind(this)} 
+                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                                    <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
+                                                    <div style={{marginLeft: "5px"}}>Section</div>
                                                 </button>
                                                 {/* {
                                                     (this.props.viewModule == "list")
@@ -965,6 +1027,7 @@ class modulePage extends React.Component{
                                     selectedRow2={this.selectedRow2}/>
                             :
                                 <CardView contextMenuModule={this.contextMenuModule}
+                                    groupType={this.state.groupType}
                                     selectedRow={this.selectedRow}
                                     selectedRow2={this.selectedRow2}/>
                         }
@@ -999,7 +1062,8 @@ const mapStateToProps = state => {
         dataModule: state.dataModule,
         dataStatus: state.dataStatus,
         viewModule: state.viewModule,
-        dataTeam: state.dataTeam
+        dataTeam: state.dataTeam,
+        sectionModule: state.sectionModule
     }
 }
 

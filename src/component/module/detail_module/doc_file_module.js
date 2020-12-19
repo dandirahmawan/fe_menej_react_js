@@ -280,7 +280,7 @@ class doc_file_module extends React.Component{
                 <canvas id="image_canvas" style={{display: "none"}}/>
                 <div style={{display: "none"}}><img id="base-img-upload"/></div>
                 <div className="main-border-top" style={{padding: "22px", paddingTop: "10px", marginTop: "10px"}}>
-                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Document & file</div>
+                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Attachment</div>
                     <table style={{width: "100%"}}>
                         <tbody>
                             { 

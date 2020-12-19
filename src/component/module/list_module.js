@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTitleHader, setDataLabelModule, setAssignedModules, setDataTeam} from '../../redux/action'
+import {setTitleHader, setDataLabelModule, setAssignedModules, setDataTeam, setSectionModule} from '../../redux/action'
 import NotFound from '../404'
 import Module from './module'
 import {Spinner} from '../spinner'
@@ -84,6 +84,7 @@ class list_module extends React.Component{
                 var dataLabel = result[0]['labelsList']
                 var dataLabelModule = result[0]['labelModulelist']
                 var assignedModules = result[0]['assignedModules']
+                var sectionModule = result[0]['sectionModules']
                 
                 if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
                     this.setState({notFound: true})
@@ -97,6 +98,7 @@ class list_module extends React.Component{
                 this.props.setAssigndeModules(assignedModules)
                 this.props.setDataStatus(dataStatus)
                 this.props.setDataTeam(dataTeam)
+                this.props.setSectionModule(sectionModule)
                 
                 this.setState({
                     // dataTeam: dataTeam,
@@ -140,12 +142,18 @@ class list_module extends React.Component{
         let newData = []
         for(let i = 0;i<this.props.dataModule.length;i++){
             let dt = this.props.dataModule[i]
-            let idx = dataSelected.indexOf(dt.modulId)
-            if(idx == -1){
-                newData.push(dt)
-            }
+            let newDataModule = []
+            dt.sectionModule.map(dtt => {
+                let idx = dataSelected.indexOf(dtt.modulId)
+                if(idx == -1){
+                    newDataModule.push(dtt)
+                }
+            })
+            dt.sectionModule = newDataModule
+            // console.log(dt)
+            newData.push(dt)
         }
-        
+        console.log(newData)
         this.props.setDataModule(newData)
     }
 
@@ -156,7 +164,7 @@ class list_module extends React.Component{
         })
     }
 
-    commitNewModule(userId, mouleName, dueDate, description, pi, status){
+    commitNewModule(userId, mouleName, dueDate, description, pi, status, section){
         var userLogin = getCookieUserId()
         var form = new FormData()
         form.append("userId", userId)
@@ -166,6 +174,7 @@ class list_module extends React.Component{
         form.append("description", description)
         form.append("projectId", pi)
         form.append("status", status)
+        form.append("section", section)
 
         var isReady = false
         this.props.dataModule.map(dt => {
@@ -183,9 +192,16 @@ class list_module extends React.Component{
                 let dataModule = result[0].module
                 let dataAssignTo = result[0].assignTo
                 
-                var append = this.props.dataModule.concat(dataModule)
-                this.props.setDataModule(append)
-                
+                let section = dataModule.sectionId
+                this.props.dataModule.map(dt => {
+                    if(dt.id == section){
+                        dt.sectionModule.push(dataModule)
+                    }
+                })
+
+                // console.log(this.props.dataModule)
+                // var append = this.props.dataModule.concat(dataModule)
+                this.props.setDataModule(this.props.dataModule)
                 dataAssignTo.map(dt => {
                     var appendAssign = this.props.assignedModules.concat(dt)
                     this.props.setAssigndeModules(appendAssign)
@@ -330,7 +346,8 @@ const mapDispatchToProps = dispatch => {
         setDataLabelsModule : (a) => dispatch(setDataLabelModule(a)),
         setAssigndeModules : (a) => dispatch(setAssignedModules(a)),
         setDataStatus : (data) => dispatch(setDataStatus(data)),
-        setDataTeam : (data) => dispatch(setDataTeam(data))
+        setDataTeam : (data) => dispatch(setDataTeam(data)),
+        setSectionModule : (data) => dispatch(setSectionModule(data))
     }
 }
 

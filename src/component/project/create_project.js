@@ -35,6 +35,7 @@ class create_project extends React.Component{
     }
 
     commitProject(e){
+        let tgt = e.target
         var userId = getCookieUserId()
         if(this.state.projectName == ""){
             popUpAlert("Project name is empty", "warning");
@@ -49,6 +50,26 @@ class create_project extends React.Component{
         ReactDom.render(<SpinnerButton size="14px"/>, e.target)
         this.setState({
             onProcess: true
+        })
+
+        let form = new FormData()
+        form.append("userId", userId)
+        form.append("projectName", this.state.projectName)
+        ApiFetch("/insert_project", {
+            body: form,
+            method: "POST"
+        }).then(res => res.text()).then(result => {
+            if(result != "exists"){
+                window.location = "/project/"+result
+            }else{
+                popUpAlert("Project name already exists")
+            }
+
+            tgt.style.opacity = "1"
+            ReactDom.render("Create", tgt)
+            this.setState({
+                onProcess: false
+            })
         })
     }
 

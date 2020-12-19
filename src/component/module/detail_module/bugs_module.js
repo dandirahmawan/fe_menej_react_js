@@ -211,7 +211,7 @@ class bugs_module extends React.Component{
                 {this.state.contextMn}
                 {this.state.popDelete}
                 <div className="main-border-top" style={{padding: "10px", paddingRight: "22px", paddingLeft: "22px", marginTop: "5px"}}>
-                    <div className="second-font-color bold" style={{fontSize: "10px", marginBottom : "3px"}}>Checklist</div>
+                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Checklist</div>
                     <table style={{width: "100%"}}>
                         <tbody id="body-bugs-table">
                             {(thereData < 1) ? <NoData/> : data}

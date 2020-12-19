@@ -813,3 +813,7 @@ thead {
     color: #FFF;
     background: #4da1b5;
   }
+
+  .pop-elm{
+      display: none;
+  }

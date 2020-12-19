@@ -26,8 +26,18 @@
     <title>Menej</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/c70e65f26c.js" crossorigin="anonymous"></script>
+    
+    <!--for hide pop-elm-->
+    <script>
+      function hidePopElm(){
+        let elm = document.getElementsByClassName("pop-elm")
+        for(let i = 0;i<elm.length;i++){
+          elm[i].style.display="none"
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body onclick="hidePopElm()">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

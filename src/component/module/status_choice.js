@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { popUpAlert } from '../../function/function'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCircle, faCog} from '@fortawesome/free-solid-svg-icons'
+import {faCheckCircle, faCircle, faCog, faMinusCircle} from '@fortawesome/free-solid-svg-icons'
 import ColorPicker from '../color_picker'
 import { ApiFetch } from '../apiFetch'
 import ManageStatus from './manage_status'
@@ -62,10 +62,10 @@ class status_module extends React.Component{
         let realTarget = ""
         if(target.tagName == "path"){
             realTarget = target.parentElement.parentElement
-            console.log(realTarget+" 1")
+            // console.log(realTarget+" 1")
         }else if(target.parentElement.tagName == "svg"){
             realTarget = target.parentElement
-            console.log(realTarget+" 2")
+            // console.log(realTarget+" 2")
         }else{
             realTarget = (target.tagName == "svg") ? target.parentElement : target
         }
@@ -165,14 +165,26 @@ class status_module extends React.Component{
     }
 
     render(){
-
+        let seqStatus = 0
         const dataStatus = this.props.dataStatus.map(dt => {
-            return <div onMouseOver={(e) => this.mouseOver(e, "")} 
+            seqStatus++
+            let icon = null
+            if(seqStatus == 1){
+                icon = <FontAwesomeIcon style={{color: dt.color}} icon={faMinusCircle}/>
+            }else if(seqStatus == 2){
+                icon = <FontAwesomeIcon style={{color: dt.color}} icon={faCircle}/>
+            }else if(seqStatus == 3){
+                icon = <FontAwesomeIcon style={{color: dt.color}} icon={faCheckCircle}/>
+            }
+
+            return <div className="main-border-bottom" 
+                        onMouseOver={(e) => this.mouseOver(e, "")} 
                         onClick={() => this.choose(dt.id)}
                         style={{padding: "7px"}}>
-                        <FontAwesomeIcon className="test" 
+                        {/* <FontAwesomeIcon className="test" 
                                         style={{color: dt.color}} 
-                                        icon={faCircle}/>&nbsp;&nbsp;{dt.status}
+                                        icon={faCircle}/>&nbsp;&nbsp;{dt.status} */}
+                        {icon}&nbsp;&nbsp;{dt.status}
                         {
                             (dt.projectId != "all") 
                             ?
@@ -193,7 +205,7 @@ class status_module extends React.Component{
 
                         {dataStatus}
                         
-                        {
+                        {/* {
                             (this.props.isManageStatus)
                             ?
                                 <div className="main-border-top second-background-grs" style={{padding: "10px"}}>
@@ -203,7 +215,7 @@ class status_module extends React.Component{
                                 </div>
                             :
                                 ""
-                        }
+                        } */}
                         
                     </div>
 
