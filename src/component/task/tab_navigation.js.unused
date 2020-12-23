@@ -1,0 +1,69 @@
+import React from 'react'
+
+class tab_navigation extends React.Component{
+    render(){
+        return(
+            <div ref={this.baseMenuTab} className="main-border-bottom second-background-grs" 
+                style={{paddingTop: "10px", marginLeft: "-20px", paddingLeft: "20px", overflow: "hidden"}}>
+                <div id="inf-project-module" style={{float: "left", marginRight: "15px", borderRight: "#dcdbdb 2px solid"}}>
+                    <a onClick={this.infoProject} className="bold" style={{fontSize: "12px", marginRight: "20px", paddingBottom: "10px", color: "#000"}}>
+                        <FontAwesomeIcon icon={faCog}/>&nbsp;Info Project
+                    </a>
+                    {this.state.infoProjectPop}
+                </div>
+
+                {/*menu module, bugs, doc file*/}
+                <div id="main-menu-module" style={{float: "left"}}>
+                    <a ref={this.menuModule} onClick={(e) => this.mainMenu(e, "module")}
+                        className="bold main-menu-module"
+                        style={{fontSize: "12px",
+                            marginRight: "20px",
+                            paddingBottom: "10px",
+                            borderBottom: "2px solid #386384",
+                            display: "inline-block"}}>
+                            Module
+                    </a>
+                    <a ref={this.menuDocFile} onClick={(e) => this.mainMenu(e, "doc file")}
+                    className="bold main-menu-module second-font-color"
+                    style={{fontSize: "12px",
+                            marginRight: "20px",
+                            paddingBottom: "10px",
+                            display: "inline-block"}}>
+                        Doc File
+                    </a>
+                </div>
+
+                <div id="base-tab-menu" ref={this.tabBaseMenu} style={{float: "left"}}>
+
+                    <MenuTab
+                        dataTab={this.state.dataTab}
+                        isRecreate={this.state.isRecreteMenuTab}
+                        action={this.tabMenu}
+                        baseMenuTab={this.tabBaseMenu}
+                        resetDropDown={this.resetDropDownTabMenu}
+                        setDropDownData={this.setDropDownTabMenuData}
+                        setRecreateMenuTabFalse={this.setRecreateMenuTabFalse}
+                    />
+
+                    <div ref={this.dropdownBase} style={{display: "none", paddingBottom: "10px"}}>
+                        <button onClick={this.dropDownMenuTabAction}
+                                id="dropdown-menu-tab"
+                                className="main-border-left"
+                                style={{background: "none"}}>
+                            <FontAwesomeIcon icon={faCaretDown}/>
+                        </button>
+                        {this.state.dropDownMenuTabBase}
+                    </div>
+                    <a id="btn-new-tab" onClick={this.newTab}
+                    className="main-menu-module second-font-color"
+                    style={{fontSize: "12px", marginRight: "20px", borderLeft: "2px solid #CCC", paddingLeft: "10px"}}>
+                        <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;
+                        New Tab
+                    </a>
+                </div>
+            </div>
+        )
+    }
+}
+
+export default tab_navigation
