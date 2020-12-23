@@ -4,7 +4,7 @@ import Login from './component/login'
 import Navbar from './component/navbar'
 import Sidebar from './component/sidebar'
 import Project from './component/project/project'
-import ListModule from './component/module/list_module'
+import Task from './component/task/list_module'
 import StartPage from './component/start_page'
 import Register from './component/register/register'
 import Invitation from './component/invitation/invitation'
@@ -155,7 +155,7 @@ class App extends React.Component{
                                         {/* <Sidebar/> */}
                                         <div id="main-base-data-wrapper">
                                             <Route path="/project/" exact={true} component={Project} />
-                                            <Route path="/project/:id" exact={true} component={ListModule} />
+                                            <Route path="/project/:id" exact={true} component={Task} />
                                             <Route path="/logout" exact={true} component={Logout} />
                                             <Route path="/project/:id/*" exact={true} component={PageNotFound} />
                                         </div>

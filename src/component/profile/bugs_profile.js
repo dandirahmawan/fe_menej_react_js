@@ -2,12 +2,12 @@ import React from 'react'
 import RowBugs from './row_bugs_profile'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import {ApiFetch} from '../apiFetch'
-import DetailModule from '../module/detail_module/detail'
+import DetailModule from '../task/detail_task/detail'
 
 class bugs_profile extends React.Component{
 
     constructor(){
-        super()
+        // super()
         this.state = {
             dataBugs:[],
             detailModule:""

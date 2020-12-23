@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faFolder, faInfo, faInfoCircle, faList, faListAlt, faPlus, faUserCog } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faFolder, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { getCookieSessionId, getCookieUserId } from '../../function/function'
 import { ApiFetch } from '../apiFetch'
 import { connect } from 'react-redux'
