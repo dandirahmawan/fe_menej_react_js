@@ -2,23 +2,44 @@ import React from 'react'
 import { faCalendarAlt, faCheckCircle, faFile, faTag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDate_dd_mmm_yyy } from '../../../function/function';
-import {check_circle as CheckCircle} from '../../icon/icon'
+import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../../icon/icon'
 
 class card_item extends React.Component{
 
+    // colorStatus(a){
+    //     let color =  ""
+    //     let a2 = parseInt(a)
+    //     // console.log(a+" "+a2)
+    //     this.props.dataStatus.map(dt => {
+    //         // console.log(dt.id)
+    //         if(a2 == dt.id){
+    //             // console.log("sasasasasa")
+    //             let colorStatus = (dt.color == null) ? "#000" : dt.color
+    //             color = colorStatus
+    //         }
+    //     })
+    //     return color
+    // }
+
     colorStatus(a){
         let color =  ""
-        let a2 = parseInt(a)
-        // console.log(a+" "+a2)
+        let icon = null
         this.props.dataStatus.map(dt => {
-            // console.log(dt.id)
-            if(a2 == dt.id){
-                // console.log("sasasasasa")
+            if(a == dt.id){
                 let colorStatus = (dt.color == null) ? "#000" : dt.color
                 color = colorStatus
+
+                // console.log("status : "+dt.status.toLowerCase())
+                if(dt.status.toLowerCase() == "not started"){
+                    icon = <CircleMinus className="second-font-color" style={{fontSize: "16px"}}/>
+                }else if(dt.status.toLowerCase() == "completed"){
+                    icon = <CkCIrcle style={{color: colorStatus, fontSize: "16px"}}/>
+                }else{
+                    icon = <CircleDuotone style={{fontSize: "14px", color: colorStatus, border: "1px solid", borderRadius: "100%"}}/>
+                }
             }
         })
-        return color
+        return icon
     }
 
     render(){
@@ -53,8 +74,10 @@ class card_item extends React.Component{
                 style={{marginTop: "10px", padding: "10px", borderRadius: "3px", width: "280px", background: "#FFF"}}>
                 
                 <div style={{display: "flex"}}>
-                    {/* <i class="fas fa-clipboard" style={{color: "rgb(212, 174, 43)", marginTop: "5px"}}></i> */}
-                    <CheckCircle style={{fontSize: "16px", color: this.colorStatus(this.props.status) /*color: "#777777"*/}}/>
+                    {
+                        //generate icon status
+                        this.colorStatus(this.props.status)
+                    }
                     <div style={{marginLeft: "10px"}}>
                         <div id="base-dt-label-card" style={{overflow: "hidde"}}>{labelView}</div>
                         

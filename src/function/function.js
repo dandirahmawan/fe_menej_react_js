@@ -321,7 +321,7 @@ export function checkBuffering(tagVideo) {
             && currentPlayPos < (lastPlayPos + offset)
             && !player.paused
         ) {
-        console.log("buffering")
+        // console.log("buffering")
         bufferingDetected = true
     }
 
@@ -332,7 +332,7 @@ export function checkBuffering(tagVideo) {
         && currentPlayPos > (lastPlayPos + offset)
         && !player.paused
         ) {
-        console.log("not buffering anymore")
+        // console.log("not buffering anymore")
         bufferingDetected = false
     }
 

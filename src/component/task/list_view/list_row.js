@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import NoteModule from '../../note/note'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarAlt, faClipboard, faTag, faCheckCircle, faFile } from '@fortawesome/free-solid-svg-icons'
-import {check_circle as CkCIrcle} from '../../icon/icon'
+import { faCalendarAlt, faClipboard, faTag, faCheckCircle, faFile, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../../icon/icon'
 
 class list_row extends React.Component{
 
@@ -18,13 +18,27 @@ class list_row extends React.Component{
 
     colorStatus(a){
         let color =  ""
+        let icon = null
         this.props.dataStatus.map(dt => {
             if(a == dt.id){
                 let colorStatus = (dt.color == null) ? "#000" : dt.color
                 color = colorStatus
+
+                // console.log("status : "+dt.status.toLowerCase())
+                if(dt.status.toLowerCase() == "not started"){
+                    icon = <CircleMinus className="second-font-color" style={{fontSize: "16px"}}/>
+                }else if(dt.status.toLowerCase() == "completed"){
+                    icon = <CkCIrcle style={{color: colorStatus, fontSize: "16px"}}/>
+                }else{
+                    icon = <CircleDuotone style={{fontSize: "14px", color: colorStatus, border: "1px solid", borderRadius: "100%"}}/>
+                }
             }
         })
-        return color
+        return icon
+    }
+
+    iconSatus(){
+        
     }
 
     moduleStatus(id){
@@ -200,7 +214,10 @@ class list_row extends React.Component{
                                 is-selected="false">
                                 
                                 <td className="tb-border-mod" style={{width: "25px"}}>
-                                    <CkCIrcle style={{color: this.colorStatus(this.props.modulStatus), fontSize: "16px"}}/>
+                                    {/* <CkCIrcle style={{color: this.colorStatus(this.props.modulStatus), fontSize: "16px"}}/> */}
+                                    {/* {this.colorStatus(this.props.moduleStatus)} */}
+                                    {this.colorStatus(this.props.modulStatus)}
+                                    {/* <CircleDuotone style={{fontSize: "14px", color: this.colorStatus(this.props.modulStatus), border: "1px solid", borderRadius: "100%"}}/> */}
                                 </td>
                                 <td className="tb-border-mod">
                                     {/* {

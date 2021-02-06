@@ -398,7 +398,7 @@ class module_info extends React.Component{
                                     :
                                         <td style={{paddingLeft: "20px"}}>
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Due date</div>
-                                            <div className="bold second-background-grs second-font-color" 
+                                            <div className="second-background-grs" 
                                                 style={{padding: "5px", float: "left", borderRadius: "3px", border: "1px solid #CCC"}}>
                                                 <FontAwesomeIcon icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate_dd_MMM_yyy(this.props.dueDate)}
                                             </div>
@@ -446,7 +446,8 @@ class module_info extends React.Component{
                                             </Fragment>
                                             
                                         :
-                                            <div style={{padding: "5px", borderRadius: "3px", width: "370px", minHeight: "50px", border: "1px solid #CCC"}} className="second-background-grs second-font-color"> 
+                                            <div style={{padding: "5px", borderRadius: "3px", width: "370px", minHeight: "50px", border: "1px solid #CCC"}} 
+                                                className="second-background-grs"> 
                                                 {(this.props.description != '') ? this.props.description : 'No description'}
                                             </div>    
                                         

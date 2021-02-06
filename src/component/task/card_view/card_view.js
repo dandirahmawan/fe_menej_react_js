@@ -1,28 +1,43 @@
-import { faInfo, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faInfo, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import CardItem from './card_item'
+import RenameSection from '../rename_section'
+import { Fragment } from 'react';
 
 class card_view extends Component{
+
+    state = {
+        popup: ""
+    }
 
     selectCard = this.selectCard.bind(this)
     setBaseCardView = this.setBaseCardView.bind(this)
     baseCard = React.createRef()
+    renameSection = this.renameSection.bind(this)
+    hidePopUp = this.hidePopUp.bind(this)
     
 
     componentDidMount(){
         this.setBaseCardView(this.props)
     }
 
-    componentWillReceiveProps(nextProps){
-        if(this.props !== nextProps){
-            this.setBaseCardView(nextProps)
+    // componentWillReceiveProps(nextProps){
+    //     if(this.props !== nextProps){
+    //         this.setBaseCardView(nextProps)
+    //     }
+    // }
+
+    componentDidUpdate(prevState){
+        if(prevState !== this.props){
+            this.setBaseCardView(this.props)
         }
     }
 
     setBaseCardView(props){
+        // console.log(props)
         // let sizeStatus = props.dataStatus.length
         let sizeStatus = props.dataModule.length
         let w = (parseInt(320) + 20) * sizeStatus
@@ -45,6 +60,24 @@ class card_view extends Component{
 
     selectCard(moduleId){
         this.props.selectedRow(moduleId)
+    }
+
+    renameSection(e, id, name){
+        let x = e.clientX
+        let y = e.clientY
+        this.setState({
+            popup: <RenameSection y={y} 
+                                x={x} 
+                                cancel={this.hidePopUp}
+                                id={id} 
+                                name={name}/>
+        })
+    }
+
+    hidePopUp(){
+        this.setState({
+            popup: ""
+        })
     }
 
     render(){
@@ -81,7 +114,23 @@ class card_view extends Component{
                                         dataAssigned.push(dtas)
                                     }
                                 })
+                                
+                                /*read data filter*/
+                                // let isVisible = true
+                                // let filter = this.props.filter
+                                // if(filter.type == "status"){
+                                //     // console.log(filter.id+" == "+dtta.modulStatus)
+                                //     if(filter.id != parseInt(dtta.modulStatus)){
+                                //         // console.log("ngga ada")
+                                //         isVisible = false
+                                //     }else{
+                                //         isVisible = true
+                                //         // console.log("ada")
+                                //     }
+                                // }
 
+                                // if(isVisible){
+                                    // console.log("menampilkan")
                                 if(dtta.modulStatus == dt.id){
                                     return <CardItem moduleId={dtta.modulId}
                                                 dataStatus={this.props.dataStatus}
@@ -98,6 +147,7 @@ class card_view extends Component{
                                                 contextMenuModule={this.props.contextMenuModule}/>
                                 }
                             })
+                            // console.log(cardItem)
                             return cardItem
                         })
                     }
@@ -118,6 +168,9 @@ class card_view extends Component{
                                     borderRadius: "3px",
                                     width: "280px"}}>
                             {dt.section}
+                            <a onClick={(e) => this.renameSection(e, dt.id, dt.section)} style={{float: "right"}}>
+                                <FontAwesomeIcon icon={faEdit}/>
+                            </a>
                         </div>
             
                         <div className="base-card-mod-itm scrollbar">
@@ -141,20 +194,33 @@ class card_view extends Component{
                                                 dataAssigned.push(dtas)
                                             }
                                         })
+                                        
+                                        /*read data filter*/
+                                        let isVisible = true
+                                        let filter = this.props.filter
+                                        if(filter.type == "status"){
+                                            if(filter.id != parseInt(dtta.modulStatus)){
+                                                isVisible = false
+                                            }else{
+                                                isVisible = true
+                                            }
+                                        }
 
-                                        return <CardItem moduleId={dtta.modulId}
-                                                    dataStatus={this.props.dataStatus}
-                                                    status={dtta.modulStatus}
-                                                    select={this.selectCard}
-                                                    moduleName={dtta.modulName}
-                                                    description={dtta.description}
-                                                    countDocFile={dtta.countDoc}
-                                                    countBugs={dtta.countBugs}
-                                                    countBugsClose={dtta.countBugsClose}
-                                                    labelModule={dataLabel}
-                                                    assignedModule={dataAssigned}
-                                                    dueDate={dtta.endDate}
-                                                    contextMenuModule={this.props.contextMenuModule}/>
+                                        if(isVisible){
+                                            return <CardItem moduleId={dtta.modulId}
+                                                        dataStatus={this.props.dataStatus}
+                                                        status={dtta.modulStatus}
+                                                        select={this.selectCard}
+                                                        moduleName={dtta.modulName}
+                                                        description={dtta.description}
+                                                        countDocFile={dtta.countDoc}
+                                                        countBugs={dtta.countBugs}
+                                                        countBugsClose={dtta.countBugsClose}
+                                                        labelModule={dataLabel}
+                                                        assignedModule={dataAssigned}
+                                                        dueDate={dtta.endDate}
+                                                        contextMenuModule={this.props.contextMenuModule}/>
+                                        }
                                     })
                                 :
                                     <div className="main-border" style={{margin: "10px", width: "260px", textAlign: "center", paddingTop: "20px", paddingBottom: "20px"}}>
@@ -170,19 +236,21 @@ class card_view extends Component{
         })
 
         return(
-            <div className="main-border-top" 
-                style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", background: "#efefef"}}>
-                <div ref={this.baseCard} style={{marginTop: "10px", overflow: "hidden", position: "relative"}}>
-                    {
-                        (this.props.groupType == 'section')
-                        ?
-                            baseSection
-                        :
-                            baseGroup
-                    }
+            <Fragment>
+                {this.state.popup}
+                <div className="main-border-top" 
+                    style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", background: "#efefef"}}>
+                    <div ref={this.baseCard} style={{marginTop: "10px", overflow: "hidden", position: "relative"}}>
+                        {
+                            (this.props.groupType == 'section')
+                            ?
+                                baseSection
+                            :
+                                baseGroup
+                        }
+                    </div>
                 </div>
-            </div>
-            
+            </Fragment>            
         )
     }
 }

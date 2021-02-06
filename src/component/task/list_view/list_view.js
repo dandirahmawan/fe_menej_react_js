@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import RowModule from './list_row'
 import { selectRowModule } from '../../../redux/action'
 import { Fragment } from 'react'
-import { faChevronDown, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faEdit, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import RenameSection from '../rename_section'
+import { getCookieUserId } from '../../../function/function'
 
 class list_view extends Component{
 
@@ -20,10 +22,18 @@ class list_view extends Component{
     hidePopUp = this.hidePopUp.bind(this)
     holdDown = this.holdDown.bind(this)
     holdUp = this.holdUp.bind(this)
+    renameSection = this.renameSection.bind(this)
 
     componentDidMount(){
         document.addEventListener("keydown", this.holdDown)
         document.addEventListener("keyup", this.holdUp)
+    }
+
+    componentDidUpdate(prevState){
+        if(prevState !== this.state){
+            console.log(prevState)
+            console.log(this.state)
+        }
     }
 
     readDataLabel(moduleId){
@@ -61,7 +71,8 @@ class list_view extends Component{
 
     hidePopUp(){
         this.setState({
-            infoPop: ""
+            infoPop: "",
+            popup: ""
         })
     }
 
@@ -77,16 +88,41 @@ class list_view extends Component{
         }
     }
 
+    renameSection(e, id, name){
+        let x = e.clientX
+        let y = e.clientY
+        this.setState({
+            popup: <RenameSection y={y} 
+                                x={x} 
+                                cancel={this.hidePopUp}
+                                id={id} 
+                                name={name}/>
+        })
+    }
 
     render(){
+        const picProjcet = this.props.dataProject.pic
         const dataModule = this.props.dataModule.map(dt => {
             if(dt.isDelete != "Y"){
+                let pc = parseInt(picProjcet)
                 return <Fragment>
                             <tr>
                                 <td colSpan='7' 
                                     className='bold second-font-color' 
                                     style={{paddingTop: "10px", paddingBottom: "10px", textTransform: "uppercase"}}>
-                                    <FontAwesomeIcon icon={faChevronDown}/>&nbsp;&nbsp;{dt.section}
+                                    <FontAwesomeIcon icon={faChevronDown}/>
+                                    &nbsp;&nbsp;
+                                    {dt.section}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {
+                                        (getCookieUserId() == pc)
+                                        ?
+                                            <a onClick={(e) => this.renameSection(e, dt.id, dt.section)} className="main-font-color" style={{fontSize: "10px"}}>
+                                                <FontAwesomeIcon icon={faEdit}/>
+                                            </a>
+                                        :
+                                            ""
+                                    }   
                                 </td>
                             </tr>
 
@@ -109,35 +145,51 @@ class list_view extends Component{
                             }
 
                             {dt.sectionModule.map(dt => {
-                                return <RowModule
-                                            dataStatus={this.props.dataStatus}
-                                            detail = {this.detail}
-                                            isDelete = {dt.isTrash}
-                                            selected = {this.selectedRow}
-                                            selectedRow = {this.selectedRow2}
-                                            moduleId = {dt.modulId}
-                                            modulName = {dt.modulName}
-                                            description = {dt.description}
-                                            endDate = {dt.endDate}
-                                            modulStatus = {dt.modulStatus}
-                                            countBugs = {dt.countBugs}
-                                            countBugsClose = {dt.countBugsClose}
-                                            countDoc = {dt.countDoc}
-                                            countNote = {dt.countNote}
-                                            userName = {dt.userName}
-                                            isMember = {dt.isMember}
-                                            note = ""
-                                            assigned = {this.props.assignedModules}
-                                            bugsIconClick = {this.bugsIconClick}
-                                            isSelected={dt.isSelected}
-                                            docFileIconClick = {this.docFileIconClick}
-                                            noteClick={this.noteClick}
-                                            appendsNote=""
-                                            updateStateDataNote=""
-                                            dataLabelModule={this.readDataLabel(dt.modulId)}
-                                            contextMenuModule={this.props.contextMenuModule}
-                                            showDescription={this.props.showDescription}
-                                            isBorder={this.props.isBorder}/>
+                                
+                                let isVisible = true
+                                let filter = this.props.filter
+
+                                /*read data filter*/
+                                if(filter.type == "status"){
+                                    if(filter.id != parseInt(dt.modulStatus)){
+                                        isVisible = false
+                                    }else{
+                                        isVisible = true
+                                    }
+                                }
+
+                                if(isVisible)
+                                {
+                                    return <RowModule
+                                                dataStatus={this.props.dataStatus}
+                                                detail = {this.detail}
+                                                isDelete = {dt.isTrash}
+                                                selected = {this.selectedRow}
+                                                selectedRow = {this.selectedRow2}
+                                                moduleId = {dt.modulId}
+                                                modulName = {dt.modulName}
+                                                description = {dt.description}
+                                                endDate = {dt.endDate}
+                                                modulStatus = {dt.modulStatus}
+                                                countBugs = {dt.countBugs}
+                                                countBugsClose = {dt.countBugsClose}
+                                                countDoc = {dt.countDoc}
+                                                countNote = {dt.countNote}
+                                                userName = {dt.userName}
+                                                isMember = {dt.isMember}
+                                                note = ""
+                                                assigned = {this.props.assignedModules}
+                                                bugsIconClick = {this.bugsIconClick}
+                                                isSelected={dt.isSelected}
+                                                docFileIconClick = {this.docFileIconClick}
+                                                noteClick={this.noteClick}
+                                                appendsNote=""
+                                                updateStateDataNote=""
+                                                dataLabelModule={this.readDataLabel(dt.modulId)}
+                                                contextMenuModule={this.props.contextMenuModule}
+                                                showDescription={this.props.showDescription}
+                                                isBorder={this.props.isBorder}/>
+                                    }
                                 })
                             }
                             <tr><td colSpan="7" style={{padding: "10px"}}></td></tr>
@@ -198,7 +250,8 @@ const mapStateToProps = state => {
         dataLabelModule: state.dataLabelsModule,
         assignedModules: state.assignedModules,
         dataModule : state.dataModule,
-        dataStatus : state.dataStatus
+        dataStatus : state.dataStatus,
+        dataProject : state.dataProject[0]
     }
 }
 

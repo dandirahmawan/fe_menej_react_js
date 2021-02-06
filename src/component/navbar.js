@@ -157,7 +157,7 @@ class navbar extends React.Component{
                         </Link>
                         <a onClick={this.notification}>
                             <div style={{float: "left", borderRadius: "18px", marginRight: "20px", paddingTop: "7px", color: "#FFF", transform: "rotate(20deg)"}}>
-                                <em style={{fontSize: "16px"}} class="fa fa-bell"></em>
+                                <em style={{fontSize: "16px"}} className="fa fa-bell"></em>
                             </div>
                         </a>
 
