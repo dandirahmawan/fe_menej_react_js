@@ -1,6 +1,5 @@
 import React from 'react'
 import ItemUserChoice from './item_user_choice'
-import {baseUrl} from '../const/const'
 import {getCookieUserId} from '../function/function'
 import {ApiFetch} from './apiFetch'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -98,7 +97,7 @@ class userListChoice extends React.Component{
                 <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
                     <button onClick={this.submit} className="btn-primary" style={{fontSize: "11px"}}>Submit</button>
                     &nbsp;&nbsp;
-                    <button className="btn-secondary" style={{fontSize: "11px"}}>Cancel</button>
+                    <button onClick={this.props.xSelected} className="btn-secondary" style={{fontSize: "11px"}}>Cancel</button>
                 </div>
             </div>
         )

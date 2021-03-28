@@ -40,6 +40,10 @@ class login extends React.Component{
         }  
     }
 
+    componentDidMount(){
+        this.setCenter()
+    }
+
     submit(e){
         if(this.state.email.length == 0){
             this.setState({
@@ -101,9 +105,18 @@ class login extends React.Component{
         })    
     }
 
+    setCenter(){
+        let elm = document.getElementById("base-login")
+        let h = elm.offsetHeight
+        let hw = window.innerHeight
+        let marginTop = (hw / 2) - (h / 2)
+        elm.style.marginTop = marginTop+"px"
+        // console.log("height : "+h+" "+marginTop)
+    }
+
     render(){
         return(
-            <div style={{textAlign: "center", marginTop: "100px"}}>
+            <div id="base-login" style={{textAlign: "center", marginTop: "100px"}}>
                 <img src={Logo}></img><br/>
                 <p className="bold-black">Sign in</p>
                 <p className="bold" style={{fontSize: '12px', color: "#F00"}}>{this.state.alertLogin}</p>

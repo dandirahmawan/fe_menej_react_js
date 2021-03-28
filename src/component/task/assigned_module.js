@@ -73,23 +73,6 @@ class set_assigned_module extends React.Component{
         } 
     }
 
-    // checkRemoveMember(userId){
-    //     let idx = this.state.listSelected.indexOf(userId)
-    //     this.state.listSelected.splice(idx, 1)
-    // }
-
-    // goRight(){
-    //     this.setState({
-    //         listSelected: this.state.listSelected
-    //     })
-    // }
-
-    // goLeft(){
-    //     this.setState({
-    //         listSelected: this.state.listSelected
-    //     })
-    // }
-
     assign(){
         let moduleId = this.props.moduleId
         let data = []
@@ -135,26 +118,6 @@ class set_assigned_module extends React.Component{
                         userSelected={dt.isCheckedRemove}/>
         })
 
-        // const dataMemberAssigned = this.state.listMember.map(dt =>{
-        //     let isChecked = false
-        //     this.state.listSelected.map(dta => {
-        //         if(dt.userId == dta){
-        //             isChecked = true
-        //         }
-        //     })
-
-        //     if(isChecked)
-        //         return <ItemMemberAssigning
-        //                     checkMember={this.checkRemoveMember}
-        //                     userName= {dt.userName}
-        //                     userId={dt.userId}
-        //                     userEmail={dt.emailUser}
-        //                     picProfile={dt.picProfile}
-        //                     isRelated={dt.isRelated}
-        //                     isInvited={dt.isInvited}
-        //                     userSelected={dt.isCheckedRemove}/>
-        // })
-
         return(
             <React.Fragment>
                 <div onClick={this.blockClick} className="block"></div>
@@ -172,30 +135,10 @@ class set_assigned_module extends React.Component{
                                 <div>
                                     <div className="main-add-member">
                                         <div className="main-add-member" style={{float: "left", width: "330px", overflowY: "scroll"}}>
-                                            {/* <div className="bold second-background-grs main-border-bottom" style={{padding: "10px", fontSize: "12px", width: "304px", position: "fixed"}}>All user</div> */}
                                             <div /*style={{marginTop: "35px"}}*/>
                                                 {dataMember}
                                             </div>
                                         </div>
-                                        {/* <div className="main-add-member main-border-left main-border-right" style={{float: "left", width: "50px", textAlign: "center"}}>
-                                            <div style={{marginTop: "100px"}}>
-                                                <button onClick={this.goRight} style={{background: "none"}}><i className="fa fa-angle-right" style={{fontSize: "18px"}}></i></button><br/>
-                                                <button onClick={this.goLeft} style={{background: "none"}}><i className="fa fa-angle-left" style={{fontSize: "18px"}}></i></button>
-                                            </div>
-                                        </div> */}
-                                        {/* <div className="main-add-member" style={{float: "left", width: "324px", overflowY: "scroll"}}>
-                                            <div className="bold second-background-grs main-border-bottom" style={{padding: "10px", fontSize: "12px", width: "304px", position: "fixed"}}>Assigned</div>
-                                            <div style={{marginTop: "35px"}}>
-                                                {dataMemberAssigned} */}
-                                                {/* {
-                                                    (countData == 0) ? 
-                                                    <div className="bold second-font-color" style={{fontSize: "11px", textAlign: "center", padding: "30px"}}>
-                                                        this project<br/>not have a member
-                                                    </div> 
-                                                    : dataSelected
-                                                } */}
-                                            {/* </div> */}
-                                        {/* </div> */}
                                     </div>
                                     <div id="footer-add-member" className="main-border-top" style={{padding: "10px", textAlign: "right", height: "27px"}}>
                                         <button onClick={this.assign} className="btn-primary" style={{fontSize: "12px"}}>Ok</button>

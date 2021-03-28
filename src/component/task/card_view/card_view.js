@@ -1,4 +1,4 @@
-import { faEdit, faInfo, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faInfoCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { Component } from 'react';
@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import CardItem from './card_item'
 import RenameSection from '../rename_section'
 import { Fragment } from 'react';
+import PopConfirmation from "../../popup_confirmation";
+import { popUpAlert } from '../../../function/function';
+import { ApiFetch } from '../../apiFetch';
+import { setDataModule } from '../../../redux/action';
 
 class card_view extends Component{
 
@@ -18,17 +22,12 @@ class card_view extends Component{
     baseCard = React.createRef()
     renameSection = this.renameSection.bind(this)
     hidePopUp = this.hidePopUp.bind(this)
-    
+    deleteSection = this.deleteSection.bind(this)
+    commitDeleteSection = this.commitDeleteSection.bind(this)
 
     componentDidMount(){
         this.setBaseCardView(this.props)
     }
-
-    // componentWillReceiveProps(nextProps){
-    //     if(this.props !== nextProps){
-    //         this.setBaseCardView(nextProps)
-    //     }
-    // }
 
     componentDidUpdate(prevState){
         if(prevState !== this.props){
@@ -44,7 +43,7 @@ class card_view extends Component{
         
         let wh = window.innerHeight
         let t = this.baseCard.current.offsetTop 
-        let hg = wh - t - 5
+        let hg = wh - t - 10
 
         this.baseCard.current.style.width = w+"px"
         this.baseCard.current.style.height = hg+"px"
@@ -74,6 +73,61 @@ class card_view extends Component{
         })
     }
 
+    deleteSection(e, id, name){
+        let text = "<span>Are you sure you want delete <span class='bold'>"+name+"</span> section. Make sure that the section is not have any task</span>"
+        this.setState({
+            popup: <PopConfirmation titleConfirmation="Delete Section"
+                                    textPopup={text}
+                                    yesAction={() => this.commitDeleteSection(id)}
+                                    hidePopUp={this.hidePopUp}/>
+        })
+    }
+
+    commitDeleteSection(id){
+        let isValid = true
+        let dataModule = [...this.props.dataModule]
+        let seq = 0;
+        for(let i = 0;i<dataModule.length;i++){
+            let dt = dataModule[i]
+            if(dt.id == id){
+                let countTask = dt.sectionModule.length
+                if(countTask > 0){
+                    popUpAlert("There is task in this section")
+                    isValid = false
+                }else{
+                    /*set index array section for delete*/
+                    seq = i
+                }
+                break
+            }
+        }
+
+        if(isValid){
+            popUpAlert("Section successfully deleted", "success")
+            let form = new FormData()
+            form.append("id", id)
+            ApiFetch("/section/delete", {
+                method: "POST",
+                body: form
+            }).then(res => res.text()).then(res => {
+                let resJson = JSON.parse(res)
+                if(resJson.status == "success"){
+                    popUpAlert("Delete section is successfully", "success")
+
+                    /*set data module to redux*/
+                    dataModule.splice(seq, 1)
+                    this.props.setDataModule(dataModule)
+                }else{
+                    popUpAlert(resJson.message)
+                }
+            })
+        }
+
+        this.setState({
+            popup: ""
+        })
+    }
+
     hidePopUp(){
         this.setState({
             popup: ""
@@ -99,14 +153,6 @@ class card_view extends Component{
                     {
                         this.props.dataModule.map(dtt => {
                             const cardItem = dtt.sectionModule.map(dtta => {
-                                /*set data label for each card*/
-                                let dataLabel = []
-                                this.props.dataLabelModule.map(dtm => {
-                                    if(dtm.moduleId == dtta.modulId){
-                                        dataLabel.push(dtm)
-                                    }
-                                })
-
                                 /*set data assigned for each card*/
                                 let dataAssigned = []
                                 this.props.assignedModules.map(dtas => {
@@ -115,22 +161,6 @@ class card_view extends Component{
                                     }
                                 })
                                 
-                                /*read data filter*/
-                                // let isVisible = true
-                                // let filter = this.props.filter
-                                // if(filter.type == "status"){
-                                //     // console.log(filter.id+" == "+dtta.modulStatus)
-                                //     if(filter.id != parseInt(dtta.modulStatus)){
-                                //         // console.log("ngga ada")
-                                //         isVisible = false
-                                //     }else{
-                                //         isVisible = true
-                                //         // console.log("ada")
-                                //     }
-                                // }
-
-                                // if(isVisible){
-                                    // console.log("menampilkan")
                                 if(dtta.modulStatus == dt.id){
                                     return <CardItem moduleId={dtta.modulId}
                                                 dataStatus={this.props.dataStatus}
@@ -141,13 +171,12 @@ class card_view extends Component{
                                                 countDocFile={dtta.countDoc}
                                                 countBugs={dtta.countBugs}
                                                 countBugsClose={dtta.countBugsClose}
-                                                labelModule={dataLabel}
+                                                labelModule={dtta.label}
                                                 assignedModule={dataAssigned}
                                                 dueDate={dtta.endDate}
                                                 contextMenuModule={this.props.contextMenuModule}/>
                                 }
                             })
-                            // console.log(cardItem)
                             return cardItem
                         })
                     }
@@ -168,25 +197,22 @@ class card_view extends Component{
                                     borderRadius: "3px",
                                     width: "280px"}}>
                             {dt.section}
-                            <a onClick={(e) => this.renameSection(e, dt.id, dt.section)} style={{float: "right"}}>
-                                <FontAwesomeIcon icon={faEdit}/>
-                            </a>
+                            <div style={{float: "right"}}>
+                                <a onClick={(e) => this.renameSection(e, dt.id, dt.section)} >
+                                    <FontAwesomeIcon icon={faEdit}/>
+                                </a>
+                                &nbsp;&nbsp;&nbsp;
+                                <a onClick={(e) => this.deleteSection(e, dt.id, dt.section)} className="second-font-color">
+                                    <FontAwesomeIcon icon={faTrashAlt}/>
+                                </a>
+                            </div>
                         </div>
             
-                        <div className="base-card-mod-itm scrollbar">
+                        <div className="base-card-mod-itm scrollbar scoll-card-task">
                             {
                                 (dt.sectionModule.length > 0)
                                 ?
                                     dt.sectionModule.map(dtta => {
-                                        /*set data label for each card*/
-                                        console.log(dtta)
-                                        let dataLabel = []
-                                        this.props.dataLabelModule.map(dtm => {
-                                            if(dtm.moduleId == dtta.modulId){
-                                                dataLabel.push(dtm)
-                                            }
-                                        })
-
                                         /*set data assigned for each card*/
                                         let dataAssigned = []
                                         this.props.assignedModules.map(dtas => {
@@ -204,6 +230,15 @@ class card_view extends Component{
                                             }else{
                                                 isVisible = true
                                             }
+                                        }else if(filter.type == "assign"){
+                                            isVisible = false
+                                            for(let i = 0;i<dtta.assignTo.length;i++){
+                                                let dttaAssign = dtta.assignTo[i]
+                                                if(dttaAssign.userId == filter.id){
+                                                    isVisible = true
+                                                    break
+                                                }
+                                            }
                                         }
 
                                         if(isVisible){
@@ -216,7 +251,7 @@ class card_view extends Component{
                                                         countDocFile={dtta.countDoc}
                                                         countBugs={dtta.countBugs}
                                                         countBugsClose={dtta.countBugsClose}
-                                                        labelModule={dataLabel}
+                                                        labelModule={dtta.label}
                                                         assignedModule={dataAssigned}
                                                         dueDate={dtta.endDate}
                                                         contextMenuModule={this.props.contextMenuModule}/>
@@ -238,9 +273,9 @@ class card_view extends Component{
         return(
             <Fragment>
                 {this.state.popup}
-                <div className="main-border-top" 
-                    style={{overflowX: "scroll", marginLeft: "-20px", paddingLeft: "20px", background: "#efefef"}}>
-                    <div ref={this.baseCard} style={{marginTop: "10px", overflow: "hidden", position: "relative"}}>
+                <div className="main-border-top scroll-card-task-y" 
+                    style={{overflowX: "scroll", marginLeft: "-8px", paddingLeft: "20px", background: "#efefef"}}>
+                    <div ref={this.baseCard} style={{marginTop: "70px", overflow: "hidden", position: "relative"}}>
                         {
                             (this.props.groupType == 'section')
                             ?
@@ -255,6 +290,12 @@ class card_view extends Component{
     }
 }
 
+const mapDispatchToProps = dispatch => {
+    return{
+        setDataModule : (data) => dispatch(setDataModule(data))
+    }
+}   
+
 const mapStateToProps = state => {
     return{
         dataLabelModule: state.dataLabelsModule,
@@ -264,4 +305,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps) (card_view) 
+export default connect(mapStateToProps, mapDispatchToProps) (card_view) 

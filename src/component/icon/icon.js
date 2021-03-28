@@ -25,14 +25,14 @@ export function circle_duotone(props) {
             style={props.style}
             class={"svg-inline--fa fa-circle fa-w-16 fa-9x "+props.className}>
                 <g class="fa-group">
-                    <path fill="currentColor" 
+                    <path 
                         d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 424c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z" 
                         class="fa-secondary">
                     </path>
-                    <path fill="currentColor" 
+                    {/* <path fill="currentColor" 
                         d="M256 432c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z" 
                         class="fa-primary">
-                    </path>
+                    </path> */}
                 </g>
             </svg>
 }
@@ -72,5 +72,22 @@ export function no_filter(props){
                         d="M256 432c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z" 
                         class="fa-primary">
                     </path> */}
+            </svg>
+}
+
+export function square_light(props){
+    return <svg aria-hidden="true" 
+            focusable="false" 
+            data-prefix="fal" 
+            data-icon="square" 
+            role="img" 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 448 512"
+            style={props.style} 
+            class="svg-inline--fa fa-square fa-w-14 fa-3x sqr-mn">
+                <path 
+                    fill="currentColor" 
+                    d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm16 400c0 8.8-7.2 16-16 16H48c-8.8 0-16-7.2-16-16V80c0-8.8 7.2-16 16-16h352c8.8 0 16 7.2 16 16v352z" class="">
+                </path>
             </svg>
 }

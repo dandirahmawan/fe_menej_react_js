@@ -1,6 +1,5 @@
-import React, {useState, Component} from 'react'
+import React, {Component} from 'react'
 import UserItemList from '../item_user_list'
-import { ApiFetch } from '../apiFetch'
 
 class pic_picker extends Component{
 

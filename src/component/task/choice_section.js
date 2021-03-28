@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react'
 import { check_circle } from '../icon/icon'
 
-class choice_status extends Component{
+class choice_section extends Component{
 
     constructor(){
         super()
@@ -56,4 +56,4 @@ class choice_status extends Component{
     }
 }
 
-export default choice_status
+export default choice_section

@@ -36,7 +36,7 @@ class item_user_list_member extends React.Component{
                     }
                 </div>
                 
-                <div style={{marginLeft: "40px", marginTop: "-32px", display: "flex", alignItems: "center"}}>
+                <div style={{marginLeft: "40px", marginTop: "-28px", display: "flex", alignItems: "center"}}>
                     <div style={{width: "100%"}}>
                         <span className="bold" style={{fontSize: "12px"}}>
                             {this.props.userName}

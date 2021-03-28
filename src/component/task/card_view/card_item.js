@@ -79,7 +79,9 @@ class card_item extends React.Component{
                         this.colorStatus(this.props.status)
                     }
                     <div style={{marginLeft: "10px"}}>
-                        <div id="base-dt-label-card" style={{overflow: "hidde"}}>{labelView}</div>
+                        <div id="base-dt-label-card" style={{overflow: "hidde"}}>
+                            {labelView}
+                        </div>
                         
                         <div className="bold" style={{fontSize: "14px", marginBottom: "2px"}}>
                             {this.props.moduleName}

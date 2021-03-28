@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Logo from '../../images/menej_285e8e.png'
 import {Spinner} from '../spinner'
 import {ApiFetch} from '../apiFetch'

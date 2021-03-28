@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import NoteModule from '../../note/note'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarAlt, faClipboard, faTag, faCheckCircle, faFile, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarAlt, faTag, faCheckCircle, faFile } from '@fortawesome/free-solid-svg-icons'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../../icon/icon'
 
 class list_row extends React.Component{
@@ -70,7 +70,7 @@ class list_row extends React.Component{
 
     render(){
         const classNameRow = (this.props.isSelected) ? "tr-module-data tr-selectable selected-row main-border-bottom" : "tr-module-data tr-selectable main-border-bottom"
-        const labelView = this.props.dataLabelModule.map(dt => {
+        const labelView = this.props.labelModule.map(dt => {
             return <span style={{padding: "3px", 
                                 background: dt.color, 
                                 color: "#FFF", 
@@ -214,22 +214,9 @@ class list_row extends React.Component{
                                 is-selected="false">
                                 
                                 <td className="tb-border-mod" style={{width: "25px"}}>
-                                    {/* <CkCIrcle style={{color: this.colorStatus(this.props.modulStatus), fontSize: "16px"}}/> */}
-                                    {/* {this.colorStatus(this.props.moduleStatus)} */}
                                     {this.colorStatus(this.props.modulStatus)}
-                                    {/* <CircleDuotone style={{fontSize: "14px", color: this.colorStatus(this.props.modulStatus), border: "1px solid", borderRadius: "100%"}}/> */}
                                 </td>
                                 <td className="tb-border-mod">
-                                    {/* {
-                                        (this.props.dataLabelModule.length > 0)
-                                        ?
-                                            <div style={{overflow: "hidden", marginBottom: "3px"}}>
-                                                {labelView} 
-                                            </div>
-                                        :
-                                            ""
-                                    } */}
-                                    
                                     <div className="bold">{this.props.modulName}</div>
                                     {
                                         (this.props.showDescription)
@@ -246,23 +233,10 @@ class list_row extends React.Component{
                                         :
                                             ""
                                     }
-                                   
-
-                                    {/* {
-                                        (this.state.noteBaseVisible) 
-                                        ?
-                                            <NoteModule
-                                                countNote={this.props.countNote}
-                                                moduleId={this.props.moduleId}
-                                                moduleName={this.props.modulName}
-                                            />
-                                        : ""
-                                    } */}
-                                    
                                 </td>
                                 <td style={{width: "100px"}}>
                                      {
-                                        (this.props.dataLabelModule.length > 0)
+                                        (this.props.labelModule.length > 0)
                                         ?
                                             <div style={{overflow: "hidden", display: "flex", justifyContent: "center"}}>
                                                 {labelView} 

@@ -37,7 +37,7 @@ const initState = {
     assignedModules: [],
     dataStatus: [],
     sectionModule: [],
-    viewModule: "list"
+    viewModule: "card"
 }
 
 function rootReducer(state = initState, action){
@@ -159,13 +159,21 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === updateDataModuleBugsAction){
-        const newData = state.dataModule.map(dt => {
-            if(dt.modulId == action.moduleId){
-                if(action.typeUpdate == "add"){
-                    dt.countBugs = parseInt(dt.countBugs) + 1
-                }else{
-                    dt.countBugs = dt.countBugs - 1
-                }       
+        const dataModule = [...state.dataModule]
+        // alert("dandi rahmawan")
+        const newData = dataModule.map(dt => {
+            if(dt.id == action.sectionId){
+                dt.sectionModule.map(dtt => {
+                    if(dtt.modulId == action.moduleId){
+                        console.log(dtt)
+                        if(action.typeUpdate == "add"){
+                            dtt.countBugs = parseInt(dtt.countBugs) + 1
+                        }else{
+                            dtt.countBugs = dtt.countBugs - 1
+                        }       
+                    }
+                })
+                
             }
             return dt
         })
@@ -267,7 +275,8 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === "UPDATE_DATA_MODULE"){
-        const newData = state.dataModule.map(dt => {
+        let dataModule = [...state.dataModule]
+        const newData = dataModule.map(dt => {
             if(dt.id == action.section){
                 dt.sectionModule.map(dtt => {
                     if(dtt.modulId == action.moduleId){
@@ -278,6 +287,7 @@ function rootReducer(state = initState, action){
                         dtt.endDate = new Date(action.dueDate)   
                         dtt.isMember = (dt.userId != action.userId) ? 1 : dt.isMember 
                         dtt.userId = action.userId
+                        dtt.label = action.label
                         return dtt
                     }
                 })
@@ -447,7 +457,7 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === appendDataDocFileAction){
-        state.dataDocFile.concat(action.jsonObject)
+        state.dataDocFile.push(action.jsonObject)
         return{
             ...state,
             dataDocFile: state.dataDocFile

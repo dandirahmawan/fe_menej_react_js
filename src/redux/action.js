@@ -59,10 +59,11 @@ export function setDataModule(data){
     }
 }
 
-export function updateDataModuleBugs(moduleId, typeUpdate){
+export function updateDataModuleBugs(moduleId, sectionId, typeUpdate){
     return{
         type: updateDataModuleBugsAction,
         moduleId: moduleId,
+        sectionId: sectionId,
         typeUpdate: typeUpdate
     }
 }
@@ -75,7 +76,7 @@ export function updateDataModuleDocFile(moduleId, typeUpdate){
     }
 }
 
-export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate, section){
+export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate, section, label){
     return{
         type: "UPDATE_DATA_MODULE",
         moduleId : moduleId, 
@@ -86,7 +87,8 @@ export function updateDataModule(moduleId, moduleName, moduleStatus, userId, use
         emailUser: emailUser, 
         descriptionModule: descriptionModule, 
         dueDate: dueDate,
-        section: section
+        section: section,
+        label: label
     }
 }
 

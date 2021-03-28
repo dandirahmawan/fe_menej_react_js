@@ -389,14 +389,44 @@ button{
     background: #eaeaea !important;
 }
 
+.fld-color{
+    color: rgb(212, 174, 43);
+}
+
 .tr-selectable-menu{
     background: #f3f2f1 !important;
     cursor: pointer;
 }
 
+.mn-tsk-main{
+    background: #FFF;
+    text-decoration: none;
+    padding: 8px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.mn-tsk-main:hover{
+    background: #eeeeee;
+    text-decoration: none;
+    padding: 8px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .tr-selectable-menu:hover{
     background: #5595c5 !important;
     color: #FFF !important
+}
+
+.tr-selectable-menu-sf{
+    background: #f3f2f1 !important;
+    cursor: pointer;
+}
+
+.tr-selectable-menu-sf:hover{
+    background: rgb(226, 226, 226) !important;
+    color: #000 !important
 }
 
 .tr-selectable-menu:hover a{
@@ -405,6 +435,16 @@ button{
 
 .tr-selectable-project{
     background: #FFF;
+}
+
+.itm-sect-bs{
+    color: #000;
+    background: #FFF;
+}
+
+.itm-sect-bs:hover{
+    color: #FFF;
+    background: #4da1b5;
 }
 
 .tr-selectable-project-selected{
@@ -450,6 +490,23 @@ button{
     /* -webkit-box-shadow: inset 0 0 6px #FFF;  */
 }
 
+.scroll-card-task-y::-webkit-scrollbar-thumb{
+    background: #CCC;
+    border-radius: 10px;
+        /* -webkit-box-shadow: inset 0 0 6px #FFF;  */
+}
+
+.scroll-card-task-y::-webkit-scrollbar{
+    border-top: #CCC;
+    background: #f1f1f1;
+    width: 10px;
+    height: 10px;
+        /* -webkit-box-shadow: inset 0 0 6px #FFF;  */
+}
+
+.sqr-mn{
+    color: rgb(148 147 147);
+}
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -470,10 +527,6 @@ button{
     width: 250px;
     height: auto;
     z-index: 100;
-}
-
-#main-base-data{
-
 }
 
 .input-info-mdl{

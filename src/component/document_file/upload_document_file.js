@@ -6,7 +6,9 @@ import { baseUrl } from '../../const/const'
 import {appendDataDocFile, updateDataModuleDocFile} from '../../redux/action'
 import {SpinnerButton} from "../spinner";
 import {EXIF} from "exif-js";
-import {ApiFetch} from '../apiFetch'
+import {SelectBox} from '../custom_element'
+import {check_circle as CkCIrcle} from '../icon/icon'
+// import {ApiFetch} from '../apiFetch'
 
 class upload_document_file extends React.Component{
 
@@ -23,13 +25,16 @@ class upload_document_file extends React.Component{
             base64: "",
             image:null,
             numPercent: 0,
-            choicesModule:[]
+            choicesModule:[],
+            taskSelected: ""
         }
 
         this.inputRef = React.createRef()
         this.baseProgressBar = React.createRef()
         this.progressBar = React.createRef()
+        this.bsChcTskUpld = React.createRef()
 
+        this.selectTask = this.selectTask.bind(this)
         this.fileSelect = this.fileSelect.bind(this)
         this.changeModule = this.changeModule.bind(this)
         this.submit = this.submit.bind(this)
@@ -37,6 +42,7 @@ class upload_document_file extends React.Component{
         this.changeFile = this.changeFile.bind(this)
         this.getModWidthHeight = this.getModWidthHeight.bind(this)
         this.canvasing = this.canvasing.bind(this)
+        this.selectItemTask = this.selectItemTask.bind(this)
     }
 
     componentDidMount(){
@@ -51,9 +57,16 @@ class upload_document_file extends React.Component{
         elmSet.style.minHeight = h3+"px"
 
         this.props.dataModule.map( dt=> {
-            var jsonObject = '{"moduleId":"'+dt.modulId+'","moduleName":"'+dt.modulName+'"}';
-            var jsonObject = JSON.parse(jsonObject)
-            this.state.choicesModule.push(jsonObject)
+            let data = dt.sectionModule
+            data.map(dtt => {
+                var jsonObject = '{"moduleId":"'+dtt.modulId+'","moduleName":"'+dtt.modulName+'"}';
+                var jsonObject = JSON.parse(jsonObject)
+                this.state.choicesModule.push(jsonObject)
+                // this.setState({
+                //     choicesModule: this.state.choicesModule
+                // })
+            })
+
             this.setState({
                 choicesModule: this.state.choicesModule
             })
@@ -73,6 +86,10 @@ class upload_document_file extends React.Component{
         this.setState({
             description: v
         })
+    }
+
+    selectTask(){
+        this.bsChcTskUpld.current.style.display = "block"
     }
 
     fileSelect(){
@@ -233,10 +250,24 @@ class upload_document_file extends React.Component{
         })
     }
 
+    selectItemTask(id, name){
+        this.bsChcTskUpld.current.style.display = "none"
+        this.setState({
+            taskSelected: name,
+            moduleId: id
+        })
+    }
+
     render(){
 
         const choice = this.state.choicesModule.map(dt => {
-            return <option value={dt.moduleId}>{dt.moduleName}</option>
+            return  <a onClick={() => this.selectItemTask(dt.moduleId, dt.moduleName)} style={{textDecoration: "none"}}>
+                        <div className="main-border-bottom bold itm-sect-bs" style={{padding: "8px", display: "flex", alignItems: "center"}}>
+                            <CkCIrcle style={{width: "14px", height: "14px", color: "rgb(212, 174, 43)"}}/>
+                            <div style={{marginLeft: "10px"}}>{dt.moduleName}</div>
+                        </div>
+                    </a>
+            // return <option value={dt.moduleId}>{dt.moduleName}</option>
         })
 
         return(
@@ -244,30 +275,17 @@ class upload_document_file extends React.Component{
                 <div className="block"></div>
                 <canvas id="image_canvas" style={{display: "none"}}/>
                 <div style={{display: "none"}}><img id="base-img-upload"/></div>
-                <div id="upl_doc_file_bs" className="pop" style={{width: "350px", minHeight: "300px", background: "#FFF", borderRadius: "4px", overflow: "hidden"}}>
-                    <div id="hd-upl-doc-file-bs" className="main-border-bottom bold" style={{padding: "10px", fontSize: "14px", background: "#f5f5f5"}}>
+                <div id="upl_doc_file_bs" className="pop" style={{width: "350px", minHeight: "300px", background: "#FFF", borderRadius: "4px"}}>
+                    <div id="hd-upl-doc-file-bs" 
+                        className="main-border-bottom bold"
+                        style={{padding: "10px", fontSize: "14px", background: "#f5f5f5", borderTopLeftRadius: "4px", borderTopRightRadius: "4px"}}>
                         Upload
                     </div>
                     <div id="mn-upl-doc-file-bs" style={{padding: "10px"}}>
                         <table style={{width: "100%"}}>
                             <tbody style={{fontSize: "12px"}}>
                                 <tr>
-                                    <td style={{width: "70px"}}>Module</td>
-                                    <td>
-                                        <select onChange={this.changeModule} style={{fontSize: "12px"}}>
-                                            <option value="0"> - select -</option>
-                                            {choice}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr valign="top">
-                                    <td style={{paddingTop: "10px"}}>Description</td>
-                                    <td>
-                                        <textarea onChange={this.changeDescription} placeholder="description doc file" style={{width: "100%", boxSizing: "border-box", height: "100px", fontSize: "12px"}}></textarea>
-                                    </td>
-                                </tr>
-                                <tr valign="top">
-                                    <td>Doc / file</td>
+                                    <td className="bold">Doc / file</td>
                                     <td>
                                         <div style={{borderLeft: "2px solid #CCC", paddingLeft: "5px"}}>
                                             <input ref={this.inputRef} onChange={this.changeFile} type="file" style={{display: "none"}}></input>
@@ -278,7 +296,7 @@ class upload_document_file extends React.Component{
                                             {
                                                 (this.state.fileName === "")
                                                 ?
-                                                    <span style={{fontSize: "11px"}}>No file selected, klik attachment to select file</span>
+                                                    <span className="second-font-color" style={{fontSize: "10px"}}>No file selected, klik attachment to select file</span>
                                                 :
                                                     <div style={{padding: "3px", background: "#CCC", float: "left", borderRadius: "3px", border: "1px solid #b1b1b1", marginTop: "3px"}}> 
                                                         {this.state.fileName}
@@ -287,6 +305,41 @@ class upload_document_file extends React.Component{
                                             }
                                             
                                         </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan="2">
+                                        <div className="main-border-bottom" style={{marginTop: "5px", marginBottom: "5px"}}/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="bold" style={{width: "70px"}}>Task</td>
+                                    <td>
+                                        <SelectBox click={this.selectTask} 
+                                                style={{padding: "10px", overflow: "hidden", borderRadius: "5px"}} 
+                                                value={this.state.taskSelected}/>
+                                        <div ref={this.bsChcTskUpld} id="bs-dt-chc-tsk-upld" style={{position: "relative", display: "none"}}>
+                                            <div className="main-border" 
+                                                style={{position: "absolute", 
+                                                        overflow: "hidden",
+                                                        width: "100%", 
+                                                        maxHeight: "200px",
+                                                        overflowY: "scroll",
+                                                        background: "#FFF", 
+                                                        borderRadius: "4px"}}>
+                                                {choice}
+                                            </div>
+                                        </div>
+                                        {/* <select onChange={this.changeModule} style={{fontSize: "12px"}}>
+                                            <option value="0"> - select -</option>
+                                            {choice}
+                                        </select> */}
+                                    </td>
+                                </tr>
+                                <tr valign="top">
+                                    <td className="bold" style={{paddingTop: "10px"}}>Description</td>
+                                    <td>
+                                        <textarea className="input-info-mdl" onChange={this.changeDescription} placeholder="description doc file" style={{width: "100%", boxSizing: "border-box", height: "100px", fontSize: "12px"}}></textarea>
                                     </td>
                                 </tr>
                             </tbody>

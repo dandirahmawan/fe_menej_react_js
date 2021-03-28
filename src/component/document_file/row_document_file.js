@@ -1,8 +1,9 @@
 import React from 'react'
 import {convertDate} from  '../../function/function'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTrashAlt} from '@fortawesome/free-solid-svg-icons'
+import {faCalendar, faCalendarAlt, faSdCard, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {getIconDocFIle} from '../../function/function'
+import {check_circle as CkCIrcle} from '../icon/icon'
 
 class row_document_file extends React.Component{
 
@@ -42,7 +43,7 @@ class row_document_file extends React.Component{
                         <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file" style={{paddingRight: "10px"}}>
-                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
+                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} className="bold" style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
                             <div style={{fontSize: "11px"}}>
                             {
@@ -56,13 +57,24 @@ class row_document_file extends React.Component{
                         </div>
                     </td>
                     <td className="tb-doc-file">
-                        <a onClick={() => this.props.moduleClick(this.props.modulId)}>{this.props.moduleName}</a>
+                        <a onClick={() => this.props.moduleClick(this.props.modulId)}>
+                            <div style={{display: "flex", alignItems: "center"}}>
+                                <CkCIrcle className="fld-color" style={{width: "15px", height: "15px"}}/> 
+                                <div className="bold" style={{marginLeft: "10px"}}>
+                                    {this.props.moduleName}
+                                </div>
+                            </div>
+                        </a>
                     </td>
-                    <td className="tb-doc-file">
+                    {/* <td className="tb-doc-file">
                         {this.props.userName}
+                    </td> */}
+                    <td className="tb-doc-file main-border bold">
+                        <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
                     </td>
-                    <td className="tb-doc-file">{this.byteToKb(this.props.fileSize)}</td>
-                    <td className="tb-doc-file" style={{width: "70px"}}>{convertDate(this.props.uploadDate)}</td>
+                    <td className="tb-doc-file bold" style={{width: "90px"}}>
+                        <FontAwesomeIcon className="second-font-color" icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate(this.props.uploadDate)}
+                    </td>
                     <td>
                         <a onClick={() => this.props.deleteDocFile(this.props.fileName, this.props.modulId, this.props.projectId)}>
                             <FontAwesomeIcon icon={faTrashAlt} style={{fontSize: "11px"}}></FontAwesomeIcon>
@@ -75,7 +87,7 @@ class row_document_file extends React.Component{
                         <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file main-border" style={{paddingRight: "10px"}}>
-                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
+                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} className="bold" style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
                             <div style={{fontSize: "11px"}}>
                             {
@@ -88,13 +100,22 @@ class row_document_file extends React.Component{
                             </div>
                         </div>
                     </td>
-                    <td className="tb-doc-file main-border">
-                        <a onClick={() => this.props.moduleClick(this.props.modulId)}>{this.props.moduleName}</a>
+                    <td className="tb-doc-file">
+                        <a onClick={() => this.props.moduleClick(this.props.modulId)}>
+                            <div style={{display: "flex", alignItems: "center"}}>
+                                <CkCIrcle className="fld-color" style={{width: "15px", height: "15px"}}/> 
+                                <div className="bold" style={{marginLeft: "10px"}}>
+                                    {this.props.moduleName}
+                                </div>
+                            </div>
+                        </a>
                     </td>
-                    <td className="tb-doc-file main-border">
+                    {/* <td className="tb-doc-file main-border">
                         {this.props.userName}
+                    </td> */}
+                    <td className="tb-doc-file main-border bold">
+                        <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
                     </td>
-                    <td className="tb-doc-file main-border">{this.byteToKb(this.props.fileSize)}</td>
                     <td className="tb-doc-file main-border" style={{width: "70px"}}>{convertDate(this.props.uploadDate)}</td>
                     <td className="main-border" style={{width: "20px"}}>
                         <a onClick={() => this.props.deleteDocFile(this.props.fileName, this.props.modulId, this.props.projectId)}>

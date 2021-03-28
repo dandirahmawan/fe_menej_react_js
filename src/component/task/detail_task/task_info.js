@@ -4,7 +4,7 @@ import { getCookieUserId,  convertDate_dd_MMM_yyy, popUpAlert} from '../../../fu
 import {SelectBox} from '../../custom_element'
 import ChoiceStatus from '../status_choice'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCalendarAlt, faUserCog, faPlusSquare} from '@fortawesome/free-solid-svg-icons'
+import {faCalendarAlt, faUserCog, faPlusSquare, faTag, faEdit} from '@fortawesome/free-solid-svg-icons'
 import NewLabel from '../new_label'
 import {connect} from 'react-redux'
 import {ApiFetch} from '../../apiFetch'
@@ -13,6 +13,7 @@ import { setDataLabel, setDataLabelModule } from '../../../redux/action'
 import LabelModuleDetailItem from '../label_module_detail_item'
 import Assigned from '../assigned_module'
 import ChoiceSection from '../choice_section'
+import Labeling from '../labeling_task'
 
 class module_info extends React.Component{
     readyOperate = false
@@ -29,7 +30,7 @@ class module_info extends React.Component{
             status: "",
             section: "",
             popup: "",
-            // label: "",
+            labeling: "",
             dataLabelModule: []
         }
         this.SelectBox = React.createRef()
@@ -58,6 +59,8 @@ class module_info extends React.Component{
         this.hideSection = this.hideSection.bind(this)
         this.selectSection = this.selectSection.bind(this)
         this.sectionName = this.sectionName.bind(this)
+        this.setLabel = this.setLabel.bind(this)
+        this.setDataLabel = this.setDataLabel.bind(this)
     }
 
     componentDidMount(){
@@ -66,13 +69,10 @@ class module_info extends React.Component{
             jsonArray.push(dt)
         })
 
-        // console.log(this.props.sectionId)
-        console.log(this.props.dataSection)
         this.setState({
             idStatus : this.props.moduleStatus,
             idSection : this.props.sectionId,
-            dataLabelModule : (this.props.dataLabelModuleRedux.length == 0) ? jsonArray : this.props.dataLabelModuleRedux,
-            // dataLabel: this.props.dataLabelRedux,
+            dataLabelModule : (this.props.dataLabelModule.length == 0) ? jsonArray : this.props.dataLabelModule,
         })
 
         if(this.txtArea.current != null) this.txtArea.current.style.height = this.dvTxtArea.current.offsetHeight+"px"
@@ -304,11 +304,35 @@ class module_info extends React.Component{
         this.hideSection()
     }
 
+    setLabel(canceling){
+        if(!canceling){
+            this.setState({
+                labeling: <Labeling cancel={this.setLabel} 
+                                    okLabel={this.setDataLabel}
+                                    moduleId={this.props.moduleId}
+                                    labelSelected={this.state.dataLabelModule}/>
+            }) 
+        }else{
+            this.setState({
+                labeling: ""
+            })
+        }
+    }
+
+    setDataLabel(data){
+        this.setState({
+            labeling: "",
+            dataLabelModule: data
+        })
+
+        /*set data label modul for passing to api*/
+        this.props.selectLabelModule(data)
+    }
+
     render(){
         const dataLabel = this.props.dataLabelRedux.map(dt => {
                 let isChecked = false
                 let labelPermition = (this.props.modulePermition || this.props.pic == getCookieUserId()) ? true : false
-                // this.props.dataLabelModuleRedux.map(dtt => {
                 this.props.dataLabelModule.map(dtt => {
                     if(dtt.moduleId == this.props.moduleId && dtt.label == dt.label){
                         isChecked = true
@@ -322,6 +346,13 @@ class module_info extends React.Component{
                                         selectLabel={this.selectLabel}
                                         deleteLabel={this.deleteLabel}/>
         }) 
+
+        const labelDataSelected = this.state.dataLabelModule.map(dt => {
+            return  <div style={{padding: "5px", background: dt.color, color: "#FFF", fontSize: "11px", borderRadius: "3px", marginBottom: "5px"}}>
+                        <FontAwesomeIcon icon={faTag}/>&nbsp;&nbsp;
+                        {dt.label}
+                    </div>
+        })
 
         const assigned = this.props.assignedModules.map(dt => {
 
@@ -435,13 +466,14 @@ class module_info extends React.Component{
                                         (this.props.pic == getCookieUserId() || this.props.modulePermition)
                                         ?
                                             <Fragment>
-                                                <div ref={this.dvTxtArea} style={{padding: "7px", borderRadius: "3px", border: "1px solid #CCC", width: "370px", opacity: "0", position: "absolute", zIndex: "-1"}} className="second-background-grs second-font-color"> 
+                                                <div ref={this.dvTxtArea} 
+                                                    style={{padding: "7px", paddingBottom: "10px", paddingTop: "10px", borderRadius: "3px", border: "1px solid #CCC", width: "370px", opacity: "0", position: "absolute", zIndex: "-1"}} className="second-background-grs second-font-color"> 
                                                     {(this.props.description != '') ? this.props.description : 'No description'}
                                                 </div> 
                                                 <textarea ref={this.txtArea} className="input-info-mdl" onKeyUp={this.txtHeght} onChange={this.changeDesc} 
-                                                    placeholder="description" 
+                                                    placeholder="insert description" 
                                                     value={this.props.description}
-                                                    style={{width: "100%", height: "50px", fontSize: "12px", boxSizing: "border-box", padding: "7px", overflow: "hidden"}}>
+                                                    style={{width: "100%", fontSize: "12px", boxSizing: "border-box", padding: "7px", paddingTop: "10px", paddingBottom: "10px", overflow: "hidden"}}>
                                                 </textarea>
                                             </Fragment>
                                             
@@ -455,7 +487,9 @@ class module_info extends React.Component{
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+
+                            {/* start tidak dipakai */}
+                            <tr style={{display: "none"}}>
                                 <td colSpan="2" style={{paddingBottom: "10px"}}>
                                     <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Label</div>
                                     
@@ -492,15 +526,50 @@ class module_info extends React.Component{
                                     </div>
                                 </td>
                             </tr>
+                             {/* end tidak dipakai */}
                         </tbody>
                     </table>
                 </div>
                 <div ref={this.labelBase} className="main-border-left" style={{width: "180px", paddingLeft: "10px", paddingRight: "10px"}}>
-                    <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "10px"}}>Assign To</div>
-                    <div className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
+                    <div className="second-font-color bold" 
+                        style={{fontSize: "11px", marginBottom : "10px", display: "flex", justifyContent: "space-between"}}>
+                        <div>Assign To</div>
+                        {
+                            (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                            ?
+                                <a onClick={this.setAssigned}><FontAwesomeIcon icon={faUserCog}/></a>
+                            : null
+                        }
+                    </div>
+                    <div className="scrollbar" id="bs-data-assigned" style={{fontSize: "11px", maxHeight: "200px"}}>
                         {assigned}
                     </div>
-                    {
+                    
+                    <div id="base-label-s12i">
+                        <div className="second-font-color bold main-border-top" 
+                            style={{fontSize: "11px", marginBottom : "10px", position: "relative", marginTop: "10px", paddingTop: "10px", display: "flex", justifyContent: "space-between"}}>
+                            <div>Labels</div>
+                            <a onClick={() => this.setLabel(false)}>
+                                <FontAwesomeIcon className="main-font-color" icon={faEdit}/>
+                            </a>
+                            {/*base set label*/}
+                            {this.state.labeling}
+                        </div>
+
+                        <div id="base-data-label-s12i" className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
+                            {labelDataSelected}
+                            {/* <div style={{padding: "5px", background: "#F00", color: "#FFF", fontSize: "11px", borderRadius: "3px", marginBottom: "5px"}}>
+                                <FontAwesomeIcon icon={faTag}/>&nbsp;&nbsp;
+                                high priority
+                            </div>
+                            <div style={{padding: "5px", background: "green", color: "#FFF", fontSize: "11px", borderRadius: "3px", marginBottom: "5px"}}>
+                                <FontAwesomeIcon icon={faTag}/>&nbsp;&nbsp;
+                                high priority
+                            </div> */}
+                        </div>
+                    </div>
+                   
+                    {/* {
                         (this.props.pic == getCookieUserId() || this.props.modulePermition)
                         ? 
                             <a onClick={this.setAssigned} style={{textDecoration: "none"}}>
@@ -512,7 +581,7 @@ class module_info extends React.Component{
                             </a>
                         :
                             ""
-                    }
+                    } */}
                 </div>
             </div>
         )

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import TaskInfo from './task_info'
-import BugsModule from './cheklists_task'
+import CheckList from './cheklists_task'
 import DocFileModule from './attachment_task'
 import {getCookieUserId, getCookieSessionId, popUpAlert, convertDate_dd_mmm_yyy} from '../../../function/function'
 import {ApiFetch} from '../../apiFetch'
@@ -18,7 +18,7 @@ import {updateDataModuleBugs,
 import {Spinner, SpinnerButton} from '../../spinner'
 import { baseUrl } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarAlt, faSave } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarAlt, faInfoCircle, faSave } from '@fortawesome/free-solid-svg-icons'
 
 class detail extends React.Component{
     interval = null
@@ -43,7 +43,6 @@ class detail extends React.Component{
             miDisplay:"",
             mbDisplay:"none",
             dfmDisplay: "none",
-            mainBaseHeight: "",
             sectionId:"",
             sectionIdLast:"",
             pic:"",
@@ -134,15 +133,6 @@ class detail extends React.Component{
                 }
             })
 
-            /*set data label*/
-            let dataLabel = []
-            if(this.props.dataLabelModule.length > 0){
-                dataLabel = this.props.dataLabelModule
-            }else{
-                dataLabel = result.labelModules
-            }
-            // if(this.props.dataLabelModule)
-
             this.setState({
                 dataBugs: result.bugs,
                 dataDocFile: result.documentFile,
@@ -167,7 +157,7 @@ class detail extends React.Component{
                 dfmDisplay: dfmDisplay,
                 sectionId: dm.sectionId,
                 sectionIdLast: dm.sectionId,
-                dataLabelModule: dataLabel,
+                dataLabelModule: result.dataModule.label,
                 dataLabelModuleToUpdate: result.labelModules,
                 assignedModules: result.assignedModules
             })
@@ -179,15 +169,10 @@ class detail extends React.Component{
         var hd = document.getElementById("header-dtl")
         var h1 = hd.offsetHeight
 
-        var maxHeight = window.innerHeight - (parseInt(h1) + offTop)
+        var maxHeight = window.innerHeight - (parseInt(h1) + offTop + 50)
         var mbd = document.getElementById("main-base-detail")
         mbd.style.marginTop = h1+"px"
         mbd.style.maxHeight = maxHeight+"px"
-
-        this.setState({
-            mainBaseHeight: 400 - h1
-        })
-        
     }
 
     navDetail(e){
@@ -258,7 +243,8 @@ class detail extends React.Component{
     }
 
     setBtnPrimarySaveActive(){
-        this.btnSaveChange.current.setAttribute("class", "btn-primary bold")
+        this.btnSaveChange.current.setAttribute("class", "btn-primary")
+        this.btnSaveChange.current.style.opacity = 1
         this.btnSaveChange.current.onclick = this.commitModule
         this.btnSaveChange.current.disabled = false
     }
@@ -309,7 +295,6 @@ class detail extends React.Component{
                                 i++
                                 let sp = i - 1
                                 if(dtt.modulId == this.state.moduleId){
-                                    console.log("splice no = "+sp)
                                     dtt.modulName = this.state.moduleName
                                     dtt.modulStatus = this.state.moduleStatus
                                     dtt.description = this.state.descriptionModule
@@ -333,22 +318,24 @@ class detail extends React.Component{
                     this.props.dataModule.map(dt => {
                         arr.push(dt)
                     })
+
+                    /*set data module to redux*/
                     this.props.setDataModule(arr)
 
                     this.setState({
                         sectionIdLast: this.state.sectionId
                     })
+
                 }else{
                     this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
                         this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
-                        this.state.dueDate, this.state.sectionId)
+                        this.state.dueDate, this.state.sectionId, this.state.dataLabelModuleToUpdate)
                     
                     this.setState({
                         infoPop: ""
                     })
                     
                     /*change data redux*/
-                    this.props.setDataLabelModule(this.state.dataLabelModule)
                     this.commitAssignedModule()
                     this.props.updateDataChecklist(dataCheckilst, this.state.moduleId)
                 }
@@ -395,7 +382,7 @@ class detail extends React.Component{
                 arrDataChecklist.push(dt)
             })
             
-            this.props.updateDataModuleBugs(this.state.moduleId, "add")
+            this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "add")
             this.setState({
                 dataBugs: arrDataChecklist
             })
@@ -546,7 +533,7 @@ class detail extends React.Component{
         const newData = this.state.dataBugs.map(dt => {
             if(dt.modulId === mi && dt.projectId === pi && dt.bugsId === bugsId){
                 dt.isDelete = "Y"
-                this.props.updateDataModuleBugs(this.state.moduleId, "delete")
+                this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "delete")
             }
             return dt
         })
@@ -555,36 +542,6 @@ class detail extends React.Component{
             dataBugs: newData
         })
     }
-
-    // closeBugs(bugsId){
-    //     let mi = this.state.moduleId
-    //     let pi = this.state.projectId
-    //     const newData = this.state.dataBugs.map(dt => {
-    //         if(dt.modulId == mi && dt.projectId == pi && dt.bugsId == bugsId){
-    //             dt.bugStatus = "C"
-    //         }
-    //         return dt
-    //     })
-    //     this.setState({
-    //         dataBugs: newData
-    //     })
-    //     this.props.closeBugsModule(mi)
-    // }
-
-    // uncloseBugs(bugsId){
-    //     let mi = this.state.moduleId
-    //     let pi = this.state.projectId
-    //     const newData = this.state.dataBugs.map(dt => {
-    //         if(dt.modulId == mi && dt.projectId == pi && dt.bugsId == bugsId){
-    //            dt.bugStatus = "P"
-    //         }
-    //         return dt
-    //     })
-    //     this.setState({
-    //         dataBugs: newData
-    //     })
-    //     this.props.uncloseBugsModule(mi)
-    // }
 
     commitEditBugs(bugsId, textBugs){
         this.state.dataBugs.map(dt => {
@@ -689,24 +646,14 @@ class detail extends React.Component{
                             <button onClick={this.close} style={{float: "right", color: "#a2a2a2", padding: "4px", fontSize: "12px", background: "none"}}>
                                 <i class="fa fa-times"></i>
                             </button>
-                            <button ref={this.btnSaveChange} className="btn-secondary bold" disabled style={{fontSize: "10px", padding: "4px", float: "right", marginRight: '10px'}}>
-                                {/* <FontAwesomeIcon icon={faSave}/>  */}
-                                Save change
-                            </button>
-
-                            <div style={{paddingLeft: "26px"}}>
-                                <div className="second-font-color bold" style={{fontSize: "10px"}}>
-                                    <FontAwesomeIcon icon={faCalendarAlt}/> {convertDate_dd_mmm_yyy(this.state.dueDate)}
-                                </div>
-                            </div>
                         </div>
                     </div>
 
-                    <div id="main-base-detail" className="scrollbar" style={{overflowY: "scroll"}}>
+                    <div id="main-base-detail" className="scrollbar" style={{overflowY: "scroll", minHeight: "300px"}}>
                         {
                             (this.state.isLoad)
                             ?
-                                <Spinner size="25px" textLoader="Loading..."/>
+                                <Spinner size="20px"/>
                             :
                                 <React.Fragment>
                                     <div id='mi-base' style={{display: this.state.miDisplay}}>
@@ -723,7 +670,6 @@ class detail extends React.Component{
                                             createdDate={this.state.createdDate}
                                             updatedDate={this.state.updatedDate}
                                             pic={this.state.pic}
-                                            mainHeight={this.state.mainBaseHeight}
                                             modulePermition={this.state.modulePermition}
                                             dataStatus={this.state.dataStatus}
                                             dataLabelModule={this.state.dataLabelModule}
@@ -743,23 +689,19 @@ class detail extends React.Component{
                                         />
                                     </div>
                                     <div id='mb-base'>
-                                        <BugsModule
-                                            mainHeight={this.state.mainBaseHeight}
+                                        <CheckList
                                             dataBugs={this.state.dataBugs}
                                             commitChecklist={this.commitChecklist}
                                             deleteBugs={this.deleteBugs}
                                             moduleId={this.state.moduleId}
                                             dataPermition={this.state.dataPermition}
                                             picProject={this.state.picProject}
-                                            // closeBugs={this.closeBugs}
-                                            // uncloseBugs={this.uncloseBugs}
                                             commitEditBugs={this.commitEditBugs}
                                             checkingBugs={this.checkingBugs}
                                         />
                                     </div>
                                     <div id='mdf-base'>
                                         <DocFileModule
-                                            mainHeight={this.state.mainBaseHeight}
                                             dataDocFile={this.state.dataDocFile}
                                             documentFileUpload={this.documentFileUpload}
                                             commitDocFileUpload={this.commitDocFileUpload}
@@ -773,7 +715,26 @@ class detail extends React.Component{
                                     </div>
                                 </React.Fragment>
                         }
+                    </div>
+
+                    <div id="ftr-dtl-bs" 
+                        className="main-border-top" 
+                        style={{width: "630px", height: "50px", background: "#FFF", display: "flex", alignItems: "center", paddingLeft: "10px", paddingRight: "10px"}}>
                         
+                        <div className="second-font-color" style={{width: "100%", fontSize: '11px'}}>
+                            <FontAwesomeIcon icon={faInfoCircle}/>
+                            &nbsp;
+                            The data will be saved after clicking the save button, except upload or add attachment
+                        </div>
+                        <div style={{width: "180px"}}>
+                            <button className="btn-primary" style={{opacity: "0.5"}} ref={this.btnSaveChange}>
+                                <span style={{fontSize: "11px"}}>Save Change</span>
+                            </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button onClick={this.close} className="btn-secondary">
+                                <span style={{fontSize: "11px"}}>Cancel</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>
@@ -783,16 +744,14 @@ class detail extends React.Component{
 
 const mapDispatchToProps = dispatch => {
     return{
-        updateDataModuleBugs: (moduleId, type) => dispatch(updateDataModuleBugs(moduleId, type)),
+        updateDataModuleBugs: (moduleId, sectionId, type) => dispatch(updateDataModuleBugs(moduleId, sectionId, type)),
         updateDataModuleDocFile: (moduleId, type) => dispatch(updateDataModuleDocFile(moduleId, type)),
-        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section)),
+        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label)),
         appendDataBugs: (jsonObjectBugs) => dispatch(appendDataBugs(jsonObjectBugs)),
         appendDataDocFile: (jsonObject) => dispatch(appendDataDocFile(jsonObject)),
         deleteDataDocFile: (mi, pi, fn, ui) => dispatch(deleteDataDocFile(mi, pi, fn, ui)),
         updateDataChecklist: (data, moduleId) => dispatch(updateDataChecklist(data, moduleId)),
-        setDataModule: (data) => dispatch(setDataModule(data)), 
-        // closeBugsModule: (moduleId) => dispatch(updateDataModuleBugsClose(moduleId)),
-        // uncloseBugsModule: (moduleId) => dispatch(updateDataModuleBugsUnclose(moduleId)),
+        setDataModule: (data) => dispatch(setDataModule(data)),
         setDataLabelModule: (data) => dispatch(setDataLabelModule(data))
     }
 }
