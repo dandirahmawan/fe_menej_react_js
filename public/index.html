@@ -29,15 +29,22 @@
     
     <!--for hide pop-elm-->
     <script>
-      function hidePopElm(){
+      // function hidePopElm(){
+      //   let elm = document.getElementsByClassName("pop-elm")
+      //   for(let i = 0;i<elm.length;i++){
+      //     elm[i].style.display="none"
+      //   }
+      // }
+
+      document.addEventListener("click", () => {
         let elm = document.getElementsByClassName("pop-elm")
         for(let i = 0;i<elm.length;i++){
           elm[i].style.display="none"
         }
-      }
+      })
     </script>
   </head>
-  <body onclick="hidePopElm()" onscroll="hidePopElm()">
+  <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
