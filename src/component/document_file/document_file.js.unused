@@ -1,0 +1,144 @@
+import React from 'react'
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import { getCookieSessionId, getCookieUserId } from '../../function/function'
+import { deleteDataDocFile, setDataDocFile, updateDataModuleDocFile } from '../../redux/action'
+import { ApiFetch } from '../apiFetch'
+import Row from './row_document_file'
+
+class DocumentFile extends Component {
+
+    constructor(){
+        super()
+        // this.deleteDocFile = this.deleteDocFile.bind(this)
+        // this.hidePopUp = this.hidePopUp.bind(this)
+        // this.commitDelete = this.commitDelete.bind(this)
+        // this.filter = this.filter.bind(this)
+        // this.filterGo = this.filterGo.bind(this)
+        // this.unFilter = this.unFilter.bind(this)
+        // this.showBorder = this.showBorder.bind(this)
+        // this.hideBorder = this.hideBorder.bind(this)
+        // this.upload = this.upload.bind(this)
+        // this.rowClickDocFile = this.rowClickDocFile.bind(this)
+        // this.moduleClick = this.moduleClick.bind(this)
+
+        this.state = {
+            // popup: "",
+            // moduleId: "",
+            // projectId: "",
+            picProject:"",
+            // fileName: "",
+            // filter:"",
+            // isBorder: false,
+            // moduleNameFilter:[],
+            isPermition: false,
+            isLoad: true
+        }
+    }
+
+    componentDidMount(){
+        this.props.dataPermition.map(dt => {
+            if(dt.permitionCode === 3 && dt.isChecked === 'Y'){
+                this.state.isPermition = true
+            }
+            return null
+        })
+
+        this.setState({
+            picProject: this.props.pic,
+            isPermition: this.state.isPermition
+        })
+
+        var form = new FormData
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
+        form.append("projectId", this.props.projectId)
+
+        var header = new Headers()
+        header.append("sessionId", getCookieSessionId())
+        header.append("userId", getCookieUserId());
+
+        ApiFetch("/document_file_list", {
+            method: "POST",
+            body: form,
+            headers: header
+        }).then(res => res.json())
+        .then(result => {
+            console.log(result)
+            this.props.setDataDocFile(result)
+            // this.setState({
+            //     isLoad: false
+            // })
+        })
+    }
+
+    render(){
+
+        const data = this.props.dataDocFile.map(dt => {
+            if(dt.isDelete != 'Y'){
+                // if(this.state.moduleNameFilter.length < 1){
+                //     return <Row
+                //         fileName={dt.fileName}
+                //         descriptionFile={dt.descriptionFile}
+                //         fileSize={dt.fileSize}
+                //         moduleName={dt.moduleName}
+                //         uploadDate={dt.uploadDate}
+                //         projectId={dt.projectId}
+                //         modulId={dt.modulId}
+                //         path={dt.path}
+                //         userName={dt.userName}
+                //         userId={dt.userId}
+                //         isBorder={this.state.isBorder}
+                //         deleteDocFile={this.deleteDocFile}
+                //         rowClickDocFile={this.rowClickDocFile}
+                //         moduleClick={this.moduleClick}
+                //     />
+                // }else{
+                //     var idx = this.state.moduleNameFilter.indexOf(dt.moduleName)
+                //     if(idx >= 0){
+                        return <Row
+                            fileName={dt.fileName}
+                            descriptionFile={dt.descriptionFile}
+                            fileSize={dt.fileSize}
+                            moduleName={dt.moduleName}
+                            uploadDate={dt.uploadDate}
+                            projectId={dt.projectId}
+                            modulId={dt.modulId}
+                            path={dt.path}
+                            userName={dt.userName}
+                            userId={dt.userId}
+                            isBorder={this.state.isBorder}
+                            //action passing param
+                            deleteDocFile={this.deleteDocFile}
+                            rowClickDocFile={this.rowClickDocFile}
+                            moduleClick={this.moduleClick}
+                            // userClick={this.userClick}
+                        />
+                    }
+                // }   
+            // }
+        })
+        
+        return(
+            <div>
+                {data}
+            </div>
+        )   
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return{
+        setDataDocFile : (jsonArray) => dispatch(setDataDocFile(jsonArray)),
+        updateDataModuleDocFile: (moduleId) => dispatch(updateDataModuleDocFile(moduleId)),
+        deleteDataDocFile: (moduleId, projectId, fileName, userId) => dispatch(deleteDataDocFile(moduleId, projectId, fileName, userId))
+    }
+}
+
+const mapStateToProps = state => {
+    return{
+        dataDocFile : state.dataDocFile
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (DocumentFile)

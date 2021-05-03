@@ -76,7 +76,7 @@ class invitation_ready extends Component{
             <Fragment>
                 <div ref={this.base} 
                     id="inv-rdy-bs" 
-                    className="main-border" 
+                    className="main-border shadow" 
                     style={{background: "#FFF", borderRadius: "5px", width: "300px", margin: "auto", marginTop: "40px", padding: "10px"}}>
                     <div className="bold" style={{padding: "10px", fontSize: "25px", textAlign: "center"}}>
                         Invitation

@@ -37,8 +37,7 @@ class popup_profile extends React.Component{
 
     render(){
         return(
-            <div ref={this.setWrapperRef} className="main-border popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", right: "14px", top: "55px", padding: "10px", borderRadius: "5px"}}>
-                
+            <div ref={this.setWrapperRef} className="main-border shadow popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", right: "14px", top: "55px", padding: "10px", borderRadius: "5px"}}>
                 <img src={Triangle} style={{width: "15px", height: "12px", float: "right", marginTop: "-22px"}}></img>
                 <div className="second-border-bottom" style={{overflow: "hidden", paddingBottom: "10px", marginBottom: "5px"}}>
                     <div className="main-color bold" style={{height: "25px", width: "35px", borderRadius: "18px", float: "left", color: "#FFF", textAlign: "center", paddingTop: "10px", fontSize: "12px"}}>DR</div>

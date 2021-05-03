@@ -10,6 +10,7 @@ class add_member extends React.Component{
         super()
         this.inputEmail = React.createRef()
         this.sendRequest = this.sendRequest.bind(this)
+        this.cancel = this.cancel.bind(this)
     }
 
     componentDidMount(){
@@ -49,16 +50,20 @@ class add_member extends React.Component{
             }).then(res => res.text()).then(result => {
                 if(result == "success"){
                     popUpAlert("invitation has been sent", "success")
-                    this.props.cancel()
+                    this.cancel()
                 }
             }) 
         }
     }
 
+    cancel(){
+        this.props.hide()
+    }
+
     render(){
         return(
            <Fragment>
-               <div className="block"></div>
+               <div className="block" onClick={this.props.hide}></div>
                 <div id="pop-bs-add-member" className="pop" style={{padding: "10px", borderRadius: "3px", width: "300px", background: "#FFF"}}>
                     <div className="bold" style={{fontSize: "12px"}}>Add member</div>
                     <input ref={this.inputEmail} 
@@ -69,8 +74,8 @@ class add_member extends React.Component{
                         Insert email and we will send the request invitaion
                     </div>
                     <div style={{marginTop: "15px", textAlign: "right"}}>
-                        <button onClick={this.sendRequest} className="btn-primary" style={{fontSize: "10px"}}>Send request</button>
-                        <button onClick={this.props.cancel} className="btn-secondary" style={{fontSize: "10px", marginLeft: "10px"}}>Cancel</button>
+                        <button onClick={this.sendRequest} className="btn-primary" style={{fontSize: "11px"}}>Send request</button>
+                        <button onClick={this.cancel} className="btn-secondary" style={{fontSize: "11px", marginLeft: "10px"}}>Cancel</button>
                     </div>
                 </div>
            </Fragment>

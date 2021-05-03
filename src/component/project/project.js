@@ -34,7 +34,7 @@ class project extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/list_project", {
+        ApiFetch("/project/list", {
             method: "POST",
             body: form
         }).then(res => res.json()).then(result => {

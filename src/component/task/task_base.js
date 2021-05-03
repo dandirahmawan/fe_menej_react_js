@@ -236,7 +236,7 @@ class modulePage extends React.Component{
     }
 
     mainMenu(e, tab, isSideBar){
-        console.log(tab+" "+isSideBar)
+        // console.log(tab+" "+isSideBar)
         // this.pushHistory(tab)
         var c = document.getElementsByClassName("main-menu-module")
         
@@ -256,9 +256,6 @@ class modulePage extends React.Component{
         this.refDocFile.current.style.display = "none"
 
         if(tab == "bugs"){
-
-            // var refCurrent = this.refBugs.current
-            // refCurrent.style.display = "block"
             this.setState({
                 bugsBase: <Bugs projectId={this.props.projectIdHeader} 
                                 pic={this.state.picProject}
@@ -269,25 +266,34 @@ class modulePage extends React.Component{
 
             var refCurrent = this.refModule.current
             refCurrent.style.display = "block"
+            this.setState({
+                tabActive: tab
+            })
 
         }else if(tab == "attachment"){
-            // alert("dandi rahmawan")
             var refCurrent = this.refDocFile.current
             refCurrent.style.display = "block"
             this.setState({
+                tabActive: tab,
                 documentFileBase: <DocumentFile
                                         mainMenu={(e) => this.mainMenu(e, "task", true)}
                                         projectId={this.props.projectIdHeader} 
                                         pic={this.state.picProject}
                                         dataPermition={this.state.dataPermition}/>
             })
+
+            // setTimeout(() => {
+            //     this.setState({
+            //         // tabActive: tab,
+            //         documentFileBase: <DocumentFile
+            //                                 // mainMenu={(e) => this.mainMenu(e, "task", true)}
+            //                                 projectId={this.props.projectIdHeader} 
+            //                                 pic={this.state.picProject}
+            //                                 dataPermition={this.state.dataPermition}/>
+            //     })
+                
+            // }, 5000)
         }
-
-        this.setState({
-            tabBase: "",
-            tabActive: tab
-        })
-
     }
 
     bugsIconClick(e, modulId){
@@ -424,7 +430,7 @@ class modulePage extends React.Component{
         form.append("userId", userId)
         form.append("moduleId", this.state.arrSelected)
 
-        ApiFetch("/delete_module", {
+        ApiFetch("/module/delete", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -445,7 +451,7 @@ class modulePage extends React.Component{
         let arrModuleId = []
         arrModuleId.push(moduleId)
 
-        ApiFetch("/delete_module", {
+        ApiFetch("/module/delete", {
             method: "POST",
             body: form
         }).then(res => res.text())
@@ -879,6 +885,7 @@ class modulePage extends React.Component{
     }
 
     render(){
+        // console.log("| "+this.state.tabActive+" |")
         const pic = parseInt(this.props.dataProject[0].pic)
         // const listFilterAssign = this.props.dataTeam.map(dt => {
         //     return <a onClick={() => this.filterAction("assign", dt.userId)} style={{textDecoration: "none"}}>
@@ -942,7 +949,7 @@ class modulePage extends React.Component{
                     {this.state.tabBase}
                     
                     <HeaderTask
-                        pageActive="task"
+                        tabActive={this.state.tabActive}
                         filterAction={this.filterAction}
                         newModule={this.newModule.bind(this)}
                         newSection={this.newSection.bind(this)}
@@ -950,6 +957,7 @@ class modulePage extends React.Component{
                         list={this.list}
                         card={this.card}
                         showDescription={this.showDescription}
+                        taskPage={(e) => this.mainMenu(e, "task", true)}
                         attachment={(e) => this.mainMenu(e, "attachment", true)}
                     />
                     {/** base data tasklist or module */}        

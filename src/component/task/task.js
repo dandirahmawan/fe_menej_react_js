@@ -67,7 +67,7 @@ class list_module extends React.Component{
         formData.append("projectId", projectId)
         formData.append("userId", userId)
         formData.append("sessionId", getCookieSessionId())
-        ApiFetch("/data_module", {
+        ApiFetch("/module/data", {
             method : "POST",
             body: formData
         }).then(res => res.json())
@@ -184,7 +184,7 @@ class list_module extends React.Component{
         })
 
         if(!isReady){
-            ApiFetch("/insert_module", {
+            ApiFetch("/module/insert", {
                 method: "POST",
                 body:form
             }).then(res => res.json())

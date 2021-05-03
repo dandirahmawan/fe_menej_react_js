@@ -15,9 +15,9 @@ class row_bugs extends React.Component{
                         {
                             (this.props.bugStatus == "C")
                             ?
-                                <i class="fa fa-check-square ck-box-fa-checked"></i>
+                                <i style={{marginTop: "5px"}} class="fa fa-check-square ck-box-fa-checked"></i>
                             :
-                                <i class="far fa-square ck-box-fa"></i>
+                                <i style={{marginTop: "5px"}} class="far fa-square ck-box-fa"></i>
                         }
                     </a>
                 </td>

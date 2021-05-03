@@ -1,12 +1,17 @@
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import { Fragment } from 'react'
 import { connect } from 'react-redux'
 import {square_light as SquareLight} from '../icon/icon'
+import NewLabel from './new_label'
 
 class labeling_task extends React.Component {
 
     state = {
         labelSelected: [],
-        dataLabel: []
+        dataLabel: [],
+        popup: ""
     }
 
     /*binding function*/
@@ -14,6 +19,7 @@ class labeling_task extends React.Component {
     select              = this.select.bind(this)
     ok                  = this.ok.bind(this)
     isChecked           = this.isChecked.bind(this)
+    addLabel            = this.addLabel.bind(this)
 
     componentDidMount(){
         this.setSelectedLabel(this.props.labelSelected)
@@ -80,6 +86,13 @@ class labeling_task extends React.Component {
         return isChecked
     }
 
+    addLabel(){
+        this.setState({
+            popup: <NewLabel projectId={this.props.projectId} 
+                            cancel={() => this.setState({popup: ""})}/>
+        })
+    }
+
     render(){
         const data = this.props.dataLabel.map(dt => {
             let isChecked = this.isChecked(dt.label)
@@ -99,19 +112,25 @@ class labeling_task extends React.Component {
         })
 
         return(
-            <div className="main-border" style={styles.baseLabeling}>
-                <div className="bold main-border-bottom" style={{padding: "10px"}}>
-                    Set Label
-                </div>
-                <div style={{padding: "10px", overflowY: "scroll", height: "140px"}}>
-                    {data}
-                </div>
-                <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
-                    <button onClick={this.ok} className="btn-primary" style={{fontSize: '11px'}}>Ok</button>
-                    &nbsp;&nbsp;
-                    <button onClick={() => this.props.cancel(true)} className="btn-secondary" style={{fontSize: '11px'}}>Cancel</button>
-                </div>
-            </div>   
+            <Fragment>
+                {this.state.popup}
+                <div className="main-border shadow" style={styles.baseLabeling}>
+                    <div className="bold main-border-bottom" style={{padding: "10px", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                        <div>Set Label</div>
+                        <a onClick={this.addLabel}>
+                            <FontAwesomeIcon style={{fontSize: "14px"}} icon={faPlusCircle}/>
+                        </a>
+                    </div>
+                    <div style={{padding: "10px", overflowY: "scroll", height: "140px"}}>
+                        {data}
+                    </div>
+                    <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
+                        <button onClick={this.ok} className="btn-primary" style={{fontSize: '11px'}}>Ok</button>
+                        &nbsp;&nbsp;
+                        <button onClick={() => this.props.cancel(true)} className="btn-secondary" style={{fontSize: '11px'}}>Cancel</button>
+                    </div>
+                </div>   
+            </Fragment>
         )
     }
 }
@@ -124,8 +143,7 @@ const styles = {
         background: "#FFF",
         right: "-2px",
         top: "25px",
-        borderRadius: "4px",
-        boxShadow: "-3px 3px 2px #e1e0ff, -2px -1px 0px #e1e0ff"
+        borderRadius: "4px"
     },
     labelBaseItem:{
         display: "flex", 

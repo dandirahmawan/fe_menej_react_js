@@ -10,6 +10,7 @@ import PopConfirmation from "../../popup_confirmation";
 import { popUpAlert } from '../../../function/function';
 import { ApiFetch } from '../../apiFetch';
 import { setDataModule } from '../../../redux/action';
+import { InputGroup } from 'react-bootstrap';
 
 class card_view extends Component{
 
@@ -27,6 +28,9 @@ class card_view extends Component{
 
     componentDidMount(){
         this.setBaseCardView(this.props)
+        window.addEventListener("resize", () => {
+            this.setBaseCardView(this.props)
+        })
     }
 
     componentDidUpdate(prevState){
@@ -36,6 +40,9 @@ class card_view extends Component{
     }
 
     setBaseCardView(props){
+        if(this.baseCard == null || this.baseCard.current == null){
+            return false
+        }
         // console.log(props)
         // let sizeStatus = props.dataStatus.length
         let sizeStatus = props.dataModule.length

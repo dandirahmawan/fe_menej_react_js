@@ -9,7 +9,7 @@ class card_list extends React.Component{
         return(
             
                 <Link to={toLink} style={{textDecoration: "none", color: "#000"}}>
-                    <div className="main-border shadow" 
+                    <div className="main-border shadow-thin" 
                         style={{padding: "10px", borderRadius: "3px", marginBottom: "10px", background: "#FFF", overflow: "hidden"}}>
                         <div style={{width: "35px"}}>
                             <FontAwesomeIcon icon={faFolder} style={{color: "#d4ae2b", fontSize: "35px"}}/>

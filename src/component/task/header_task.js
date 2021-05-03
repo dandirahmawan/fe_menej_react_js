@@ -1,4 +1,4 @@
-import { faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faChevronDown, faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Fragment } from 'react'
@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import { getCookieUserId, setInitialName } from '../../function/function'
 import Triangle from '../../images/triangle.png'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../icon/icon'
+import Teams from './teams/teams'
+import InfoProject from './info_project'
 
 class header_task extends React.Component{
 
@@ -13,7 +15,8 @@ class header_task extends React.Component{
         super()
         this.state = {
             isBorderAttachment: false,
-            teamsBase: ""
+            teamsBase: "",
+            dataProject: {}
         }
 
         this.popFilter = React.createRef()
@@ -24,6 +27,10 @@ class header_task extends React.Component{
         this.hideBorderAttachment = this.hideBorderAttachment.bind(this)
         this.colorStatus = this.colorStatus.bind(this)
         this.groupByPop = this.groupByPop.bind(this)
+        this.teams = this.teams.bind(this)
+        this.hideTeams = this.hideTeams.bind(this)
+        this.taskAction = this.taskAction.bind(this)
+        this.attachmentAction = this.attachmentAction.bind(this)
     }
 
     showBorderAttachment(){
@@ -31,6 +38,15 @@ class header_task extends React.Component{
         this.setState({
             isBorderAttachment: true
         })
+    }
+
+    componentDidUpdate(prevProps){
+        if(prevProps != this.props){
+            this.setState({
+                tabActive: this.props.tabActive,
+                dataProject: this.props.dataProject
+            })
+        }
     }
 
     hideBorderAttachment(){
@@ -50,8 +66,19 @@ class header_task extends React.Component{
     }
 
     teams(){
+        let elm = document.getElementById("header-base-tab-module")
+        elm.style.zIndex = 1000
         this.setState({
-            teamsBase: "dandi rahmawan"
+            teamsBase: <Teams projectId={this.props.dataProject.projectId} 
+                            hidePopUp={this.hideTeams}/>
+        })
+    }
+
+    hideTeams(){
+        let elm = document.getElementById("header-base-tab-module")
+        elm.style.zIndex = 999
+        this.setState({
+            teamsBase: ""
         })
     }
 
@@ -77,8 +104,16 @@ class header_task extends React.Component{
         return icon
     }
 
-    render(){
+    taskAction(){
+        this.props.taskPage()
+    }
 
+    attachmentAction(){
+        this.props.attachment()
+    }
+
+    render(){
+        // console.log(this.props.tabActive)
         const picProject = this.props.dataProject.pic
         const listFilterAssign = this.props.dataTeam.map(dt => {
             return <a onClick={() => this.props.filterAction("assign", dt.userId)} style={{textDecoration: "none"}}>
@@ -121,8 +156,8 @@ class header_task extends React.Component{
                         minWidth: "745px",
                         position: "fixed",
                         width: "100%",
+                        zIndex: "1",
                         background: "#FFF",
-                        zIndex: 1, 
                         marginLeft: "-10px", 
                         paddingLeft: "10px"}}>
                 
@@ -132,25 +167,32 @@ class header_task extends React.Component{
                             justifyContent: "space-between", 
                             alignItems: "center"}}>
 
-                    <div id="nm-prj-asdd" className="bold" style={{fontSize: "14px"}}>
-                        <FontAwesomeIcon className="fld-color" style={{fontSize: "18px"}} icon={faFolder}/>&nbsp;&nbsp;The Project Name
+                    <div id="nm-prj-asdd" className="bold" style={{fontSize: "14px", display: "flex", alignItems: "center"}}>
+                        <div className="main-border-right">
+                            <FontAwesomeIcon className="fld-color" style={{fontSize: "18px"}} icon={faFolder}/>&nbsp;&nbsp;
+                        </div>
+                        &nbsp;
+                        <a style={{color: "#000"}}>{this.state.dataProject.projectName}</a>
+                        &nbsp;&nbsp;
+                        <FontAwesomeIcon className="second-font-color" style={{marginTop: "2px"}} icon={faAngleDown}/>
+                        {/* <InfoProject/> */}
                     </div>
                     <div id="tb-mn-bs-jkdag" style={{display: "flex", alignItems: "center"}}>
                         
                         <div className="main-border" style={{display: "flex",borderRadius: "10px", overflow: "hidden"}}>
                             {
-                                (this.props.pageActive == "task")
+                                (this.state.tabActive == "task")
                                 ?
                                     <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Task list</a>
                                 :
-                                    <a onClick={this.props.taskPage} className="bold second-font-color mn-tsk-main main-border-right">Task list</a>
+                                    <a onClick={this.taskAction} className="bold second-font-color mn-tsk-main main-border-right">Task list</a>
                             }
                             {
-                                (this.props.pageActive == "attachment")
+                                (this.state.tabActive == "attachment")
                                 ?
                                     <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Attachment</a>
                                 :
-                                    <a onClick={this.props.attachment} className="bold second-font-color mn-tsk-main main-border-right">Attachment</a>
+                                    <a onClick={this.attachmentAction} className="bold second-font-color mn-tsk-main main-border-right">Attachment</a>
                             }
                             {/* <a onClick={this.props.taskPage} className="bold second-font-color mn-tsk-main main-border-right">Task list</a> */}
                             {/* <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Attachment</a> */}
@@ -169,7 +211,7 @@ class header_task extends React.Component{
                     </div>
                     
                     {
-                        this.props.pageActive == "task"
+                        this.state.tabActive == "task"
                         ?
                         <div id="tsk-hdr-mn-1xsd" style={{display: "flex"}}>
                             {

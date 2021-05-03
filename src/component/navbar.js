@@ -134,7 +134,6 @@ class navbar extends React.Component{
     render(){
         return(
             <div id="header" className='navbar main-border-bottom main-color' style={{overflow: 'hidden'}}>
-                
                 <div id="main-header" style={{/*marginLeft: "50px"*/}}>
                     <button id="btn-sb-togle" onClick={this.bars}
                         style={{float: "left",

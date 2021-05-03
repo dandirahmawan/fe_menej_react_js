@@ -121,11 +121,11 @@ class login extends React.Component{
                 <p className="bold-black">Sign in</p>
                 <p className="bold" style={{fontSize: '12px', color: "#F00"}}>{this.state.alertLogin}</p>
                 
-                <input type='text' onChange={this.handleChange} className='bold' placeholder='Email' style={{padding: "10px", fontSize: "14px", marginBottom: "10px", width: "250px"}}></input><br/>
+                <input type='text' id="e-login" onChange={this.handleChange} className='bold' placeholder='Email' style={{padding: "10px", fontSize: "14px", marginBottom: "10px", width: "250px"}}></input><br/>
                 
-                <input type='password' onChange={this.handleChangePass} value={this.state.password} className='bold' placeholder='Password' style={{padding: "10px", fontSize: "14px", marginBottom: "10px", width: "250px"}}></input><br/>
+                <input type='password' id="p-login" onChange={this.handleChangePass} value={this.state.password} className='bold' placeholder='Password' style={{padding: "10px", fontSize: "14px", marginBottom: "10px", width: "250px"}}></input><br/>
                 
-                <button className='btn-primary bold' onClick={this.submit} style={{fontSize: "12px", marginTop: "10px", width: "150px", padding: "10px"}}>Sign in</button>
+                <button id="s-login" className='btn-primary bold' onClick={this.submit} style={{fontSize: "12px", marginTop: "10px", width: "150px", padding: "10px"}}>Sign in</button>
                 
                 <div className="bold" style={{marginTop: '20px'}}>
                     <Link to="/forgot_password"><a style={{fontSize: "11px"}}>Forgot Password?</a></Link><br/>

@@ -310,6 +310,7 @@ class module_info extends React.Component{
                 labeling: <Labeling cancel={this.setLabel} 
                                     okLabel={this.setDataLabel}
                                     moduleId={this.props.moduleId}
+                                    projectId={this.props.projectId}
                                     labelSelected={this.state.dataLabelModule}/>
             }) 
         }else{

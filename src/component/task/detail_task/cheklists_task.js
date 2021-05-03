@@ -218,7 +218,10 @@ class bugs_module extends React.Component{
                     {
                         (this.props.picProject == getCookieUserId() || this.state.isPermition)
                         ?
-                            <div id="footer-base-bugs" className="main-border input-info-mdl" style={{overflow: "hidden", marginTop: "10px", borderRadius: "4px"}}>
+                            <div id="footer-base-bugs" 
+                                className="main-border input-info-mdl" 
+                                style={{overflow: "hidden", marginTop: "10px", borderRadius: "4px", position: "relative"}}>
+                                
                                 <textarea onChange={this.chBugs}
                                         value={this.state.bugsText}
                                         className='main-border-right' 
@@ -228,7 +231,7 @@ class bugs_module extends React.Component{
                                 
                                 <div ref={this.parHgtxtArea} 
                                     className="main-border" 
-                                    style={{width: "520px", padding: "5px", fontSize: "12px", position: "absolute", background: "yellow", opacity: "0"}}>insert checklist</div>
+                                    style={{width: "520px", padding: "5px", fontSize: "12px", position: "absolute", background: "yellow", opacity: "0", zIndex: "-1"}}>insert checklist</div>
                                 
                                 <button ref={this.btnCommit} 
                                         onClick={this.commitChecklist} 

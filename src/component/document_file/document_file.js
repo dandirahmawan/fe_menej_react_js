@@ -6,7 +6,7 @@ import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import { baseUrl } from '../../const/const'
 import {setDataDocFile, updateDataModuleDocFile, deleteDataDocFile} from '../../redux/action'
 import { connect } from 'react-redux'
-import PopUpConfirmation from '../../component/popup_confirmation'
+import PopUpConfirmation from '../popup_confirmation'
 import Filter from './filter'
 import Upload from './upload_document_file'
 import PreviewImage from '../preview_image'
@@ -80,10 +80,6 @@ class document_file extends React.Component{
             })
         })
     }
-
-    // componentDidUpdate(){
-    //     alert("dandi rahmawan")
-    // }
 
     showBorder(){
         var elmId = document.getElementById("th-doc-file")
@@ -263,13 +259,6 @@ class document_file extends React.Component{
         return(
             <React.Fragment>
                 {this.state.popup}
-                <HeaderTask
-                    pageActive="attachment"
-                    showBorderAttachment={this.showBorder}
-                    hideBorderAttachment={this.hideBorder}
-                    taskPage={this.props.mainMenu}
-                    uploadAttachment={this.upload}
-                />
                 {/* <div className="main-border-bottom-drk" 
                     style={{paddingTop: "20px", 
                             paddingBottom: "20px",
@@ -310,7 +299,7 @@ class document_file extends React.Component{
                     }
 
                 </div> */}
-                <div id="header-base-tab-module" className="main-border-bottom-drk" 
+                {/* <div id="header-base-tab-module" className="main-border-bottom-drk" 
                     style={{paddingBottom: "15px", 
                             paddingTop: "15px", 
                             display: "none",
@@ -354,7 +343,7 @@ class document_file extends React.Component{
                                 <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
                                 <div style={{marginLeft: "5px"}}>Upload</div>
                             </button> */}
-                            {
+                            {/* {
                                 (this.state.picProject == getCookieUserId() || this.state.isPermition)
                                 ?
                                         <button onClick={this.upload} className="main-border-drk" 
@@ -392,7 +381,7 @@ class document_file extends React.Component{
                             }
                         </div>
                     </div>
-                </div>
+                </div> */} 
                 <div id="atch-tbl-bs" style={{paddingTop: "65px"}}>
                     <table className="main-border-bottom" style={{width: "90%", marginLeft: "15px"}}>
                         <thead id="th-doc-file">

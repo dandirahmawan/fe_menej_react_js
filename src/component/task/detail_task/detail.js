@@ -18,7 +18,7 @@ import {updateDataModuleBugs,
 import {Spinner, SpinnerButton} from '../../spinner'
 import { baseUrl } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarAlt, faInfoCircle, faSave } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 class detail extends React.Component{
     interval = null
@@ -119,7 +119,7 @@ class detail extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
 
-        ApiFetch("/detail_module", {
+        ApiFetch("/module/detail", {
             method: "POST",
             body: form
         }).then(res => res.json())
@@ -278,7 +278,7 @@ class detail extends React.Component{
         form.append("checklist", JSON.stringify(dataCheckilst))
         form.append("assigned", JSON.stringify(this.state.assignedModules))
 
-        ApiFetch("/update_module", {
+        ApiFetch("/module/update", {
             method: "POST",
             body: form
         }).then(res => res.text())

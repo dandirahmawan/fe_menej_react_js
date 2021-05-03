@@ -25,7 +25,7 @@ class popup_notification extends React.Component{
 
     render(){
         return(
-            <div ref={this.setWrapperRef} className="main-border popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", top: "55px", padding: "10px", borderRadius: "5px", right: "61px"}}>
+            <div ref={this.setWrapperRef} className="main-border shadow popup-doc-hide" style={{width: "230px", height: "auto", background: "#FFF", position: "fixed", top: "55px", padding: "10px", borderRadius: "5px", right: "61px"}}>
                 
                 <img src={Triangle} style={{width: "15px", height: "12px", float: "right", marginTop: "-22px"}}></img>
                 <div className="bold second-color" style={{textAlign: "center", padding: "30px", fontSize: "12px"}}>
