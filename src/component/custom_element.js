@@ -5,7 +5,7 @@ import {faChevronDown} from '@fortawesome/free-solid-svg-icons'
 export class SelectBox extends React.Component{
     render(){
         return(
-            <div id="slck-box-cstm" className="input-info-mdl" onClick={this.props.click} style={this.props.style}>
+            <div id={this.props.id} className="input-info-mdl" onClick={this.props.click} style={this.props.style}>
                 <div style={{float: "left"}}>
                     {
                         (this.props.value == "" || this.props.value == null)

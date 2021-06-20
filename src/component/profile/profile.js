@@ -326,8 +326,8 @@ class profile extends React.Component{
                                                 backgroundSize: "cover", 
                                                 float: "left"}}/>
                                 </div>
-                                <div style={{marginLeft: "50px", marginTop: "10px"}}>
-                                    <div className="bold" style={{fontSize: "12px", marginBottom: "-5px"}}>
+                                <div style={{marginLeft: "50px", marginTop: "5px"}}>
+                                    <div className="bold" style={{fontSize: "12px", marginBottom: "2px"}}>
                                         {this.props.userLoginData.name}
                                     </div>
                                     <a onClick={this.changePicProfile} className="bold" style={{fontSize: "10px"}}>Change picture</a>

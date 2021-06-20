@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import NoteModule from '../../note/note'
+import { getColorStatus } from '../../../function/function'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarAlt, faTag, faCheckCircle, faFile } from '@fortawesome/free-solid-svg-icons'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../../icon/icon'
@@ -111,109 +112,110 @@ class list_row extends React.Component{
         return(
             <React.Fragment>
                 {
-                    (this.props.isDelete == "N") 
+                    (this.props.isDelete != "Y") 
                     ? 
                         (this.props.isBorder)
-                        ?
-                            <tr onClick={() => this.props.selectedRow(this.props.moduleId)} 
-                                valign="center"
-                                style={{background: "#e6e6e6"}}
-                                className={classNameRow+" main-border"} 
-                                valign="middle" is-selected="false">
+                        ?   null
+                            // <tr onClick={() => this.props.selectedRow(this.props.moduleId)} 
+                            //     valign="center"
+                            //     style={{background: "#e6e6e6"}}
+                            //     className={classNameRow+" main-border"} 
+                            //     valign="middle" is-selected="false">
                                 
-                                <td className="tb-border-mod main-border" style={{width: "20px"}}>
-                                    <i className="fas fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i>
-                                </td>
-                                <td className="tb-border-mod main-border">
-                                    {/* {
-                                        (this.props.dataLabelModule.length > 0)
-                                        ?
-                                            <div style={{overflow: "hidden", marginBottom: "3px"}}>
-                                                {labelView} 
-                                            </div>
-                                        :
-                                            ""
-                                    } */}
+                            //     <td className="tb-border-mod main-border" style={{width: "20px"}}>
+                            //         <i className="fas fa-clipboard" style={{fontSize: "14px", color: "#d4ae2b"}}></i>
+                            //     </td>
+                            //     <td className="tb-border-mod main-border">
+                            //         {/* {
+                            //             (this.props.dataLabelModule.length > 0)
+                            //             ?
+                            //                 <div style={{overflow: "hidden", marginBottom: "3px"}}>
+                            //                     {labelView} 
+                            //                 </div>
+                            //             :
+                            //                 ""
+                            //         } */}
 
-                                    <span className="bold">{this.props.modulName}</span>
-                                    {/* <div style={{width: "400px", color: "#8e8e8e"}}>
-                                        {
-                                            (this.props.description != null && this.props.description != "")
-                                            ?   
-                                                <div style={{marginTop: "3px", fontSize: "12px"}}>{this.props.description}</div>
-                                            :
-                                                <span style={{fontSize: "12px", color: "#CCC"}}>No description for this module</span>
-                                        }
-                                    </div> */}
-                                    {
-                                        (this.state.noteBaseVisible) 
-                                        ?
-                                            <NoteModule
-                                                countNote={this.props.countNote}
-                                                moduleId={this.props.moduleId}
-                                                moduleName={this.props.modulName}
-                                            />
-                                        : ""
-                                    }
-                                </td>
-                                <td className="tb-border-mod main-border">
-                                    <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                        {assigned}
-                                    </div>
-                                </td>
-                                <td className="tb-border-mod main-border">
-                                    <FontAwesomeIcon style={{marginRight: "5px"}} className="second-font-color" icon={faCalendarAlt}/>
-                                    {this.convertDate(this.props.endDate)}
-                                </td>
-                                <td className="tb-border-mod main-border" style={{background: this.colorStatus(this.props.modulStatus), textAlign: "center"}}>
-                                    <div style={{color: "#FFF", padding: "5px", borderRadius: "3px", float: "left", fontSize: "11px"}}>
-                                        {this.moduleStatus(this.props.modulStatus)}
-                                    </div>
-                                </td>
-                                <td className="bold tb-border-mod main-border">
-                                    {
-                                        (this.props.countBugs > 0) 
-                                        ?
-                                            (this.props.countBugsClose != this.props.countBugs)
-                                            ?
-                                                <a onClick={(e) => this.props.bugsIconClick(e, this.props.moduleId)}>
-                                                    <i style={{color: "red", fontSize: "14px", marginRight: "5px"}} class="fa fa-exclamation-triangle tooltip"><span class="tooltiptext">this module have bugs</span></i>
-                                                </a>
-                                            :
-                                                <a onClick={(e) => this.props.bugsIconClick(e, this.props.moduleId)}>
-                                                    <i style={{
-                                                        color: "green",
-                                                        fontSize: "14px",
-                                                        marginRight: "5px"
-                                                    }}
-                                                       className="fa fa-exclamation-triangle tooltip">
-                                                        <span className="tooltiptext">all bugs is closed</span>
-                                                    </i>
-                                                </a>
-                                        : 
-                                            ""
-                                    }
+                            //         <span className="bold">{this.props.modulName}</span>
+                            //         {/* <div style={{width: "400px", color: "#8e8e8e"}}>
+                            //             {
+                            //                 (this.props.description != null && this.props.description != "")
+                            //                 ?   
+                            //                     <div style={{marginTop: "3px", fontSize: "12px"}}>{this.props.description}</div>
+                            //                 :
+                            //                     <span style={{fontSize: "12px", color: "#CCC"}}>No description for this module</span>
+                            //             }
+                            //         </div> */}
+                            //         {
+                            //             (this.state.noteBaseVisible) 
+                            //             ?
+                            //                 <NoteModule
+                            //                     countNote={this.props.countNote}
+                            //                     moduleId={this.props.moduleId}
+                            //                     moduleName={this.props.modulName}
+                            //                 />
+                            //             : ""
+                            //         }
+                            //     </td>
+                            //     <td className="tb-border-mod main-border">
+                            //         <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                            //             {assigned}
+                            //         </div>
+                            //     </td>
+                            //     <td className="tb-border-mod main-border">
+                            //         <FontAwesomeIcon style={{marginRight: "5px"}} className="second-font-color" icon={faCalendarAlt}/>
+                            //         {this.convertDate(this.props.endDate)}
+                            //     </td>
+                            //     <td className="tb-border-mod main-border" style={{background: this.colorStatus(this.props.modulStatus), textAlign: "center"}}>
+                            //         <div style={{color: "#FFF", padding: "5px", borderRadius: "3px", float: "left", fontSize: "11px"}}>
+                            //             {this.moduleStatus(this.props.modulStatus)}
+                            //         </div>
+                            //     </td>
+                            //     <td className="bold tb-border-mod main-border">
+                            //         {
+                            //             (this.props.countBugs > 0) 
+                            //             ?
+                            //                 (this.props.countBugsClose != this.props.countBugs)
+                            //                 ?
+                            //                     <a onClick={(e) => this.props.bugsIconClick(e, this.props.moduleId)}>
+                            //                         <i style={{color: "red", fontSize: "14px", marginRight: "5px"}} class="fa fa-exclamation-triangle tooltip"><span class="tooltiptext">this module have bugs</span></i>
+                            //                     </a>
+                            //                 :
+                            //                     <a onClick={(e) => this.props.bugsIconClick(e, this.props.moduleId)}>
+                            //                         <i style={{
+                            //                             color: "green",
+                            //                             fontSize: "14px",
+                            //                             marginRight: "5px"
+                            //                         }}
+                            //                            className="fa fa-exclamation-triangle tooltip">
+                            //                             <span className="tooltiptext">all bugs is closed</span>
+                            //                         </i>
+                            //                     </a>
+                            //             : 
+                            //                 ""
+                            //         }
                                 
-                                    {
-                                        (this.props.countDoc > 0) 
-                                        ? 
-                                            <a onClick={(e) => this.props.docFileIconClick(e, this.props.moduleId)}>
-                                                <i style={{color: "#d4ae2b", fontSize: "14px"}} class="fa fa-file tooltip"><span class="tooltiptext">this module have some document file</span></i> 
-                                            </a>
-                                        : 
-                                            ""
-                                    }
-                                </td>
-                            </tr>
+                            //         {
+                            //             (this.props.countDoc > 0) 
+                            //             ? 
+                            //                 <a onClick={(e) => this.props.docFileIconClick(e, this.props.moduleId)}>
+                            //                     <i style={{color: "#d4ae2b", fontSize: "14px"}} class="fa fa-file tooltip"><span class="tooltiptext">this module have some document file</span></i> 
+                            //                 </a>
+                            //             : 
+                            //                 ""
+                            //         }
+                            //     </td>
+                            // </tr>
                         :
                             <tr onClick={() => this.props.selectedRow(this.props.moduleId)} 
                                 onContextMenu={(e) => this.props.contextMenuModule(e, this.props.moduleId)}
                                 className={classNameRow} 
-                                valign="middle" 
+                                valign="middle"
                                 data-module={this.props.modulId} 
                                 is-selected="false">
                                 
-                                <td className="tb-border-mod" style={{width: "25px"}}>
+                                <td className="tb-border-mod" 
+                                    style={{width: "25px", textAlign: "center", borderLeft: "4px solid "+getColorStatus(this.props.modulStatus, this.props.dataStatus)}}>
                                     {this.colorStatus(this.props.modulStatus)}
                                 </td>
                                 <td className="tb-border-mod">
@@ -234,7 +236,7 @@ class list_row extends React.Component{
                                             ""
                                     }
                                 </td>
-                                <td style={{width: "100px"}}>
+                                {/* <td style={{width: "100px"}}>
                                      {
                                         (this.props.labelModule.length > 0)
                                         ?
@@ -244,7 +246,7 @@ class list_row extends React.Component{
                                         :
                                             ""
                                     }
-                                </td>
+                                </td> */}
                                 <td className="tb-border-mod" style={{width: "150px"}}>
                                     <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                                         {assigned}

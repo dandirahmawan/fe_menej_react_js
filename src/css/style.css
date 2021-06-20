@@ -19,6 +19,10 @@
     display: block !important;
 }
 
+.regular-font{
+    font-family: reguler_font;
+}
+
 strong{
     font-family: bold_font;
     src: url('../font/arialbd.ttf');
@@ -26,6 +30,10 @@ strong{
 
 input{
     outline: none;
+}
+
+.main-font-size {
+    font-size: 12px;
 }
 
 .navbar{
@@ -544,6 +552,11 @@ button{
 .input-info-mdl{
     background: #f3f3f3;
     border: 1px solid #ccc9cc;
+}
+
+.mandatory{
+    border: 1px solid #c70000 !important;
+    /* color: #F00 !important; */
 }
 
 #main-base-data-wrapper{

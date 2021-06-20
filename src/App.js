@@ -66,7 +66,14 @@ class App extends React.Component{
                             isLoad: false
                         })
                     }
-            })
+            }).catch((error) => {
+                // alert("dandi rahmawan")
+                if(error == "TypeError: Failed to fetch"){
+                    this.setState({
+                        isLoad: false
+                    })
+                }
+            });
         }
     }
 
@@ -166,7 +173,7 @@ class App extends React.Component{
             }
         }
     }
-    }
+}
 
     const mapStateToProps = state => {
         return{

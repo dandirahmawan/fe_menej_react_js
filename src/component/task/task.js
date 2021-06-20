@@ -30,7 +30,6 @@ class list_module extends React.Component{
         this.commitDeleteModule = this.commitDeleteModule.bind(this)
         this.mapingProjectData = this.mapingProjectData.bind(this)
         this.handleChangeNameModule = this.handleChangeNameModule.bind(this)
-        this.commitNewModule = this.commitNewModule.bind(this)
         this.updateDataDocumentFile = this.updateDataDocumentFile.bind(this)
         this.commitDeleteMember = this.commitDeleteMember.bind(this)
         this.refreshModule = this.refreshModule.bind(this)
@@ -164,54 +163,54 @@ class list_module extends React.Component{
         })
     }
 
-    commitNewModule(userId, mouleName, dueDate, description, pi, status, section){
-        var userLogin = getCookieUserId()
-        var form = new FormData()
-        form.append("userId", userId)
-        form.append("userLogin", userLogin)
-        form.append("moduleName", mouleName)
-        form.append("dueDate", dueDate)
-        form.append("description", description)
-        form.append("projectId", pi)
-        form.append("status", status)
-        form.append("section", section)
+    // commitNewModule(userId, mouleName, dueDate, description, pi, status, section){
+    //     var userLogin = getCookieUserId()
+    //     var form = new FormData()
+    //     form.append("userId", userId)
+    //     form.append("userLogin", userLogin)
+    //     form.append("moduleName", mouleName)
+    //     form.append("dueDate", dueDate)
+    //     form.append("description", description)
+    //     form.append("projectId", pi)
+    //     form.append("status", status)
+    //     form.append("section", section)
         
-        var isReady = false
-        this.props.dataModule.map(dt => {
-            if(dt.modulName == mouleName){
-                isReady = true
-            }
-        })
+    //     var isReady = false
+    //     this.props.dataModule.map(dt => {
+    //         if(dt.modulName == mouleName){
+    //             isReady = true
+    //         }
+    //     })
 
-        if(!isReady){
-            ApiFetch("/module/insert", {
-                method: "POST",
-                body:form
-            }).then(res => res.json())
-            .then((result) => {
-                let dataModule = result[0].module
-                let dataAssignTo = result[0].assignTo
+    //     if(!isReady){
+    //         ApiFetch("/module/insert", {
+    //             method: "POST",
+    //             body:form
+    //         }).then(res => res.json())
+    //         .then((result) => {
+    //             let dataModule = result[0].module
+    //             let dataAssignTo = result[0].assignTo
                 
-                let section = dataModule.sectionId
-                this.props.dataModule.map(dt => {
-                    if(dt.id == section){
-                        dt.sectionModule.push(dataModule)
-                    }
-                })
+    //             let section = dataModule.sectionId
+    //             this.props.dataModule.map(dt => {
+    //                 if(dt.id == section){
+    //                     dt.sectionModule.push(dataModule)
+    //                 }
+    //             })
 
-                // console.log(this.props.dataModule)
-                // var append = this.props.dataModule.concat(dataModule)
-                this.props.setDataModule(this.props.dataModule)
-                dataAssignTo.map(dt => {
-                    var appendAssign = this.props.assignedModules.concat(dt)
-                    this.props.setAssigndeModules(appendAssign)
-                })
-            })
-        }else{
-            popUpAlert("Module name already exists", "warning")
-        }
+    //             // console.log(this.props.dataModule)
+    //             // var append = this.props.dataModule.concat(dataModule)
+    //             this.props.setDataModule(this.props.dataModule)
+    //             dataAssignTo.map(dt => {
+    //                 var appendAssign = this.props.assignedModules.concat(dt)
+    //                 this.props.setAssigndeModules(appendAssign)
+    //             })
+    //         })
+    //     }else{
+    //         popUpAlert("Module name already exists", "warning")
+    //     }
         
-    }
+    // }
 
     updateDataDocumentFile(type, moduleId){
         this.setState(prevState => {

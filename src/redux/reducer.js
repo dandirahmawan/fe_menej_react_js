@@ -19,7 +19,9 @@ import {
     setDataStatuAction, 
     setVIewModuleAction,
     setDataTeamAction,
-    setSectionModuleAction
+    setSectionModuleAction,
+    deleteLabelAction,
+    appendDataModuleAction
 } from './type_action'
 
 const initState = {
@@ -107,6 +109,35 @@ function rootReducer(state = initState, action){
         }
     }
 
+    if(action.type == deleteLabelAction){
+        let labelName = action.labelName
+        let dataModule = [...state.dataModule]
+        
+        /*delete data label in modules*/
+        dataModule.map(dt => {
+            dt.sectionModule.map(dtt => {
+                let i = 0
+                let idx = null
+                dtt.label.map(dtm => {
+                    if(dtm.label == labelName){
+                       idx = i
+                    }
+                    i++
+                })
+                
+                if(idx != null) dtt.label.splice(idx, 1)                
+                return dtt
+            })
+
+            return dt
+        })
+
+        return{
+            ...state,
+            dataModule: dataModule
+        }
+    }
+
     if(action.type === setSectionModuleAction){
         return{
             ...state,
@@ -118,6 +149,23 @@ function rootReducer(state = initState, action){
         return{
             ...state,
             title: action.title
+        }
+    }
+
+    if(action.type === appendDataModuleAction){
+        let oData = [...state.dataModule]
+        let nData = action.data
+        const newData = oData.map(dt => {
+            if(dt.id == nData.sectionId){
+                dt.sectionModule.push(nData)
+            }
+
+            return dt
+        })
+
+        return{
+            ...state,
+            dataModule: newData
         }
     }
 
@@ -197,9 +245,13 @@ function rootReducer(state = initState, action){
         })
 
         let newDataModule = state.dataModule.map(dt => {
-            if(dt.modulId == moduleId){
-                dt.countBugsClose = closeData
-                console.log(dt)
+            // console.log(dt.id+" == "+action.sectionId)
+            if(dt.id == action.sectionId){
+                dt.sectionModule.map(dm => {
+                    if(dm.modulId == moduleId){
+                        dm.countBugsClose = closeData
+                    }
+                })
             }
             return dt
         })
@@ -276,21 +328,17 @@ function rootReducer(state = initState, action){
 
     if(action.type === "UPDATE_DATA_MODULE"){
         let dataModule = [...state.dataModule]
+        let sectionId = action.data.sectionId
+        let moduleId = action.data.modulId
         const newData = dataModule.map(dt => {
-            if(dt.id == action.section){
-                dt.sectionModule.map(dtt => {
-                    if(dtt.modulId == action.moduleId){
-                        dtt.modulName = action.moduleName
-                        dtt.modulStatus = action.moduleStatus
-                        dtt.description = action.descriptionModule
-                        dtt.userName = action.userName
-                        dtt.endDate = new Date(action.dueDate)   
-                        dtt.isMember = (dt.userId != action.userId) ? 1 : dt.isMember 
-                        dtt.userId = action.userId
-                        dtt.label = action.label
-                        return dtt
+            if(dt.id == sectionId){
+                const sm = dt.sectionModule.map(dtt => {
+                    if(dtt.modulId == moduleId){
+                        dtt = action.data
                     }
+                    return dtt
                 })
+                dt.sectionModule = sm
             }
             return dt
         })
@@ -300,6 +348,34 @@ function rootReducer(state = initState, action){
             dataModule: newData
         }
     }
+
+    // if(action.type === "UPDATE_DATA_MODULE"){
+    //     let dataModule = [...state.dataModule]
+    //     const newData = dataModule.map(dt => {
+    //         if(dt.id == action.section){
+    //             dt.sectionModule.map(dtt => {
+    //                 if(dtt.modulId == action.moduleId){
+    //                     console.log(dtt)
+    //                     dtt.modulName = action.moduleName
+    //                     dtt.modulStatus = action.moduleStatus
+    //                     dtt.description = action.descriptionModule
+    //                     dtt.userName = action.userName
+    //                     dtt.endDate = new Date(action.dueDate)   
+    //                     dtt.isMember = (dt.userId != action.userId) ? 1 : dt.isMember 
+    //                     dtt.userId = action.userId
+    //                     dtt.label = action.label
+    //                     return dtt
+    //                 }
+    //             })
+    //         }
+    //         return dt
+    //     })
+
+    //     return{
+    //         ...state,
+    //         dataModule: newData
+    //     }
+    // }
 
     if(action.type === startDataAction){
         return{
@@ -528,6 +604,7 @@ function rootReducer(state = initState, action){
 
     if(action.type === setDataLabelAction){
         var jsonArray = action.data
+        console.log(action.data)
         return{
             ...state,
             dataLabels: jsonArray

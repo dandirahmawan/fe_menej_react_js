@@ -7,6 +7,7 @@ import { getCookieUserId, setInitialName } from '../../function/function'
 import Triangle from '../../images/triangle.png'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../icon/icon'
 import Teams from './teams/teams'
+import ProjectDetail from './project_detail'
 import InfoProject from './info_project'
 
 class header_task extends React.Component{
@@ -16,7 +17,8 @@ class header_task extends React.Component{
         this.state = {
             isBorderAttachment: false,
             teamsBase: "",
-            dataProject: {}
+            dataProject: {},
+            projectDetailBase: ""
         }
 
         this.popFilter = React.createRef()
@@ -31,6 +33,7 @@ class header_task extends React.Component{
         this.hideTeams = this.hideTeams.bind(this)
         this.taskAction = this.taskAction.bind(this)
         this.attachmentAction = this.attachmentAction.bind(this)
+        this.projectDetail = this.projectDetail.bind(this)
     }
 
     showBorderAttachment(){
@@ -112,6 +115,13 @@ class header_task extends React.Component{
         this.props.attachment()
     }
 
+    projectDetail(){
+        // alert("dandi rahmawan")
+        this.setState({
+            projectDetailBase: <ProjectDetail hideDetail={() => this.setState({projectDetailBase: ""})}/>
+        })
+    }
+
     render(){
         // console.log(this.props.tabActive)
         const picProject = this.props.dataProject.pic
@@ -138,7 +148,7 @@ class header_task extends React.Component{
         let dataTeam = this.props.dataTeam.map(dt => {
             let name = dt.userName
             let initial = setInitialName(name)
-            return  <div className="main-color" 
+            return  <div className="main-color main-font-size" 
                         style={{width: "30px", 
                                 height: "30px", 
                                 borderRadius: "100%",
@@ -172,9 +182,14 @@ class header_task extends React.Component{
                             <FontAwesomeIcon className="fld-color" style={{fontSize: "18px"}} icon={faFolder}/>&nbsp;&nbsp;
                         </div>
                         &nbsp;
-                        <a style={{color: "#000"}}>{this.state.dataProject.projectName}</a>
+                        <a id="lk-prj-dtl-hdr" onClick={this.projectDetail} style={{color: "#000"}}>
+                            {this.state.dataProject.projectName}
+                        </a>
                         &nbsp;&nbsp;
-                        <FontAwesomeIcon className="second-font-color" style={{marginTop: "2px"}} icon={faAngleDown}/>
+                        <a id="lk-prj-dtl-hdr" onClick={this.projectDetail} style={{color: "#000"}}>
+                            <FontAwesomeIcon className="second-font-color" style={{marginTop: "2px"}} icon={faAngleDown}/>  
+                        </a>
+                        {this.state.projectDetailBase}
                         {/* <InfoProject/> */}
                     </div>
                     <div id="tb-mn-bs-jkdag" style={{display: "flex", alignItems: "center"}}>
@@ -183,20 +198,20 @@ class header_task extends React.Component{
                             {
                                 (this.state.tabActive == "task")
                                 ?
-                                    <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Task list</a>
+                                    <a style={{color: "#000"}} className="bold main-font-size mn-tsk-main main-border-right">Task list</a>
                                 :
-                                    <a onClick={this.taskAction} className="bold second-font-color mn-tsk-main main-border-right">Task list</a>
+                                    <a onClick={this.taskAction} className="bold main-font-size second-font-color mn-tsk-main main-border-right">Task list</a>
                             }
                             {
                                 (this.state.tabActive == "attachment")
                                 ?
-                                    <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Attachment</a>
+                                    <a style={{color: "#000"}} className="bold main-font-size mn-tsk-main main-border-right">Attachment</a>
                                 :
-                                    <a onClick={this.attachmentAction} className="bold second-font-color mn-tsk-main main-border-right">Attachment</a>
+                                    <a onClick={this.attachmentAction} className="bold main-font-size second-font-color mn-tsk-main main-border-right">Attachment</a>
                             }
                             {/* <a onClick={this.props.taskPage} className="bold second-font-color mn-tsk-main main-border-right">Task list</a> */}
                             {/* <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Attachment</a> */}
-                            <a className="bold second-font-color mn-tsk-main">Chart</a>
+                            <a className="bold main-font-size second-font-color mn-tsk-main">Chart</a>
                         </div>
                         
                         <div>
@@ -231,7 +246,14 @@ class header_task extends React.Component{
                                             Delete
                                         </button> */}
                                         <div className="main-border-right" style={{display: "flex", alignItems: "center", marginRight: "10px", paddingRight: "10px"}}>
-                                            <input type="checkbox" onClick={this.props.showDescription}/>&nbsp;&nbsp;
+                                            {
+                                                (this.props.isShowDescription)
+                                                ?
+                                                    <><input type="checkbox" checked onClick={this.props.showDescription}/>&nbsp;&nbsp;</>
+                                                :
+                                                    <><input type="checkbox" onClick={this.props.showDescription}/>&nbsp;&nbsp;</>
+
+                                            }
                                             <div className="bold" style={{marginTop: "1px", fontSize: "11px"}}>Show Description</div>
                                         </div>
                                         {/* <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>

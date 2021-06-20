@@ -9,7 +9,7 @@ import NewLabel from '../new_label'
 import {connect} from 'react-redux'
 import {ApiFetch} from '../../apiFetch'
 import PopupConfirmation from '../../popup_confirmation'
-import { setDataLabel, setDataLabelModule } from '../../../redux/action'
+import { deleteLabel, setDataLabel, setDataLabelModule } from '../../../redux/action'
 import LabelModuleDetailItem from '../label_module_detail_item'
 import Assigned from '../assigned_module'
 import ChoiceSection from '../choice_section'
@@ -17,7 +17,7 @@ import Labeling from '../labeling_task'
 
 class module_info extends React.Component{
     readyOperate = false
-
+    isNewModule = false
 
     constructor(){
         super()
@@ -74,7 +74,10 @@ class module_info extends React.Component{
             idSection : this.props.sectionId,
             dataLabelModule : (this.props.dataLabelModule.length == 0) ? jsonArray : this.props.dataLabelModule,
         })
-
+        
+        /*mendeteksi apakah form ini diperuntukan untuk menambahkan task baru*/
+        if(this.props.moduleId == null || this.props.moduleId == "") this.isNewModule = true
+        
         if(this.txtArea.current != null) this.txtArea.current.style.height = this.dvTxtArea.current.offsetHeight+"px"
     }
 
@@ -140,6 +143,11 @@ class module_info extends React.Component{
                 })
             }
         })
+
+        /*reset design birder*/
+        let elm = document.getElementById("inf-inp-s1")
+        let attr = elm.getAttribute("class").split(" ")[0]
+        elm.setAttribute("class", attr)
     }
 
     statusName(id){
@@ -302,6 +310,11 @@ class module_info extends React.Component{
             idSection: id
         })
         this.hideSection()
+
+        /*reset design birder*/
+        let elm = document.getElementById("inf-inp-s2")
+        let attr = elm.getAttribute("class").split(" ")[0]
+        elm.setAttribute("class", attr)
     }
 
     setLabel(canceling){
@@ -383,28 +396,28 @@ class module_info extends React.Component{
                         <tbody>
                         <tr>
                                 {
-                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                     ?
                                         <td colSpan="2">
-                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Module name</div>
-                                            <input className="input-info-mdl" onChange={this.props.changeName} value={this.props.moduleName} style={{padding: "7px", width: "100%", boxSizing: "border-box"}} placeholder="module name" type='text'></input>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Task name</div>
+                                            <input id="inf-inp-1" className="input-info-mdl" onChange={this.props.changeName} value={this.props.moduleName} style={{padding: "7px", width: "100%", boxSizing: "border-box"}} placeholder="task name" type='text'></input>
                                         </td>
                                     :
                                         <td colSpan="2">
-                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Module name</div>
+                                            <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Task name</div>
                                             <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>
-                                                {this.props.moduleName}
+                                                {this.props.moduleName+" -- "+this.props.moduleId}
                                             </div>
                                         </td>
                                 }
                             </tr>
                             <tr>
                                 {
-                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                     ?
                                         <td>
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Status</div>
-                                            <SelectBox ref={this.SelectBox} click={this.chooseStatus} 
+                                            <SelectBox id="inf-inp-s1" ref={this.SelectBox} click={this.chooseStatus} 
                                                 style={{padding: "7px", overflow: "hidden", border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
                                                 value={this.statusName(this.state.idStatus)}/>
                                             <div id="sc-dtl-sts" style={{position: "relative"}}>
@@ -421,11 +434,11 @@ class module_info extends React.Component{
                                 }
 
                                 {
-                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                     ?
                                         <td style={{paddingLeft: "20px"}}>
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Due date</div>
-                                            <input className="input-info-mdl" style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input>
+                                            <input id="inf-inp-2" className="input-info-mdl" style={{padding: "5px"}} onChange={this.props.changeDate} value={this.props.dueDate} type='date'></input>
                                         </td>
                                     :
                                         <td style={{paddingLeft: "20px"}}>
@@ -439,11 +452,11 @@ class module_info extends React.Component{
                             </tr>
                             <tr>
                                 {
-                                    (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                    (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                     ?
                                         <td>
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Section</div>
-                                            <SelectBox ref={this.SelectBoxSection} click={this.chooseSection} 
+                                            <SelectBox id="inf-inp-s2" ref={this.SelectBoxSection} click={this.chooseSection} 
                                                 style={{padding: "7px", overflow: "hidden", border: "#ccc9c9 1px solid", borderRadius: "3px", width: "200px"}} 
                                                 value={this.sectionName(this.state.idSection)}/>
                                             <div id="sc-dtl-sts" style={{position: "relative"}}>
@@ -464,7 +477,7 @@ class module_info extends React.Component{
                                     <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Description</div>
                                     <div>
                                     {
-                                        (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                                        (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                         ?
                                             <Fragment>
                                                 <div ref={this.dvTxtArea} 
@@ -536,14 +549,23 @@ class module_info extends React.Component{
                         style={{fontSize: "11px", marginBottom : "10px", display: "flex", justifyContent: "space-between"}}>
                         <div>Assign To</div>
                         {
-                            (this.props.pic == getCookieUserId() || this.props.modulePermition)
+                            (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                             ?
                                 <a onClick={this.setAssigned}><FontAwesomeIcon icon={faUserCog}/></a>
-                            : null
+                            : 
+                                null
                         }
                     </div>
                     <div className="scrollbar" id="bs-data-assigned" style={{fontSize: "11px", maxHeight: "200px"}}>
-                        {assigned}
+                        {
+                            (this.props.assignedModules.length > 0)
+                            ?
+                                assigned
+                            :
+                                <div id="inp-asgn-1" className="second-font-color" style={{padding: "10px", textAlign: "center"}}>
+                                    Select assignees<br/>by click <a onClick={this.setAssigned}><FontAwesomeIcon icon={faUserCog}/></a> icon
+                                </div>
+                        }
                     </div>
                     
                     <div id="base-label-s12i">
@@ -553,20 +575,20 @@ class module_info extends React.Component{
                             <a onClick={() => this.setLabel(false)}>
                                 <FontAwesomeIcon className="main-font-color" icon={faEdit}/>
                             </a>
-                            {/*base set label*/}
                             {this.state.labeling}
                         </div>
 
                         <div id="base-data-label-s12i" className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
-                            {labelDataSelected}
-                            {/* <div style={{padding: "5px", background: "#F00", color: "#FFF", fontSize: "11px", borderRadius: "3px", marginBottom: "5px"}}>
-                                <FontAwesomeIcon icon={faTag}/>&nbsp;&nbsp;
-                                high priority
-                            </div>
-                            <div style={{padding: "5px", background: "green", color: "#FFF", fontSize: "11px", borderRadius: "3px", marginBottom: "5px"}}>
-                                <FontAwesomeIcon icon={faTag}/>&nbsp;&nbsp;
-                                high priority
-                            </div> */}
+                            {
+                                (labelDataSelected == "")
+                                ?  
+                                    <div className="second-font-color" style={{padding: "10px", textAlign: "center"}}>
+                                        Select labels<br/>by click <FontAwesomeIcon className="main-font-color" icon={faEdit}/> icon
+                                    </div>
+                                :
+                                    labelDataSelected
+                            }
+                            
                         </div>
                     </div>
                    

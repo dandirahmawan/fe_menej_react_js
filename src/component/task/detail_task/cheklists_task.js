@@ -10,7 +10,6 @@ import {connect} from 'react-redux'
 import EditBugs from '../../bugs/edit_bugs'
 
 class bugs_module extends React.Component{
-
     readyOperate = false
 
     constructor(){
@@ -21,11 +20,12 @@ class bugs_module extends React.Component{
             bugsId:"",
             popDelete:"",
             isPermition: false,
-            picProject:""
+            picProject:"",
+            isNewModule: false
         }
 
         this.chBugs = this.chBugs.bind(this)
-        this.commitChecklist = this.commitChecklist.bind(this)
+        // this.commitChecklist = this.commitChecklist.bind(this)
         this.deleteBugs = this.deleteBugs.bind(this)
         this.confirmYesDelete = this.confirmYesDelete.bind(this)
         this.hideConfirm = this.hideConfirm.bind(this)
@@ -39,6 +39,12 @@ class bugs_module extends React.Component{
     }
 
     componentDidMount(){
+        if(this.props.moduleId == null || this.props.moduleId == "") {
+            this.setState({
+                isNewModule: true
+            })
+        }
+
         this.props.dataPermition.map(dt => {
             if(dt.permitionCode == 2){
                 if(dt.isChecked == 'Y'){
@@ -67,26 +73,28 @@ class bugs_module extends React.Component{
         e.target.style.height = h+"px"
     }
 
-    commitChecklist(){
+    add = () => {
         let btn = this.btnCommit.current
         if(this.state.bugsText == ""){
             popUpAlert("Description bugs is empty", "warning")
         }else{
-            ReactDom.render(<div className="second-font-color">Sending..</div>, btn)
-            this.props.commitChecklist(btn, this.state.bugsText)
+            // ReactDom.render(<div className="second-font-color">Sending..</div>, btn)
+            this.props.addChecklist(this.state.bugsText)
+            // this.props.commitChecklist(btn, this.state.bugsText)
             this.state.bugsText = ""
         }
     }
 
     deleteBugs(bugsId){
-        this.setState({
-            bugsId: bugsId,
-            popDelete: <PopupConfirmation
-                            titleConfirmation="Delete Bugs"
-                            textPopup="Are you sure, you want delete checklist data ?" 
-                            yesAction={this.confirmYesDelete} 
-                            hidePopUp={this.hideConfirm}/>
-        })
+        this.props.deleteBugs(bugsId)
+        // this.setState({
+        //     bugsId: bugsId,
+        //     popDelete: <PopupConfirmation
+        //                     titleConfirmation="Delete Bugs"
+        //                     textPopup="Are you sure, you want delete checklist data ?" 
+        //                     yesAction={this.confirmYesDelete} 
+        //                     hidePopUp={this.hideConfirm}/>
+        // })
     }
 
     editBugs(bugsId, bugs){
@@ -216,7 +224,7 @@ class bugs_module extends React.Component{
                         </tbody>
                     </table>
                     {
-                        (this.props.picProject == getCookieUserId() || this.state.isPermition)
+                        (this.props.picProject == getCookieUserId() || this.state.isPermition || this.state.isNewModule)
                         ?
                             <div id="footer-base-bugs" 
                                 className="main-border input-info-mdl" 
@@ -234,10 +242,17 @@ class bugs_module extends React.Component{
                                     style={{width: "520px", padding: "5px", fontSize: "12px", position: "absolute", background: "yellow", opacity: "0", zIndex: "-1"}}>insert checklist</div>
                                 
                                 <button ref={this.btnCommit} 
-                                        onClick={this.commitChecklist} 
-                                        style={{fontSize: "12px", marginLeft: "5px", marginTop: "10px", background: "none", color: "blue", display: "flex"}}>
+                                        onClick={this.add} 
+                                        style={{fontSize: "12px", 
+                                                marginLeft: "5px", 
+                                                padding: "0px 15px",
+                                                marginTop: "10px", 
+                                                background: "none", 
+                                                color: "blue", 
+                                                display: "flex"}}
+                                >
                                     {/* <FontAwesomeIcon icon={faPaperPlane}/> */}
-                                    Send
+                                    Add
                                 </button>
                             </div>
                         :

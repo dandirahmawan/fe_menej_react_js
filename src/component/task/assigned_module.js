@@ -29,6 +29,7 @@ class set_assigned_module extends React.Component{
     }
 
     componentDidMount(){
+        /*start positioning popup in window to center*/
         var elm = document.getElementById("base-add-member")
         var h = elm.offsetHeight
         var w = elm.offsetWidth
@@ -37,6 +38,7 @@ class set_assigned_module extends React.Component{
         
         elm.style.top = top+"px"
         elm.style.left = left+"px"
+        /*end positioning popup in window to center*/
 
         this.props.userAssigned.map(dt => {
             this.state.listSelected.push(dt.userId)
@@ -44,7 +46,7 @@ class set_assigned_module extends React.Component{
 
         var form = new FormData()
         form.append("projectId", this.props.projectId)
-        ApiFetch("/module_assigning", {
+        ApiFetch("/module/assigning", {
             method: "POST",
             body: form
         }).then(rst => rst.json())

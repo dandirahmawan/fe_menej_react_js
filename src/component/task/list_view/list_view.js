@@ -252,7 +252,7 @@ class list_view extends Component{
 
                                 if(isVisible)
                                 {  
-                                    console.log(dt.label)
+                                    // console.log(dt.label)
                                     lengthData++
                                     return <RowModule
                                                 dataStatus={this.props.dataStatus}
@@ -326,10 +326,10 @@ class list_view extends Component{
                         <thead ref={this.theadModule}>
                             <tr className="main-border-bottom">
                                 <th colSpan="2" style={{maxWidth: "400px"}} className="main-border-right second-font-color bold">Module</th>
-                                <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px", paddingTop: "15px", paddingBottom: "15px"}} className="main-border-right second-font-color bold">Labels</th>
+                                {/* <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px", paddingTop: "15px", paddingBottom: "15px"}} className="main-border-right second-font-color bold">Labels</th> */}
                                 <th style={{maxWidth: "150px", textAlign: "center", paddingRight: "0px"}} className="main-border-right second-font-color bold">Assign to</th>
-                                <th style={{textAlign: "center"}} className="main-border-right second-font-color bold">Due date</th>
-                                <th style={{textAlign: "center"}} className="main-border-right second-font-color bold">Status</th>
+                                <th style={{textAlign: "center", maxWidth: "150px"}} className="main-border-right second-font-color bold">Due date</th>
+                                <th style={{textAlign: "center", maxWidth:"150px"}} className="main-border-right second-font-color bold">Status</th>
                             <th className="second-font-color bold"></th>
                             </tr>
                         </thead>

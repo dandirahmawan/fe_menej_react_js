@@ -349,15 +349,23 @@ class modulePage extends React.Component{
 
     newModule(){
         this.setState({
-            infoPop: <NewTask 
+            infoPop: <Detail
+                        close={this.hidePopUp}
+                        modulId={null}
                         projectId={this.props.projectIdHeader}
-                        hcName={this.handleChangeNameModule}
-                        dataStatus={this.props.dataStatus}
-                        section={this.props.sectionModule}
-                        commit={this.commitNewModule}
-                        commitNewStatus={this.commitNewStatus}
-                        hide={this.hidePopUp}/>
+                    />
         })
+        
+        // this.setState({
+        //     infoPop: <NewTask 
+        //                 projectId={this.props.projectIdHeader}
+        //                 hcName={this.handleChangeNameModule}
+        //                 dataStatus={this.props.dataStatus}
+        //                 section={this.props.sectionModule}
+        //                 commit={this.commitNewModule}
+        //                 commitNewStatus={this.commitNewStatus}
+        //                 hide={this.hidePopUp}/>
+        // })
     }
 
     newSection(){
@@ -957,6 +965,7 @@ class modulePage extends React.Component{
                         list={this.list}
                         card={this.card}
                         showDescription={this.showDescription}
+                        isShowDescription={this.state.showDescription}
                         taskPage={(e) => this.mainMenu(e, "task", true)}
                         attachment={(e) => this.mainMenu(e, "attachment", true)}
                     />
@@ -1119,14 +1128,14 @@ class modulePage extends React.Component{
                                         (getCookieUserId() == pic || this.state.isPermitionModule)
                                         ?
                                             <Fragment>
-                                                <button className="main-border-drk" 
+                                                <button id="btn-n-tsk" className="main-border-drk" 
                                                     onClick={this.newModule.bind(this)} 
                                                     style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                                     <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
                                                     <div style={{marginLeft: "5px"}}>Task</div>
                                                 </button>
 
-                                                <button className="main-border-drk" 
+                                                <button id="btn-n-sct" className="main-border-drk" 
                                                     onClick={this.newSection.bind(this)} 
                                                     style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                                     <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>

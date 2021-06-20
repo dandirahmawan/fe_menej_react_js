@@ -3,7 +3,7 @@ import ReactDom from 'react-dom'
 import TaskInfo from './task_info'
 import CheckList from './cheklists_task'
 import DocFileModule from './attachment_task'
-import {getCookieUserId, getCookieSessionId, popUpAlert, convertDate_dd_mmm_yyy} from '../../../function/function'
+import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../../function/function'
 import {ApiFetch} from '../../apiFetch'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, 
@@ -14,14 +14,17 @@ import {updateDataModuleBugs,
         deleteDataDocFile, 
         setDataLabelModule, 
         updateDataChecklist,
-        setDataModule} from '../../../redux/action'
+        setDataModule,
+        appendDataModule} from '../../../redux/action'
 import {Spinner, SpinnerButton} from '../../spinner'
 import { baseUrl } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faInfoCircle, faSave, faTimes, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
+import { check_circle as CkCIrcle } from '../../icon/icon'
 
 class detail extends React.Component{
     interval = null
+    dataBugsValidation = null
 
     constructor(){
         super()
@@ -47,13 +50,17 @@ class detail extends React.Component{
             sectionIdLast:"",
             pic:"",
             picProject:"",
+            countBugs: 0,
+            countBugsClose: 0,
             documentFileUploadData:"",
             isLoad: true,
             modulePermition: false,
             progressBar: null,
             dataLabelModule: [],
             dataLabelModuleToUpdate: [],
-            assignedModules: []
+            assignedModules: [],
+            countNewBugs: 0,
+            dataStatus: []
         }
         
         this.btnSaveChange = React.createRef()
@@ -98,70 +105,15 @@ class detail extends React.Component{
         d.style.top = t+"px"
         d.style.left = l+"px"
 
-        //paramater for set which tab will be default open
-        var discloseTab = (this.props.tabParameter === undefined) ? "info" : this.props.tabParameter
-        var miDisplay = (discloseTab != "bugs" && discloseTab != "doc_file") ? "block" : "none"
-        var mbDisplay = (discloseTab == "bugs") ? "block" : "none"
-        var dfmDisplay = (discloseTab == "doc_file") ? "block" : "none"
-
-        var navigationDetailClass = document.getElementsByClassName("nav-dtl");
-        for(var i = 0;i<navigationDetailClass.length;i++){
-            if(discloseTab == navigationDetailClass[i].getAttribute("nav-for")){
-                navigationDetailClass[i].setAttribute("class", "bold main-color nav-dtl")
-            }else{
-                navigationDetailClass[i].setAttribute("class", "second-font-color nav-dtl")
-            }
-        }
-        
-        var form = new FormData()
-        form.append("moduleId",  this.props.modulId)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
-        form.append("projectId", this.props.projectId)
-
-        ApiFetch("/module/detail", {
-            method: "POST",
-            body: form
-        }).then(res => res.json())
-        .then(result => {
-            var dm = result.dataModule
-            result.permitionProject.map(dt => {
-                if(dt.permitionCode == 1 && dt.isChecked == "Y"){
-                    this.setState({
-                        modulePermition: true
-                    })
-                }
-            })
-
+        if(this.props.modulId != null){
+            this.fetchDataDetail()
+        }else{
             this.setState({
-                dataBugs: result.bugs,
-                dataDocFile: result.documentFile,
-                dataPermition: result.permitionProject,
-                dataStatus: result.dataStatus,
                 isLoad: false,
-                projectId: dm.projectId,
-                moduleId: dm.modulId,
-                moduleName : dm.modulName,
-                descriptionModule : dm.description,
-                userId: dm.userId,
-                emailUser: dm.emailUser,
-                userName: dm.userName,
-                moduleStatus: dm.modulStatus,
-                pic: dm.pic,
-                dueDate: this.dateInputConvert(dm.endDate),
-                createdDate: this.dateInputConvert(dm.createdDate),
-                updatedDate: this.dateInputConvert(dm.updatedDate),
-                picProject: dm.pic,
-                miDisplay: miDisplay,
-                mbDisplay: mbDisplay,
-                dfmDisplay: dfmDisplay,
-                sectionId: dm.sectionId,
-                sectionIdLast: dm.sectionId,
-                dataLabelModule: result.dataModule.label,
-                dataLabelModuleToUpdate: result.labelModules,
-                assignedModules: result.assignedModules
+                projectId: this.props.projectId,
+                moduleId: null
             })
-        })
+        }
 
         let bs = document.getElementById("detail-modul-base")
         let offTop = bs.offsetTop
@@ -173,6 +125,63 @@ class detail extends React.Component{
         var mbd = document.getElementById("main-base-detail")
         mbd.style.marginTop = h1+"px"
         mbd.style.maxHeight = maxHeight+"px"
+    }
+
+    fetchDataDetail = () => {
+        var form = new FormData()
+        form.append("moduleId",  this.props.modulId)
+        form.append("userId", getCookieUserId())
+        form.append("sessionId", getCookieSessionId())
+        form.append("projectId", this.props.projectId)
+
+        ApiFetch("/module/detail", {
+            method: "POST",
+            body: form
+        }).then(res => res.json())
+        .then(result => {
+            this.setDataState(result)
+        })
+    }
+
+    setDataState = (result) => {
+        var dm = result.dataModule
+        result.permitionProject.map(dt => {
+            if(dt.permitionCode == 1 && dt.isChecked == "Y"){
+                this.setState({
+                    modulePermition: true
+                })
+            }
+        })
+
+        this.setDataBugsValidation([...result.bugs])
+        this.setState({
+            dataBugs: result.bugs,
+            dataDocFile: result.documentFile,
+            dataPermition: result.permitionProject,
+            dataStatus: result.dataStatus,
+            isLoad: false,
+            projectId: dm.projectId,
+            moduleId: dm.modulId,
+            moduleName : dm.modulName,
+            descriptionModule : dm.description,
+            userId: dm.userId,
+            emailUser: dm.emailUser,
+            userName: dm.userName,
+            moduleStatus: dm.modulStatus,
+            pic: dm.pic,
+            dueDate: this.dateInputConvert(dm.endDate),
+            createdDate: this.dateInputConvert(dm.createdDate),
+            updatedDate: this.dateInputConvert(dm.updatedDate),
+            picProject: dm.pic,
+            // miDisplay: miDisplay,
+            // mbDisplay: mbDisplay,
+            // dfmDisplay: dfmDisplay,
+            sectionId: dm.sectionId,
+            sectionIdLast: dm.sectionId,
+            dataLabelModule: result.dataModule.label,
+            dataLabelModuleToUpdate: result.labelModules,
+            assignedModules: result.assignedModules
+        })
     }
 
     navDetail(e){
@@ -200,6 +209,7 @@ class detail extends React.Component{
         this.setState({
             moduleName: e.target.value 
         })
+        this.unMandatory(e.target)
         this.setBtnPrimarySaveActive()
     }
 
@@ -239,7 +249,14 @@ class detail extends React.Component{
         this.setState({
             dueDate: e.target.value
         })
+        this.unMandatory(e.target)
         this.setBtnPrimarySaveActive()
+    }
+
+    unMandatory = (e) => {
+        let elm = e
+        let attr = elm.getAttribute("class").split(" ")
+        elm.setAttribute("class", attr)
     }
 
     setBtnPrimarySaveActive(){
@@ -254,10 +271,6 @@ class detail extends React.Component{
     }
 
     commitModule(e){
-        let t = e.target
-        ReactDom.render(<SpinnerButton size="15px"/>, t)
-        t.style.opacity = 0.5
-
         /*create data checklist parameter*/
         let dataCheckilst = []
         this.state.dataBugs.map(dt => {
@@ -267,23 +280,111 @@ class detail extends React.Component{
             dataCheckilst.push(jsonObjectChecklist)
         })
 
-        var form = new FormData()
-        form.append("date", this.state.dueDate)
-        form.append("moduleId",this.state.moduleId)
-        form.append("status", this.state.moduleStatus)
-        form.append("desc", this.state.descriptionModule)
-        form.append("moduleName", this.state.moduleName)
-        form.append("section", this.state.sectionId)
-        form.append("labelModule", JSON.stringify(this.state.dataLabelModuleToUpdate))
-        form.append("checklist", JSON.stringify(dataCheckilst))
-        form.append("assigned", JSON.stringify(this.state.assignedModules))
+        /*set data module*/
+        let objModule = {}
+        objModule.date = this.state.dueDate
+        objModule.modulId = this.state.moduleId
+        objModule.status = this.state.moduleStatus
+        objModule.desc = this.state.descriptionModule
+        objModule.moduleName = this.state.moduleName
+        objModule.section = this.state.sectionId
+        objModule.projectId = this.props.projectId
+        objModule.createdBy = parseInt(getCookieUserId())
+        objModule.labelModule = JSON.stringify(this.state.dataLabelModuleToUpdate)
+        objModule.checklist = JSON.stringify(dataCheckilst)
+        objModule.assigned = JSON.stringify(this.state.assignedModules)
 
+        /*init data param*/
+        let data = {}
+        data.module = objModule
+        data.checklist = this.state.dataBugs
+
+        /*validation input mandatory*/
+        let isValid = this.inputValidation(this.state.moduleName, 
+                                            this.state.assignedModules, 
+                                            this.state.moduleStatus, 
+                                            this.state.sectionId, 
+                                            this.state.dueDate)
+        if(!isValid) return false
+        
+        let t = e.target
+        ReactDom.render(<SpinnerButton size="15px"/>, t)
+        t.style.opacity = 0.5
+        
+        if(this.state.moduleId == null || this.state.moduleId == ""){
+            this.excNew(data, t)
+        }else{
+            this.excUpdate(data, t)
+        }
+    }
+
+    inputValidation = (task, assignees, status, section, dueDate) => {
+        let isValid = faTruckMonster
+        if(task == null || task == 0){
+            let elm = document.getElementById("inf-inp-1")
+            let attr = elm.getAttribute("class")
+            let setAttr = attr+" mandatory"
+            elm.setAttribute("class", setAttr)
+            isValid = false
+        }
+
+        if(status == null || status == 0){
+            let elm = document.getElementById("inf-inp-s1")
+            let attr = elm.getAttribute("class")
+            let setAttr = attr+" mandatory"
+            elm.setAttribute("class", setAttr)
+            isValid = false
+        }
+
+        if(section == null || section == 0){
+            let elm = document.getElementById("inf-inp-s2")
+            let attr = elm.getAttribute("class")
+            let setAttr = attr+" mandatory"
+            elm.setAttribute("class", setAttr)
+            isValid = false
+        }
+
+        if(dueDate == null || dueDate == 0){
+            let elm = document.getElementById("inf-inp-2")
+            let attr = elm.getAttribute("class")
+            let setAttr = attr+" mandatory"
+            elm.setAttribute("class", setAttr)
+            isValid = false
+        }
+
+        if(assignees.length == 0){
+            let elm = document.getElementById("inp-asgn-1")
+            let attr = elm.getAttribute("class")
+            let setAttr = attr+" mandatory"
+            elm.setAttribute("class", setAttr)
+            isValid = false
+        }
+        return isValid
+    }
+
+    excNew = (data, t) => {
+        ApiFetch("/module/new", {
+            method: "POST",
+            headers: new Headers({'content-type': 'application/json'}),
+            body: JSON.stringify(data)
+        }).then(res => res.json()).then(result => {
+            this.setDataState(result)
+            /*tambahkan data module ke redux*/
+            this.props.appendDataModule(result.dataModule)
+
+            popUpAlert("Module successfully saved", "success")
+            ReactDom.render("Save change", t)
+            t.style.opacity = 1
+        })
+    }
+
+    excUpdate = (data, t) => {
         ApiFetch("/module/update", {
             method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            if(result == 'success'){
+            headers: new Headers({'content-type': 'application/json'}),
+            body: JSON.stringify(data)
+        }).then(res => res.json()).then(result => {
+            if(result.success){
                 if(this.state.sectionId != this.state.sectionIdLast){
                     let newData = ""
                     let arr = []
@@ -300,7 +401,11 @@ class detail extends React.Component{
                                     dtt.description = this.state.descriptionModule
                                     dtt.sectionId = this.state.sectionId
                                     dtt.endDate = this.state.dueDate
+                                    
+                                    /*set new data in by section id*/
                                     newData = dtt
+
+                                    /*delete data module in section*/
                                     dt.sectionModule.splice(sp, 1)
                                 }
                             })
@@ -308,7 +413,9 @@ class detail extends React.Component{
                         }
                     })
                     
+                    /*pass new data to array data module*/
                     this.props.dataModule.map(dt => {
+                        /*set data new data module in section id*/
                         if(dt.id == this.state.sectionId){
                             dt.sectionModule.push(newData)
                         }
@@ -325,27 +432,43 @@ class detail extends React.Component{
                     this.setState({
                         sectionIdLast: this.state.sectionId
                     })
-
                 }else{
-                    this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
-                        this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
-                        this.state.dueDate, this.state.sectionId, this.state.dataLabelModuleToUpdate)
                     
-                    this.setState({
-                        infoPop: ""
-                    })
-                    
-                    /*change data redux*/
+                    let dataModule = result.module
                     this.commitAssignedModule()
-                    this.props.updateDataChecklist(dataCheckilst, this.state.moduleId)
+                    this.props.updateDataModule(dataModule)
+                    // this.props.updateDataChecklist(dataCheckilst, this.state.moduleId, this.state.sectionId)
+                    // this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
+                    //     this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
+                    //     this.state.dueDate, this.state.sectionId, this.state.dataLabelModuleToUpdate)
+
+                    
+                    
+                    /*set state checklist for delete
+                    after save change necessery*/
+                    this.setState({
+                        infoPop: "",
+                        dataBugs: result.checklist
+                    })
                 }
-                
-                
-                popUpAlert("Module successfully update", "success")
-                ReactDom.render("Save change", t)
-                t.style.opacity = 1
+
             }
+
+            popUpAlert("Module successfully update", "success")
+            ReactDom.render("Save change", t)
+            t.style.opacity = 1
         })
+    }
+
+    setDataBugsValidation = (data) => {
+        // let d = new Array()
+        // for(let i = 0;i<data.length;i++){
+        //     console.log(data[i])
+        //     d.push(data[i])
+        // }
+
+        // this.dataBugsValidation = d
+        // console.log(this.dataBugsValidation)
     }
 
     dateInputConvert(date){
@@ -358,6 +481,45 @@ class detail extends React.Component{
         var month = (m < 10) ? "0"+m : m
 
         return year+"-"+month+"-"+date
+    }
+    
+    addChecklist = (bugsText) => {
+        let countNew = parseInt(this.state.countNewBugs) + 1
+        const dataBugs = [...this.state.dataBugs]
+        
+        /*set date*/
+        let date = new Date()
+        
+        let dd = date.getDate()
+        dd = (dd < 10) ? "0"+dd : dd
+
+        let mm = parseInt(date.getMonth()) + 1
+        mm = (mm < 10) ? "0"+mm : mm
+
+        let yy = date.getFullYear()
+        let format = yy+"-"+mm+"-"+dd
+
+        /*set new object data checklist*/
+        let obj = {}
+        let newId = -Math.abs(countNew)
+        obj.bugsId = newId
+        obj.projectId = this.state.projectId
+        obj.modulId = this.state.moduleId
+        obj.note = bugsText
+        obj.userId = parseInt(getCookieUserId())
+        obj.isDelete = "N"
+        obj.bugStatus = "P"
+        obj.createDate = format
+
+        /*add data to array*/
+        dataBugs.push(obj)
+        this.setState({
+            dataBugs: dataBugs,
+            countNewBugs: countNew
+        })
+
+        /*mengaktifkan tombol save change*/
+        this.setBtnPrimarySaveActive()
     }
 
     commitChecklist(btn, bugsText){
@@ -530,10 +692,11 @@ class detail extends React.Component{
         var mi = this.state.moduleId
         var pi = this.state.projectId
 
-        const newData = this.state.dataBugs.map(dt => {
+        let dataBugs = [...this.state.dataBugs]
+        const newData = dataBugs.map(dt => {
             if(dt.modulId === mi && dt.projectId === pi && dt.bugsId === bugsId){
                 dt.isDelete = "Y"
-                this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "delete")
+                // this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "delete")
             }
             return dt
         })
@@ -541,6 +704,9 @@ class detail extends React.Component{
         this.setState({
             dataBugs: newData
         })
+
+        /*mengaktifkan button save change*/
+        this.setBtnPrimarySaveActive()
     }
 
     commitEditBugs(bugsId, textBugs){
@@ -557,6 +723,11 @@ class detail extends React.Component{
     }
 
     close(){
+        // let b = JSON.stringify(this.dataBugsValidation)
+        // let c = JSON.stringify(this.state.dataBugs)
+        
+        // console.log(b)
+        // console.log(c)
         clearInterval(this.interval)
         this.props.close()
     }
@@ -639,13 +810,18 @@ class detail extends React.Component{
                 <div id="detail-modul-base" style={{width: "650px", minHeight: "400px", background: "#FFF", position: "fixed", zIndex: "10002"}}> 
                     <div id="header-dtl" className="main-border-bottom" style={{position: "fixed", width: "650px"}}>
                         <div style={{padding: "20px", background: "#FFF"}}>
-                            <i style={{fontSize: "18px", color: "#d4ae2b"}} className="fas fa-clipboard"></i>
-                            &nbsp;&nbsp;
-                            <span className='bold' style={{fontSize: "18px"}}>{this.state.moduleName}</span>
-                            
-                            <button onClick={this.close} style={{float: "right", color: "#a2a2a2", padding: "4px", fontSize: "12px", background: "none"}}>
-                                <i class="fa fa-times"></i>
-                            </button>
+                            {/* <i style={{fontSize: "18px", color: "#d4ae2b"}} className="fas fa-chevron-left"></i> */}
+                            {/* <i style={{fontSize: "18px", color: "#CCC"}} className="fas fa-chevron-left"></i> */}
+                            <CkCIrcle style={{fontSize: "16px", color: "#d4ae2b", border: "1px solid", borderRadius: "100%"}}/>
+                            {/* <circle_duotone style={{fontSize: "14px", color: "#CCC", width: "100px", border: "1px solid", borderRadius: "100%"}}/> */}
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            {
+                                (this.state.moduleId != null && this.state.moduleId != "")
+                                ?
+                                    <span className='bold' style={{fontSize: "18px"}}>{this.state.moduleName}</span>
+                                :
+                                    <span className='bold second-font-color' style={{fontSize: "18px"}}>New Task</span>
+                            }
                         </div>
                     </div>
 
@@ -671,7 +847,7 @@ class detail extends React.Component{
                                             updatedDate={this.state.updatedDate}
                                             pic={this.state.pic}
                                             modulePermition={this.state.modulePermition}
-                                            dataStatus={this.state.dataStatus}
+                                            dataStatus={this.props.dataStatus}
                                             dataLabelModule={this.state.dataLabelModule}
                                             assignedModules={this.state.assignedModules}
                                             sectionId={this.state.sectionId}
@@ -692,6 +868,7 @@ class detail extends React.Component{
                                         <CheckList
                                             dataBugs={this.state.dataBugs}
                                             commitChecklist={this.commitChecklist}
+                                            addChecklist={this.addChecklist}
                                             deleteBugs={this.deleteBugs}
                                             moduleId={this.state.moduleId}
                                             dataPermition={this.state.dataPermition}
@@ -719,20 +896,20 @@ class detail extends React.Component{
 
                     <div id="ftr-dtl-bs" 
                         className="main-border-top" 
-                        style={{width: "630px", height: "50px", background: "#FFF", display: "flex", alignItems: "center", paddingLeft: "10px", paddingRight: "10px"}}>
+                        style={{width: "610px", height: "50px", background: "#FFF", display: "flex", alignItems: "center", paddingLeft: "20px", paddingRight: "20px"}}>
                         
                         <div className="second-font-color" style={{width: "100%", fontSize: '11px'}}>
                             <FontAwesomeIcon icon={faInfoCircle}/>
                             &nbsp;
-                            The data will be saved after clicking the save button, except upload or add attachment
+                            The data will be saved after clicking the save button, except upload
                         </div>
-                        <div style={{width: "180px"}}>
-                            <button className="btn-primary" style={{opacity: "0.5"}} ref={this.btnSaveChange}>
-                                <span style={{fontSize: "11px"}}>Save Change</span>
+                        <div style={{width: "220px", display: "flex", justifyContent: "flex-end"}}>
+                            <button className="btn-primary" style={{opacity: "0.5", display: "flex"}} ref={this.btnSaveChange}>
+                                <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span>
                             </button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button onClick={this.close} className="btn-secondary">
-                                <span style={{fontSize: "11px"}}>Cancel</span>
+                            &nbsp;
+                            <button onClick={this.close} style={{display: "flex"}} className="btn-secondary">
+                                <FontAwesomeIcon icon={faTimes}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Close</span>
                             </button>
                         </div>
                     </div>
@@ -746,13 +923,15 @@ const mapDispatchToProps = dispatch => {
     return{
         updateDataModuleBugs: (moduleId, sectionId, type) => dispatch(updateDataModuleBugs(moduleId, sectionId, type)),
         updateDataModuleDocFile: (moduleId, type) => dispatch(updateDataModuleDocFile(moduleId, type)),
-        updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label)),
+        // updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label)),
+        updateDataModule: (dataModule) => dispatch(updateDataModule(dataModule)),
         appendDataBugs: (jsonObjectBugs) => dispatch(appendDataBugs(jsonObjectBugs)),
         appendDataDocFile: (jsonObject) => dispatch(appendDataDocFile(jsonObject)),
         deleteDataDocFile: (mi, pi, fn, ui) => dispatch(deleteDataDocFile(mi, pi, fn, ui)),
-        updateDataChecklist: (data, moduleId) => dispatch(updateDataChecklist(data, moduleId)),
+        updateDataChecklist: (data, moduleId, sectionId) => dispatch(updateDataChecklist(data, moduleId, sectionId)),
         setDataModule: (data) => dispatch(setDataModule(data)),
-        setDataLabelModule: (data) => dispatch(setDataLabelModule(data))
+        setDataLabelModule: (data) => dispatch(setDataLabelModule(data)),
+        appendDataModule : (data) => dispatch(appendDataModule(data))
     }
 }
 
@@ -762,7 +941,8 @@ const mapStateToProps = state => {
         dataLabelModule : state.dataLabelsModule,
         dataLabel       : state.dataLabels,
         assignedModuleRdx : state.assignedModules,
-        dataModule : state.dataModule
+        dataModule : state.dataModule,
+        dataStatus : state.dataStatus
     }
 }
 

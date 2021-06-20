@@ -87,8 +87,8 @@ class login extends React.Component{
             body: form
         }).then(res => res.json())
         .then((result) => {
-            var l = result.length;
-            if(l > 0){
+
+            if(result[0].code != 201){
                 this.setCookies(result)
                 if(redirect == ""){ 
                     window.location.reload()

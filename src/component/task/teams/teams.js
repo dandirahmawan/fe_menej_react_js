@@ -142,7 +142,7 @@ class Teams extends React.Component {
                             <div style={{display: "flex"}}>
                                 <div style={{width: "30px", height: "30px", background: "#CCC", borderRadius: "100%"}}></div>
                                 <div style={{marginLeft: "7px"}}>
-                                    <div className="bold">{dt.userName}</div>
+                                    <div className="bold main-font-size">{dt.userName}</div>
                                     <div className="second-font-color" style={{fontSize: "11px"}}>
                                         {dt.emailUser}
                                     </div>
@@ -166,7 +166,8 @@ class Teams extends React.Component {
                                 alignItems: "center", 
                                 justifyContent: "space-between"}}>
                         <div>
-                            <FontAwesomeIcon icon={faUsers}/>&nbsp;<span className="bold">Teams</span>
+                            <FontAwesomeIcon icon={faUsers}/>&nbsp;
+                            <span className="bold" style={{fontSize: "14px"}}>Teams</span>
                         </div>
                         <div>
                             <button onClick={this.add} 

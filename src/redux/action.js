@@ -20,13 +20,22 @@ import {
     setDataStatuAction, 
     setVIewModuleAction,
     setDataTeamAction,
-    setSectionModuleAction
+    setSectionModuleAction,
+    deleteLabelAction,
+    appendDataModuleAction
 } from './type_action'
 
 export function setDataProject(data){
     return{
         type: 'SET_DATA_PROJECT',
         dataProject : data
+    }
+}
+
+export function appendDataModule(data){
+    return{
+        type: appendDataModuleAction,
+        data: data
     }
 }
 
@@ -76,19 +85,26 @@ export function updateDataModuleDocFile(moduleId, typeUpdate){
     }
 }
 
-export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate, section, label){
+// export function updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, descriptionModule, dueDate, section, label){
+//     return{
+//         type: "UPDATE_DATA_MODULE",
+//         moduleId : moduleId, 
+//         moduleName : moduleName, 
+//         moduleStatus: moduleStatus, 
+//         userId: userId,  
+//         userName: userName, 
+//         emailUser: emailUser, 
+//         descriptionModule: descriptionModule, 
+//         dueDate: dueDate,
+//         section: section,
+//         label: label
+//     }
+// }
+
+export function updateDataModule(dataModule){
     return{
         type: "UPDATE_DATA_MODULE",
-        moduleId : moduleId, 
-        moduleName : moduleName, 
-        moduleStatus: moduleStatus, 
-        userId: userId,  
-        userName: userName, 
-        emailUser: emailUser, 
-        descriptionModule: descriptionModule, 
-        dueDate: dueDate,
-        section: section,
-        label: label
+        data: dataModule
     }
 }
 
@@ -210,10 +226,11 @@ export function deleteDataDocFile(moduleId, projectId, fileName, userId){
     }
 }
 
-export function updateDataChecklist(dataChecklist, moduleId){
+export function updateDataChecklist(dataChecklist, moduleId, sectionId){
     return{
         type: updataDataChecklistAction,
         moduleId: moduleId,
+        sectionId: sectionId,
         data: dataChecklist
     }
 }
@@ -301,5 +318,12 @@ export function setSectionModule(data){
     return{
         type: setSectionModuleAction,
         data: data
+    }
+}
+
+export const deleteLabel = (labelName) => {
+    return{
+        type: deleteLabelAction,
+        labelName: labelName
     }
 }

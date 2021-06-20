@@ -1,25 +1,11 @@
 import React from 'react'
 import { faCalendarAlt, faCheckCircle, faFile, faTag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { convertDate_dd_mmm_yyy } from '../../../function/function';
+import { convertDate_dd_mmm_yyy, getColorStatus } from '../../../function/function';
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../../icon/icon'
+import { connect } from 'react-redux';
 
 class card_item extends React.Component{
-
-    // colorStatus(a){
-    //     let color =  ""
-    //     let a2 = parseInt(a)
-    //     // console.log(a+" "+a2)
-    //     this.props.dataStatus.map(dt => {
-    //         // console.log(dt.id)
-    //         if(a2 == dt.id){
-    //             // console.log("sasasasasa")
-    //             let colorStatus = (dt.color == null) ? "#000" : dt.color
-    //             color = colorStatus
-    //         }
-    //     })
-    //     return color
-    // }
 
     colorStatus(a){
         let color =  ""
@@ -48,7 +34,7 @@ class card_item extends React.Component{
                          <FontAwesomeIcon icon={faTag}/>&nbsp;{dt.label}
                     </div>
         })
-
+        
         const assigned = this.props.assignedModule.map(dt => {
             let initial = ""
             let name = dt.userName.split(" ")
@@ -56,7 +42,17 @@ class card_item extends React.Component{
             initial += name[0].substr(0, 1)
             initial += (name[1] != null && name[1] != "") ? name[1].substr(0, 1) : ""
 
-            return <div className="main-color ass-tooltip" style={{width: "30px", height: "30px", borderRadius: "100%", marginRight: "5px"}}>
+            /*validate that user is still on the team*/
+            let isTeam = false
+            for(let i = 0;i<this.props.dataTeam.length;i++){
+                let dtt = this.props.dataTeam[i]
+                if(dtt.userId == dt.userId){
+                    isTeam = true
+                }
+            }
+
+            if(isTeam){
+                return <div className="main-color ass-tooltip" style={{width: "30px", height: "30px", borderRadius: "100%", marginRight: "5px"}}>
                         <div style={{color: "#FFF", fontSize: "12px", textAlign: "center", marginTop: "7px"}}>
                             {initial}
                         </div>
@@ -65,13 +61,20 @@ class card_item extends React.Component{
                             <div className="second-font-color" style={{fontSize: "11px"}}>{dt.emailUser}</div>
                         </div>
                     </div>
+            }
         })
 
         return(
             <div onClick={() => this.props.select(this.props.moduleId)} 
                 onContextMenu={(e) => this.props.contextMenuModule(e, this.props.moduleId)}
                 className="main-border card-item" 
-                style={{marginTop: "10px", padding: "10px", borderRadius: "3px", width: "280px", background: "#FFF"}}>
+                style={{marginTop: "10px", 
+                        padding: "10px", 
+                        paddingLeft: "6px", 
+                        borderRadius: "3px", 
+                        width: "281px", 
+                        background: "#FFF", 
+                        borderLeft: "4px solid "+getColorStatus(this.props.status, this.props.dataStatus)}}>
                 
                 <div style={{display: "flex"}}>
                     {
@@ -150,4 +153,10 @@ class card_item extends React.Component{
     }
 }
 
-export default card_item
+const mapStateToProps = (state) => {
+    return{
+        dataTeam: state.dataTeam
+    }
+}
+
+export default connect(mapStateToProps)(card_item)

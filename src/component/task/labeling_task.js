@@ -1,8 +1,10 @@
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { deleteLabel, setDataLabel } from '../../redux/action'
+import { ApiFetch } from '../apiFetch'
 import {square_light as SquareLight} from '../icon/icon'
 import NewLabel from './new_label'
 
@@ -26,11 +28,6 @@ class labeling_task extends React.Component {
     }
 
     setSelectedLabel(){
-        // let arr = []
-        // this.props.labelSelected.map(dt => {
-        //     arr.push(dt.label)
-        // })
-        
         /*set module id for each data label*/
         const dataLabel = this.props.dataLabel.map(dt => {
             dt.moduleId = this.props.moduleId
@@ -59,6 +56,8 @@ class labeling_task extends React.Component {
         if(idx != null){
             newSelected.splice(idx, 1)
         }else{
+            /*set module id to label*/
+            data.moduleId = this.props.moduleId
             newSelected.push(data)
         }
 
@@ -68,11 +67,12 @@ class labeling_task extends React.Component {
     }
 
     ok(){
+        console.log(this.state.labelSelected)
         this.props.okLabel(this.state.labelSelected)
     }
 
     isChecked(label){
-        console.log("set is checked")
+        // console.log("set is checked")
         let isChecked = false
         let data = this.state.labelSelected
         for(let i = 0;i<data.length;i++){
@@ -93,9 +93,37 @@ class labeling_task extends React.Component {
         })
     }
 
+    deleteLabel = (label) => {
+        // let i = 0
+        // let ii = 0
+        // let data = [...this.props.dataLabel]
+        // data.map(dt => {
+        //     /*delete json key*/
+        //     delete dt["moduleId"]
+        //     if(dt.label == label){
+        //         ii = i
+        //     }
+        //     i++
+        // })
+
+        let form = new FormData()
+        form.append("projectId", this.props.projectId)
+        form.append("label", label)
+        
+        ApiFetch("/delete_label", {
+            method: "POST",
+            body: form
+        }).then(res => res.json()).then(result => {
+            let dataLabel = result.label
+            this.props.setDataLabel(dataLabel)
+            this.props.deleteLabel(label)
+        })
+    }
+
     render(){
         const data = this.props.dataLabel.map(dt => {
             let isChecked = this.isChecked(dt.label)
+            
             return <div style={styles.labelBaseItem}>
                         {
                             (isChecked)
@@ -107,6 +135,9 @@ class labeling_task extends React.Component {
                         }
                         <div style={{...styles.labelItem, background: dt.color}}>
                             {dt.label}
+                            <a onClick={() => this.deleteLabel(dt.label)}>
+                                <FontAwesomeIcon style={{color: "#FFF"}} icon={faTrashAlt}/>
+                            </a>
                         </div>
                     </div>
         })
@@ -114,15 +145,28 @@ class labeling_task extends React.Component {
         return(
             <Fragment>
                 {this.state.popup}
-                <div className="main-border shadow" style={styles.baseLabeling}>
-                    <div className="bold main-border-bottom" style={{padding: "10px", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                        <div>Set Label</div>
+                <div id="lt-bs-2xsr" className="main-border shadow" style={styles.baseLabeling}>
+                    <div className="main-border-bottom" style={{padding: "10px", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                        <div className="bold">Set Label</div>
                         <a onClick={this.addLabel}>
                             <FontAwesomeIcon style={{fontSize: "14px"}} icon={faPlusCircle}/>
                         </a>
                     </div>
-                    <div style={{padding: "10px", overflowY: "scroll", height: "140px"}}>
-                        {data}
+                    <div id="bs-dt-lbl" style={{padding: "10px", overflowY: "scroll", height: "140px"}}>
+                        {
+                            (this.props.dataLabel.length > 0)
+                            ?
+                                data
+                            :
+                                <div style={{textAlign: "center", marginTop: "20px"}}>
+                                    <span style={{fontSize: "12px"}}>No data label</span><br/>
+                                    <div className="regular-font" style={{marginTop: "3px"}}>
+                                        please click <a onClick={this.addLabel}>
+                                                    <FontAwesomeIcon style={{fontSize: "14px", color: "#CCC"}} icon={faPlusCircle}/>
+                                                </a> icon<br/>to add new label
+                                    </div>
+                                </div>
+                        }
                     </div>
                     <div className="main-border-top" style={{padding: "10px", textAlign: "right"}}>
                         <button onClick={this.ok} className="btn-primary" style={{fontSize: '11px'}}>Ok</button>
@@ -143,6 +187,7 @@ const styles = {
         background: "#FFF",
         right: "-2px",
         top: "25px",
+        zIndex: 1,
         borderRadius: "4px"
     },
     labelBaseItem:{
@@ -156,7 +201,9 @@ const styles = {
         marginLeft: "5px", 
         marginRight: "5px", 
         padding: "5px",
-        borderRadius: "3px"
+        borderRadius: "3px",
+        display: "flex",
+        justifyContent: "space-between"
     }
 }
 
@@ -166,4 +213,11 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps) (labeling_task)
+const mapDispatchToProps = dispatch => {
+    return{
+        setDataLabel : (data) => dispatch(setDataLabel(data)),
+        deleteLabel : (labelName) => dispatch(deleteLabel(labelName))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (labeling_task)

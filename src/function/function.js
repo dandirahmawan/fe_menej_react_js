@@ -378,3 +378,15 @@ export function pxd(password){
     let pxo = px.substr(0, px.length - 1)
     return pxo
 }
+
+export function getColorStatus(status, dataStatus){
+    let color =  ""
+    let icon = null
+    dataStatus.map(dt => {
+        if(status == dt.id){
+            let colorStatus = (dt.color == null) ? "#000" : dt.color
+            color = colorStatus
+        }
+    })
+    return color
+}

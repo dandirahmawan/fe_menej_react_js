@@ -160,13 +160,13 @@ class card_view extends Component{
                     {
                         this.props.dataModule.map(dtt => {
                             const cardItem = dtt.sectionModule.map(dtta => {
-                                /*set data assigned for each card*/
-                                let dataAssigned = []
-                                this.props.assignedModules.map(dtas => {
-                                    if(dtas.moduleId == dtta.modulId){
-                                        dataAssigned.push(dtas)
-                                    }
-                                })
+                                // /*set data assigned for each card*/
+                                // let dataAssigned = []
+                                // this.props.assignedModules.map(dtas => {
+                                //     if(dtas.moduleId == dtta.modulId){
+                                //         dataAssigned.push(dtas)
+                                //     }
+                                // // })
                                 
                                 if(dtta.modulStatus == dt.id){
                                     return <CardItem moduleId={dtta.modulId}
@@ -179,7 +179,7 @@ class card_view extends Component{
                                                 countBugs={dtta.countBugs}
                                                 countBugsClose={dtta.countBugsClose}
                                                 labelModule={dtta.label}
-                                                assignedModule={dataAssigned}
+                                                assignedModule={dtta.assignTo}
                                                 dueDate={dtta.endDate}
                                                 contextMenuModule={this.props.contextMenuModule}/>
                                 }
@@ -221,12 +221,12 @@ class card_view extends Component{
                                 ?
                                     dt.sectionModule.map(dtta => {
                                         /*set data assigned for each card*/
-                                        let dataAssigned = []
-                                        this.props.assignedModules.map(dtas => {
-                                            if(dtas.moduleId == dtta.modulId){
-                                                dataAssigned.push(dtas)
-                                            }
-                                        })
+                                        // let dataAssigned = []
+                                        // this.props.assignedModules.map(dtas => {
+                                        //     if(dtas.moduleId == dtta.modulId){
+                                        //         dataAssigned.push(dtas)
+                                        //     }
+                                        // })
                                         
                                         /*read data filter*/
                                         let isVisible = true
@@ -259,7 +259,7 @@ class card_view extends Component{
                                                         countBugs={dtta.countBugs}
                                                         countBugsClose={dtta.countBugsClose}
                                                         labelModule={dtta.label}
-                                                        assignedModule={dataAssigned}
+                                                        assignedModule={dtta.assignTo}
                                                         dueDate={dtta.endDate}
                                                         contextMenuModule={this.props.contextMenuModule}/>
                                         }
