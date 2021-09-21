@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faCalendarAlt, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { ApiFetch } from '../apiFetch'
 import { baseUrl } from '../../const/const'
+import Fetch from '../../function/fetchApi'
 
 class invitation_ready extends Component{
 
@@ -31,10 +32,9 @@ class invitation_ready extends Component{
         form.append("userId", getCookieUserId())
         form.append("conf", dt.invitationCode)
         form.append("projectId", dt.projectId)
-        ApiFetch("/accept_invitation", {
-            method: "POST",
-            body : form
-        }).then(res => res.text()).then(result => {
+
+        let fetch = new Fetch()
+        fetch.post("/accept_invitation", form).then(result => {
             if(result == "success"){
                 window.location = "/project/"+dt.projectId
             }else if(result == "not found"){

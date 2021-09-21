@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react'
 import { popCenterPosition, popUpAlert } from '../../function/function'
 import ColorPicker from '../color_picker'
-import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import {connect} from 'react-redux'
 import { setDataLabel } from '../../redux/action'
 import {dataColorPickerNoWhiteGroup} from '../../const/const'
-import { faTag } from '@fortawesome/free-solid-svg-icons'
 
 class new_label extends React.Component{
     
@@ -20,6 +19,7 @@ class new_label extends React.Component{
 
     componentDidMount(){
         popCenterPosition("base-new-label")
+
     }
 
     noAction(){
@@ -65,10 +65,9 @@ class new_label extends React.Component{
         form.append("projectId", this.props.projectId)
         form.append("label", label)
         form.append("color", color)
-        ApiFetch("/label",{
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
+        
+        let fetch = new Fetch()
+        fetch.post("/label", form).then(result => {
             this.props.setDataLabel(jsonArray)
             this.props.cancel()
             popUpAlert("Insert data label successfully", "success")

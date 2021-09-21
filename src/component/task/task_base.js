@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
-import NewTask from './new_task'
 import PopupConfirmation from '../popup_confirmation'
 import Detail from './detail_task/detail'
 import ManageMember from './manage_member'
 import Permition from './permition'
-import {ApiFetch} from '../apiFetch'
+// import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import { getCookieUserId, setInitialName } from '../../function/function'
 import {connect} from 'react-redux'
 import {setDataNote, selectRowModule, deleteMember, setViewModule} from '../../redux/action'
@@ -24,7 +24,6 @@ import ManageStatus from './manage_status'
 import NewSection from './new_section'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
-import Triangle from '../../images/triangle.png'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../icon/icon'
 import HeaderTask from './header_task'
 
@@ -438,16 +437,23 @@ class modulePage extends React.Component{
         form.append("userId", userId)
         form.append("moduleId", this.state.arrSelected)
 
-        ApiFetch("/module/delete", {
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/module/delete", form).then(result => {
             this.props.commitDeleteModule(this.state.arrSelected)
             this.setState({
                 infoPop: ""
             })
         })
+        // ApiFetch("/module/delete", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     this.props.commitDeleteModule(this.state.arrSelected)
+        //     this.setState({
+        //         infoPop: ""
+        //     })
+        // })
     }
 
     commitDeleteModuleCtx(moduleId){
@@ -459,16 +465,23 @@ class modulePage extends React.Component{
         let arrModuleId = []
         arrModuleId.push(moduleId)
 
-        ApiFetch("/module/delete", {
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/module/delete", form).then(result => {
             this.props.commitDeleteModule(arrModuleId)
             this.setState({
                 infoPop: ""
             })
         })
+        // ApiFetch("/module/delete", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     this.props.commitDeleteModule(arrModuleId)
+        //     this.setState({
+        //         infoPop: ""
+        //     })
+        // })
     }
 
     commitNewModule(idUser, moduleName, dueDate, description, pi, status, section){
@@ -893,28 +906,7 @@ class modulePage extends React.Component{
     }
 
     render(){
-        // console.log("| "+this.state.tabActive+" |")
         const pic = parseInt(this.props.dataProject[0].pic)
-        // const listFilterAssign = this.props.dataTeam.map(dt => {
-        //     return <a onClick={() => this.filterAction("assign", dt.userId)} style={{textDecoration: "none"}}>
-        //                 <div className="main-border-bottom menu-item" style={{padding: "7px", fontSize: "12px"}}>
-        //                     <FontAwesomeIcon icon={faUser}/>&nbsp;&nbsp;{dt.userName}
-        //                 </div>
-        //             </a>
-        // })
-
-        // let sqSts = 0
-        // const listFilterStatus = this.props.dataStatus.map(dt => {
-        //     sqSts++
-        //     return <a onClick={() => this.filterAction("status", dt.id)} style={{textDecoration: "none"}}>
-        //                 <div className="main-border-bottom menu-item" style={{padding: "7px", fontSize: "12px"}}>
-        //                     {/* <CkCIrcle style={{color: dt.color, fontSize: "12px"}}/> */}
-        //                     {this.colorStatus(dt.id)}
-        //                     &nbsp;&nbsp;{dt.status}
-        //                 </div>
-        //             </a>
-        // })
-
         let dataTeam = this.props.dataTeam.map(dt => {
             let name = dt.userName
             let initial = setInitialName(name)
@@ -936,22 +928,6 @@ class modulePage extends React.Component{
                 {this.state.addMember}
                 {this.state.permition}
                 {this.state.popup}
-                
-                {/* <SidebarTask
-                    moduleClick={(e) => this.mainMenu(e, "module", true)} 
-                    documentFileClick={(e) => this.mainMenu(e, "doc file", true)}
-                    tabMenu={this.tabMenu}
-                    refreshModule={this.props.refreshModule}
-                    projectId={this.props.projectIdHeader}
-                    newCollection={this.newCollection}
-                    dataStatus={this.props.dataStatus}
-                    dataProject={this.props.dataProject}
-                    dataCollection={this.state.dataCollection}
-                    deleteProject={this.props.deleteProject}
-                    deleteMember={this.deleteMember}
-                    manageStatus={this.manageStatus}
-                    setPermition={this.setPermition}
-                    manageMember={this.addMember}/> */}
                 
                 <div id="base-data-module" style={{marginLeft: "0px"}}>
                     {this.state.tabBase}
@@ -1008,101 +984,14 @@ class modulePage extends React.Component{
                                         (this.props.viewModule == "list")
                                         ?
                                             <Fragment>
-                                                {/* <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
-                                                    <i class="fa fa-check"></i> 
-                                                    Mark All
-                                                </button>
-                                                <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
-                                                    <i class="fa fa-times"></i> 
-                                                    Unmark All
-                                                </button>
-                                                <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                    <i class="fa fa-trash"></i> 
-                                                    Delete
-                                                </button> */}
                                                 <div className="main-border-right" style={{display: "flex", alignItems: "center", marginRight: "10px", paddingRight: "10px"}}>
                                                     <input type="checkbox" onClick={this.showDescription}/>&nbsp;&nbsp;
                                                     <div className="bold" style={{marginTop: "1px", fontSize: "11px"}}>Show Description</div>
                                                 </div>
-                                                {/* <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                                    {/* <i class="fa fa-trash"></i>  */}
-                                                    {/* Filter */}
-                                                {/* </button> */} 
                                             </Fragment>
                                         :
                                             ""
                                     }
-                                    
-                                    {/*popup filter and button filter*/}
-                                    <div id="base-filter-task">
-                                        {/* <button className="main-border-drk"
-                                            onClick={this.filter} 
-                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                            <div className="main-border-right" style={{paddingRight: "5px"}}>
-                                                <i class="fa fa-filter"></i>
-                                            </div>
-                                            <div style={{marginLeft: "5px"}}>Filter</div>
-                                        </button> */}
-                                        
-                                        {/* <div ref={this.popFilter} className="pop-elm" id="flt-module" style={{position: "fixed",zIndex: "1"}}>   
-                                            <img src={Triangle} style={{width: "15px", zIndex: "2", position: "fixed", marginLeft: "24px"}}/>
-                                            <div className="main-border shadow " 
-                                                style={{width: "170px", 
-                                                        background: "#FFF", 
-                                                        marginLeft: "-55px", 
-                                                        marginTop: "13px"}}>
-                                                <a style={{textDecoration: "none"}} onClick={() => this.filterAction("all", "")}>
-                                                    <div className="main-border-bottom menu-item" style={{padding: "7px", fontSize: "12px"}}>
-                                                        <FontAwesomeIcon className="second-font-color" style={{fontSize: "11px"}} icon={faFilter}/>
-                                                        &nbsp;&nbsp;&nbsp;Show All
-                                                    </div>
-                                                </a>
-                                                <div>
-                                                    <div className="main-border-bottom second-background-grs bold" style={{padding: "7px"}}>Status</div>
-                                                    {listFilterStatus}
-                                                </div>
-                                                <div>
-                                                    <div className="main-border-bottom bold second-background-grs" style={{padding: "7px"}}>
-                                                        Assign To
-                                                    </div>
-                                                    {listFilterAssign}
-                                                </div>
-                                            </div>
-                                        </div> */}
-                                    </div>
-                                    
-                                    {/* {
-                                        (this.props.viewModule != "list")
-                                        ?
-                                            <Fragment>
-                                                <button className="main-border-drk"
-                                                    onClick={this.groupByPop} 
-                                                    style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                                    <div className="main-border-right" style={{paddingRight: "5px"}}>
-                                                        <FontAwesomeIcon icon={faObjectGroup}/>
-                                                    </div>
-                                                    <div style={{marginLeft: "5px"}}>Group By</div>
-                                                </button>
-
-                                                <div ref={this.popGroupBy} className="pop-elm" style={{position: "fixed",zIndex: "1"}}>   
-                                                    <img src={Triangle} style={{width: "15px", zIndex: "2", position: "fixed", marginTop: "30px", marginLeft: "105px"}}/>
-                                                    <div className="main-border shadow " 
-                                                        style={{width: "150px", 
-                                                                background: "#FFF", 
-                                                                marginLeft: "35px", marginTop: "43px"}}>
-                                                        <a onClick={() => this.groupByAct("section")} style={{textDecoration: "none"}}>
-                                                            <div className="main-border-bottom bold menu-item" style={{padding: "7px", fontSize: "12px"}}>Section</div>
-                                                        </a>
-                                                        <a onClick={() => this.groupByAct("status")} style={{textDecoration: "none"}}>
-                                                            <div className="main-border-bottom bold menu-item" style={{padding: "7px", fontSize: "12px"}}>Status</div>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </Fragment>
-                                        :
-                                            ""
-                                    } */}
-
                                     {
                                         (this.props.viewModule == "list")
                                         ?

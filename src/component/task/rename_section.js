@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { popCenterPosition, popUpAlert } from '../../function/function';
 import { setDataModule, setSectionModule } from '../../redux/action';
-import { ApiFetch } from '../apiFetch';
+import Fetch from '../../function/fetchApi'
 
 class rename_section extends Component{
 
@@ -76,10 +76,8 @@ class rename_section extends Component{
         form.append("id", id)
         form.append("name", this.state.name)
 
-        ApiFetch("/section/rename", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
+        let fetch = new Fetch()
+        fetch.post("/section/rename", form).then(result => {
             if(result == "success"){
                 this.props.setDataModule(newData)
                 this.props.setSectionModule([...newDataSection])
@@ -88,6 +86,18 @@ class rename_section extends Component{
                 popUpAlert("Failed to rename section, please check your connection")
             }
         })
+        // ApiFetch("/section/rename", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text()).then(result => {
+        //     if(result == "success"){
+        //         this.props.setDataModule(newData)
+        //         this.props.setSectionModule([...newDataSection])
+        //         this.props.cancel()
+        //     }else{
+        //         popUpAlert("Failed to rename section, please check your connection")
+        //     }
+        // })
     }
 
     render(){

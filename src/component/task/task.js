@@ -4,12 +4,12 @@ import {setTitleHader, setDataLabelModule, setAssignedModules, setDataTeam, setS
 import NotFound from '../404'
 import TaskBase from './task_base'
 import {Spinner} from '../spinner'
-import {getCookieUserId, popUpAlert, getCookieSessionId} from '../../function/function'
+import {getCookieUserId, getCookieSessionId} from '../../function/function'
 import {setDataModule, deleteDataModule, deleteMember, setDataLabel, setDataStatus} from '../../redux/action'
-import {ApiFetch} from '../apiFetch'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import Fetch from '../../function/fetchApi'
 
 class list_module extends React.Component{
 
@@ -66,48 +66,52 @@ class list_module extends React.Component{
         formData.append("projectId", projectId)
         formData.append("userId", userId)
         formData.append("sessionId", getCookieSessionId())
-        ApiFetch("/module/data", {
-            method : "POST",
-            body: formData
-        }).then(res => res.json())
-        .then((result) => {
-            if(result.length > 0){
-                this.setState({loader: ""})
-                var dataProjectFetch = result[0]['dataProject']
-                var dataModule = result[0]['dataModule']
-                var dataTeam = result[0]['dataProjectTeam']
-                var permition  = result[0]['permitionProjects']
-                var dataNote = result[0]['note']
-                var dataTab = result[0]['tabs']
-                var dataStatus = result[0]['statusModules']
-                var dataLabel = result[0]['labelsList']
-                var dataLabelModule = result[0]['labelModulelist']
-                var assignedModules = result[0]['assignedModules']
-                var sectionModule = result[0]['sectionModules']
-                
-                if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
-                    this.setState({notFound: true})
-                }
 
-                if(dataProjectFetch === undefined) return false
-                
-                /*set data to redux*/
-                this.props.setDataModule(dataModule)
-                this.props.setDataLabels(dataLabel)
-                this.props.setDataLabelsModule(dataLabelModule)
-                this.props.setAssigndeModules(assignedModules)
-                this.props.setDataStatus(dataStatus)
-                this.props.setDataTeam(dataTeam)
-                this.props.setSectionModule(sectionModule)
-                this.props.setDataProject(dataProjectFetch)
-                
-                this.setState({
-                    dataProject: dataProjectFetch,
-                    permitionProject: permition,
-                    dataNote: dataNote,
-                    dataTab: dataTab
-                })
-            }
+        let fetch = new Fetch()
+        fetch.post("/module/data", formData).then(result => {
+            try {
+                if(result.length){
+                    this.setDataTask(result)
+                }
+            } catch (error) { }
+        })
+    }   
+
+    setDataTask = (result) => {
+        this.setState({loader: ""})
+        var dataProjectFetch = result[0]['dataProject']
+        var dataModule = result[0]['dataModule']
+        var dataTeam = result[0]['dataProjectTeam']
+        var permition  = result[0]['permitionProjects']
+        var dataNote = result[0]['note']
+        var dataTab = result[0]['tabs']
+        var dataStatus = result[0]['statusModules']
+        var dataLabel = result[0]['labelsList']
+        var dataLabelModule = result[0]['labelModulelist']
+        var assignedModules = result[0]['assignedModules']
+        var sectionModule = result[0]['sectionModules']
+        
+        if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
+            this.setState({notFound: true})
+        }
+
+        if(dataProjectFetch === undefined) return false
+        
+        /*set data to redux*/
+        this.props.setDataModule(dataModule)
+        this.props.setDataLabels(dataLabel)
+        this.props.setDataLabelsModule(dataLabelModule)
+        this.props.setAssigndeModules(assignedModules)
+        this.props.setDataStatus(dataStatus)
+        this.props.setDataTeam(dataTeam)
+        this.props.setSectionModule(sectionModule)
+        this.props.setDataProject(dataProjectFetch)
+        
+        this.setState({
+            dataProject: dataProjectFetch,
+            permitionProject: permition,
+            dataNote: dataNote,
+            dataTab: dataTab
         })
     }
 
@@ -149,10 +153,8 @@ class list_module extends React.Component{
                 }
             })
             dt.sectionModule = newDataModule
-            // console.log(dt)
             newData.push(dt)
         }
-        console.log(newData)
         this.props.setDataModule(newData)
     }
 

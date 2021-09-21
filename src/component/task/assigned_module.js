@@ -8,6 +8,7 @@ import {ApiFetch} from '../apiFetch'
 import {SpinnerButton} from "../spinner"
 import Permition from './permition'
 import {Spinner} from '../spinner'
+import Fetch from '../../function/fetchApi'
 
 class set_assigned_module extends React.Component{
 
@@ -21,9 +22,6 @@ class set_assigned_module extends React.Component{
         }
 
         this.checkAddMember = this.checkAddMember.bind(this)
-        // this.goRight = this.goRight.bind(this)
-        // this.checkRemoveMember = this.checkRemoveMember.bind(this)
-        // this.goLeft = this.goLeft.bind(this)
         this.hidePopup = this.hidePopup.bind(this)
         this.assign = this.assign.bind(this)
     }
@@ -46,22 +44,24 @@ class set_assigned_module extends React.Component{
 
         var form = new FormData()
         form.append("projectId", this.props.projectId)
-        ApiFetch("/module/assigning", {
-            method: "POST",
-            body: form
-        }).then(rst => rst.json())
-        .then(result => {
-            this.setState({
-                listMember: result,
-                isLoad: false
-            })
-              
-            //set style base data height
-            var hdr = document.getElementById("header-add-member")
-            var ftr = document.getElementById("footer-add-member")
-            var mam = document.getElementsByClassName("main-add-member")
-            for(var i = 0;i<mam.length;i++){
-                mam[i].style.height = 350 - (parseInt(hdr.offsetHeight) + ftr.offsetHeight)+"px"
+
+        let fetch = new Fetch()
+        fetch.post("/module/assigning", form).then(result => {
+            try {
+                this.setState({
+                    listMember: result,
+                    isLoad: false
+                })
+                
+                //set style base data height
+                var hdr = document.getElementById("header-add-member")
+                var ftr = document.getElementById("footer-add-member")
+                var mam = document.getElementsByClassName("main-add-member")
+                for(var i = 0;i<mam.length;i++){
+                    mam[i].style.height = 350 - (parseInt(hdr.offsetHeight) + ftr.offsetHeight)+"px"
+                }
+            }catch (error) {
+                /*noting happen*/
             }
         })
     }

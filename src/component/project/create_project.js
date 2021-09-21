@@ -1,9 +1,9 @@
 import React, { createRef } from 'react'
 import {getCookieUserId, popUpAlert} from '../../function/function'
-import { ApiFetch } from '../apiFetch'
-// import ListModule from '../task/list_module'
+import Fetch from '../../function/fetchApi'
 import ReactDom from 'react-dom'
 import {SpinnerButton} from '../spinner'
+import axios from 'axios'
 
 class create_project extends React.Component{
 
@@ -53,10 +53,9 @@ class create_project extends React.Component{
         let form = new FormData()
         form.append("userId", userId)
         form.append("projectName", this.state.projectName)
-        ApiFetch("/insert_project", {
-            body: form,
-            method: "POST"
-        }).then(res => res.text()).then(result => {
+
+        let fetch = new Fetch()
+        fetch.post("/project/insert_project", form).then(result => {
             if(result != "exists"){
                 window.location = "/project/"+result
             }else{
@@ -69,6 +68,25 @@ class create_project extends React.Component{
                 onProcess: false
             })
         })
+
+        // axios.post("/project/insert_project", form).then(response => {
+        //     let status = response.status
+        //     let result = response.data
+
+        //     if(status == 200){
+        //         if(result != "exists"){
+        //             window.location = "/project/"+result
+        //         }else{
+        //             popUpAlert("Project name already exists")
+        //         }
+    
+        //         tgt.style.opacity = "1"
+        //         ReactDom.render("Create", tgt)
+        //         this.setState({
+        //             onProcess: false
+        //         })
+        //     }
+        // })
     }
 
     handleChange(e){

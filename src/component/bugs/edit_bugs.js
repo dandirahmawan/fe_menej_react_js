@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from '../../function/function'
-import {baseUrl} from "../../const/const"
 import {editBugs} from '../../redux/action'
 import {connect} from 'react-redux'
 import {SpinnerButton} from "../spinner"
-import {ApiFetch} from '../apiFetch'
+// import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class edit_bugs extends React.Component{
 
@@ -50,12 +50,8 @@ class edit_bugs extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/edit_bugs", {
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(res => res.text())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/edit_bugs", form).then(result => {
             if(result == "success"){
                 this.props.editBugs(this.props.bugsId, v)
                 popUpAlert("Edit bugs successfully", "success")

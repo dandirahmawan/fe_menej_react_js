@@ -2,12 +2,11 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import RowNote from './row_note'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../function/function'
-import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import {connect} from 'react-redux'
 import {appendDataNote, updateDataModuleNote, deleteDataNote} from '../../redux/action'
 import ExpandNote from './expand_note'
 import PopupConfirmation from '../popup_confirmation'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {SpinnerButton} from "../spinner";
 import EditNote from './edit_note'
 
@@ -34,7 +33,6 @@ class note extends React.Component{
     }
 
     componentDidMount(){
-        
         var title = ""
         if(this.props.moduleName !== undefined) title = this.props.moduleName
         if(this.props.bugsText !== undefined) title = this.props.bugsText
@@ -67,11 +65,8 @@ class note extends React.Component{
         form.append("bugsId", bugsId)
         form.append("note", this.state.noteText)
 
-        ApiFetch("/insert_note", {
-            method: "POST",
-            body: form
-        }).then(res => res.json())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/insert_note", form).then(result => {
             //make sure that result of api is json object type
             var jsonObject = result
             // this.state.dataNoteState.push(jsonObject)
@@ -86,6 +81,25 @@ class note extends React.Component{
             this.props.appendDataNote(jsonObject, bugsId, moduleId)
             this.props.updateDataModuleNote(moduleId, "add")
         })
+        // ApiFetch("/insert_note", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.json())
+        // .then(result => {
+        //     //make sure that result of api is json object type
+        //     var jsonObject = result
+        //     // this.state.dataNoteState.push(jsonObject)
+        //     this.setState({
+        //         noteText: "",
+        //         dataNoteState:  this.state.dataNoteState,
+        //         countNote: parseInt(this.state.countNote) + 1
+        //     })
+
+        //     //update data to redux
+        //     ReactDom.render("Submit", t)
+        //     this.props.appendDataNote(jsonObject, bugsId, moduleId)
+        //     this.props.updateDataModuleNote(moduleId, "add")
+        // })
     }
 
     deleteNote(noteId){
@@ -106,11 +120,8 @@ class note extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("noteId", this.state.noteIdDelete)
 
-        ApiFetch("/delete_note", {
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/delete_note", form).then(result => {
             if(result == 1){
                 this.props.deleteDataNote(this.state.noteIdDelete)
                 this.setState({
@@ -119,6 +130,19 @@ class note extends React.Component{
                 })
             }
         })
+        // ApiFetch("/delete_note", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     if(result == 1){
+        //         this.props.deleteDataNote(this.state.noteIdDelete)
+        //         this.setState({
+        //             noteIdDelete:"",
+        //             popup: ""
+        //         })
+        //     }
+        // })
     }
 
     hidePopUp(e){

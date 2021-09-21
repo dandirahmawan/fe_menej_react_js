@@ -4,9 +4,10 @@ import React from 'react'
 import { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { deleteLabel, setDataLabel } from '../../redux/action'
-import { ApiFetch } from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import {square_light as SquareLight} from '../icon/icon'
 import NewLabel from './new_label'
+import PopConfirmation from '../popup_confirmation'
 
 class labeling_task extends React.Component {
 
@@ -105,18 +106,30 @@ class labeling_task extends React.Component {
         //     }
         //     i++
         // })
+        // alert("dandi rahmawan")
+        let txtPopup = "<span class='regular-font'>Are you sure, you want delete label, label will be delete without" 
+                        +"click save change button</span>"
+        this.setState({
+            popup: <PopConfirmation titleConfirmation="Delete label" 
+                                    hidePopUp={() => this.setState({popup: ""})}
+                                    yesAction={() => this.yesDelete(label)}
+                                    textPopup={txtPopup}/>
+        })
+    }
 
+    yesDelete = (label) => {
         let form = new FormData()
         form.append("projectId", this.props.projectId)
         form.append("label", label)
-        
-        ApiFetch("/delete_label", {
-            method: "POST",
-            body: form
-        }).then(res => res.json()).then(result => {
+
+        let fetch = new Fetch()
+        fetch.post("/delete_label", form).then(result => {
             let dataLabel = result.label
             this.props.setDataLabel(dataLabel)
             this.props.deleteLabel(label)
+            this.setState({
+                popup: ""
+            })
         })
     }
 
@@ -208,6 +221,7 @@ const styles = {
 }
 
 const mapStateToProps = state => {
+    console.log(state)
     return{
         dataLabel: state.dataLabels
     }

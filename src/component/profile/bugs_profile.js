@@ -1,7 +1,7 @@
 import React from 'react'
 import RowBugs from './row_bugs_profile'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
-import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import DetailModule from '../task/detail_task/detail'
 
 class bugs_profile extends React.Component{
@@ -21,15 +21,14 @@ class bugs_profile extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        ApiFetch("/bugs_user",{
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            var jsonObject = JSON.parse(result)
-            this.setState({
-                dataBugs: jsonObject
-            })
+        new Fetch().post("/bugs_user", form).then(result => {
+            try {
+                var jsonObject = JSON.parse(result)
+                this.setState({
+                    dataBugs: jsonObject
+                })
+            } catch (error) {/*noting action*/}
+            
         })
     }
 

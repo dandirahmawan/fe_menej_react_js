@@ -2,10 +2,10 @@ import React from 'react'
 import Logo from '../../images/menej_285e8e.png'
 import {Spinner} from '../spinner'
 import {ApiFetch} from '../apiFetch'
-import { getCookieSessionId, getCookieUserId } from '../../function/function'
+import { getCookieUserId } from '../../function/function'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleRight, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { baseUrl } from '../../const/const'
+import Fetch from '../../function/fetchApi'
 
 class confirmation_email extends React.Component{
 
@@ -32,26 +32,25 @@ class confirmation_email extends React.Component{
             form.append("conf", parGet)
             form.append("userId", userId)
 
-            ApiFetch("email_confirmation", {
-                method: "POST",
-                body: form
-            }).then(res => res.json())
-            .then(result => {
-                let code = result.code
+            let fetch = new Fetch()
+            fetch.post("/email_confirmation", form).then(result => {
+                try {
+                    let code = result.code
 
-                this.setState({
-                    resultInv: result,
-                    isLoad: false,
-                    code: code,
-                    email: result.message
-                })
+                    this.setState({
+                        resultInv: result,
+                        isLoad: false,
+                        code: code,
+                        email: result.message
+                    })
 
-                let wHeight = window.innerHeight
-                let heightBase = this.base.current.offsetHeight
-                
-                let top = ((wHeight - heightBase) / 2) - 80
-                this.base.current.style.marginTop =  top+"px"
-            }) 
+                    let wHeight = window.innerHeight
+                    let heightBase = this.base.current.offsetHeight
+                    
+                    let top = ((wHeight - heightBase) / 2) - 80
+                    this.base.current.style.marginTop =  top+"px"
+                } catch (error) { /*noting happen*/ }
+            })
         }
     }
 

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {SpinnerButton} from '../spinner'
 import ReactDom from 'react-dom'
-import {ApiFetch} from '../apiFetch'
-import { getCookieUserId, popUpAlert } from '../../function/function'
+import Fetch from '../../function/fetchApi'
+import { getCookieUserId } from '../../function/function'
 
 class change_password extends React.Component{
 
@@ -42,10 +42,8 @@ class change_password extends React.Component{
         form.append("password", curr)
         
         let t = e.target
-        ApiFetch("/change_password", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
+        let fetch = new Fetch()
+        fetch.post("/change_password", form).then(result => {
             if(result == 2){
                 this.alertInfoCgPass.current.style.display = "block"
                 this.alertInfoCgPass.current.style.background = "#c36363"

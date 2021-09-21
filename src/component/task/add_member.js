@@ -3,6 +3,7 @@ import ReactDom from 'react-dom'
 import { popCenterPosition, popUpAlert, getCookieUserId } from '../../function/function'
 import { SpinnerButton } from '../spinner'
 import { ApiFetch } from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class add_member extends React.Component{
 
@@ -44,15 +45,22 @@ class add_member extends React.Component{
             form.append("userId", getCookieUserId())
             form.append("email", val)
             form.append("projectId", this.props.projectId)
-            ApiFetch("/invitation", {
-                method: "POST",
-                body: form
-            }).then(res => res.text()).then(result => {
+
+            new Fetch().post("/invitation", form).then(result => {
                 if(result == "success"){
                     popUpAlert("invitation has been sent", "success")
                     this.cancel()
                 }
-            }) 
+            })
+            // ApiFetch("/invitation", {
+            //     method: "POST",
+            //     body: form
+            // }).then(res => res.text()).then(result => {
+            //     if(result == "success"){
+            //         popUpAlert("invitation has been sent", "success")
+            //         this.cancel()
+            //     }
+            // }) 
         }
     }
 

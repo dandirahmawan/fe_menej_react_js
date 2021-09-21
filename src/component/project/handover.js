@@ -4,10 +4,12 @@ import {getCookieSessionId, getCookieUserId, popCenterPosition, popUpAlert} from
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFolder} from '@fortawesome/free-solid-svg-icons'
 import RowUser from './row_user_handover'
-import {ApiFetch} from '../apiFetch'
+// import {ApiFetch} from '../apiFetch'
+
 import {SpinnerButton} from '../spinner'
 import {setDataProject} from '../../redux/action'
 import {connect} from 'react-redux'
+import Fetch from '../../function/fetchApi'
 
 class handover extends React.Component{
 
@@ -38,16 +40,24 @@ class handover extends React.Component{
         form.append("userId", getCookieUserId())
         form.append("sessionId", getCookieSessionId())
 
-        ApiFetch("/user_relation", {
-            method: "POST",
-            body: form
-        }).then(res => res.json()).then(
+        let fetch = new Fetch()
+        fetch.post("/user_relation", form).then(res => {
             res => {
                 this.setState({
                     data: res
                 })
             }
-        )
+        })
+        // ApiFetch("/user_relation", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.json()).then(
+        //     res => {
+        //         this.setState({
+        //             data: res
+        //         })
+        //     }
+        // )
     }
 
     submit(){
@@ -71,14 +81,23 @@ class handover extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("projectId", this.props.projectId)
 
-        ApiFetch("/handover_project", {
-            method: "POST",
-            body: form
-        }).then(res => res.json())
-            .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/handover_project", form).then(result => {
+            try{
                 this.props.setDataProject(result)
                 this.props.cancel()
-            })
+            }catch(error) {
+                /*nothing action*/
+            }
+        })
+        // ApiFetch("/handover_project", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.json())
+        //     .then(result => {
+        //         this.props.setDataProject(result)
+        //         this.props.cancel()
+        //     })
     }
 
     select(userId){

@@ -10,7 +10,7 @@ import PopConfirmation from "../../popup_confirmation";
 import { popUpAlert } from '../../../function/function';
 import { ApiFetch } from '../../apiFetch';
 import { setDataModule } from '../../../redux/action';
-import { InputGroup } from 'react-bootstrap';
+import Fetch from '../../../function/fetchApi'
 
 class card_view extends Component{
 
@@ -113,21 +113,39 @@ class card_view extends Component{
             popUpAlert("Section successfully deleted", "success")
             let form = new FormData()
             form.append("id", id)
-            ApiFetch("/section/delete", {
-                method: "POST",
-                body: form
-            }).then(res => res.text()).then(res => {
-                let resJson = JSON.parse(res)
-                if(resJson.status == "success"){
-                    popUpAlert("Delete section is successfully", "success")
 
-                    /*set data module to redux*/
-                    dataModule.splice(seq, 1)
-                    this.props.setDataModule(dataModule)
-                }else{
-                    popUpAlert(resJson.message)
+            let fetch = new Fetch()
+            fetch.post("/section/delete", form).then(res => {
+                try {
+                    let resJson = JSON.parse(res)
+                    if(resJson.status == "success"){
+                        popUpAlert("Delete section is successfully", "success")
+
+                        /*set data module to redux*/
+                        dataModule.splice(seq, 1)
+                        this.props.setDataModule(dataModule)
+                    }else{
+                        popUpAlert(resJson.message)
+                    }
+                } catch (error) {
+                    /*nothing happen*/
                 }
             })
+            // ApiFetch("/section/delete", {
+            //     method: "POST",
+            //     body: form
+            // }).then(res => res.text()).then(res => {
+            //     let resJson = JSON.parse(res)
+            //     if(resJson.status == "success"){
+            //         popUpAlert("Delete section is successfully", "success")
+
+            //         /*set data module to redux*/
+            //         dataModule.splice(seq, 1)
+            //         this.props.setDataModule(dataModule)
+            //     }else{
+            //         popUpAlert(resJson.message)
+            //     }
+            // })
         }
 
         this.setState({

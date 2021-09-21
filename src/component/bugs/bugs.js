@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import {setDataBugs, deleteDataBugs, updateDataModuleBugs, closeDataBugs, uncloseDataBugs, updateDataModuleBugsUnclose,updateDataModuleBugsClose} from '../../redux/action'
 import RowBugs from './row_bugs'
-import { baseUrl } from '../../const/const'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBorderAll, faBorderNone, faFilter, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Detail from '../task/detail_task/detail'
@@ -13,6 +12,7 @@ import Filter from './filter'
 import {Spinner} from '../spinner'
 import EditBugs from './edit_bugs'
 import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class bugs extends React.Component{
 
@@ -59,18 +59,18 @@ class bugs extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/bugs_project",{
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(res => res.json())
-        .then(result => {          
-            this.props.setDataBugs(result.bugs)
-            this.setState({
-                isLoad: false
-            })
+        let fetch = new Fetch()
+        fetch.post("/bugs_project", form).then(result => {
+            try{
+                this.props.setDataBugs(result.bugs)
+                this.setState({
+                    isLoad: false
+                })
+            }catch{
+                /*noting happen*/
+            }
         })
-
+        
         this.props.dataPermition.map(dt => {
             if(dt.permitionCode == 2 && dt.isChecked == 'Y'){
                 this.setState({
@@ -124,16 +124,16 @@ class bugs extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/delete_bugs", {
-            method: 'POST',
-            body: form,
-            headers: header
-        }).then(res => res.status)
-        .then(result => {
-            if(result == 200){
-                this.props.deleteDataBugs(this.state.bugsIdDelete)
-                this.props.updateDataModule(this.state.moduleId)
-                this.hidePopUp()
+        let fetch = new Fetch()
+        fetch.post("/delete_bugs", form).then(result => {
+            try {
+                if(result == 200){
+                    this.props.deleteDataBugs(this.state.bugsIdDelete)
+                    this.props.updateDataModule(this.state.moduleId)
+                    this.hidePopUp()
+                }
+            } catch (error) {
+                console.log(error)
             }
         })
     }
@@ -148,16 +148,16 @@ class bugs extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/close_bugs", {
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(response => response.text())
-            .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/clode_bugs", form).then(result => {
+            try {
                 this.props.closeDataBugs(this.state.bugsIdDelete)
                 this.props.updateDataModuleBugsClose(this.state.moduleId)
                 this.hidePopUp()
-            })
+            } catch (error) {
+                console.log(error)
+            }
+        })
     }
 
     yesUnclose(){
@@ -169,16 +169,17 @@ class bugs extends React.Component{
         var header = new Headers()
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
-        ApiFetch("/unclose_bugs", {
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(response => response.text())
-            .then(result => {
+        
+        let fetch = new Fetch()
+        fetch.post("/unclose_bugs", form).then(result => {
+            try {
                 this.props.uncloseDataBugs(this.state.bugsIdDelete)
                 this.props.updateDataModuleBugsUnclose(this.state.moduleId)
                 this.hidePopUp()
-            })
+            } catch (error) {
+                /*noting happen*/
+            }
+        })
     }
 
     closeBusg(bugsId, moduleId){

@@ -2,11 +2,11 @@ import React, { Fragment } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faFolder, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { getCookieSessionId, getCookieUserId } from '../../function/function'
-import { ApiFetch } from '../apiFetch'
 import { connect } from 'react-redux'
 import { setDataProject } from '../../redux/action'
 import CardList from './card_list'
 import CreateProject from './create_project'
+import Fetch from '../../function/fetchApi'
 
 class project extends React.Component{
 
@@ -30,15 +30,8 @@ class project extends React.Component{
         form.append("userId", userId)
         form.append("sessionId", sessionId)
 
-        var header = new Headers()
-        header.append("sessionId", getCookieSessionId())
-        header.append("userId", getCookieUserId());
-
-        ApiFetch("/project/list", {
-            method: "POST",
-            body: form
-        }).then(res => res.json()).then(result => {
-            
+        let fetch = new Fetch()
+        fetch.post("/project/list", form).then(result => {
             let projectId = 0
             if(paths[1] == "project") projectId = paths[2]
             

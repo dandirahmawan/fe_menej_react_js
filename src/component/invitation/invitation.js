@@ -3,9 +3,9 @@ import Logo from '../../images/menej_285e8e.png'
 import InvitationReady from './invitation_ready'
 import { getCookieSessionId, getCookieUserId } from '../../function/function'
 import wrnAlt from '../../images/warn_alert_inf.png'
-import scsAlt from '../../images/success_alt_inf.png'
 import {Spinner} from '../spinner'
-import {ApiFetch} from '../apiFetch'
+// import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class invitation extends React.Component{
 
@@ -38,18 +38,13 @@ class invitation extends React.Component{
             header.append("sessionId", getCookieSessionId())
             header.append("userId", getCookieUserId());
 
-            ApiFetch("/conf_invitation", {
-                method: "POST",
-                body: form,
-                headers: header
-            }).then(res => res.json())
-            .then(result => {
-                console.log(result)
+            let fetch = new Fetch()
+            fetch.post("/conf_invitation", form).then(result => {
                 this.setState({
                     resultInv: result,
                     isload: false,
                 })
-            }) 
+            })
         }
     }
 

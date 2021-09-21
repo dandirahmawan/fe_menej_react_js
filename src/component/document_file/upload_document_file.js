@@ -8,7 +8,6 @@ import {SpinnerButton} from "../spinner";
 import {EXIF} from "exif-js";
 import {SelectBox} from '../custom_element'
 import {check_circle as CkCIrcle} from '../icon/icon'
-// import {ApiFetch} from '../apiFetch'
 
 class upload_document_file extends React.Component{
 
@@ -62,9 +61,6 @@ class upload_document_file extends React.Component{
                 var jsonObject = '{"moduleId":"'+dtt.modulId+'","moduleName":"'+dtt.modulName+'"}';
                 var jsonObject = JSON.parse(jsonObject)
                 this.state.choicesModule.push(jsonObject)
-                // this.setState({
-                //     choicesModule: this.state.choicesModule
-                // })
             })
 
             this.setState({

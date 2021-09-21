@@ -5,6 +5,7 @@ import {SpinnerButton} from '../spinner'
 import {connect} from 'react-redux'
 import {editNote} from '../../redux/action'
 import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 /*
     "note for using this popup."
@@ -56,16 +57,12 @@ class edit_note extends React.Component{
         form.append("noteId", this.props.noteId)
         form.append("note", v)
 
-        ApiFetch("/edit_note", {
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-            .then(result => {
-                if(result == ""){
-                    popUpAlert("Edit note successfully", "success")
-                    this.props.cancel()
-                }
-            })
+        new Fetch().post("/edit_note", form).then(result => {
+            if(result == ""){
+                popUpAlert("Edit note successfully", "success")
+                this.props.cancel()
+            }
+        })
     }
 
     render(){

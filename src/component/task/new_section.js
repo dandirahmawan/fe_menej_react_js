@@ -2,7 +2,7 @@ import React, { Component, createRef, Fragment } from 'react'
 import { connect } from 'react-redux'
 import {popCenterPosition, popUpAlert} from '../../function/function'
 import { setDataModule, setSectionModule } from '../../redux/action'
-import { ApiFetch } from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class new_section extends Component{
 
@@ -24,25 +24,46 @@ class new_section extends Component{
             let form = new FormData()
             form.append("section", val)
             form.append("projectId", this.props.projectId)
-            ApiFetch("/section", {
-                method: "POST",
-                body: form
-            }).then(res => res.json()).then(result => {
-                let sections = result.sections
-                let section = result.section
-                section.sectionModule = []
-                this.props.dataModule.push(section)
-
-                let newSection= []
-                this.props.dataModule.map(dt => {
-                    newSection.push(dt)
-                })
-                
-                
-                this.props.setDataModule(newSection)
-                this.props.setSection(sections)
-                this.props.cancel()
+            
+            new Fetch().post("/section", form).then(result => {
+                try{
+                    let sections = result.sections
+                    let section = result.section
+                    section.sectionModule = []
+                    this.props.dataModule.push(section)
+    
+                    let newSection= []
+                    this.props.dataModule.map(dt => {
+                        newSection.push(dt)
+                    })
+                    
+                    
+                    this.props.setDataModule(newSection)
+                    this.props.setSection(sections)
+                    this.props.cancel()
+                }catch(error){
+                    /*nothing happen*/
+                }
             })
+            // ApiFetch("/section", {
+            //     method: "POST",
+            //     body: form
+            // }).then(res => res.json()).then(result => {
+            //     let sections = result.sections
+            //     let section = result.section
+            //     section.sectionModule = []
+            //     this.props.dataModule.push(section)
+
+            //     let newSection= []
+            //     this.props.dataModule.map(dt => {
+            //         newSection.push(dt)
+            //     })
+                
+                
+            //     this.props.setDataModule(newSection)
+            //     this.props.setSection(sections)
+            //     this.props.cancel()
+            // })
         }
     }
 

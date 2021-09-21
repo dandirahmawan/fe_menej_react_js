@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDom from 'react-dom'
 import Row from '../row_permition'
-import {ApiFetch} from '../../apiFetch'
+import Fetch from '../../../function/fetchApi'
 import {popUpAlert} from '../../../function/function'
 import {SpinnerButton} from "../../spinner";
 
@@ -57,13 +57,8 @@ const Teams_detail = (props) => {
         form.append('userId', props.userId)
         form.append('projectId', props.projectId)
 
-        ApiFetch("/permition_project",{
-            method: "POST",
-            body: form
-        }).then(res => res.json())
-        .then(result => {
-            
-            //set ready permition to state.permitionSelected
+        let fetch = new Fetch()
+        fetch.post("/permition_project", form).then(result => {
             for(var i = 0;i<result.dataPermition.length;i++){
                 if(result.dataPermition[i]['isChecked'] == 'Y'){
                     permitionSelected.push(result.dataPermition[i]['permitionCode'])
@@ -76,15 +71,36 @@ const Teams_detail = (props) => {
             setUserName(result.dataUser.userName)
             setUserEmail(result.dataUser.emailUser)
             setPicProfile(result.dataUser.picProfile)
-            
-            // this.setState({
-            //     dataPermition: result.dataPermition,
-            //     userId: result.dataUser.userId,
-            //     userName: result.dataUser.userName,
-            //     userEmail: result.dataUser.emailUser,
-            //     picProfile: result.dataUser.picProfile
-            // })
         })
+
+        // ApiFetch("/permition_project",{
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.json())
+        // .then(result => {
+            
+        //     //set ready permition to state.permitionSelected
+        //     for(var i = 0;i<result.dataPermition.length;i++){
+        //         if(result.dataPermition[i]['isChecked'] == 'Y'){
+        //             permitionSelected.push(result.dataPermition[i]['permitionCode'])
+        //         }   
+        //     }
+            
+        //     setFetch(false)
+        //     setDataPermition(result.dataPermition)
+        //     setUserId(result.dataUser.userId)
+        //     setUserName(result.dataUser.userName)
+        //     setUserEmail(result.dataUser.emailUser)
+        //     setPicProfile(result.dataUser.picProfile)
+            
+        //     // this.setState({
+        //     //     dataPermition: result.dataPermition,
+        //     //     userId: result.dataUser.userId,
+        //     //     userName: result.dataUser.userName,
+        //     //     userEmail: result.dataUser.emailUser,
+        //     //     picProfile: result.dataUser.picProfile
+        //     // })
+        // })
     }
 
     const checkClick = (e, permitionCode) => {
@@ -164,21 +180,28 @@ const Teams_detail = (props) => {
         let t = e.target
         t.style.opacity = 0.5
         ReactDom.render(<SpinnerButton size="15px"/>, t)
-        console.log(permitionSelected)
+
         var form = new FormData()
         form.append('permition_code', permitionSelected)
         form.append('project_id', props.projectId)
         form.append('user_id', props.userId)
         
-        ApiFetch("/set_permition", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
+        let fetch = new Fetch()
+        fetch.post("/set_permition", form).then(result => {
             if(result == "success"){
                 popUpAlert("Permition succesfully updated", "success")
                 props.hide()
             }
         })
+        // ApiFetch("/set_permition", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text()).then(result => {
+        //     if(result == "success"){
+        //         popUpAlert("Permition succesfully updated", "success")
+        //         props.hide()
+        //     }
+        // })
     }
 
     // render(){

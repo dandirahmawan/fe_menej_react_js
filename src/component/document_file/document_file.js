@@ -1,6 +1,4 @@
 import React from 'react'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faFilter, faPlus, faBorderAll, faBorderNone, faPaperclip, faFolder} from '@fortawesome/free-solid-svg-icons'
 import Row from './row_document_file'
 import { getCookieUserId, getCookieSessionId } from '../../function/function'
 import { baseUrl } from '../../const/const'
@@ -13,8 +11,7 @@ import PreviewImage from '../preview_image'
 import PreviewVideo from '../preview_video'
 import {Spinner} from '../spinner'
 import DetailModule from '../task/detail_task/detail'
-import {ApiFetch} from '../apiFetch'
-import HeaderTask from '../task/header_task'
+import Fetch from '../../function/fetchApi'
 
 class document_file extends React.Component{
 
@@ -68,12 +65,8 @@ class document_file extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/document_file_list", {
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(res => res.json())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/document_file_list", form).then(result => {
             this.props.setDataDocFile(result)
             this.setState({
                 isLoad: false
@@ -137,12 +130,8 @@ class document_file extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/delete_document_file", {
-            method: "POST",
-            body: form,
-            headers: header
-        }).then(res => res.text())
-        .then(result => {
+        let fetch = new Fetch()
+        fetch.post("/delete_document_file", form).then(result => {
             if(result == 1){
                 this.props.updateDataModuleDocFile(mi, "delete")
                 this.props.deleteDataDocFile(mi, pi, fileName, userId)

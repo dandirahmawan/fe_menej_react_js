@@ -30,7 +30,7 @@ class popup_confrimation extends React.Component{
         return(
             <React.Fragment>
                 <div className='block' onClick={this.props.hidePopUp} style={{zIndex: "100001"}}></div>
-                <div className='pop popup_confirmation' style={{zIndex: "100001"}}>
+                <div className='pop popup_confirmation' style={{zIndex: "100001", color: "#000"}}>
                     <div className="header-second-background bold" style={{padding: '10px', fontSize:"14px"}}>                                  
                         {this.props.titleConfirmation}
                     </div>

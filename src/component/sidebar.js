@@ -8,6 +8,7 @@ import { getCookieSessionId, getCookieUserId } from '../function/function'
 import { ApiFetch } from './apiFetch'
 import {setDataProject} from '../redux/action'
 import { Spinner } from './spinner'
+import Fetch from '../function/fetchApi'
 
 const mapStateToProps = state => {
     return{
@@ -63,19 +64,20 @@ class sidebar extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        ApiFetch("/list_project", {
-            method: "POST",
-            body: form
-        }).then(res => res.json()).then(result => {
-            
-            let projectId = 0
-            if(paths[1] == "project") projectId = paths[2]
-            
-            this.props.setDataProject(result)
-            this.setState({
-                projectSelected: projectId,
-                isLoad: false
-            })
+        let fetch = new Fetch()
+        fetch.post("/list_project", form).then(result => {
+            try {
+                let projectId = 0
+                if(paths[1] == "project") projectId = paths[2]
+                
+                this.props.setDataProject(result)
+                this.setState({
+                    projectSelected: projectId,
+                    isLoad: false
+                })
+            } catch (error) {
+                
+            }
         })
     }
 

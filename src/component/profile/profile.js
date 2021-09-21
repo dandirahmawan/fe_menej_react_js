@@ -2,11 +2,11 @@ import React, { Fragment } from 'react'
 import ReactDom from 'react-dom'
 import {popCenterPosition, getCookieUserId, popUpAlert, pxd} from '../../function/function'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog, faOm, faTrashAlt, faInfo, faInfoCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faTrashAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux'
 import { baseUrl } from '../../const/const'
 import { startData } from '../../redux/action'
-import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 import {EXIF} from 'exif-js'
 import {SpinnerButton} from '../spinner'
 import BaseChangePassword from './change_password'
@@ -191,10 +191,9 @@ class profile extends React.Component{
         form.append("base64Detail", dataurlDetail)
         form.append("ort", orientation)
         form.append("deletePicture", this.state.isDeletePicture)
-        ApiFetch("/edit_user", {
-            method: "POST",
-            body: form
-        }).then(res => res.json()).then(result => {
+        
+        let fetch = new Fetch()
+        fetch.post("/edit_user").then(result => {
             let picProfile              = result.picProfile
             let picProfileDetail        = result.picProfileDetail
             jsonData.picProfile         = picProfile
@@ -205,6 +204,20 @@ class profile extends React.Component{
             this.props.hidePopUp()
             popUpAlert("Edit profile successfully", "success")
         })
+        // ApiFetch("/edit_user", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.json()).then(result => {
+        //     let picProfile              = result.picProfile
+        //     let picProfileDetail        = result.picProfileDetail
+        //     jsonData.picProfile         = picProfile
+        //     jsonData.picProfileDetail   = picProfileDetail
+
+        //     // console.log(jsonData)
+        //     this.props.setStartData(jsonData)
+        //     this.props.hidePopUp()
+        //     popUpAlert("Edit profile successfully", "success")
+        // })
     }
 
     deletePicture(){
@@ -237,10 +250,9 @@ class profile extends React.Component{
             form.append("userId", getCookieUserId())
             form.append("email", email)
             form.append("pass", pass)
-            ApiFetch("/user_change_email", {
-                method: "POST",
-                body: form
-            }).then(res => res.text()).then(result => {
+            
+            let fetch = new Fetch()
+            fetch.post("/user_change_email", form).then(result => {
                 let rstJson = JSON.parse(result)
                 // console.log(rstJson)
                 if(rstJson .code == 1){
@@ -259,7 +271,31 @@ class profile extends React.Component{
 
                 btn.setAttribute("class", "btn-primary")
                 ReactDom.render("submit", btn)
-            })    
+            })
+
+            // ApiFetch("/user_change_email", {
+            //     method: "POST",
+            //     body: form
+            // }).then(res => res.text()).then(result => {
+            //     let rstJson = JSON.parse(result)
+            //     // console.log(rstJson)
+            //     if(rstJson .code == 1){
+            //         this.alertInfoCgAccount.current.style.display = "block"
+            //         this.alertInfoCgAccount.current.style.background = "#568c98"
+            //         this.alertInfoCgAccount.current.innerHTML = "You have request to change your email<br/>please check your email"
+            //     }else if(rstJson .code == 3){
+            //         this.alertInfoCgAccount.current.style.display = "block"
+            //         this.alertInfoCgAccount.current.style.background = "#c36363"
+            //         this.alertInfoCgAccount.current.innerHTML =  rstJson.message
+            //     }else{
+            //         this.alertInfoCgAccount.current.style.display = "block"
+            //         this.alertInfoCgAccount.current.style.background = "#c36363"
+            //         this.alertInfoCgAccount.current.innerText = rstJson.message
+            //     }
+
+            //     btn.setAttribute("class", "btn-primary")
+            //     ReactDom.render("submit", btn)
+            // })    
         }    
     }
 

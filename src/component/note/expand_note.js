@@ -8,6 +8,7 @@ import PopupConfirmation from '../popup_confirmation'
 import {ApiFetch} from '../apiFetch'
 import {deleteDataNote, appendDataNote, updateDataModuleNote} from '../../redux/action'
 import EditNote from './edit_note'
+import fetchApi from '../../function/fetchApi'
 
 class expand_note extends React.Component{
 
@@ -105,11 +106,7 @@ class expand_note extends React.Component{
         form.append("sessionId", getCookieSessionId())
         form.append("noteId", this.state.noteIdDelete)
 
-        ApiFetch("/delete_note", {
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
+        new fetchApi().post("/delete_note", form).then(result => {
             if(result == 1){
                 this.props.deleteDataNoteExpand(this.state.noteIdDelete)
                 this.setState({
@@ -118,6 +115,19 @@ class expand_note extends React.Component{
                 })
             }
         })
+        // ApiFetch("/delete_note", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then(result => {
+        //     if(result == 1){
+        //         this.props.deleteDataNoteExpand(this.state.noteIdDelete)
+        //         this.setState({
+        //             noteIdDelete:"",
+        //             popup: ""
+        //         })
+        //     }
+        // })
         
         this.setState({
             popup: ""

@@ -271,7 +271,7 @@ class doc_file_module extends React.Component{
                                                             delete={this.delete}
                                                             picProject={this.props.picProject}
                                                             isPermition={this.state.isPermition}
-                                                            path={dt.path}/>)
+                                                            path={dt.urlPath}/>)
 
         return(
             <React.Fragment>

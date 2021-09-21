@@ -2,7 +2,6 @@ import React from 'react'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Login from './component/login'
 import Navbar from './component/navbar'
-// import Sidebar from './component/sidebar'
 import Project from './component/project/project'
 import Task from './component/task/task'
 import StartPage from './component/start_page'
@@ -20,6 +19,18 @@ import './css/style.css'
 import './App.css'
 import { baseUrl } from './const/const'
 import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function'
+import axios from 'axios'
+
+/*set config axios base url and header*/
+let cookie = document.cookie
+if(cookie != "" && cookie != null && cookie !== undefined){
+    let data = cookie.replace(" ","").split(";")
+    let userId      = data[0].split("=")[1]
+    let sessionId   = data[1].split("=")[1]
+    axios.defaults.headers.common['userid'] = userId
+    axios.defaults.headers.common['sessionid'] = sessionId
+    axios.defaults.baseURL = baseUrl
+}
 
 class App extends React.Component{
   

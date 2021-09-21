@@ -1,9 +1,8 @@
 import React from 'react'
 import {getCookieSessionId, getCookieUserId, popCenterPosition} from '../../function/function'
 import {connect} from 'react-redux'
-import { baseUrl } from '../../const/const'
 import {appendDataBugs, updateDataModuleBugs} from '../../redux/action'
-import {ApiFetch} from '../apiFetch'
+import Fetch from '../../function/fetchApi'
 
 class new_module extends React.Component{
 
@@ -63,15 +62,15 @@ class new_module extends React.Component{
             header.append("sessionId", getCookieSessionId())
             header.append("userId", getCookieUserId());
 
-            ApiFetch("/add_bugs", {
-                method: 'POST',
-                body: form,
-                headers: header
-            }).then(res => res.json())
-            .then(result => {
-                this.props.appendBugs(result)
-                this.props.updateDataModuleBugs(this.state.moduleId, "add")
-                this.props.hide()
+            let fetch = new Fetch()
+            fetch.post("/add_bugs", form).then(result => {
+                try {
+                    this.props.appendBugs(result)
+                    this.props.updateDataModuleBugs(this.state.moduleId, "add")
+                    this.props.hide()
+                } catch (error) {
+                    /*noting happen*/
+                }
             })
         }else {
             return false
