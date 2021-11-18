@@ -1041,11 +1041,11 @@ class detail extends React.Component{
                             The data will be saved after clicking the save button, except upload
                         </div>
                         <div style={{width: "220px", display: "flex", justifyContent: "flex-end"}}>
-                            <button className="btn-primary" style={{opacity: "0.5", display: "flex"}} ref={this.btnSaveChange}>
+                            <button className="btn-primary" style={{opacity: "0.5", display: "flex", justifyContent: "center", alignItems: "center"}} ref={this.btnSaveChange}>
                                 <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span>
                             </button>
                             &nbsp;
-                            <button onClick={this.close} style={{display: "flex"}} className="btn-secondary">
+                            <button onClick={this.close} style={{display: "flex", justifyContent: "center", alignItems: "center"}} className="btn-secondary">
                                 <FontAwesomeIcon icon={faTimes}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Close</span>
                             </button>
                         </div>

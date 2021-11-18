@@ -7,7 +7,7 @@ import AddMember from '../add_member'
 import TeamDetail from './teams_detail'
 import Confirmation from '../../popup_confirmation'
 import { ApiFetch } from '../../apiFetch'
-import {set, setDataTeam} from '../../../redux/action'
+import {setDataTeam} from '../../../redux/action'
 
 class Teams extends React.Component {
 
@@ -169,15 +169,17 @@ class Teams extends React.Component {
                             <FontAwesomeIcon icon={faUsers}/>&nbsp;
                             <span className="bold" style={{fontSize: "14px"}}>Teams</span>
                         </div>
-                        <div>
+                        <div style={{display: "flex"}}>
                             <button onClick={this.add} 
                                 id="add-mbr" 
                                 className="btn-primary" 
-                                style={{padding: "2px", minWidth: "20px"}}>
+                                style={{padding: "2px", minWidth: "20px", display: "flex", alignItems: "center", justifyContent: "center"}}>
                                     <FontAwesomeIcon style={{width: "8px"}} icon={faPlus}/>
                             </button>
                             &nbsp;&nbsp;
-                            <button onClick={this.props.hidePopUp} className="btn-secondary" style={{padding: "2px", minWidth: "20px"}}>
+                            <button onClick={this.props.hidePopUp} 
+                                    className="btn-secondary" 
+                                    style={{padding: "2px", minWidth: "20px", display: "flex", alignItems: "center", justifyContent: "center"}}>
                                 <FontAwesomeIcon className="second-font-color" style={{width: "8px"}} icon={faTimes}/>
                             </button>
                         </div>
