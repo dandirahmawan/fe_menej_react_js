@@ -70,8 +70,8 @@ class list_module extends React.Component{
         let fetch = new Fetch()
         fetch.post("/module/data", formData).then(result => {
             try {
-                if(result.length){
-                    this.setDataTask(result)
+                if(result.success){
+                    this.setDataTask(result.data)
                 }
             } catch (error) { }
         })
@@ -79,17 +79,17 @@ class list_module extends React.Component{
 
     setDataTask = (result) => {
         this.setState({loader: ""})
-        var dataProjectFetch = result[0]['dataProject']
-        var dataModule = result[0]['dataModule']
-        var dataTeam = result[0]['dataProjectTeam']
-        var permition  = result[0]['permitionProjects']
-        var dataNote = result[0]['note']
-        var dataTab = result[0]['tabs']
-        var dataStatus = result[0]['statusModules']
-        var dataLabel = result[0]['labelsList']
-        var dataLabelModule = result[0]['labelModulelist']
-        var assignedModules = result[0]['assignedModules']
-        var sectionModule = result[0]['sectionModules']
+        var dataProjectFetch = result['dataProject']
+        var dataModule = result['dataModule']
+        var dataTeam = result['dataProjectTeam']
+        var permition  = result['permitionProjects']
+        var dataNote = result['note']
+        var dataTab = result['tabs']
+        var dataStatus = result['statusModules']
+        var dataLabel = result['labelsList']
+        var dataLabelModule = result['labelModulelist']
+        var assignedModules = result['assignedModules']
+        var sectionModule = result['sectionModules']
         
         if(dataProjectFetch === undefined || dataProjectFetch.length == 0){
             this.setState({notFound: true})

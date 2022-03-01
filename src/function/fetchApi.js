@@ -1,11 +1,11 @@
 import React from 'react'
 import axios from 'axios'
 import Logo from '../images/menej_285e8e.png'
+import { param } from 'jquery'
 
 class fetchApi {
     post = (url, param) => axios.post(url, param)
         .then(response => {
-            console.log("url : "+url)
             let data = response.data
             return data
         }).catch(error => {
@@ -13,6 +13,8 @@ class fetchApi {
             if(resp.status){
                 if(resp.status == 401) this.expPage()
             }
+
+            return null
         })
 
     get = (url, param) => axios.get(url, param)
@@ -24,8 +26,23 @@ class fetchApi {
             if(resp.status){
                 if(resp.status == 401) this.expPage()
             }
+
+            return null
         })
 
+    put = (url, param) => axios.put(url, param)
+        .then(response => {
+            let data = response.data
+            return data;
+        }).catch(error => {
+            let resp = error.response
+            if(resp.status){
+                if(resp.status == 401) this.expPage()
+            }
+
+            return null
+        })
+        
     expPage = () => {
         let wrp = document.createElement("div")
         wrp.style.display = "flex"

@@ -33,13 +33,16 @@ class project extends React.Component{
         let fetch = new Fetch()
         fetch.post("/project/list", form).then(result => {
             let projectId = 0
-            if(paths[1] == "project") projectId = paths[2]
+            if(result){
+                if(paths[1] == "project") projectId = paths[2]
+                
+                this.props.setDataProject(result)
+                this.setState({
+                    projectSelected: projectId,
+                    isLoad: false
+                })
+            }
             
-            this.props.setDataProject(result)
-            this.setState({
-                projectSelected: projectId,
-                isLoad: false
-            })
         })
     }
 
