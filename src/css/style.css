@@ -33,7 +33,7 @@ input{
 }
 
 .main-font-size {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .navbar{
@@ -354,7 +354,7 @@ select{
 }
 
 .list-menu{
-    font-size: 12px;
+    font-size: 14px;
     padding: 5px;
     cursor: pointer;
 }
@@ -568,7 +568,7 @@ button{
 }
 
 .main-font-size{
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .ck-box-fa{
@@ -587,7 +587,7 @@ button{
 }
 
 thead{
-    font-size: 12px;
+    font-size: 14px;
 }
 
 table{
@@ -604,7 +604,7 @@ th{
 }
 
 tr{
-    font-size: 12px;
+    font-size: 14px;
     border: none;
     cursor: pointer;
 }
@@ -613,7 +613,7 @@ td{
     padding-top: 5px;
     padding-left: 5px;
     padding-bottom: 5px;
-    font-size: 12px;
+    font-size: 14px;
     margin: 0px;
     outline: none;
 }
@@ -683,7 +683,7 @@ tr.tr_border_bottom td {
   
 .ass-tooltip .ass-tooltiptext {
     visibility: hidden;
-    font-size: 12px;
+    font-size: 14px;
     padding: 10px;
     background: rgb(255, 255, 255);
     border-radius: 3px;
@@ -708,7 +708,7 @@ tr.tr_border_bottom td {
   
 .ass-tooltip-nm .ass-tooltiptext-nm {
     visibility: hidden;
-    font-size: 12px;
+    font-size: 14px;
     padding: 10px;
     background: rgb(255, 255, 255);
     border-radius: 3px;
