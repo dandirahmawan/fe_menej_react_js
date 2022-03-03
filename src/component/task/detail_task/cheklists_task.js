@@ -220,7 +220,11 @@ class bugs_module extends React.Component{
                     <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Checklist</div>
                     <table style={{width: "100%"}}>
                         <tbody id="body-bugs-table">
-                            {(thereData < 1) ? <NoData/> : data}
+                            {
+                                (thereData < 1) 
+                                ? <NoData/> 
+                                : data
+                            }
                         </tbody>
                     </table>
                     {

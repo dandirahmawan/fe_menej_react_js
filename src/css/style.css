@@ -1,18 +1,27 @@
 @font-face{
     font-family: reguler_font;
     /*src: url('../font/Helvetica.ttf');*/
-    src: url('../font/Roboto-Regular.ttf')
+    /* src: url('../font/Roboto-Regular.ttf') */
+    src: url('../font/static/Montserrat-Medium.ttf')
+    /* src: url('../font/Poppins/Poppins-Regular.ttf') */
+    /* src: url('../font/PTSans-Regular.ttf'); */
 }
 
 @font-face{
     font-family: bold_font;
     /*src: url('../font/arialbd.ttf');*/
-    src: url('../font/Roboto-Bold.ttf');
+    src: url('../font/static/Montserrat-Bold.ttf');
+    /* src: url('../font/Poppins/Poppins-Bold.ttf') */
+    /* src: url('../font/Fredoka-Bold.ttf'); */
 }
 
 @font-face{
     font-family: bold_black_font;
-    src: url('../font/Roboto-Black.ttf');
+    src: url('../font/static/Montserrat-Black.ttf');
+}
+
+*{
+    letter-spacing: 2;
 }
 
 .force-block{
@@ -25,7 +34,7 @@
 
 strong{
     font-family: bold_font;
-    src: url('../font/arialbd.ttf');
+    src: url('../font/static/Montserrat-ExtraBold.ttf');
 }
 
 input{
@@ -33,7 +42,7 @@ input{
 }
 
 .main-font-size {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .navbar{
@@ -287,6 +296,7 @@ a:hover{
 button{
     border: none;
     outline: none;
+    font-family: reguler_font;
 }
 
 button:hover{
@@ -567,10 +577,6 @@ button{
     padding-left: 20px; */
 }
 
-.main-font-size{
-    font-size: 14px;
-}
-
 .ck-box-fa{
     font-size: 15px;
     color: #a5a5a5;
@@ -613,7 +619,7 @@ td{
     padding-top: 5px;
     padding-left: 5px;
     padding-bottom: 5px;
-    font-size: 14px;
+    font-size: 12px;
     margin: 0px;
     outline: none;
 }
