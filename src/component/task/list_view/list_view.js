@@ -122,7 +122,7 @@ class list_view extends Component{
         for(let i = 0;i<dataModule.length;i++){
             let dt = dataModule[i]
             if(dt.id == id){
-                let countTask = dt.sectionModule.length
+                let countTask = dt.modules.length
                 if(countTask > 0){
                     popUpAlert("This section is not empty")
                     isValid = false
@@ -209,7 +209,7 @@ class list_view extends Component{
                 let pc = parseInt(picProjcet)
 
                 let filter = this.props.filter
-                let countFilter = this.filteringData(dt.sectionModule, filter.type, filter.id)
+                let countFilter = this.filteringData(dt.modules, filter.type, filter.id)
                 
                 return <Fragment>
                             {
@@ -244,7 +244,7 @@ class list_view extends Component{
                                 : null
                             }
 
-                            {dt.sectionModule.map(dt => {
+                            {dt.modules.map(dt => {
                                 
                                 let isVisible = true
                                 let filter = this.props.filter
@@ -308,8 +308,8 @@ class list_view extends Component{
                             }
 
                             {
-                                // (dt.sectionModule.length == 0)
-                                (dt.sectionModule.length == 0 && countFilter > 0)
+                                // (dt.modules.length == 0)
+                                (dt.modules.length == 0 && countFilter > 0)
                                 ?
                                     <tr className="main-border-bottom">
                                         <td colSpan="7" style={{fontSize: "14px", color: "#a2a2a2"}}>

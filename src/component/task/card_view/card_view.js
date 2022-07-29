@@ -177,7 +177,7 @@ class card_view extends Component{
                         
                     {
                         this.props.dataModule.map(dtt => {
-                            const cardItem = dtt.sectionModule.map(dtta => {
+                            const cardItem = dtt.modules.map(dtta => {
                                 // /*set data assigned for each card*/
                                 // let dataAssigned = []
                                 // this.props.assignedModules.map(dtas => {
@@ -235,9 +235,9 @@ class card_view extends Component{
             
                         <div className="base-card-mod-itm scrollbar scoll-card-task">
                             {
-                                (dt.sectionModule.length > 0)
+                                (dt.modules.length > 0)
                                 ?
-                                    dt.sectionModule.map(dtta => {
+                                    dt.modules.map(dtta => {
                                         /*set data assigned for each card*/
                                         // let dataAssigned = []
                                         // this.props.assignedModules.map(dtas => {

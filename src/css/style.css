@@ -20,10 +20,6 @@
     src: url('../font/static/Montserrat-Black.ttf');
 }
 
-*{
-    letter-spacing: 2;
-}
-
 .force-block{
     display: block !important;
 }
@@ -235,7 +231,8 @@ td > .main-border{
 }
 
 .second-font-color{
-    color: #a2a2a2;
+    /* color: #a2a2a2; */
+    color: #707070;
 }
 
 li.none-style-list{

@@ -391,7 +391,7 @@ class module_info extends React.Component{
             <div style={{padding: "10px", paddingLeft: "20px", paddingRight: "20px", display: "flex"}}>
                 {this.state.popup}
 
-                <div style={{width: "420px"}}>
+                <div id="tsk-inf-bs" style={{width: "440px"}}>
                     <table>
                         <tbody>
                         <tr>
@@ -400,7 +400,7 @@ class module_info extends React.Component{
                                     ?
                                         <td colSpan="2">
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Task name</div>
-                                            <input id="inf-inp-1" className="input-info-mdl" onChange={this.props.changeName} value={this.props.moduleName} style={{padding: "7px", width: "100%", boxSizing: "border-box"}} placeholder="task name" type='text'></input>
+                                            <input id="" className="input-info-mdl" onChange={this.props.changeName} value={this.props.moduleName} style={{padding: "7px", width: "100%", boxSizing: "border-box"}} placeholder="task name" type='text'></input>
                                         </td>
                                     :
                                         <td colSpan="2">
@@ -544,7 +544,7 @@ class module_info extends React.Component{
                         </tbody>
                     </table>
                 </div>
-                <div ref={this.labelBase} className="main-border-left" style={{width: "180px", paddingLeft: "10px", paddingRight: "10px"}}>
+                <div ref={this.labelBase} className="main-border-left" style={{width: "200px", paddingLeft: "10px", paddingRight: "10px"}}>
                     <div className="second-font-color bold" 
                         style={{fontSize: "11px", marginBottom : "10px", display: "flex", justifyContent: "space-between"}}>
                         <div>Assign To</div>
@@ -578,7 +578,7 @@ class module_info extends React.Component{
                             {this.state.labeling}
                         </div>
 
-                        <div id="base-data-label-s12i" className="scrollbar" style={{fontSize: "11px", maxHeight: "200px"}}>
+                        <div id="base-data-label-s12i" className="scrollbar" style={{fontSize: "12px", maxHeight: "200px"}}>
                             {
                                 (labelDataSelected == "")
                                 ?  

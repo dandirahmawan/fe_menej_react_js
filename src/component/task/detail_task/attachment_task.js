@@ -289,13 +289,13 @@ class doc_file_module extends React.Component{
                                     data
                                 :
                                     <tr>
-                                        <td colSpan="3" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#a2a2a2"}}>
+                                        <td colSpan="3" className="font-second-color" style={{paddingTop: "20px",paddingBottom:"30px", fontSize: "14px", textAlign: "center", color: "#707070"}}>
                                             <div style={{marginTop: "10px"}}>
                                                 {/* <span style={{fontSize: "16px"}}>
                                                     <i class="fa fa-file" style={{fontSize: "20px"}}></i>
                                                 </span> */}
                                                 <div className="bold" style={{marginTop: "10px", fontSize: '12px'}}>No data to display</div>
-                                                <div style={{fontSize: "11px"}}>there's no data document or file<br/>in this module</div>
+                                                <div style={{fontSize: "12px"}}>there's no data document or file<br/>in this module</div>
                                             </div>
                                         </td>
                                     </tr> 

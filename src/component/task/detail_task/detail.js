@@ -944,7 +944,7 @@ class detail extends React.Component{
         return(
             <React.Fragment>
                 <div onClick={this.props.hide} className="block" style={{zIndex: "10001"}}></div>
-                <div id="detail-modul-base" style={{width: "650px", minHeight: "400px", background: "#FFF", position: "fixed", zIndex: "10002"}}> 
+                <div id="detail-modul-base" style={{width: "680px", minHeight: "400px", background: "#FFF", position: "fixed", zIndex: "10002"}}> 
                     <div id="header-dtl" className="main-border-bottom" style={{position: "fixed", width: "650px"}}>
                         <div style={{padding: "20px", background: "#FFF"}}>
                             {/* <i style={{fontSize: "18px", color: "#d4ae2b"}} className="fas fa-chevron-left"></i> */}
@@ -1033,14 +1033,14 @@ class detail extends React.Component{
 
                     <div id="ftr-dtl-bs" 
                         className="main-border-top" 
-                        style={{width: "610px", height: "50px", background: "#FFF", display: "flex", alignItems: "center", paddingLeft: "20px", paddingRight: "20px"}}>
+                        style={{width: "640px", height: "50px", background: "#FFF", display: "flex", alignItems: "center", paddingLeft: "20px", paddingRight: "20px"}}>
                         
                         <div className="second-font-color" style={{width: "100%", fontSize: '11px'}}>
                             <FontAwesomeIcon icon={faInfoCircle}/>
                             &nbsp;
                             The data will be saved after clicking the save button, except upload
                         </div>
-                        <div style={{width: "220px", display: "flex", justifyContent: "flex-end"}}>
+                        <div style={{width: "240px", display: "flex", justifyContent: "flex-end"}}>
                             <button className="btn-primary" style={{opacity: "0.5", display: "flex", justifyContent: "center", alignItems: "center"}} ref={this.btnSaveChange}>
                                 <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span>
                             </button>
