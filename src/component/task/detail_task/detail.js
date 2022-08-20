@@ -36,7 +36,7 @@ class detail extends React.Component{
             dataDocFile: [],
             dataPermition: [],
             projectId:"",
-            moduleId:"",
+            moduleId:null,
             moduleName: "",
             userId:"",
             emailUser:"",
@@ -114,7 +114,7 @@ class detail extends React.Component{
             this.setState({
                 isLoad: false,
                 projectId: this.props.projectId,
-                moduleId: null
+                moduleId: ""
             })
         }
 
@@ -957,7 +957,11 @@ class detail extends React.Component{
                                 ?
                                     <span className='bold' style={{fontSize: "18px"}}>{this.state.moduleName}</span>
                                 :
-                                    <span className='bold second-font-color' style={{fontSize: "18px"}}>New Task</span>
+                                    (this.state.moduleId != null)
+                                    ?
+                                        <span className='bold second-font-color' style={{fontSize: "18px"}}>New Task</span>
+                                    :
+                                        ""
                             }
                         </div>
                     </div>

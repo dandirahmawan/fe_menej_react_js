@@ -6,8 +6,9 @@ import { connect } from 'react-redux'
 import { setDataProject } from '../../redux/action'
 import CardList from './card_list'
 import CreateProject from './create_project'
-import Fetch from '../../function/fetchApi'
+import ProjectService from '../../services/project_service'
 
+let PS = new ProjectService()
 class project extends React.Component{
 
     state = {
@@ -17,33 +18,24 @@ class project extends React.Component{
     newProject = this.newProject.bind(this)
 
     componentDidMount(){
-        var userId = getCookieUserId()
-        var sessionId = getCookieSessionId()
+        this.fetchData()
+    }
 
+    fetchData = async () => {
         let path = window.location.pathname
         let paths = path.split("/")
 
-        let bd = document.getElementsByTagName("body")
-        bd[0].style.background = "#efefef"
-        
-        var form = new FormData()
-        form.append("userId", userId)
-        form.append("sessionId", sessionId)
-
-        let fetch = new Fetch()
-        fetch.post("/project/list", form).then(result => {
+        let result = await PS.get_all_project()
+        if(result){
             let projectId = 0
-            if(result){
-                if(paths[1] == "project") projectId = paths[2]
-                
-                this.props.setDataProject(result)
-                this.setState({
-                    projectSelected: projectId,
-                    isLoad: false
-                })
-            }
+            if(paths[1] == "project") projectId = paths[2]
             
-        })
+            this.props.setDataProject(result)
+            this.setState({
+                projectSelected: projectId,
+                isLoad: false
+            })
+        }
     }
 
     newProject(){

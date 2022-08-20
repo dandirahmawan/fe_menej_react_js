@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Logo from '../images/menej_285e8e.png'
-import { param } from 'jquery'
+
 
 class fetchApi {
     post = (url, param) => axios.post(url, param)
@@ -16,8 +16,34 @@ class fetchApi {
 
             return null
         })
+    
+    postGolang = (url, param) => axios.post("http://localhost:8888"+url, param)
+        .then(response => {
+            let data = response.data
+            return data
+        }).catch(error => {
+            let resp = error.response
+            if(resp.status){
+                if(resp.status == 401) this.expPage()
+            }
+
+            return null
+        })
 
     get = (url, param) => axios.get(url, param)
+        .then(response => {
+            let data = response.data
+            return data
+        }).catch(error => {
+            let resp = error.response
+            if(resp.status){
+                if(resp.status == 401) this.expPage()
+            }
+
+            return null
+        })
+
+    getGolang = (url) => axios.get("http://localhost:8888"+url)
         .then(response => {
             let data = response.data
             return data

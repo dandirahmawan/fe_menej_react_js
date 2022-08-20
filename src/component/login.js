@@ -2,7 +2,6 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import Logo from '../images/menej_285e8e.png'
 import {baseUrl} from '../const/const'
-import { pxd } from '../function/function'
 import cookieReact from 'react-cookies'
 
 class login extends React.Component{
@@ -69,7 +68,8 @@ class login extends React.Component{
         
         var form = new FormData()
         form.append("email", this.state.email)
-        form.append("password", pxd(this.state.password))
+        form.append("password", this.state.password)
+        // form.append("password", pxd(this.state.password))
         
         /*set redirection location after
         specialy for invitaion redirection page*/
@@ -81,7 +81,7 @@ class login extends React.Component{
             redirect = url.substring(lastIndexUrl, url.length)
         }
 
-        fetch(baseUrl+"/login", {
+        fetch(baseUrl+"/loginApp", {
             method: "POST",
             headers : new Headers(),
             body: form

@@ -332,16 +332,20 @@ function rootReducer(state = initState, action){
         let moduleId = action.data.modulId
         const newData = dataModule.map(dt => {
             if(dt.id == sectionId){
-                const sm = dt.sectionModule.map(dtt => {
+                const sm = dt.modules.map(dtt => {
                     if(dtt.modulId == moduleId){
+                        console.log(dtt.modulId+", "+moduleId)
                         dtt = action.data
                     }
-                    return dtt
+
+                    return dtt                    
                 })
-                dt.sectionModule = sm
+                dt.modules = sm
             }
             return dt
         })
+
+        // console.log(newData)
 
         return{
             ...state,
