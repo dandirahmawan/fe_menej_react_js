@@ -473,18 +473,18 @@ class module_info extends React.Component{
                                 }
                             </tr>
                             <tr>
-                                <td colSpan="2">
+                                <td colSpan="2" style={{position: "relative"}}>
                                     <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Description</div>
                                     <div>
                                     {
                                         (this.props.pic == getCookieUserId() || this.props.modulePermition || this.isNewModule)
                                         ?
                                             <Fragment>
-                                                <div ref={this.dvTxtArea} 
-                                                    style={{padding: "7px", paddingBottom: "10px", paddingTop: "10px", borderRadius: "3px", border: "1px solid #CCC", width: "370px", opacity: "0", position: "absolute", zIndex: "-1"}} className="second-background-grs second-font-color"> 
+                                                <div ref={this.dvTxtArea} id="bs-dv-dsc-ta-90ss2"
+                                                    style={{padding: "7px", paddingBottom: "10px", paddingTop: "10px", borderRadius: "3px", border: "1px solid #CCC", opacity: "0", position: "absolute", zIndex: "-1"}} className="second-background-grs second-font-color"> 
                                                     {(this.props.description != '') ? this.props.description : 'No description'}
                                                 </div> 
-                                                <textarea ref={this.txtArea} className="input-info-mdl" onKeyUp={this.txtHeght} onChange={this.changeDesc} 
+                                                <textarea ref={this.txtArea} id="bs-ta-dsc-ta-90ss2" className="input-info-mdl" onKeyUp={this.txtHeght} onChange={this.changeDesc} 
                                                     placeholder="insert description" 
                                                     value={this.props.description}
                                                     style={{width: "100%", fontSize: "12px", boxSizing: "border-box", padding: "7px", paddingTop: "10px", paddingBottom: "10px", overflow: "hidden"}}>

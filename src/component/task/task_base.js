@@ -816,8 +816,10 @@ class modulePage extends React.Component{
         var y = e.clientY;     // Get the vertical coordinate
 
         let isPermition = false
-        if(getCookieUserId() == parseInt(this.props.dataProject[0].pic) || 
-            this.state.isPermitionModule)
+        // console.log(getCookieUserId())
+        
+        // console.log(this.props.dataProject)
+        if(getCookieUserId() == this.props.dataProject[0].pic || this.state.isPermitionModule)
         {
             isPermition = true
         }

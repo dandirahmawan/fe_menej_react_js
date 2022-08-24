@@ -91,7 +91,7 @@ class fetchApi {
         h1.setAttribute("class", "bold")
 
         let h2 = document.createElement("div")
-        h2.innerText = "Your session is expired, pleas click login button to login again"
+        h2.innerText = "Your session is expired, please click login button to login again"
         h2.style.fontSize = "12px"
         h2.style.marginTop = "5px"
         h2.setAttribute("class", "second-font-color")

@@ -10,6 +10,7 @@ class context_menu_module extends Component{
 
     componentDidMount() {
         document.addEventListener('mouseup', this.handleClickOutside);
+        console.log(this.props)
     }
 
     handleClickOutside(event) {

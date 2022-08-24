@@ -21,8 +21,7 @@ import { baseUrl } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faInfoCircle, faSave, faTimes, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
 import { check_circle as CkCIrcle } from '../../icon/icon'
-import axios from 'axios'
-import { fetchDataPost } from '../../../function/fetch'
+import MS from '../../../services/module_service'
 import Fetch from '../../../function/fetchApi'
 
 class detail extends React.Component{
@@ -130,17 +129,20 @@ class detail extends React.Component{
         mbd.style.maxHeight = maxHeight+"px"
     }
 
-    fetchDataDetail = () => {
-        var form = new FormData()
-        form.append("moduleId",  this.props.modulId)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
-        form.append("projectId", this.props.projectId)
+    fetchDataDetail = async () => {
+        // var form = new FormData()
+        // form.append("moduleId",  this.props.modulId)
+        // form.append("userId", getCookieUserId())
+        // form.append("sessionId", getCookieSessionId())
+        // form.append("projectId", this.props.projectId)
 
-        let fetch = new Fetch()
-        fetch.post("/module/detail", form).then(result => {
-            if(result) this.setDataState(result)
-        })
+        // let fetch = new Fetch()
+        // fetch.post("/module/detail", form).then(result => {
+        //     if(result) this.setDataState(result)
+        // })
+        let ms = new MS()
+        let resp = await ms.getDataModuleDetail(this.props.modulId)
+        if(resp) this.setDataState(resp)
         // fetchDataPost("/module/detail", form).then(result => {
         //     this.setDataState(result)
         // })

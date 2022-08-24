@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import Logo from '../images/menej_285e8e.png'
-import {baseUrl} from '../const/const'
+import {baseUrlGO} from '../const/const'
 import cookieReact from 'react-cookies'
 
 class login extends React.Component{
@@ -81,7 +81,7 @@ class login extends React.Component{
             redirect = url.substring(lastIndexUrl, url.length)
         }
 
-        fetch(baseUrl+"/loginApp", {
+        fetch(baseUrlGO+"/loginApp", {
             method: "POST",
             headers : new Headers(),
             body: form

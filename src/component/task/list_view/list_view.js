@@ -291,7 +291,7 @@ class list_view extends Component{
                                                 userName = {dt.userName}
                                                 isMember = {dt.isMember}
                                                 note = ""
-                                                assigned = {this.props.assignedModules}
+                                                assigned={dt.assignTo}
                                                 bugsIconClick = {this.bugsIconClick}
                                                 isSelected={dt.isSelected}
                                                 docFileIconClick = {this.docFileIconClick}
@@ -299,7 +299,6 @@ class list_view extends Component{
                                                 appendsNote=""
                                                 updateStateDataNote=""
                                                 labelModule={dt.label}
-                                                // dataLabelModule={this.readDataLabel(dt.modulId)}
                                                 contextMenuModule={this.props.contextMenuModule}
                                                 showDescription={this.props.showDescription}
                                                 isBorder={this.props.isBorder}/>

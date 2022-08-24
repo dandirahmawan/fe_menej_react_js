@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import Fetch from '../../function/fetchApi'
+import ModuleService from '../../services/module_service'
 
 class list_module extends React.Component{
 
@@ -52,29 +53,36 @@ class list_module extends React.Component{
         }
     }
 
-    fetchData(userId, projectId){
+    fetchData = async (userId, projectId) => {
         this.setState({
             loader: <Spinner textLoader="Load data.."/>,
             projectIdHeader: projectId,
             notFound: false
         })
 
+     
         let bd = document.getElementsByTagName("body")
         bd[0].style.background = "#FFF"
 
-        var formData = new FormData();
-        formData.append("projectId", projectId)
-        formData.append("userId", userId)
-        formData.append("sessionId", getCookieSessionId())
+        // var formData = new FormData();
+        // formData.append("projectId", projectId)
+        // formData.append("userId", userId)
+        // formData.append("sessionId", getCookieSessionId())
 
-        let fetch = new Fetch()
-        fetch.post("/module/data", formData).then(result => {
-            try {
-                if(result.success){
-                    this.setDataTask(result.data)
-                }
-            } catch (error) { }
-        })
+        let MS = new ModuleService()
+        let resp = await MS.getDataModule(projectId)
+        console.log(resp.data)
+        if(resp.success){
+            this.setDataTask(resp.data)
+        }
+        // let fetch = new Fetch()
+        // fetch.post("/module/data", formData).then(result => {
+        //     try {
+        //         if(result.success){
+        //             this.setDataTask(result.data)
+        //         }
+        //     } catch (error) { }
+        // })
     }   
 
     setDataTask = (result) => {

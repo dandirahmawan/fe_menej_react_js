@@ -17,7 +17,7 @@ import {startData} from './redux/action'
 import {connect} from 'react-redux'
 import './css/style.css'
 import './App.css'
-import { baseUrl } from './const/const'
+import { baseUrl, baseUrlGO } from './const/const'
 import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function'
 import axios from 'axios'
 
@@ -59,13 +59,14 @@ class App extends React.Component{
             })
         }
 
+        console.log(this.mCookie)
         if(this.mCookie !== ""){
-            form.append("userId", userId)
-            form.append("sessionId", sessionId)
+            // form.append("userId", userId)
+            // form.append("sessionId", sessionId)
 
-            fetch(baseUrl+"/start_data", {
-                    method : "POST",
-                    body : form
+            fetch(baseUrlGO+"/start_data", {
+                    method : "GET"
+                    // body : form
             }).then(rst => rst.text())
             .then(result => {
                     if(result != ""){
@@ -79,6 +80,7 @@ class App extends React.Component{
                     }
             }).catch((error) => {
                 // alert("dandi rahmawan")
+                console.log(error)
                 if(error == "TypeError: Failed to fetch"){
                     this.setState({
                         isLoad: false
