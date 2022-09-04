@@ -12,6 +12,7 @@ import PreviewVideo from '../preview_video'
 import {Spinner} from '../spinner'
 import DetailModule from '../task/detail_task/detail'
 import Fetch from '../../function/fetchApi'
+import DFS from '../../services/document_file_service'
 
 class document_file extends React.Component{
 
@@ -65,12 +66,16 @@ class document_file extends React.Component{
         header.append("sessionId", getCookieSessionId())
         header.append("userId", getCookieUserId());
 
-        let fetch = new Fetch()
-        fetch.post("/document_file_list", form).then(result => {
-            this.props.setDataDocFile(result)
-            this.setState({
-                isLoad: false
-            })
+        this.fetch()
+    }
+
+    fetch = async () => {
+        let serv = new DFS()
+        let resp = await serv.getDataDocumentFile(this.props.projectId)
+
+        this.props.setDataDocFile(resp)
+        this.setState({
+            isLoad: false
         })
     }
 
@@ -205,9 +210,10 @@ class document_file extends React.Component{
                 if(this.state.moduleNameFilter.length < 1){
                     return <Row
                         fileName={dt.fileName}
+                        ext={dt.extension}
                         descriptionFile={dt.descriptionFile}
                         fileSize={dt.fileSize}
-                        moduleName={dt.moduleName}
+                        moduleName={dt.modulName}
                         uploadDate={dt.uploadDate}
                         projectId={dt.projectId}
                         modulId={dt.modulId}
@@ -233,7 +239,7 @@ class document_file extends React.Component{
                             path={dt.path}
                             userName={dt.userName}
                             userId={dt.userId}
-                            isBorder={this.state.isBorder}
+                            isBorder={this.props.isBorderRdx}
                             //action passing param
                             deleteDocFile={this.deleteDocFile}
                             rowClickDocFile={this.rowClickDocFile}
@@ -372,12 +378,12 @@ class document_file extends React.Component{
                     </div>
                 </div> */} 
                 <div id="atch-tbl-bs" style={{paddingTop: "65px"}}>
-                    <table className="main-border-bottom" style={{width: "90%", marginLeft: "15px"}}>
+                    <table className="main-border-bottom" style={{width: "90%", marginLeft: "15px", marginTop: "-1px"}}>
                         <thead id="th-doc-file">
                             {
-                                (this.state.isBorder)
+                                (this.props.isBorderRdx)
                                 ?
-                                    <tr className="main-border-bottom">
+                                    <tr className="main-border-bottom" style={{background: "#f3f3f3"}}>
                                         <th className="bold second-font-color main-border th-doc-file tb-doc-file" colSpan="2">Name</th>
                                         <th className="bold second-font-color main-border th-doc-file tb-doc-file" style={{width: "200px"}}>Task</th>
                                         {/* <th className="bold second-font-color main-border th-doc-file tb-doc-file" style={{width: "100px"}}>Upload By</th> */}
@@ -388,10 +394,10 @@ class document_file extends React.Component{
                                     </tr>
                                 :
                                     <tr>
-                                        <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" colSpan="2">Name</th>
-                                        <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "200px"}}>Task</th>
+                                        <th className="bold second-font-color main-border-bottom th-doc-file tb-doc-file" colSpan="2">Name</th>
+                                        <th className="bold second-font-color main-border-bottom th-doc-file tb-doc-file" style={{width: "200px"}}>Task</th>
                                         {/* <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "100px"}}>Upload By</th> */}
-                                        <th className="bold second-font-color main-border-right main-border-bottom th-doc-file tb-doc-file" style={{width: "50px"}}>
+                                        <th className="bold second-font-color main-border-bottom th-doc-file tb-doc-file" style={{width: "50px"}}>
                                             Size
                                         </th>
                                         <th className="bold second-font-color
@@ -449,6 +455,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return{
+        isBorderRdx: state.isBorderAttachment,
         dataDocFile : state.dataDocFile
     }
 }

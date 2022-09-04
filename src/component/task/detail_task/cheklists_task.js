@@ -25,9 +25,8 @@ class bugs_module extends React.Component{
         }
 
         this.chBugs = this.chBugs.bind(this)
-        // this.commitChecklist = this.commitChecklist.bind(this)
         this.deleteBugs = this.deleteBugs.bind(this)
-        this.confirmYesDelete = this.confirmYesDelete.bind(this)
+        // this.confirmYesDelete = this.confirmYesDelete.bind(this)
         this.hideConfirm = this.hideConfirm.bind(this)
         this.confirmYesClose = this.confirmYesClose.bind(this)
         this.confirmYesUnclose = this.confirmYesUnclose.bind(this)
@@ -109,31 +108,31 @@ class bugs_module extends React.Component{
         })
     }
 
-    confirmYesDelete(){
-        var form = new FormData()
-        form.append("bugsId", this.state.bugsId)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
+    // confirmYesDelete(){
+    //     var form = new FormData()
+    //     form.append("bugsId", this.state.bugsId)
+    //     form.append("userId", getCookieUserId())
+    //     form.append("sessionId", getCookieSessionId())
 
-        ApiFetch("/delete_bugs",{
-            method: "POST",
-            body: form
-        }).then(res => res.text())
-        .then(result => {
-            this.setState({
-                popDelete: ""
-            })
+    //     ApiFetch("/delete_bugs",{
+    //         method: "POST",
+    //         body: form
+    //     }).then(res => res.text())
+    //     .then(result => {
+    //         this.setState({
+    //             popDelete: ""
+    //         })
 
-            var bodyTable = document.getElementById("body-bugs-table")
-            var child = bodyTable.children
+    //         var bodyTable = document.getElementById("body-bugs-table")
+    //         var child = bodyTable.children
             
-            for(var i=0;i<child.length;i++){
-                child[i].setAttribute("class","tr-selectable")
-            }
-            this.props.deleteBugsRedux(this.state.bugsId)
-            this.props.deleteBugs(this.state.bugsId)
-        })
-    }
+    //         for(var i=0;i<child.length;i++){
+    //             child[i].setAttribute("class","tr-selectable")
+    //         }
+    //         this.props.deleteBugsRedux(this.state.bugsId)
+    //         this.props.deleteBugs(this.state.bugsId)
+    //     })
+    // }
 
     confirmYesClose(){
         // var form = new FormData()
@@ -270,9 +269,9 @@ class bugs_module extends React.Component{
 
 const mapDispatchToProps = dispatch => {
     return{
-        deleteBugsRedux : (bugsId) => dispatch(deleteDataBugs(bugsId)),
-        closeDataBugs : (bugsId) => dispatch(closeDataBugs(bugsId)),
-        uncloseDataBugs : (bugsId) => dispatch(uncloseDataBugs(bugsId)),
+        // deleteBugsRedux : (bugsId) => dispatch(deleteDataBugs(bugsId)),
+        // closeDataBugs : (bugsId) => dispatch(closeDataBugs(bugsId)),
+        // uncloseDataBugs : (bugsId) => dispatch(uncloseDataBugs(bugsId)),
     }
 }
 

@@ -4,7 +4,6 @@ import TaskInfo from './task_info'
 import CheckList from './cheklists_task'
 import DocFileModule from './attachment_task'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../../function/function'
-import {ApiFetch} from '../../apiFetch'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, 
         updateDataModuleDocFile, 
@@ -17,9 +16,9 @@ import {updateDataModuleBugs,
         setDataModule,
         appendDataModule} from '../../../redux/action'
 import {Spinner, SpinnerButton} from '../../spinner'
-import { baseUrl } from '../../../const/const'
+import { baseUrlGO } from '../../../const/const'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faInfoCircle, faSave, faTimes, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle, faSave, faTimes, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
 import { check_circle as CkCIrcle } from '../../icon/icon'
 import MS from '../../../services/module_service'
 import Fetch from '../../../function/fetchApi'
@@ -130,22 +129,9 @@ class detail extends React.Component{
     }
 
     fetchDataDetail = async () => {
-        // var form = new FormData()
-        // form.append("moduleId",  this.props.modulId)
-        // form.append("userId", getCookieUserId())
-        // form.append("sessionId", getCookieSessionId())
-        // form.append("projectId", this.props.projectId)
-
-        // let fetch = new Fetch()
-        // fetch.post("/module/detail", form).then(result => {
-        //     if(result) this.setDataState(result)
-        // })
         let ms = new MS()
         let resp = await ms.getDataModuleDetail(this.props.modulId)
         if(resp) this.setDataState(resp)
-        // fetchDataPost("/module/detail", form).then(result => {
-        //     this.setDataState(result)
-        // })
     }
 
     setDataState = (result) => {
@@ -265,7 +251,6 @@ class detail extends React.Component{
         this.btnSaveChange.current.setAttribute("class", "btn-primary")
         this.btnSaveChange.current.style.opacity = 1
         this.btnSaveChange.current.onclick = this.commitModule
-        this.btnSaveChange.current.disabled = false
     }
 
     changeLabelModule(data){
@@ -300,7 +285,6 @@ class detail extends React.Component{
         let data = {}
         data.module = objModule
         data.checklist = this.state.dataBugs
-
         /*validation input mandatory*/
         let isValid = this.inputValidation(this.state.moduleName, 
                                             this.state.assignedModules, 
@@ -366,35 +350,23 @@ class detail extends React.Component{
 
     excNew = (data, t) => {
         let fetch = new Fetch()
-        fetch.post("/module/new", data).then(result => {
+        fetch.postGolang("/module", data).then(result => {
             this.setDataState(result)
             /*tambahkan data module ke redux*/
             this.props.appendDataModule(result.dataModule)
 
+            console.log(t)
             popUpAlert("Module successfully saved", "success")
             ReactDom.render("Save change", t)
             t.style.opacity = 1
         })
-
-        // ApiFetch("/module/new", {
-        //     method: "POST",
-        //     headers: new Headers({'content-type': 'application/json'}),
-        //     body: JSON.stringify(data)
-        // }).then(res => res.json()).then(result => {
-        //     this.setDataState(result)
-        //     /*tambahkan data module ke redux*/
-        //     this.props.appendDataModule(result.dataModule)
-
-        //     popUpAlert("Module successfully saved", "success")
-        //     ReactDom.render("Save change", t)
-        //     t.style.opacity = 1
-        // })
     }
 
     excUpdate = (data, t) => {
         let fetch = new Fetch()
-        fetch.post("/module/update", data).then(result => {
-            if(result.success){
+        fetch.putGolang("/module/"+this.state.moduleId, data).then(result => {
+            // if(result.success){
+                /*set new data module to array*/
                 if(this.state.sectionId != this.state.sectionIdLast){
                     let newData = ""
                     let arr = []
@@ -402,7 +374,7 @@ class detail extends React.Component{
                     this.props.dataModule.map(dt => {
                         let i = 0
                         if(dt.id == this.state.sectionIdLast){
-                            dt.sectionModule.map(dtt => {
+                            dt.modules.map(dtt => {
                                 i++
                                 let sp = i - 1
                                 if(dtt.modulId == this.state.moduleId){
@@ -416,7 +388,7 @@ class detail extends React.Component{
                                     newData = dtt
 
                                     /*delete data module in section*/
-                                    dt.sectionModule.splice(sp, 1)
+                                    dt.modules.splice(sp, 1)
                                 }
                             })
                             return dt
@@ -427,7 +399,7 @@ class detail extends React.Component{
                     this.props.dataModule.map(dt => {
                         /*set data new data module in section id*/
                         if(dt.id == this.state.sectionId){
-                            dt.sectionModule.push(newData)
+                            dt.modules.push(newData)
                         }
                         return dt
                     }) 
@@ -443,110 +415,21 @@ class detail extends React.Component{
                         sectionIdLast: this.state.sectionId
                     })
                 }else{
-                    
-                    let dataModule = result.module
-                    this.commitAssignedModule()
+                    let dataModule = result.dataModule
                     this.props.updateDataModule(dataModule)
-                    // this.props.updateDataChecklist(dataCheckilst, this.state.moduleId, this.state.sectionId)
-                    // this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
-                    //     this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
-                    //     this.state.dueDate, this.state.sectionId, this.state.dataLabelModuleToUpdate)
-
-                    
                     
                     /*set state checklist for delete
                     after save change necessery*/
                     this.setState({
                         infoPop: "",
-                        dataBugs: result.checklist
+                        dataBugs: result.bugs
                     })
                 }
-
-            }
 
             popUpAlert("Module successfully update", "success")
             ReactDom.render("Save change", t)
             t.style.opacity = 1
         })
-        // ApiFetch("/module/update", {
-        //     method: "POST",
-        //     // headers: new Headers({'content-type': 'application/json'}),
-        //     body: JSON.stringify(data)
-        // }).then(res => res.json()).then(result => {
-        //     if(result.success){
-        //         if(this.state.sectionId != this.state.sectionIdLast){
-        //             let newData = ""
-        //             let arr = []
-                    
-        //             this.props.dataModule.map(dt => {
-        //                 let i = 0
-        //                 if(dt.id == this.state.sectionIdLast){
-        //                     dt.sectionModule.map(dtt => {
-        //                         i++
-        //                         let sp = i - 1
-        //                         if(dtt.modulId == this.state.moduleId){
-        //                             dtt.modulName = this.state.moduleName
-        //                             dtt.modulStatus = this.state.moduleStatus
-        //                             dtt.description = this.state.descriptionModule
-        //                             dtt.sectionId = this.state.sectionId
-        //                             dtt.endDate = this.state.dueDate
-                                    
-        //                             /*set new data in by section id*/
-        //                             newData = dtt
-
-        //                             /*delete data module in section*/
-        //                             dt.sectionModule.splice(sp, 1)
-        //                         }
-        //                     })
-        //                     return dt
-        //                 }
-        //             })
-                    
-        //             /*pass new data to array data module*/
-        //             this.props.dataModule.map(dt => {
-        //                 /*set data new data module in section id*/
-        //                 if(dt.id == this.state.sectionId){
-        //                     dt.sectionModule.push(newData)
-        //                 }
-        //                 return dt
-        //             }) 
-                    
-        //             this.props.dataModule.map(dt => {
-        //                 arr.push(dt)
-        //             })
-
-        //             /*set data module to redux*/
-        //             this.props.setDataModule(arr)
-
-        //             this.setState({
-        //                 sectionIdLast: this.state.sectionId
-        //             })
-        //         }else{
-                    
-        //             let dataModule = result.module
-        //             this.commitAssignedModule()
-        //             this.props.updateDataModule(dataModule)
-        //             // this.props.updateDataChecklist(dataCheckilst, this.state.moduleId, this.state.sectionId)
-        //             // this.props.updateDataModule(this.state.moduleId, this.state.moduleName, this.state.moduleStatus, 
-        //             //     this.state.userId, this.state.userName, this.state.emailUser, this.state.descriptionModule, 
-        //             //     this.state.dueDate, this.state.sectionId, this.state.dataLabelModuleToUpdate)
-
-                    
-                    
-        //             /*set state checklist for delete
-        //             after save change necessery*/
-        //             this.setState({
-        //                 infoPop: "",
-        //                 dataBugs: result.checklist
-        //             })
-        //         }
-
-        //     }
-
-        //     popUpAlert("Module successfully update", "success")
-        //     ReactDom.render("Save change", t)
-        //     t.style.opacity = 1
-        // })
     }
 
     setDataBugsValidation = (data) => {
@@ -578,27 +461,27 @@ class detail extends React.Component{
         
         /*set date*/
         let date = new Date()
-        
-        let dd = date.getDate()
-        dd = (dd < 10) ? "0"+dd : dd
+        let isoDate = date.toISOString()
+        // let dd = date.getDate()
+        // dd = (dd < 10) ? "0"+dd : dd
 
-        let mm = parseInt(date.getMonth()) + 1
-        mm = (mm < 10) ? "0"+mm : mm
+        // let mm = parseInt(date.getMonth()) + 1
+        // mm = (mm < 10) ? "0"+mm : mm
 
-        let yy = date.getFullYear()
-        let format = yy+"-"+mm+"-"+dd
+        // let yy = date.getFullYear()
+        // let format = yy+"-"+mm+"-"+dd
 
         /*set new object data checklist*/
         let obj = {}
-        let newId = -Math.abs(countNew)
+        let newId = "-1" /*-1 is for mark that the data is new*/
         obj.bugsId = newId
         obj.projectId = this.state.projectId
         obj.modulId = this.state.moduleId
         obj.note = bugsText
-        obj.userId = parseInt(getCookieUserId())
+        obj.userId = getCookieUserId()
         obj.isDelete = "N"
         obj.bugStatus = "P"
-        obj.createDate = format
+        obj.createDate = isoDate
 
         /*add data to array*/
         dataBugs.push(obj)
@@ -641,28 +524,6 @@ class detail extends React.Component{
                 /*nothing happen*/
             }
         })
-        // ApiFetch("/add_bugs", {
-        //     method: "POST",
-        //     body: form
-        // }).then(res => res.json())
-        // .then(result => {
-        //     /*set new data bugs*/
-        //     this.state.dataBugs.push(result)
-            
-        //     /*set param to state*/
-        //     let arrDataChecklist = []
-        //     this.state.dataBugs.map(dt => {
-        //         arrDataChecklist.push(dt)
-        //     })
-            
-        //     this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "add")
-        //     this.setState({
-        //         dataBugs: arrDataChecklist
-        //     })
-
-        //     ReactDom.render("Send", btn)
-        //     this.props.appendDataBugs(result)
-        // })
     }
 
     documentFileUpload(e){
@@ -707,8 +568,8 @@ class detail extends React.Component{
         let form = new FormData()
         let file = (bs64 == "") ? this.state.documentFileUploadData : ""
         form.append('file', file)
-        form.append("userId", getCookieUserId())
-        form.append("sessionId", getCookieSessionId())
+        // form.append("userId", getCookieUserId())
+        // form.append("sessionId", getCookieSessionId())
         form.append('projectId', this.state.projectId)
         form.append('moduleId', this.state.moduleId)
         form.append('descFile', descFile)
@@ -752,30 +613,22 @@ class detail extends React.Component{
             }
         }
 
-        xhr.open('POST', baseUrl+'/document_file')
+        xhr.open('POST', baseUrlGO+'/attachment')
         xhr.setRequestHeader("userId", getCookieUserId())
         xhr.setRequestHeader("sessionId", getCookieSessionId())
         xhr.send(form)
     }
 
-    deleteDocFile(fileName){
-        var mi = this.state.moduleId
-        var pi = this.state.projectId
-        var userId = getCookieUserId()
-
-        var form = new FormData()
-        form.append("moduleId", mi)
-        form.append("projectId", pi)
-        form.append("fileName", fileName)
-        form.append("userId", userId)
+    deleteDocFile(id){
 
         let fetch = new Fetch()
-        fetch.post("/delete_document_file", form).then(result => {
+        fetch.deleteGolang("/attachment/"+id).then(result => {
             try {
                 if(result == 1){
                     var newState = this.state.dataDocFile
                     this.state.dataDocFile.map(dt => {
-                        if(dt.projectId == pi && dt.modulId == mi && dt.fileName == fileName){
+                        console.log(dt)
+                        if(dt.id == id){
                             var idx = this.state.dataDocFile.indexOf(dt)
                             newState.splice(idx, 1)
                         }
@@ -785,8 +638,8 @@ class detail extends React.Component{
                     this.setState({
                         dataDocFile: newState
                     })
-                    this.props.updateDataModuleDocFile(mi, "delete")
-                    this.props.deleteDataDocFile(mi, pi, fileName, userId)
+                    // this.props.updateDataModuleDocFile(mi, "delete")
+                    // this.props.deleteDataDocFile(mi, pi, fileName, userId)
                 }
     
                var row = document.getElementsByClassName("row-doc-file")
@@ -797,34 +650,6 @@ class detail extends React.Component{
                 /*nothing happen*/
             }
         })
-        // ApiFetch("/delete_document_file", {
-        //     method: "POST",
-        //     body: form
-        // }).then(res => res.text())
-        // .then(result => {
-        //     if(result == 1){
-        //         var newState = this.state.dataDocFile
-        //         this.state.dataDocFile.map(dt => {
-        //             if(dt.projectId == pi && dt.modulId == mi && dt.fileName == fileName){
-        //                 var idx = this.state.dataDocFile.indexOf(dt)
-        //                 newState.splice(idx, 1)
-        //             }
-        //             return dt
-        //         })
-
-        //         this.setState({
-        //             dataDocFile: newState
-        //         })
-        //         this.props.updateDataModuleDocFile(mi, "delete")
-        //         this.props.deleteDataDocFile(mi, pi, fileName, userId)
-        //     }
-
-        //    var row = document.getElementsByClassName("row-doc-file")
-        //    for(var i = 0;i<row.length;i++){
-        //         row[i].style.opacity = "1"
-        //    }
-
-        // })
     }
 
     deleteBugs(bugsId){
@@ -833,7 +658,8 @@ class detail extends React.Component{
 
         let dataBugs = [...this.state.dataBugs]
         const newData = dataBugs.map(dt => {
-            if(dt.modulId === mi && dt.projectId === pi && dt.bugsId === bugsId){
+            console.log(dt)
+            if(dt.bugsId === bugsId){
                 dt.isDelete = "Y"
                 // this.props.updateDataModuleBugs(this.state.moduleId, this.state.sectionId, "delete")
             }
@@ -862,11 +688,6 @@ class detail extends React.Component{
     }
 
     close(){
-        // let b = JSON.stringify(this.dataBugsValidation)
-        // let c = JSON.stringify(this.state.dataBugs)
-        
-        // console.log(b)
-        // console.log(c)
         clearInterval(this.interval)
         this.props.close()
     }
@@ -924,22 +745,23 @@ class detail extends React.Component{
 
     commitAssignedModule(){
         let idxArrRemove = []
-        for(let i = 0;i<this.props.assignedModuleRdx.length;i++){
-            let dt = this.props.assignedModuleRdx[i]
-            if(dt.moduleId == this.state.moduleId){
-                idxArrRemove.push(i)
-            }
-        }
+        // console.log(this.props.assignedModuleRdx)
+        // for(let i = 0;i<this.props.assignedModuleRdx.length;i++){
+        //     let dt = this.props.assignedModuleRdx[i]
+        //     if(dt.moduleId == this.state.moduleId){
+        //         idxArrRemove.push(i)
+        //     }
+        // }
         
-        for (var i = idxArrRemove.length -1; i >= 0; i--){
-            this.props.assignedModuleRdx.splice(idxArrRemove[i], 1)
-        }
+        // for (var i = idxArrRemove.length -1; i >= 0; i--){
+        //     this.props.assignedModuleRdx.splice(idxArrRemove[i], 1)
+        // }
 
-        /*append new data assigned*/
-        let data = this.state.assignedModules
-        data.map(dt => {
-            this.props.assignedModuleRdx.push(dt)
-        })
+        // /*append new data assigned*/
+        // let data = this.state.assignedModules
+        // data.map(dt => {
+        //     this.props.assignedModuleRdx.push(dt)
+        // })
     }
 
     render(){
@@ -1048,7 +870,13 @@ class detail extends React.Component{
                         </div>
                         <div style={{width: "240px", display: "flex", justifyContent: "flex-end"}}>
                             <button className="btn-primary" style={{opacity: "0.5", display: "flex", justifyContent: "center", alignItems: "center"}} ref={this.btnSaveChange}>
-                                <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span>
+                                <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;
+                                <span style={{fontSize: "11px"}}>
+                                {
+                                    (this.state.moduleId == null || this.state.moduleId == "")
+                                    ? "Save" : "Save Change"
+                                }
+                                </span>
                             </button>
                             &nbsp;
                             <button onClick={this.close} style={{display: "flex", justifyContent: "center", alignItems: "center"}} className="btn-secondary">
@@ -1066,7 +894,6 @@ const mapDispatchToProps = dispatch => {
     return{
         updateDataModuleBugs: (moduleId, sectionId, type) => dispatch(updateDataModuleBugs(moduleId, sectionId, type)),
         updateDataModuleDocFile: (moduleId, type) => dispatch(updateDataModuleDocFile(moduleId, type)),
-        // updateDataModule: (moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label) => dispatch(updateDataModule(moduleId, moduleName, moduleStatus, userId, userName, emailUser, desciptionModule, dueDate, section, label)),
         updateDataModule: (dataModule) => dispatch(updateDataModule(dataModule)),
         appendDataBugs: (jsonObjectBugs) => dispatch(appendDataBugs(jsonObjectBugs)),
         appendDataDocFile: (jsonObject) => dispatch(appendDataDocFile(jsonObject)),

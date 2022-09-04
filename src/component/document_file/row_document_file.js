@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendar, faCalendarAlt, faSdCard, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {getIconDocFIle} from '../../function/function'
 import {check_circle as CkCIrcle} from '../icon/icon'
+import { connect } from 'react-redux'
 
 class row_document_file extends React.Component{
 
@@ -13,8 +14,14 @@ class row_document_file extends React.Component{
     }
 
     componentDidMount(){
-        getIconDocFIle(this.props.fileName, this.baseIcon.current)
+        getIconDocFIle(this.props.ext, this.baseIcon.current)
     }
+
+    // componentDidUpdate(prevProps, prevState, snapshot){
+    //     if(prevProps != this.props){
+    //         console.log(this.props)
+    //     }
+    // }
 
     byteToKb(size){
         var rtn = 0
@@ -36,10 +43,10 @@ class row_document_file extends React.Component{
 
     render(){
         return(
-            (!this.props.isBorder)
+            (!this.props.isBorderRdx)
             ?
                 <tr className="tb-doc-file tr-selectable" valign="top">
-                    <td className="tb-doc-file" style={{width: "20px"}}>
+                    <td className="tb-doc-file" valign='middle' style={{width: "20px"}}>
                         <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file" style={{paddingRight: "10px"}}>
@@ -56,9 +63,9 @@ class row_document_file extends React.Component{
                             </div>
                         </div>
                     </td>
-                    <td className="tb-doc-file">
+                    <td className="tb-doc-file" style={{position: "relative", padding: "0px", paddingLeft: "5px"}}>
                         <a onClick={() => this.props.moduleClick(this.props.modulId)}>
-                            <div style={{display: "flex", alignItems: "center"}}>
+                            <div style={{display: "flex", alignItems: "center", position: "absolute", height: "100%"}}>
                                 <CkCIrcle className="fld-color" style={{width: "15px", height: "15px"}}/> 
                                 <div className="bold" style={{marginLeft: "10px"}}>
                                     {this.props.moduleName}
@@ -69,24 +76,28 @@ class row_document_file extends React.Component{
                     {/* <td className="tb-doc-file">
                         {this.props.userName}
                     </td> */}
-                    <td className="tb-doc-file main-border bold">
-                        <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
+                    <td className="tb-doc-file bold" style={{position : "relative", padding: "0px", paddingLeft: "5px"}}>
+                        <div style={{display: "flex", alignItems: "center", height: "100%", position: "absolute"}}> 
+                            <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
+                        </div>
                     </td>
-                    <td className="tb-doc-file bold" style={{width: "90px"}}>
-                        <FontAwesomeIcon className="second-font-color" icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate(this.props.uploadDate)}
+                    <td className="tb-doc-file bold" style={{position : "relative", padding: "0px", paddingLeft: "5px", width: "90px"}}>
+                        <div style={{display: "flex", alignItems: "center", height: "100%", position: "absolute"}}> 
+                            <FontAwesomeIcon className="second-font-color" icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate(this.props.uploadDate)}
+                        </div>
                     </td>
-                    <td>
+                    <td valign='middle'>
                         <a onClick={() => this.props.deleteDocFile(this.props.fileName, this.props.modulId, this.props.projectId)}>
                             <FontAwesomeIcon icon={faTrashAlt} style={{fontSize: "11px"}}></FontAwesomeIcon>
                         </a>
                     </td>
                 </tr>
             :
-                <tr className="tb-doc-file tr-selectable main-border" valign="top">
-                    <td className="tb-doc-file main-border" style={{width: "20px"}}>
+                <tr className="tb-doc-file tr-selectable" valign="top">
+                    <td className="tb-doc-file main-border" valign='middle' style={{width: "20px", borderRight: "none"}}>
                         <div ref={this.baseIcon}></div>
                     </td>
-                    <td className="tb-doc-file main-border" style={{paddingRight: "10px"}}>
+                    <td className="tb-doc-file main-border" style={{paddingRight: "10px", borderLeft: "none"}}>
                         <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} className="bold" style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
                             <div style={{fontSize: "11px"}}>
@@ -100,9 +111,9 @@ class row_document_file extends React.Component{
                             </div>
                         </div>
                     </td>
-                    <td className="tb-doc-file">
+                    <td className="tb-doc-file main-border" style={{position: "relative", padding: "0px", paddingLeft: "5px"}}>
                         <a onClick={() => this.props.moduleClick(this.props.modulId)}>
-                            <div style={{display: "flex", alignItems: "center"}}>
+                            <div style={{display: "flex", alignItems: "center", position: "absolute", height: "100%"}}>
                                 <CkCIrcle className="fld-color" style={{width: "15px", height: "15px"}}/> 
                                 <div className="bold" style={{marginLeft: "10px"}}>
                                     {this.props.moduleName}
@@ -110,14 +121,20 @@ class row_document_file extends React.Component{
                             </div>
                         </a>
                     </td>
-                    {/* <td className="tb-doc-file main-border">
+                    {/* <td className="tb-doc-file">
                         {this.props.userName}
                     </td> */}
-                    <td className="tb-doc-file main-border bold">
-                        <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
+                    <td className="tb-doc-file bold main-border" style={{position : "relative", padding: "0px", paddingLeft: "5px"}}>
+                        <div style={{display: "flex", alignItems: "center", height: "100%", position: "absolute"}}> 
+                            <FontAwesomeIcon className="second-font-color" icon={faSdCard}/>&nbsp;&nbsp;{this.byteToKb(this.props.fileSize)}
+                        </div>
                     </td>
-                    <td className="tb-doc-file main-border" style={{width: "70px"}}>{convertDate(this.props.uploadDate)}</td>
-                    <td className="main-border" style={{width: "20px"}}>
+                    <td className="tb-doc-file bold main-border" style={{position : "relative", padding: "0px", paddingLeft: "5px", width: "90px"}}>
+                        <div style={{display: "flex", alignItems: "center", height: "100%", position: "absolute"}}> 
+                            <FontAwesomeIcon className="second-font-color" icon={faCalendarAlt}/>&nbsp;&nbsp;{convertDate(this.props.uploadDate)}
+                        </div>
+                    </td>
+                    <td valign='middle' className='main-border' style={{textAlign: "center"}}>
                         <a onClick={() => this.props.deleteDocFile(this.props.fileName, this.props.modulId, this.props.projectId)}>
                             <FontAwesomeIcon icon={faTrashAlt} style={{fontSize: "11px"}}></FontAwesomeIcon>
                         </a>
@@ -127,4 +144,10 @@ class row_document_file extends React.Component{
     }
 }
 
-export default row_document_file
+const mapStateToProps = state => {
+    return {
+        isBorderRdx: state.isBorderAttachment
+    }
+}
+
+export default connect(mapStateToProps) (row_document_file)

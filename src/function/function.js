@@ -339,9 +339,9 @@ export function checkBuffering(tagVideo) {
     return bufferingDetected
 }
 
-export function getIconDocFIle(fileName, baseElement){
-    var a = fileName.split(".")
-    var ext = a[a.length - 1]
+export function getIconDocFIle(extension, baseElement){
+    // var a = fileName.split(".")
+    var ext = (extension) ? extension.replace(".", "") : ""
 
     if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
         ReactDom.render(<FontAwesomeIcon icon={faImage}/>, baseElement)

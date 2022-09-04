@@ -12,4 +12,10 @@ export default class module_service {
         let resp = await fetch.getGolang("/module/detail/"+modulid)
         return resp
     }
+
+    getModuleAssigning = async (projectId) => {
+        let resp = [] 
+        resp = fetch.getGolang("/module/assigning/"+projectId)
+        return resp
+    }
 }

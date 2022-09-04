@@ -29,6 +29,7 @@ class card_item extends React.Component{
     }
 
     render(){
+        console.log(this.props)
         const labelView = this.props.labelModule.map(dt => {
             return <div style={{float: "left", padding: "5px", background: dt.color, color: "#FFF", fontSize: "11px", borderRadius: "3px", display: "flex", alignItems: "center", marginRight: "5px", marginBottom: "3px"}}>
                          <FontAwesomeIcon icon={faTag}/>&nbsp;{dt.label}
@@ -138,9 +139,10 @@ class card_item extends React.Component{
                         ?
                             <div style={{marginBottom: "10px"}}>{this.props.description}</div>
                         :
-                            <div className="second-font-color" style={{paddingTop: "5px", paddingBottom: "5px", fontSize: "11px", color: "#969696"}}>
-                                No description for this module
-                            </div>
+                             <div style={{marginBottom: "10px"}}/>
+                            // <div className="second-font-color" style={{paddingTop: "5px", paddingBottom: "5px", fontSize: "11px", color: "#969696"}}>
+                            //     No description for this module
+                            // </div>
                             
                     }
                     

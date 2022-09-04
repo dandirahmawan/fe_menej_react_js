@@ -139,7 +139,8 @@ input{
 
 .main-border{
     /* border: #dcdbdb 1px solid; */
-    border: 1px solid #e8ecee;
+    /* border: 1px solid #e8ecee; */
+    border: #dddddd 1px solid;
 }
 
 .main-border-drk{
@@ -147,7 +148,8 @@ input{
 }
 
 td > .main-border{
-    border: #dcdbdb 1px solid;
+    /* border: #dcdbdb 1px solid; */
+    border: #dddddd 1px solid;
     /* border: 1px solid #e8ecee; */
 }
 
@@ -166,7 +168,8 @@ td > .main-border{
 }
 
 .main-border-bottom{
-    border-bottom: #e8ecee 1px solid;
+    /* border-bottom: #e8ecee 1px solid; */
+    border-bottom: #dddddd 1px solid;
 }
 
 .main-border-bottom-drk{
@@ -174,7 +177,8 @@ td > .main-border{
 }
 
 .main-border-top{
-    border-top: #e8ecee 1px solid;
+    /* border-top: #e8ecee 1px solid; */
+    border-top: #dddddd 1px solid;
 }
 
 .main-border-top-drk{
@@ -182,7 +186,8 @@ td > .main-border{
 }
 
 .main-border-right{
-    border-right: #e8ecee 1px solid;
+    /* border-right: #e8ecee 1px solid; */
+    border-right: #dddddd 1px solid;
 }
 
 .main-border-right-drk{
@@ -190,7 +195,8 @@ td > .main-border{
 }
 
 .main-border-left{
-    border-left: #e8ecee 1px solid;
+    /* border-left: #e8ecee 1px solid; */
+    border-left: #dddddd 1px solid;
 }
 
 .main-border-left-drk{
@@ -557,7 +563,8 @@ button{
 }
 
 .input-info-mdl{
-    background: #f3f3f3;
+    /* background: #f3f3f3; */
+    background: #fbfbfb;
     border: 1px solid #ccc9cc;
 }
 

@@ -21,7 +21,8 @@ import {
     setDataTeamAction,
     setSectionModuleAction,
     deleteLabelAction,
-    appendDataModuleAction
+    appendDataModuleAction,
+    showBorderAttachmentAction
 } from './type_action'
 
 const initState = {
@@ -39,7 +40,8 @@ const initState = {
     assignedModules: [],
     dataStatus: [],
     sectionModule: [],
-    viewModule: "card"
+    viewModule: "card",
+    isBorderAttachment: false
 }
 
 function rootReducer(state = initState, action){
@@ -54,6 +56,14 @@ function rootReducer(state = initState, action){
         return{
             ...state,
             dataNote: action.dataNote
+        }
+    }
+
+    if(action.type === showBorderAttachmentAction){
+        let isBorder = state.isBorderAttachment
+        return {
+            ...state,
+            isBorderAttachment: !isBorder
         }
     }
 
@@ -157,7 +167,9 @@ function rootReducer(state = initState, action){
         let nData = action.data
         const newData = oData.map(dt => {
             if(dt.id == nData.sectionId){
-                dt.sectionModule.push(nData)
+                console.log(dt.modules)
+                console.log(nData)
+                dt.modules.push(nData)
             }
 
             return dt
@@ -330,11 +342,15 @@ function rootReducer(state = initState, action){
         let dataModule = [...state.dataModule]
         let sectionId = action.data.sectionId
         let moduleId = action.data.modulId
+        
         const newData = dataModule.map(dt => {
             if(dt.id == sectionId){
                 const sm = dt.modules.map(dtt => {
                     if(dtt.modulId == moduleId){
-                        console.log(dtt.modulId+", "+moduleId)
+                        // console.log(dtt.modulId+", "+moduleId)
+                        // console.log(dtt)
+                        // console.log(action.data)
+                        // console.log("===============================================================")
                         dtt = action.data
                     }
 

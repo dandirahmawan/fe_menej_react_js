@@ -9,7 +9,8 @@ class row_doc_file extends React.Component{
     }
 
     componentDidMount(){
-        getIconDocFIle(this.props.fileName, this.baseIcon.current)
+        console.log(this.props)
+        getIconDocFIle(this.props.ext, this.baseIcon.current)
     }
 
     byteToKb(size){
@@ -40,7 +41,7 @@ class row_doc_file extends React.Component{
                         style={(this.getIconDocFIle(this.props.fileName) == "fa fa-file" ? {color: "#d4ae2b"} : {})}></i> */}
                 </td>
                 <td style={{width: "70%", paddingRight: "10px"}}>
-                    <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.urlPath(this.props.path))} style={{color: "#000"}}>{this.props.fileName}</a>
+                    <a onClick={(e) => this.props.rowClickDocFile(e, this.props.urlPath, this.props.ext, this.props.fileName)} style={{color: "#000"}}>{this.props.fileName}</a>
                     <div className="second-font-color" style={{fontSize: "11px"}}>
                         {
                             (this.props.descFile != null && this.props.descFile != "")
@@ -58,7 +59,7 @@ class row_doc_file extends React.Component{
                     {
                         (this.props.isPermition || this.props.picProject == getCookieUserId())
                         ?
-                            <button onClick={(e) => this.props.delete(e, this.props.fileName)} style={{background: "none", padding: "0px"}}>
+                            <button onClick={(e) => this.props.delete(e, this.props.id)} style={{background: "none", padding: "0px"}}>
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         :

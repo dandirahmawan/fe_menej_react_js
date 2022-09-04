@@ -67,7 +67,7 @@ class new_label extends React.Component{
         form.append("color", color)
         
         let fetch = new Fetch()
-        fetch.post("/label", form).then(result => {
+        fetch.postGolang("/label", form).then(result => {
             this.props.setDataLabel(jsonArray)
             this.props.cancel()
             popUpAlert("Insert data label successfully", "success")

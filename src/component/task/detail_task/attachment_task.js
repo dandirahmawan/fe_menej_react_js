@@ -16,7 +16,7 @@ class doc_file_module extends React.Component{
             fileName:"",
             filaNameProgress:"",
             popConfirmDelete:"",
-            fileNameDelete:"",
+            idFileDelete:"",
             rowSelected:"",
             popImage:"",
             descFile:"",
@@ -85,11 +85,9 @@ class doc_file_module extends React.Component{
         // }
     }
 
-    rowClickDocFile(e, fileName, url){
-        var a = fileName.lastIndexOf(".")
-        var ext = fileName.substr(parseInt(a) + 1, fileName.length)
-        ext = ext.toLowerCase()
-        
+    rowClickDocFile(e, url, ext, fileName){
+        console.log(url)
+        ext = ext.toLowerCase().replace(".", "")
         if(ext == 'jpeg' || ext == 'jpg' || ext == 'png'){
             e.preventDefault()
             this.setState({
@@ -101,7 +99,7 @@ class doc_file_module extends React.Component{
                 popImage : <PreviewVideo video={fileName} hideVideo={this.hideImage} url={url}/>
             })
         }else{
-            window.open(baseUrl+"/file/"+url)
+            window.open(url)
         }
     }
 
@@ -111,13 +109,13 @@ class doc_file_module extends React.Component{
         })
     }
 
-    delete(e,fileName){
+    delete(e, id){
         if(this.state.popConfirmDelete == ""){
             var t = e.target
             var row = t.parentElement.parentElement.parentElement
             
             this.setState({
-                fileNameDelete: fileName,
+                idFileDelete: id,
                 rowSelected: row,
                 popConfirmDelete: <PopupConfirmation
                                         titleConfirmation="Delete Document File"
@@ -169,7 +167,7 @@ class doc_file_module extends React.Component{
             r[i].setAttribute("class", "tr-selectable row-doc-file")
         }
         this.hideConfirm()
-        this.props.deleteDocFile(this.state.fileNameDelete)
+        this.props.deleteDocFile(this.state.idFileDelete)
     }
 
     commit(){
@@ -263,16 +261,23 @@ class doc_file_module extends React.Component{
 
     render(){
 
-        const data = this.props.dataDocFile.map(dt => <RowDocFile 
-                                                            rowClickDocFile={this.rowClickDocFile} 
-                                                            fileName={dt.fileName} 
-                                                            fileSize={dt.fileSize} 
-                                                            descFile={dt.descriptionFile} 
-                                                            delete={this.delete}
-                                                            picProject={this.props.picProject}
-                                                            isPermition={this.state.isPermition}
-                                                            path={dt.urlPath}/>)
+        const data = this.props.dataDocFile.map(dt => 
+            {
+                console.log(dt)
+                return <RowDocFile 
+                                rowClickDocFile={this.rowClickDocFile}
+                                ext={dt.extension} 
+                                id={dt.id}
+                                fileName={dt.fileName} 
+                                fileSize={dt.fileSize} 
+                                descFile={dt.descriptionFile} 
+                                delete={this.delete}
+                                picProject={this.props.picProject}
+                                isPermition={this.state.isPermition}
+                                urlPath={dt.urlPath}/>
+            })
 
+            
         return(
             <React.Fragment>
                 {this.state.popImage}

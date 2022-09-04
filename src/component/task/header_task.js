@@ -8,7 +8,8 @@ import Triangle from '../../images/triangle.png'
 import {check_circle as CkCIrcle, circle_duotone as CircleDuotone, circle_minus as CircleMinus} from '../icon/icon'
 import Teams from './teams/teams'
 import ProjectDetail from './project_detail'
-import InfoProject from './info_project'
+// import InfoProject from './info_project'
+import { showBorderAttachment } from '../../redux/action'
 
 class header_task extends React.Component{
 
@@ -116,9 +117,8 @@ class header_task extends React.Component{
     }
 
     projectDetail(){
-        // alert("dandi rahmawan")
         this.setState({
-            projectDetailBase: <ProjectDetail hideDetail={() => this.setState({projectDetailBase: ""})}/>
+            projectDetailBase: <ProjectDetail dataProject={this.state.dataProject} hideDetail={() => this.setState({projectDetailBase: ""})}/>
         })
     }
 
@@ -190,7 +190,6 @@ class header_task extends React.Component{
                             <FontAwesomeIcon className="second-font-color" style={{marginTop: "2px"}} icon={faAngleDown}/>  
                         </a>
                         {this.state.projectDetailBase}
-                        {/* <InfoProject/> */}
                     </div>
                     <div id="tb-mn-bs-jkdag" style={{display: "flex", alignItems: "center"}}>
                         
@@ -263,6 +262,28 @@ class header_task extends React.Component{
                                     </Fragment>
                                 :
                                     ""
+                            }
+                            
+                            {
+                                (getCookieUserId() == picProject || this.state.isPermitionModule)
+                                ?
+                                    <Fragment>
+                                        <button className="main-border-drk" 
+                                            onClick={this.props.newModule} 
+                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                            <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
+                                            <div style={{marginLeft: "5px"}}>Task</div>
+                                        </button>
+
+                                        <button className="main-border-drk" 
+                                            onClick={this.props.newSection} 
+                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
+                                            <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
+                                            <div style={{marginLeft: "5px"}}>Section</div>
+                                        </button>
+                                    </Fragment>
+                                    
+                                : ""
                             }
                             
                             {/*popup filter and button filter*/}
@@ -356,27 +377,6 @@ class header_task extends React.Component{
                                         <div style={{marginLeft: "5px"}}>List</div>
                                     </button>
                             }
-                            {
-                                (getCookieUserId() == picProject || this.state.isPermitionModule)
-                                ?
-                                    <Fragment>
-                                        <button className="main-border-drk" 
-                                            onClick={this.props.newModule} 
-                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                            <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
-                                            <div style={{marginLeft: "5px"}}>Task</div>
-                                        </button>
-
-                                        <button className="main-border-drk" 
-                                            onClick={this.props.newSection} 
-                                            style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
-                                            <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
-                                            <div style={{marginLeft: "5px"}}>Section</div>
-                                        </button>
-                                    </Fragment>
-                                    
-                                : ""
-                            }
                         </div>
                     :
 
@@ -407,9 +407,9 @@ class header_task extends React.Component{
                             </button>
 
                             {
-                                (this.state.isBorderAttachment)
+                                (this.props.isBorderAttachment)
                                 ?
-                                    <button onClick={this.hideBorderAttachment} className="main-border-drk" 
+                                    <button onClick={this.showBorderAttachment} className="main-border-drk" 
                                         // onClick={this.newSection.bind(this)} 
                                         style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                         <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-border-none"></i></div>
@@ -433,6 +433,7 @@ class header_task extends React.Component{
 
 const mapStateToProps = state => {
     return {
+        isBorderAttachment: state.isBorderAttachment,
         dataProject : state.dataProject[0],
         dataLabelModule: state.dataLabelsModule,
         assignedModules: state.assignedModules,
@@ -444,4 +445,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps) (header_task)
+const mapDispatchToProps = dispatch => {
+    return {
+        showBorderAttachment: () => dispatch(showBorderAttachment())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (header_task)

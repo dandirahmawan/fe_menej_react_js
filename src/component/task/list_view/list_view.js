@@ -251,7 +251,7 @@ class list_view extends Component{
 
                                 /*read data filter*/
                                 if(filter.type == "status"){
-                                    if(filter.id != parseInt(dt.modulStatus)){
+                                    if(filter.id != dt.modulStatus){
                                         isVisible = false
                                     }else{
                                         isVisible = true

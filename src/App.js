@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Login from './component/login'
 import Navbar from './component/navbar'
@@ -18,8 +19,9 @@ import {connect} from 'react-redux'
 import './css/style.css'
 import './App.css'
 import { baseUrl, baseUrlGO } from './const/const'
-import { getCookieUserId, getCookieSessionId, pathValidation } from './function/function'
+import { pathValidation } from './function/function'
 import axios from 'axios'
+import Ismobile from './ismobile'
 
 /*set config axios base url and header*/
 let cookie = document.cookie
@@ -48,10 +50,6 @@ class App extends React.Component{
     }
 
     componentDidMount(){
-        let form = new FormData();
-        var userId =  getCookieUserId()
-        var sessionId = getCookieSessionId()
-
         let path = window.location.pathname
         if(pathValidation(path) == "invalid"){
             this.setState({
@@ -59,34 +57,25 @@ class App extends React.Component{
             })
         }
 
-        console.log(this.mCookie)
-        if(this.mCookie !== ""){
-            // form.append("userId", userId)
-            // form.append("sessionId", sessionId)
+        const isMobile = navigator.userAgentData.mobile;
+        if(isMobile){
+            ReactDOM.render(<Ismobile/>, document.getElementById("root"))
+            return false
+        }
 
-            fetch(baseUrlGO+"/start_data", {
-                    method : "GET"
-                    // body : form
-            }).then(rst => rst.text())
-            .then(result => {
-                    if(result != ""){
-                        let jsonData = JSON.parse(result)
-                        this.props.dispatchStartData(jsonData)
-                        this.setState({
-                            userNameLogin: jsonData.name,
-                            emailLogin: jsonData.email,
-                            isLoad: false
-                        })
-                    }
-            }).catch((error) => {
-                // alert("dandi rahmawan")
-                console.log(error)
-                if(error == "TypeError: Failed to fetch"){
+        if(this.mCookie !== ""){
+            axios.get(baseUrlGO+"/start_data").then(result => {
+                if(result != ""){
+                    let jsonData = result.data
+                    console.log(jsonData)
+                    this.props.dispatchStartData(jsonData)
                     this.setState({
+                        userNameLogin: jsonData.name,
+                        emailLogin: jsonData.email,
                         isLoad: false
                     })
                 }
-            });
+            })
         }
     }
 
@@ -188,16 +177,16 @@ class App extends React.Component{
     }
 }
 
-    const mapStateToProps = state => {
-        return{
-            userLoginData : state.userLoginData
-        }
+const mapStateToProps = state => {
+    return{
+        userLoginData : state.userLoginData
     }
+}
 
-    const mapDispatchToProps = dispatch => {
-        return{
-            dispatchStartData : (jsonData) => dispatch(startData(jsonData))
-        }
+const mapDispatchToProps = dispatch => {
+    return{
+        dispatchStartData : (jsonData) => dispatch(startData(jsonData))
     }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps) (App);

@@ -40,7 +40,8 @@ class preview_video extends React.Component{
     
     render(){
 
-        const urlVideo = baseUrl+"/file/"+this.props.url
+        // const urlVideo = baseUrl+"/file/"+this.props.url
+        const urlVideo = this.props.url
 
         return(
             <React.Fragment>

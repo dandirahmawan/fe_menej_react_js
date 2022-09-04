@@ -7,7 +7,7 @@ import CardItem from './card_item'
 import RenameSection from '../rename_section'
 import { Fragment } from 'react';
 import PopConfirmation from "../../popup_confirmation";
-import { popUpAlert } from '../../../function/function';
+import { convertDate, popUpAlert } from '../../../function/function';
 import { ApiFetch } from '../../apiFetch';
 import { setDataModule } from '../../../redux/action';
 import Fetch from '../../../function/fetchApi'
@@ -160,6 +160,7 @@ class card_view extends Component{
     }
 
     render(){
+        /*list item for group by status feature*/
         const baseGroup = this.props.dataStatus.map(dt => {
             return <div className="base-card-mod">
                     <div className="bold second-font-color" 
@@ -178,14 +179,6 @@ class card_view extends Component{
                     {
                         this.props.dataModule.map(dtt => {
                             const cardItem = dtt.modules.map(dtta => {
-                                // /*set data assigned for each card*/
-                                // let dataAssigned = []
-                                // this.props.assignedModules.map(dtas => {
-                                //     if(dtas.moduleId == dtta.modulId){
-                                //         dataAssigned.push(dtas)
-                                //     }
-                                // // })
-                                
                                 if(dtta.modulStatus == dt.id){
                                     return <CardItem moduleId={dtta.modulId}
                                                 dataStatus={this.props.dataStatus}
@@ -193,7 +186,7 @@ class card_view extends Component{
                                                 select={this.selectCard}
                                                 moduleName={dtta.modulName}
                                                 description={dtta.description}
-                                                countDocFile={dtta.countDoc}
+                                                countDocFile={dtta.countDocFile}
                                                 countBugs={dtta.countBugs}
                                                 countBugsClose={dtta.countBugsClose}
                                                 labelModule={dtta.label}
@@ -211,6 +204,7 @@ class card_view extends Component{
         })
 
 
+        /*list item for group by section feature*/
         const baseSection = this.props.dataModule.map(dt => {
             return <div className="base-card-mod">
                         <div className="bold second-font-color" 
@@ -238,19 +232,11 @@ class card_view extends Component{
                                 (dt.modules.length > 0)
                                 ?
                                     dt.modules.map(dtta => {
-                                        /*set data assigned for each card*/
-                                        // let dataAssigned = []
-                                        // this.props.assignedModules.map(dtas => {
-                                        //     if(dtas.moduleId == dtta.modulId){
-                                        //         dataAssigned.push(dtas)
-                                        //     }
-                                        // })
-                                        
                                         /*read data filter*/
                                         let isVisible = true
                                         let filter = this.props.filter
                                         if(filter.type == "status"){
-                                            if(filter.id != parseInt(dtta.modulStatus)){
+                                            if(filter.id != dtta.modulStatus){
                                                 isVisible = false
                                             }else{
                                                 isVisible = true
@@ -273,7 +259,7 @@ class card_view extends Component{
                                                         select={this.selectCard}
                                                         moduleName={dtta.modulName}
                                                         description={dtta.description}
-                                                        countDocFile={dtta.countDoc}
+                                                        countDocFile={dtta.countDocFile}
                                                         countBugs={dtta.countBugs}
                                                         countBugsClose={dtta.countBugsClose}
                                                         labelModule={dtta.label}

@@ -22,13 +22,20 @@ import {
     setDataTeamAction,
     setSectionModuleAction,
     deleteLabelAction,
-    appendDataModuleAction
+    appendDataModuleAction,
+    showBorderAttachmentAction
 } from './type_action'
 
 export function setDataProject(data){
     return{
         type: 'SET_DATA_PROJECT',
         dataProject : data
+    }
+}
+
+export function showBorderAttachment(){
+    return{
+        type: showBorderAttachmentAction
     }
 }
 

@@ -45,7 +45,7 @@ class context_menu_module extends Component{
                                     Delete
                                 </div>
                             </a>
-                            <a onClick={() => this.props.delete(this.props.moduleId)} className="main-border-bottom" style={{textDecoration: "none"}}>
+                            {/* <a onClick={() => this.props.delete(this.props.moduleId)} className="main-border-bottom" style={{textDecoration: "none"}}>
                                 <div className="menu-item main-border-bottom" 
                                     style={{padding: "8px", fontSize: "12px", paddingLeft: "10px", paddingRight: "10px", display: "flex", alignItems: "center"}}>
                                     <div style={{width: "100%"}}>
@@ -62,7 +62,7 @@ class context_menu_module extends Component{
                                     </div>
                                     <FontAwesomeIcon className="second-font-color" icon={faChevronRight}/>
                                 </div>
-                            </a>
+                            </a> */}
                         </Fragment>
                     : 
                         ""    

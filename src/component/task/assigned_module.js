@@ -3,12 +3,11 @@ import { baseUrl } from '../../const/const'
 import { getCookieUserId, getCookieSessionId, popUpAlert } from '../../function/function'
 // import ItemUserAddMember from '../item_user_add_member'
 import ItemMemberAssigning from './item_member_assigning'
-import ReactDom from 'react-dom'
-import {ApiFetch} from '../apiFetch'
-import {SpinnerButton} from "../spinner"
-import Permition from './permition'
+import ModuleService from '../../services/module_service'
 import {Spinner} from '../spinner'
 import Fetch from '../../function/fetchApi'
+
+let MS = new ModuleService()
 
 class set_assigned_module extends React.Component{
 
@@ -44,26 +43,26 @@ class set_assigned_module extends React.Component{
 
         var form = new FormData()
         form.append("projectId", this.props.projectId)
+        this.fetchData()
+    }
 
-        let fetch = new Fetch()
-        fetch.post("/module/assigning", form).then(result => {
-            try {
-                this.setState({
-                    listMember: result,
-                    isLoad: false
-                })
-                
-                //set style base data height
-                var hdr = document.getElementById("header-add-member")
-                var ftr = document.getElementById("footer-add-member")
-                var mam = document.getElementsByClassName("main-add-member")
-                for(var i = 0;i<mam.length;i++){
-                    mam[i].style.height = 350 - (parseInt(hdr.offsetHeight) + ftr.offsetHeight)+"px"
-                }
-            }catch (error) {
-                /*noting happen*/
-            }
+    fetchData = async () => {
+        let resp = await MS.getModuleAssigning(this.props.projectId)
+        if(!resp) resp = []
+
+        this.setState({
+            listMember: resp,
+            isLoad: false
         })
+
+        //set style base data height
+        var hdr = document.getElementById("header-add-member")
+        var ftr = document.getElementById("footer-add-member")
+        var mam = document.getElementsByClassName("main-add-member")
+
+        for(var i = 0;i<mam.length;i++){
+            mam[i].style.height = 350 - (parseInt(hdr.offsetHeight) + ftr.offsetHeight)+"px"
+        }
     }
 
     checkAddMember(userId){

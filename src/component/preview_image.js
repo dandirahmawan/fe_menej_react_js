@@ -43,7 +43,8 @@ class preview_image extends React.Component{
     
     render(){
 
-        const urlImage = baseUrl+"/file/"+this.props.url
+        // const urlImage = baseUrl+"/file/"+this.props.url
+        const urlImage = this.props.url
 
         return(
             <React.Fragment>
