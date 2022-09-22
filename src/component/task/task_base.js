@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import PopupConfirmation from '../popup_confirmation'
 import Detail from './detail_task/detail'
 import ManageMember from './manage_member'
-import Permition from './permition'
+// import Permition from './permition'
 // import {ApiFetch} from '../apiFetch'
 import Fetch from '../../function/fetchApi'
 import { getCookieUserId, setInitialName } from '../../function/function'
@@ -87,7 +87,6 @@ class modulePage extends React.Component{
         this.refreshDataTeam = this.refreshDataTeam.bind(this)
         this.deleteMember = this.deleteMember.bind(this)
         this.setTeamMember = this.setTeamMember.bind(this)
-        this.setPermition = this.setPermition.bind(this)
         this.cancelPermition = this.cancelPermition.bind(this)
         this.bugsIconClick = this.bugsIconClick.bind(this)
         this.docFileIconClick = this.docFileIconClick.bind(this)
@@ -444,44 +443,17 @@ class modulePage extends React.Component{
                 infoPop: ""
             })
         })
-        // ApiFetch("/module/delete", {
-        //     method: "POST",
-        //     body: form
-        // }).then(res => res.text())
-        // .then(result => {
-        //     this.props.commitDeleteModule(this.state.arrSelected)
-        //     this.setState({
-        //         infoPop: ""
-        //     })
-        // })
     }
 
     commitDeleteModuleCtx(moduleId){
-        var userId = getCookieUserId()
-        var form = new FormData()
-        form.append("userId", userId)
-        form.append("moduleId", moduleId)
-        
-        let arrModuleId = []
-        arrModuleId.push(moduleId)
-
         let fetch = new Fetch()
-        fetch.post("/module/delete", form).then(result => {
+        let arrModuleId = [moduleId]
+        fetch.deleteGolang("/module/"+moduleId).then(result => {
             this.props.commitDeleteModule(arrModuleId)
             this.setState({
                 infoPop: ""
             })
         })
-        // ApiFetch("/module/delete", {
-        //     method: "POST",
-        //     body: form
-        // }).then(res => res.text())
-        // .then(result => {
-        //     this.props.commitDeleteModule(arrModuleId)
-        //     this.setState({
-        //         infoPop: ""
-        //     })
-        // })
     }
 
     commitNewModule(idUser, moduleName, dueDate, description, pi, status, section){
@@ -497,7 +469,7 @@ class modulePage extends React.Component{
             addMember: <ManageMember
                             projectId={this.props.projectIdHeader}
                             // dataTeam={this.props.dataTeam} 
-                            projectId={this.props.projectIdHeader}
+                            // projectId={this.props.projectIdHeader}
                             deleteMember={this.deleteMember} 
                             cancel={this.cancelAddMember}
                             refresh={this.refreshDataTeam}
@@ -530,17 +502,17 @@ class modulePage extends React.Component{
         })
     }
 
-    setPermition(userId){
-        this.setState({
-            userSetTeamMember: "",
-            permition: <Permition
-                            dataPermition={[]}
-                            userId={userId}
-                            projectId={this.props.projectIdHeader}
-                            cancelPermition={this.cancelPermition}
-                        />
-        })
-    }
+    // setPermition(userId){
+    //     this.setState({
+    //         userSetTeamMember: "",
+    //         permition: <Permition
+    //                         dataPermition={[]}
+    //                         userId={userId}
+    //                         projectId={this.props.projectIdHeader}
+    //                         cancelPermition={this.cancelPermition}
+    //                     />
+    //     })
+    // }
 
     cancelPermition(){
         this.setState({

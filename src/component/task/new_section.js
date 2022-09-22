@@ -21,49 +21,26 @@ class new_section extends Component{
         if(val == 0){
             popUpAlert("Section name is empty")
         }else{
-            let form = new FormData()
-            form.append("section", val)
-            form.append("projectId", this.props.projectId)
+            // let form = new FormData()
+            // form.append("section", val)
+            // form.append("projectId", this.props.projectId)
+
+            let param = {}
+            param.projectId = this.props.projectId
+            param.section = val
             
-            new Fetch().post("/section", form).then(result => {
+            new Fetch().postGolang("/section", param).then(result => {
                 try{
-                    let sections = result.sections
-                    let section = result.section
-                    section.sectionModule = []
-                    this.props.dataModule.push(section)
-    
-                    let newSection= []
-                    this.props.dataModule.map(dt => {
-                        newSection.push(dt)
-                    })
                     
-                    
-                    this.props.setDataModule(newSection)
-                    this.props.setSection(sections)
-                    this.props.cancel()
+                    var isSuccess = result.success
+                    if(isSuccess){
+                        this.props.setSection(result.data)
+                        this.props.cancel()
+                    }
                 }catch(error){
                     /*nothing happen*/
                 }
             })
-            // ApiFetch("/section", {
-            //     method: "POST",
-            //     body: form
-            // }).then(res => res.json()).then(result => {
-            //     let sections = result.sections
-            //     let section = result.section
-            //     section.sectionModule = []
-            //     this.props.dataModule.push(section)
-
-            //     let newSection= []
-            //     this.props.dataModule.map(dt => {
-            //         newSection.push(dt)
-            //     })
-                
-                
-            //     this.props.setDataModule(newSection)
-            //     this.props.setSection(sections)
-            //     this.props.cancel()
-            // })
         }
     }
 
@@ -97,8 +74,7 @@ class new_section extends Component{
 
 const mapDispatchToProps = dispatch => {
     return{
-        setSection : (data) => dispatch(setSectionModule(data)),
-        setDataModule : (data) => dispatch(setDataModule(data)) 
+        setSection : (data) => dispatch(setSectionModule(data))
     }
 }
 

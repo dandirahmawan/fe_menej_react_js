@@ -1,4 +1,4 @@
-import { faAngleDown, faChevronDown, faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Fragment } from 'react'
@@ -387,7 +387,7 @@ class header_task extends React.Component{
                                 <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-plus"></i></div>
                                 <div style={{marginLeft: "5px"}}>Upload</div>
                             </button> */}
-                            {
+                            {/* {
                                 (picProject == getCookieUserId() || this.state.isPermition)
                                 ?
                                         <button onClick={this.props.uploadAttachment} className="main-border-drk" 
@@ -404,7 +404,7 @@ class header_task extends React.Component{
                                 style={{background:"none", fontSize: "11px", padding: "8px", borderRadius: "3px", display: "flex", marginRight: "5px"}}>
                                 <div className="main-border-right" style={{paddingRight: "5px"}}><i class="fa fa-filter"></i></div>
                                 <div style={{marginLeft: "5px"}}>Filter</div>
-                            </button>
+                            </button> */}
 
                             {
                                 (this.props.isBorderAttachment)

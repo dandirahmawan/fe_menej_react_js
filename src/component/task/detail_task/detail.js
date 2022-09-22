@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import TaskInfo from './task_info'
 import CheckList from './cheklists_task'
-import DocFileModule from './attachment_task'
+import AttacmentTask from './attachment_task'
 import {getCookieUserId, getCookieSessionId, popUpAlert} from '../../../function/function'
 import {connect} from 'react-redux'
 import {updateDataModuleBugs, 
@@ -61,7 +61,8 @@ class detail extends React.Component{
             dataLabelModuleToUpdate: [],
             assignedModules: [],
             countNewBugs: 0,
-            dataStatus: []
+            dataStatus: [],
+            isProcess: false
         }
         
         this.btnSaveChange = React.createRef()
@@ -144,7 +145,7 @@ class detail extends React.Component{
             }
         })
 
-        this.setDataBugsValidation([...result.bugs])
+        // this.setDataBugsValidation([...result.bugs])
         this.setState({
             dataBugs: result.bugs,
             dataDocFile: result.documentFile,
@@ -293,7 +294,7 @@ class detail extends React.Component{
                                             this.state.dueDate)
         if(!isValid) return false
         
-        let t = e.target
+        let t = this.btnSaveChange.current
         ReactDom.render(<SpinnerButton size="15px"/>, t)
         t.style.opacity = 0.5
         
@@ -350,89 +351,98 @@ class detail extends React.Component{
 
     excNew = (data, t) => {
         let fetch = new Fetch()
+        this.setState({isProcess: true})
         fetch.postGolang("/module", data).then(result => {
             this.setDataState(result)
             /*tambahkan data module ke redux*/
             this.props.appendDataModule(result.dataModule)
-
-            console.log(t)
-            popUpAlert("Module successfully saved", "success")
-            ReactDom.render("Save change", t)
-            t.style.opacity = 1
+            this.setState({isProcess: false})
+            if(t){
+                popUpAlert("Module successfully saved", "success")
+                ReactDom.render(<><FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span></>, t)
+                t.style.opacity = 1
+            }
         })
     }
 
     excUpdate = (data, t) => {
+        this.setState({isProcess: true})
         let fetch = new Fetch()
         fetch.putGolang("/module/"+this.state.moduleId, data).then(result => {
             // if(result.success){
                 /*set new data module to array*/
-                if(this.state.sectionId != this.state.sectionIdLast){
-                    let newData = ""
-                    let arr = []
-                    
-                    this.props.dataModule.map(dt => {
-                        let i = 0
-                        if(dt.id == this.state.sectionIdLast){
-                            dt.modules.map(dtt => {
-                                i++
-                                let sp = i - 1
-                                if(dtt.modulId == this.state.moduleId){
-                                    dtt.modulName = this.state.moduleName
-                                    dtt.modulStatus = this.state.moduleStatus
-                                    dtt.description = this.state.descriptionModule
-                                    dtt.sectionId = this.state.sectionId
-                                    dtt.endDate = this.state.dueDate
-                                    
-                                    /*set new data in by section id*/
-                                    newData = dtt
+            if(this.state.sectionId != this.state.sectionIdLast){
+                let newData = ""
+                let arr = []
+                
+                this.props.dataModule.map(dt => {
+                    let i = 0
+                    if(dt.id == this.state.sectionIdLast){
+                        dt.modules.map(dtt => {
+                            i++
+                            let sp = i - 1
+                            if(dtt.modulId == this.state.moduleId){
+                                dtt.modulName = this.state.moduleName
+                                dtt.modulStatus = this.state.moduleStatus
+                                dtt.description = this.state.descriptionModule
+                                dtt.sectionId = this.state.sectionId
+                                dtt.endDate = this.state.dueDate
+                                
+                                /*set new data in by section id*/
+                                newData = dtt
 
-                                    /*delete data module in section*/
-                                    dt.modules.splice(sp, 1)
-                                }
-                            })
-                            return dt
-                        }
-                    })
-                    
-                    /*pass new data to array data module*/
-                    this.props.dataModule.map(dt => {
-                        /*set data new data module in section id*/
-                        if(dt.id == this.state.sectionId){
-                            dt.modules.push(newData)
-                        }
+                                /*delete data module in section*/
+                                dt.modules.splice(sp, 1)
+                            }
+                        })
                         return dt
-                    }) 
-                    
-                    this.props.dataModule.map(dt => {
-                        arr.push(dt)
-                    })
+                    }
+                })
+                
+                /*pass new data to array data module*/
+                this.props.dataModule.map(dt => {
+                    /*set data new data module in section id*/
+                    if(dt.id == this.state.sectionId){
+                        dt.modules.push(newData)
+                    }
+                    return dt
+                }) 
+                
+                this.props.dataModule.map(dt => {
+                    arr.push(dt)
+                })
 
-                    /*set data module to redux*/
-                    this.props.setDataModule(arr)
+                /*set data module to redux*/
+                this.props.setDataModule(arr)
 
-                    this.setState({
-                        sectionIdLast: this.state.sectionId
-                    })
-                }else{
-                    let dataModule = result.dataModule
-                    this.props.updateDataModule(dataModule)
-                    
-                    /*set state checklist for delete
-                    after save change necessery*/
-                    this.setState({
-                        infoPop: "",
-                        dataBugs: result.bugs
-                    })
-                }
-
-            popUpAlert("Module successfully update", "success")
-            ReactDom.render("Save change", t)
-            t.style.opacity = 1
+                this.setState({
+                    sectionIdLast: this.state.sectionId,
+                    isProcess: false
+                })
+            }else{
+                let dataModule = result.dataModule
+                this.props.updateDataModule(dataModule)
+                
+                /*set state checklist for delete
+                after save change necessery*/
+                this.setState({
+                    infoPop: "",
+                    dataBugs: result.bugs,
+                    isProcess: false
+                })
+            }
+        
+            if(t){
+                let btn = this.btnSaveChange.current
+                popUpAlert("Module successfully update", "success")
+                console.log(btn)
+                ReactDom.render(<><FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Save Change</span></>, btn)
+                t.style.opacity = 1
+            }
         })
     }
 
-    setDataBugsValidation = (data) => {
+    // setDataBugsValidation = (data) => {
         // let d = new Array()
         // for(let i = 0;i<data.length;i++){
         //     console.log(data[i])
@@ -441,7 +451,7 @@ class detail extends React.Component{
 
         // this.dataBugsValidation = d
         // console.log(this.dataBugsValidation)
-    }
+    // }
 
     dateInputConvert(date){
         var d = new Date(date)
@@ -573,7 +583,7 @@ class detail extends React.Component{
         form.append('projectId', this.state.projectId)
         form.append('moduleId', this.state.moduleId)
         form.append('descFile', descFile)
-        form.append('base64', bs64)
+        form.append('basesixfour', bs64)
         form.append('fileName', fileName)
         form.append('ort', ort)
         
@@ -843,7 +853,7 @@ class detail extends React.Component{
                                         />
                                     </div>
                                     <div id='mdf-base'>
-                                        <DocFileModule
+                                        <AttacmentTask
                                             dataDocFile={this.state.dataDocFile}
                                             documentFileUpload={this.documentFileUpload}
                                             commitDocFileUpload={this.commitDocFileUpload}
@@ -869,15 +879,20 @@ class detail extends React.Component{
                             The data will be saved after clicking the save button, except upload
                         </div>
                         <div style={{width: "240px", display: "flex", justifyContent: "flex-end"}}>
-                            <button className="btn-primary" style={{opacity: "0.5", display: "flex", justifyContent: "center", alignItems: "center"}} ref={this.btnSaveChange}>
-                                <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;
-                                <span style={{fontSize: "11px"}}>
-                                {
-                                    (this.state.moduleId == null || this.state.moduleId == "")
-                                    ? "Save" : "Save Change"
-                                }
-                                </span>
-                            </button>
+                            {
+                                // (this.state.isProcess)
+                                // ?
+                                    <button className="btn-primary" style={{opacity: "0.5", display: "flex", justifyContent: "center", alignItems: "center"}} ref={this.btnSaveChange}>
+                                        <FontAwesomeIcon icon={faSave}/>&nbsp;&nbsp;
+                                        <span style={{fontSize: "11px"}}>
+                                        {
+                                            (this.state.moduleId == null || this.state.moduleId == "")
+                                            ? "Save" : "Save Change"
+                                        }
+                                        </span>
+                                    </button>
+                                // :   
+                            }
                             &nbsp;
                             <button onClick={this.close} style={{display: "flex", justifyContent: "center", alignItems: "center"}} className="btn-secondary">
                                 <FontAwesomeIcon icon={faTimes}/>&nbsp;&nbsp;<span style={{fontSize: "11px"}}>Close</span>

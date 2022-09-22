@@ -17,12 +17,6 @@ class row_document_file extends React.Component{
         getIconDocFIle(this.props.ext, this.baseIcon.current)
     }
 
-    // componentDidUpdate(prevProps, prevState, snapshot){
-    //     if(prevProps != this.props){
-    //         console.log(this.props)
-    //     }
-    // }
-
     byteToKb(size){
         var rtn = 0
         var mathFLoor = Math.floor(size / 1000)
@@ -42,6 +36,7 @@ class row_document_file extends React.Component{
     }
 
     render(){
+        console.log(this.props)
         return(
             (!this.props.isBorderRdx)
             ?
@@ -50,7 +45,7 @@ class row_document_file extends React.Component{
                         <div ref={this.baseIcon}></div>
                     </td>
                     <td className="tb-doc-file" style={{paddingRight: "10px"}}>
-                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.fileName, this.url(this.props.path))} className="bold" style={{color: "#000"}}>{this.props.fileName}</a>
+                        <a onClick={(e) => this.props.rowClickDocFile(e, this.props.urlPath, this.props.ext, this.props.fileName)} className="bold" style={{color: "#000"}}>{this.props.fileName}</a>
                         <div className="second-font-color">
                             <div style={{fontSize: "11px"}}>
                             {

@@ -29,7 +29,6 @@ class card_item extends React.Component{
     }
 
     render(){
-        console.log(this.props)
         const labelView = this.props.labelModule.map(dt => {
             return <div style={{float: "left", padding: "5px", background: dt.color, color: "#FFF", fontSize: "11px", borderRadius: "3px", display: "flex", alignItems: "center", marginRight: "5px", marginBottom: "3px"}}>
                          <FontAwesomeIcon icon={faTag}/>&nbsp;{dt.label}

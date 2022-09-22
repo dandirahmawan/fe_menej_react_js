@@ -185,21 +185,21 @@ class document_file extends React.Component{
         })
     }
 
-    rowClickDocFile(e, fileName, url){
-        var a = fileName.lastIndexOf(".")
-        var ext = fileName.substr(parseInt(a) + 1, fileName.length)
+    rowClickDocFile(e, urlPath, extension, fileName){
+        console.log(urlPath)
+        var ext = extension.replace(".", "")
         if(ext.toLowerCase() == 'jpeg' || ext.toLowerCase() == 'jpg' || ext.toLowerCase() == 'png'){
             e.preventDefault()
             this.setState({
-                popup : <PreviewImage image={fileName} hideImage={this.hidePopUp} url={url}/>
+                popup : <PreviewImage image={fileName} hideImage={this.hidePopUp} url={urlPath}/>
             })
         }else if(ext.toLowerCase() == "mp4" || ext.toLowerCase() == "3gp" || ext.toLowerCase() == "mkv"){
             e.preventDefault()
             this.setState({
-                popup : <PreviewVideo video={fileName} hideVideo={this.hidePopUp} url={url}/>
+                popup : <PreviewVideo video={fileName} hideVideo={this.hidePopUp} url={urlPath}/>
             })
         }else{
-            window.open(baseUrl+"/file/"+url)
+            window.open(urlPath)
         }
     }
 
@@ -220,6 +220,7 @@ class document_file extends React.Component{
                         path={dt.path}
                         userName={dt.userName}
                         userId={dt.userId}
+                        urlPath={dt.urlPath}
                         isBorder={this.state.isBorder}
                         deleteDocFile={this.deleteDocFile}
                         rowClickDocFile={this.rowClickDocFile}

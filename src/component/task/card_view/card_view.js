@@ -94,10 +94,12 @@ class card_view extends Component{
         let isValid = true
         let dataModule = [...this.props.dataModule]
         let seq = 0;
+
         for(let i = 0;i<dataModule.length;i++){
             let dt = dataModule[i]
             if(dt.id == id){
-                let countTask = dt.sectionModule.length
+                console.log(dt)
+                let countTask = dt.modules.length
                 if(countTask > 0){
                     popUpAlert("There is task in this section")
                     isValid = false
@@ -110,42 +112,22 @@ class card_view extends Component{
         }
 
         if(isValid){
-            popUpAlert("Section successfully deleted", "success")
-            let form = new FormData()
-            form.append("id", id)
-
             let fetch = new Fetch()
-            fetch.post("/section/delete", form).then(res => {
+            fetch.deleteGolang("/section/"+id).then(res => {
                 try {
-                    let resJson = JSON.parse(res)
-                    if(resJson.status == "success"){
+                    let isSuccess = res.success
+                    if(isSuccess){
                         popUpAlert("Delete section is successfully", "success")
-
                         /*set data module to redux*/
                         dataModule.splice(seq, 1)
                         this.props.setDataModule(dataModule)
                     }else{
-                        popUpAlert(resJson.message)
+                        popUpAlert(res.message)
                     }
                 } catch (error) {
                     /*nothing happen*/
                 }
             })
-            // ApiFetch("/section/delete", {
-            //     method: "POST",
-            //     body: form
-            // }).then(res => res.text()).then(res => {
-            //     let resJson = JSON.parse(res)
-            //     if(resJson.status == "success"){
-            //         popUpAlert("Delete section is successfully", "success")
-
-            //         /*set data module to redux*/
-            //         dataModule.splice(seq, 1)
-            //         this.props.setDataModule(dataModule)
-            //     }else{
-            //         popUpAlert(resJson.message)
-            //     }
-            // })
         }
 
         this.setState({

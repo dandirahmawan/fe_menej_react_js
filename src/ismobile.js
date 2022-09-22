@@ -13,7 +13,7 @@ class Ismobile extends Component {
                             justifyContent: "center",
                             width: "100%"}}>
                     
-                    <div className='bold second-font-color' style={{fontSize: "26px", marginTop: "20px"}}>Sorry,</div>
+                    <div className='bold second-font-color' style={{fontSize: "26px"}}>Sorry,</div>
                     <div className='bold' style={{textAlign: "center", width: "200px", fontSize: "13px"}}>This site is not available for mobile, please open on your desktop</div>
                 </div>
                 <div style={{bottom: "20px", position: "fixed", width: "100%", textAlign: "center"}}>

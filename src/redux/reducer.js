@@ -1,3 +1,4 @@
+import { data } from 'jquery'
 import {
     deleteDataNoteAction,
     selectRowModuleAction,
@@ -149,9 +150,22 @@ function rootReducer(state = initState, action){
     }
 
     if(action.type === setSectionModuleAction){
+        var data = action.data
+        data.modules = []
+        var datamod = [...state.dataModule]
+ 
+        /*set new section in data module list*/
+        if(data.length > datamod.length){
+            let idxLast = data.length - 1
+            let appendData = data[idxLast]
+            appendData.modules = [] /*init empty list moudule for new section*/
+            datamod.push(appendData)
+        }
+
         return{
             ...state,
-            sectionModule: action.data
+            sectionModule: action.data,
+            dataModule: datamod
         }
     }
     

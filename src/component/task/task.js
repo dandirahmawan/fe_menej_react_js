@@ -11,6 +11,7 @@ import { faFolder, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import Fetch from '../../function/fetchApi'
 import ModuleService from '../../services/module_service'
+import dropdown_tab_menu from './dropdown_tab_menu'
 
 class list_module extends React.Component{
 
@@ -150,19 +151,34 @@ class list_module extends React.Component{
     }
 
     commitDeleteModule(dataSelected){
+        // console.log(dataSelected)
         let newData = []
         for(let i = 0;i<this.props.dataModule.length;i++){
             let dt = this.props.dataModule[i]
-            let newDataModule = []
-            dt.sectionModule.map(dtt => {
-                let idx = dataSelected.indexOf(dtt.modulId)
-                if(idx == -1){
-                    newDataModule.push(dtt)
+            
+            let modules = dt.modules
+            for(let ii = 0;ii<modules.length;ii++){
+                let data = modules[ii]
+                // console.log(dataSelected)
+                // console.log(data.modulId)
+                let idx = dataSelected.indexOf(data.modulId)
+                console.log(idx)
+                if(idx != -1){
+                    console.log(modules)
+                    modules.splice(ii, 1)
+                    console.log("=== after splice ====")
+                    console.log(modules)
+                    ii--
                 }
-            })
-            dt.sectionModule = newDataModule
+                console.log(ii+", L : "+modules.length)
+            }
+
+            /*set new array module*/
+            dt.modules = modules
             newData.push(dt)
         }
+
+        /*set new data module to redux*/
         this.props.setDataModule(newData)
     }
 

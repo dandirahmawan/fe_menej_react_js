@@ -8,9 +8,9 @@ import {SpinnerButton} from "../../spinner";
 const Teams_detail = (props) => {
     const [fetch, setFetch] = useState(true)
     const [dataPermition, setDataPermition] =  useState([])
-    const [userId, setUserId] = useState("")
+    // const [userId, setUserId] = useState("")
     const [userName, setUserName] = useState("")
-    const [picProfile, setPicProfile] = useState("")
+    // const [picProfile, setPicProfile] = useState("")
     const [permitionSelected, setPermitionSelected] = useState([])
     const [userEmail, setUserEmail] = useState()
     
@@ -53,12 +53,8 @@ const Teams_detail = (props) => {
         var heightMain = basePermition.offsetHeight - 20 - (parseInt(headerHeight) + footerHeight)
         baseMain.style.height = heightMain+"px"
 
-        var form = new FormData()
-        form.append('userId', props.userId)
-        form.append('projectId', props.projectId)
-
         let fetch = new Fetch()
-        fetch.post("/permition_project", form).then(result => {
+        fetch.getGolang("/permition/"+props.projectId+"/"+props.userId).then(result => {
             for(var i = 0;i<result.dataPermition.length;i++){
                 if(result.dataPermition[i]['isChecked'] == 'Y'){
                     permitionSelected.push(result.dataPermition[i]['permitionCode'])
@@ -67,40 +63,11 @@ const Teams_detail = (props) => {
             
             setFetch(false)
             setDataPermition(result.dataPermition)
-            setUserId(result.dataUser.userId)
+            // setUserId(result.dataUser.userId)
             setUserName(result.dataUser.userName)
             setUserEmail(result.dataUser.emailUser)
-            setPicProfile(result.dataUser.picProfile)
+            // setPicProfile(result.dataUser.picProfile)
         })
-
-        // ApiFetch("/permition_project",{
-        //     method: "POST",
-        //     body: form
-        // }).then(res => res.json())
-        // .then(result => {
-            
-        //     //set ready permition to state.permitionSelected
-        //     for(var i = 0;i<result.dataPermition.length;i++){
-        //         if(result.dataPermition[i]['isChecked'] == 'Y'){
-        //             permitionSelected.push(result.dataPermition[i]['permitionCode'])
-        //         }   
-        //     }
-            
-        //     setFetch(false)
-        //     setDataPermition(result.dataPermition)
-        //     setUserId(result.dataUser.userId)
-        //     setUserName(result.dataUser.userName)
-        //     setUserEmail(result.dataUser.emailUser)
-        //     setPicProfile(result.dataUser.picProfile)
-            
-        //     // this.setState({
-        //     //     dataPermition: result.dataPermition,
-        //     //     userId: result.dataUser.userId,
-        //     //     userName: result.dataUser.userName,
-        //     //     userEmail: result.dataUser.emailUser,
-        //     //     picProfile: result.dataUser.picProfile
-        //     // })
-        // })
     }
 
     const checkClick = (e, permitionCode) => {
@@ -187,7 +154,7 @@ const Teams_detail = (props) => {
         form.append('user_id', props.userId)
         
         let fetch = new Fetch()
-        fetch.post("/set_permition", form).then(result => {
+        fetch.postGolang("/set_permition", form).then(result => {
             if(result == "success"){
                 popUpAlert("Permition succesfully updated", "success")
                 props.hide()

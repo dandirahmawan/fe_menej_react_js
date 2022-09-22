@@ -263,7 +263,6 @@ class doc_file_module extends React.Component{
 
         const data = this.props.dataDocFile.map(dt => 
             {
-                console.log(dt)
                 return <RowDocFile 
                                 rowClickDocFile={this.rowClickDocFile}
                                 ext={dt.extension} 

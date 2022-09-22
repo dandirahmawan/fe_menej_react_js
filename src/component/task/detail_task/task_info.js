@@ -406,7 +406,7 @@ class module_info extends React.Component{
                                         <td colSpan="2">
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Task name</div>
                                             <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC"}}>
-                                                {this.props.moduleName+" -- "+this.props.moduleId}
+                                                {this.props.moduleName}
                                             </div>
                                         </td>
                                 }
@@ -467,7 +467,7 @@ class module_info extends React.Component{
                                         <td>
                                             <div className="second-font-color bold" style={{fontSize: "11px", marginBottom : "3px"}}>Section</div>
                                             <div className="second-background-grs" style={{padding: "5px", borderRadius: "3px", border: "1px solid #CCC", width: "212px"}}>
-                                                {(this.props.moduleStatus == 'C') ? 'Close' : 'On Progress'}
+                                                {this.sectionName(this.state.idSection)}
                                             </div>
                                         </td>
                                 }
