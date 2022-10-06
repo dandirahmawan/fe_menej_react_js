@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Logo from '../images/menej_285e8e.png'
-
+const baseGolang = "http://localhost:8888"
 
 class fetchApi {
     post = (url, param) => axios.post(url, param)
@@ -18,7 +18,7 @@ class fetchApi {
             return null
         })
     
-    postGolang = (url, param) => axios.post("http://localhost:8888"+url, param)
+    postGolang = (url, param) => axios.post(baseGolang+url, param)
         .then(response => {
             let data = response.data
             return data
@@ -46,7 +46,7 @@ class fetchApi {
             return null
         })
 
-    getGolang = (url) => axios.get("http://localhost:8888"+url)
+    getGolang = (url) => axios.get(baseGolang+url)
         .then(response => {
             let data = response.data
             return data
@@ -74,7 +74,7 @@ class fetchApi {
             return null
         })
 
-    putGolang = (url, param) => axios.put("http://localhost:8888"+url, param)
+    putGolang = (url, param) => axios.put(baseGolang+url, param)
         .then(response => {
             let data = response.data
             return data
@@ -88,7 +88,7 @@ class fetchApi {
             return null
         })
         
-    deleteGolang = (url) => axios.delete("http://localhost:8888"+url)
+    deleteGolang = (url) => axios.delete(baseGolang+url)
         .then(response => {
             let data = response.data
             return data

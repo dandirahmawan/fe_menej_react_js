@@ -1,4 +1,4 @@
-import { faAngleDown, faFilter, faFolder, faObjectGroup, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faFilter, faFolder, faObjectGroup, faPlus, faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Fragment } from 'react'
@@ -152,6 +152,8 @@ class header_task extends React.Component{
                         style={{width: "30px", 
                                 height: "30px", 
                                 borderRadius: "100%",
+                                border: "1px solid #FFF",
+                                marginLeft: "-7px",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -215,8 +217,36 @@ class header_task extends React.Component{
                         
                         <div>
                             <a onClick={this.teams}>
-                                <div id="prv-tm-prj-129ssa" style={{display: "flex", paddingLeft: "10px"}}>
+                                <div id="prv-tm-prj-129ssa" style={{display: "flex", paddingLeft: "20px", alignItems: "center"}}>
+                                    <div style={{width: "30px", 
+                                                height: "30px", 
+                                                borderRadius: "100%",
+                                                border: "1px solid #CCC",
+                                                background: "#FFF",
+                                                zIndex: "1",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                marginRight: "2px"}}>
+                                        <FontAwesomeIcon icon={faUsers} color={"#898989"}/>
+                                    </div>
                                     {dataTeam}
+                                    <div className='main-border-left' style={{marginLeft: "4px"}}>
+                                        <div style={{width: "25px", 
+                                                    height: "25px", 
+                                                    marginLeft: "5px",
+                                                    borderRadius: "100%",
+                                                    border: "1px solid #CCC",
+                                                    background: "#FFF",
+                                                    zIndex: "1",
+                                                    display: "flex",
+                                                    fontSize: "12px",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    marginRight: "2px"}}>
+                                            <FontAwesomeIcon icon={faPlus} color={"#898989"}/>
+                                        </div>
+                                    </div>
                                 </div>
                             </a>
                             {this.state.teamsBase}

@@ -277,7 +277,7 @@ class detail extends React.Component{
         objModule.moduleName = this.state.moduleName
         objModule.section = this.state.sectionId
         objModule.projectId = this.props.projectId
-        objModule.createdBy = parseInt(getCookieUserId())
+        objModule.createdBy = getCookieUserId()
         objModule.labelModule = JSON.stringify(this.state.dataLabelModuleToUpdate)
         objModule.checklist = JSON.stringify(dataCheckilst)
         objModule.assigned = JSON.stringify(this.state.assignedModules)
@@ -420,6 +420,7 @@ class detail extends React.Component{
                     isProcess: false
                 })
             }else{
+                console.log(result)
                 let dataModule = result.dataModule
                 this.props.updateDataModule(dataModule)
                 

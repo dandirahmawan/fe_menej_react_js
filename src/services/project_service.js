@@ -10,4 +10,9 @@ export default class project_service {
         return resp
     }
 
+    postProject = async (body) => {
+        let resp = await fetch.postGolang("/project", body)
+        return resp
+    }
+
 }

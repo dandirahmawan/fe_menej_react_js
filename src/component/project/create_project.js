@@ -3,7 +3,7 @@ import {getCookieUserId, popUpAlert} from '../../function/function'
 import Fetch from '../../function/fetchApi'
 import ReactDom from 'react-dom'
 import {SpinnerButton} from '../spinner'
-import axios from 'axios'
+import PS from '../../services/project_service'
 
 class create_project extends React.Component{
 
@@ -32,42 +32,48 @@ class create_project extends React.Component{
         elm.style.left = left+"px"
     }
 
-    commitProject(e){
-        let tgt = e.target
-        var userId = getCookieUserId()
-        if(this.state.projectName == ""){
-            popUpAlert("Project name is empty", "warning");
-            return false;
-        }
+    commitProject = async (e) => {
+        let services = new PS();
+        let body = {}
+        body.projectName = this.state.projectName
 
-        if(this.state.onProcess){
-            return false
-        }
+        let resp = await services.postProject(body)
+        console.log(resp)
+        // let tgt = e.target
+        // var userId = getCookieUserId()
+        // if(this.state.projectName == ""){
+        //     popUpAlert("Project name is empty", "warning");
+        //     return false;
+        // }
 
-        e.target.style.opacity = "0.5"
-        ReactDom.render(<SpinnerButton size="14px"/>, e.target)
-        this.setState({
-            onProcess: true
-        })
+        // if(this.state.onProcess){
+        //     return false
+        // }
 
-        let form = new FormData()
-        form.append("userId", userId)
-        form.append("projectName", this.state.projectName)
+        // e.target.style.opacity = "0.5"
+        // ReactDom.render(<SpinnerButton size="14px"/>, e.target)
+        // this.setState({
+        //     onProcess: true
+        // })
 
-        let fetch = new Fetch()
-        fetch.post("/project/insert_project", form).then(result => {
-            if(result != "exists"){
-                window.location = "/project/"+result
-            }else{
-                popUpAlert("Project name already exists")
-            }
+        // let form = new FormData()
+        // form.append("userId", userId)
+        // form.append("projectName", this.state.projectName)
 
-            tgt.style.opacity = "1"
-            ReactDom.render("Create", tgt)
-            this.setState({
-                onProcess: false
-            })
-        })
+        // let fetch = new Fetch()
+        // fetch.post("/project/insert_project", form).then(result => {
+        //     if(result != "exists"){
+        //         window.location = "/project/"+result
+        //     }else{
+        //         popUpAlert("Project name already exists")
+        //     }
+
+        //     tgt.style.opacity = "1"
+        //     ReactDom.render("Create", tgt)
+        //     this.setState({
+        //         onProcess: false
+        //     })
+        // })
 
         // axios.post("/project/insert_project", form).then(response => {
         //     let status = response.status

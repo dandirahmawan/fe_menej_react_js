@@ -1,8 +1,10 @@
 import React from 'react'
 import Logo from '../../images/menej_285e8e.png'
-import { baseUrl } from '../../const/const'
+import { baseUrlGO } from '../../const/const'
 import Confirmaton from './register_confirmation'
 import {Link} from "react-router-dom";
+import UserService from '../../services/user_service'
+import cookieReact from 'react-cookies'
 
 class register extends React.Component{
 
@@ -54,12 +56,12 @@ class register extends React.Component{
 
     setCookies(data){
         for(var i = 0;i<data.length;i++){
-            document.cookie = "userId = "+data[i]['userId'];
-        }
-        window.location.reload()    
+            cookieReact.save("userId", data[i]['userId'], {path: '/'})
+            cookieReact.save("sessionId", data[i]['sessionId'], {path: '/'})
+        }  
     }
 
-    submit(e){
+    submit = async (e) => {
         if(this.state.email.length == 0){
             this.setState({
                 alertRegister: "Email is empty"
@@ -89,35 +91,99 @@ class register extends React.Component{
         b.style.background = "#CCC"
         b.innerText = "processing.."
         
+        let body = {}
+        body.name = this.state.name
+        body.email = this.state.email
+        body.password = this.state.password
+        let us = new UserService()
+        let resp = await us.register(body)
+
+        if(resp.success){
+            this.login(this.state.email, this.state.password)
+        }else{
+            this.setState({
+                alertRegister: "Email has been reegistered"
+            })
+            b.style.background = ""
+            b.innerText = "Submit"
+        }
+
+        // if(resp.isReady){
+        //     this.setState({
+        //         alertRegister: "Email has been reegistered"
+        //     })
+        //     b.style.background = ""
+        //     b.innerText = "Submit"
+        // }else {
+        //     this.login()
+        //     // this.baseRegister.current.style.display = "none"
+        //     // this.setState({
+        //         // confirmationBase: <Confirmaton email={this.state.email} password={this.state.password}/>
+        //     // })
+        // }
+        // if(result != "ready"){
+        //     this.baseRegister.current.style.display = "none"
+        //     this.setState({
+        //         confirmationBase: <Confirmaton email={this.state.email} password={this.state.password}/>
+        //     })
+        //     // this.login()
+        // }else{
+        //     this.setState({
+        //         alertRegister: "Email has been reegistered"
+        //     })
+        //     b.style.background = ""
+        //     b.innerText = "Submit"
+        // }
+
+        // var form = new FormData()
+        // form.append("email", this.state.email)
+        // form.append("password", this.state.password)
+        // form.append("name", this.state.name)
+        // fetch(baseUrl+"/register", {
+        //     method: "POST",
+        //     body: form
+        // }).then(res => res.text())
+        // .then((result) => {
+        //     if(result != "ready"){
+        //         this.baseRegister.current.style.display = "none"
+        //         this.setState({
+        //             confirmationBase: <Confirmaton email={this.state.email} password={this.state.password}/>
+        //         })
+        //         // this.login()
+        //     }else{
+        //         this.setState({
+        //             alertRegister: "Email has been reegistered"
+        //         })
+        //         b.style.background = ""
+        //         b.innerText = "Submit"
+        //     }
+        // })    
+    }
+
+    login = (email, password) => {
         var form = new FormData()
-        form.append("email", this.state.email)
-        form.append("password", this.state.password)
-        form.append("name", this.state.name)
-        fetch(baseUrl+"/register", {
+        form.append("email", email)
+        form.append("password", password)
+
+        fetch(baseUrlGO+"/loginApp", {
             method: "POST",
+            headers : new Headers(),
             body: form
-        }).then(res => res.text())
+        }).then(res => res.json())
         .then((result) => {
-            if(result != "ready"){
-                this.baseRegister.current.style.display = "none"
-                this.setState({
-                    confirmationBase: <Confirmaton email={this.state.email} password={this.state.password}/>
-                })
-                // this.login()
-            }else{
-                this.setState({
-                    alertRegister: "Email has been reegistered"
-                })
-                b.style.background = ""
-                b.innerText = "Submit"
+            // console.log(result)
+            // window.location.reload()
+            if(result[0].code != 201){
+                this.setCookies(result)
+                window.location = "/"
             }
         })    
     }
 
     render(){
         return(
-            <React.Fragment>
-                <div ref={this.baseRegister} style={{textAlign: "center", marginTop: "100px"}}>
+            <div id="bs-rgst-mnj-989" style={{position: "fixed", width: "100%", height: "100%", alignItems: "center", justifyContent: "center", display: "flex"}}>
+                <div ref={this.baseRegister} style={{textAlign: "center"}}>
                     <img src={Logo}></img><br/>
                     <p className="bold-black">Register</p>
                     <p className="bold" style={{fontSize: '12px', color: "#F00"}}>{this.state.alertRegister}</p>
@@ -138,7 +204,7 @@ class register extends React.Component{
                     </div>
                 </div>
                 {this.state.confirmationBase}
-            </React.Fragment>
+            </div>
             
         )
     }

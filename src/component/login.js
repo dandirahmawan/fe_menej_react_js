@@ -87,14 +87,13 @@ class login extends React.Component{
             body: form
         }).then(res => res.json())
         .then((result) => {
-
             if(result[0].code != 201){
                 this.setCookies(result)
-                if(redirect == ""){ 
-                    window.location.reload()
-                }else{
-                    window.location = window.location.origin+"/"+redirect 
-                }
+                // if(redirect == ""){ 
+                //     window.location.reload()
+                // }else{
+                //     window.location = window.location.origin+"/"+redirect 
+                // }
             }else{
                 this.setState({
                     alertLogin: "Email and password is not match"

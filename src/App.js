@@ -27,17 +27,15 @@ import Ismobile from './ismobile'
 let cookie = document.cookie
 if(cookie != "" && cookie != null && cookie !== undefined){
     let data = cookie.replace(" ","").split(";")
-    let userId      = data[0].split("=")[1]
-    let sessionId   = data[1].split("=")[1]
+    let userId      = (data[0]) ? data[0].split("=")[1] : ""
+    let sessionId   = (data[1]) ? data[1].split("=")[1] : ""
     axios.defaults.headers.common['userid'] = userId
     axios.defaults.headers.common['sessionid'] = sessionId
     axios.defaults.baseURL = baseUrl
 }
 
 class App extends React.Component{
-  
     mCookie = document.cookie
-
     constructor(){
         super()
         this.state = {
@@ -93,7 +91,6 @@ class App extends React.Component{
         }
         else{
             if(a === ""){
-
                 let redirectUrl = "/login"
                 if(path == "/invitation" || path == "/login/invitation"){
                     let href = window.location.href
@@ -142,7 +139,8 @@ class App extends React.Component{
                     else if(path == '/logout'){
                         return(
                             <BrowserRouter>
-                                {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>}
+                                <Logout/>
+                                {/* {a === "" ? <Redirect to="/login"></Redirect> : <Logout/>} */}
                             </BrowserRouter>
                         )
                     }else{

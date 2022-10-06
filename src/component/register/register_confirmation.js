@@ -60,7 +60,7 @@ class register_confirmation extends React.Component{
 
     render(){
         return(
-            <React.Fragment>
+            <div style={{position: "fixed", display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%"}}>
                 <div style={{textAlign: "center", marginTop: "100px"}}>
                     <img src={Logo}/>
                     <div style={{fontSize: "12px", marginBottom: "10px"}}>
@@ -70,7 +70,7 @@ class register_confirmation extends React.Component{
                     <input ref={this.inputConfirm} type="text" className="bold" style={{padding: "10px", textAlign: "center"}} maxLength="6" placeholder="code register"></input><br/>
                     <button onClick={this.submitConfirm} className="btn-primary" style={{marginTop: "10px", width: "150px", padding: "10px"}}>Submit</button>
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 }
