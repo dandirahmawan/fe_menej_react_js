@@ -88,7 +88,7 @@ class fetchApi {
             return null
         })
         
-    deleteGolang = (url) => axios.delete(baseGolang+url)
+    deleteGolang = (url, body) => axios.delete(baseGolang+url)
         .then(response => {
             let data = response.data
             return data

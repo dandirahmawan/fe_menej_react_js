@@ -22,6 +22,7 @@ import { baseUrl, baseUrlGO } from './const/const'
 import { pathValidation } from './function/function'
 import axios from 'axios'
 import Ismobile from './ismobile'
+import UncofirmedPage from './component/unconfirmedpopup'
 
 /*set config axios base url and header*/
 let cookie = document.cookie
@@ -41,6 +42,7 @@ class App extends React.Component{
         this.state = {
             userNameLogin: "",
             emailLogin: "",
+            isConfirmed: 0,
             isLoad: true,
             pathIndex: true,
             invalidPath: false
@@ -68,10 +70,16 @@ class App extends React.Component{
                     console.log(jsonData)
                     this.props.dispatchStartData(jsonData)
                     this.setState({
+                        isConfirmed: jsonData.isConfirmed,
                         userNameLogin: jsonData.name,
                         emailLogin: jsonData.email,
                         isLoad: false
                     })
+                }
+            }).catch(error => {
+                let resp = error.response
+                if(resp.status == 401) {
+                    window.location = "/logout"
                 }
             })
         }
@@ -156,8 +164,10 @@ class App extends React.Component{
                                         </div>
                                     </BrowserRouter>
                                 :
+                                    /*authenticated route*/
                                     <BrowserRouter>
                                         {redirect}
+                                        {this.state.isConfirmed == 0 ? <UncofirmedPage/> : ""}
                                         <Navbar/>
                                         {/* <Sidebar/> */}
                                         <div id="main-base-data-wrapper">

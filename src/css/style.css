@@ -49,7 +49,7 @@ input{
 }
 
 .pop{
-    z-index: 1000;
+    z-index: 10000;
     position: fixed;
 }
 
@@ -271,7 +271,7 @@ body{
 
 a{
     cursor: pointer;
-    color: #386384;
+    color: #144367;
     text-decoration: none;
 }
 
@@ -384,9 +384,8 @@ select{
     position: fixed;
     top: 0;
     left: 0;
-    background: #000;
-    opacity: 0.5;
-    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
 }
 
 .block-image{
