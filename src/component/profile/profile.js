@@ -318,7 +318,7 @@ class profile extends React.Component{
         return(
             <Fragment>
                 <div className="block" onClick={this.props.hidePopUp}/>
-                <div id="base-profile-usr-lg" className="pop main-border" style={{background: "#FFF", borderRadius: "3px", width: "350px"}}>
+                <div id="base-profile-usr-lg" className="pop main-border" style={{background: "#FFF", borderRadius: "3px", width: "350px", zIndex: "10000000"}}>
                     <div style={{margin:"auto", height: "80px", width: "80px", borderRadius: "100%", marginTop: "20px", background: "#CCC"}}>
                         {
                             (this.props.userLoginData.picProfileDetail != null)

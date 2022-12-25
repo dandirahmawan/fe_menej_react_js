@@ -43,7 +43,7 @@ class new_label extends React.Component{
         let color = this.state.color
         
         if(label == 0){
-            popUpAlert("Label name is empy")
+            popUpAlert("Label name is empty")
             return false
         }
 

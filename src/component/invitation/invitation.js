@@ -4,8 +4,7 @@ import InvitationReady from './invitation_ready'
 import { getCookieSessionId, getCookieUserId } from '../../function/function'
 import wrnAlt from '../../images/warn_alert_inf.png'
 import {Spinner} from '../spinner'
-// import {ApiFetch} from '../apiFetch'
-import Fetch from '../../function/fetchApi'
+import Service from '../../services/team_service'
 
 class invitation extends React.Component{
 
@@ -22,29 +21,46 @@ class invitation extends React.Component{
         var get = href.lastIndexOf("?")
         var get = href.substring(parseInt(get) + 1, href.length)
         var nameGet = get.split("=")[0]
-        document.body.style.background = '#e1e1e1'
 
-        var sessionId = getCookieSessionId()
-        var userId = getCookieUserId()
+        
+        // var href = window.location.href
+        // var get = href.lastIndexOf("?")
+        // var get = href.substring(parseInt(get) + 1, href.length)
+        // var nameGet = get.split("=")[0]
+        // document.body.style.background = '#e1e1e1'
+
+        // var sessionId = getCookieSessionId()
+        // var userId = getCookieUserId()
 
         if(nameGet === "conf"){
             var parGet = get.split("=")[1]
-            var form = new FormData()
-            form.append("conf", parGet)
-            form.append("userId", userId)
-            form.append("sessionId", sessionId)
-
-            var header = new Headers()
-            header.append("sessionId", getCookieSessionId())
-            header.append("userId", getCookieUserId());
-
-            let fetch = new Fetch()
-            fetch.post("/conf_invitation", form).then(result => {
-                this.setState({
-                    resultInv: result,
-                    isload: false,
-                })
+            let serv = new Service()
+            serv.getInvitation(parGet).then(result => {
+                if(result.success){
+                    let data = result.data
+                    this.setState({
+                        resultInv: data,
+                        isload: false,
+                    })
+                }
             })
+            // var parGet = get.split("=")[1]
+            // var form = new FormData()
+            // form.append("conf", parGet)
+            // form.append("userId", userId)
+            // form.append("sessionId", sessionId)
+
+            // var header = new Headers()
+            // header.append("sessionId", getCookieSessionId())
+            // header.append("userId", getCookieUserId());
+
+            // let fetch = new Fetch()
+            // fetch.post("/invi", form).then(result => {
+            //     this.setState({
+            //         resultInv: result,
+            //         isload: false,
+            //     })
+            // })
         }
     }
 

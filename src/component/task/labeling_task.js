@@ -95,18 +95,6 @@ class labeling_task extends React.Component {
     }
 
     deleteLabel = (label) => {
-        // let i = 0
-        // let ii = 0
-        // let data = [...this.props.dataLabel]
-        // data.map(dt => {
-        //     /*delete json key*/
-        //     delete dt["moduleId"]
-        //     if(dt.label == label){
-        //         ii = i
-        //     }
-        //     i++
-        // })
-        // alert("dandi rahmawan")
         let txtPopup = "<span class='regular-font'>Are you sure, you want delete label, label will be delete without" 
                         +"click save change button</span>"
         this.setState({
@@ -118,12 +106,13 @@ class labeling_task extends React.Component {
     }
 
     yesDelete = (label) => {
-        let form = new FormData()
-        form.append("projectId", this.props.projectId)
-        form.append("label", label)
+        let body = {
+            "projectId": this.props.projectId,
+            "label": label
+        }
 
         let fetch = new Fetch()
-        fetch.post("/delete_label", form).then(result => {
+        fetch.postGolang("/delete_label", body).then(result => {
             let dataLabel = result.label
             this.props.setDataLabel(dataLabel)
             this.props.deleteLabel(label)

@@ -123,7 +123,7 @@ class set_assigned_module extends React.Component{
             <React.Fragment>
                 <div onClick={this.blockClick} className="block"></div>
                 {this.state.popup}
-                <div id='base-add-member' style={{background: "#FFF", position: "fixed", zIndex: "1000", borderRadius: "3px"}}>
+                <div id='base-add-member' style={{background: "#FFF", position: "fixed", zIndex: "10000", borderRadius: "3px"}}>
                     <div id="main-base-add-member" style={{width: "350px", height: "350px"}}>
                         <div id="header-add-member" className="bold main-border-bottom" style={{padding: "10px", fontSize: "14px"}}>
                             User Assigning

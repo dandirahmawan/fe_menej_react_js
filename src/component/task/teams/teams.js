@@ -6,8 +6,9 @@ import { connect } from 'react-redux'
 import AddMember from '../add_member'
 import TeamDetail from './teams_detail'
 import Confirmation from '../../popup_confirmation'
-import { ApiFetch } from '../../apiFetch'
+// import { ApiFetch } from '../../apiFetch'
 import {setDataTeam} from '../../../redux/action'
+import Service from '../../../services/team_service'
 
 class Teams extends React.Component {
 
@@ -85,33 +86,25 @@ class Teams extends React.Component {
         })
     }
 
-    confirmDelete(userId, projectId){
-        let newData = [...this.props.dataTeam]
-        let i = 0;
-        newData.map(dt => {
-            if(dt.userId == userId){
-                newData.splice(i, 1)
-                this.props.setDataTeam(newData)
-            }
-            i++
-        })
-
-        let form = new FormData
-        form.append("userDelete", userId)
-        form.append("projectId", projectId)
-        ApiFetch("/member/delete_member", {
-            method: "POST",
-            body: form
-        }).then(res => res.text()).then(result => {
-            if(result == "success"){
-                this.refresDataTeam(userId)
-            }
-
-            /*remove popup delete*/
+    confirmDelete = async (userId, projectId) => {
+        let serv = new Service()
+        let resp = await serv.delete(projectId, userId)
+        
+        if(resp.success){
             this.setState({
                 addMemberBse: ""
             })
-        })
+
+            let newData = [...this.props.dataTeam]
+            let i = 0;
+            newData.map(dt => {
+                if(dt.userId == userId){
+                    newData.splice(i, 1)
+                    this.props.setDataTeam(newData)
+                }
+                i++
+            })
+        }
     }
 
     refresDataTeam(userId){

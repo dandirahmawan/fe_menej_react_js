@@ -58,18 +58,19 @@ class invitation_ready extends Component{
                                   style={{width: "40px", 
                                             height: "40px",
                                             background: "url("+baseUrl+"/pic_profile/"+dt.picProfile+") no-repeat center",
+                                            position: "absolute",
                                             backgroundSize: "cover", 
                                             borderRadius: "100%",}}/>
-            let view = (dt.picProfile == null) ? initialBase : picProfile
 
             return <div className="main-color" 
                         style={{width: "40px", 
                                 height: "40px",
                                 color: "#FFF", 
+                                border: "2px solid #FFF",
                                 borderRadius: "100%",
-                                marginRight: "5px",
+                                marginRight: "-8px",
                                 textAlign: "center", 
-                                display: "inline-block"}}>{view}</div>
+                                display: "inline-block"}}>{initialBase}{picProfile}</div>
         })
 
         return(
@@ -82,7 +83,7 @@ class invitation_ready extends Component{
                         Invitation
                     </div>
                     <div style={{padding: "10px", fontSize: "12px"}}>
-                        <div className="bold">Hi, i am {this.state.dataInvitation.userNameInviting}</div>
+                        <div className="bold" style={{fontSize: "14px"}}>Hi, i am {this.state.dataInvitation.userNameInviting}</div>
                         I want invite you to colaborating in menej for project
                         <div className="second-background-grs main-border" style={{padding: "10px", marginTop: "10px", borderRadius: "3px", overflow: "hidden"}}>
                             <FontAwesomeIcon icon={faFolder} style={{color: 'rgb(212, 174, 43)', fontSize: "25px", float: "left"}}/>
@@ -96,7 +97,7 @@ class invitation_ready extends Component{
                             </div>
                         </div>
                         <div style={{marginTop: "15px", overflow: "hidden", textAlign: "center"}}>
-                            <div className="second-font-color bold"><FontAwesomeIcon icon={faUsers}/>&nbsp;&nbsp;Current member</div>
+                            <div className="second-font-color bold"><FontAwesomeIcon icon={faUsers}/>&nbsp;&nbsp;Members</div>
                             <div style={{marginTop: "10px", textAlign: "center"}}>
 
                                 {

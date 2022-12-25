@@ -16,9 +16,13 @@ export class Spinner extends React.Component{
     }
 
     render(){
-        const style = {
+        let style = {
             width: this.state.width,
             marginTop: "20px"
+        }
+
+        if(this.props.style){
+            style = this.props.style
         }
         return(
             <div style={{textAlign: "center"}}>

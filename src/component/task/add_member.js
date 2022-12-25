@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import ReactDom from 'react-dom'
 import { popCenterPosition, popUpAlert, getCookieUserId } from '../../function/function'
 import { SpinnerButton } from '../spinner'
-import { ApiFetch } from '../apiFetch'
-import Fetch from '../../function/fetchApi'
+import Service from "../../services/team_service"
 
 class add_member extends React.Component{
 
@@ -19,6 +18,7 @@ class add_member extends React.Component{
     }
 
     sendRequest(e){
+        alert("dandi rahmawan")
         let input = this.inputEmail.current
         let val = input.value
         
@@ -33,35 +33,47 @@ class add_member extends React.Component{
             popUpAlert("Email is ready in this team")
             return false
         }
-    
+
         if(val == 0){
             popUpAlert("Email is empty")
-        }else{
-            e.target.style.opacity = 0.5
-            e.target.style.minWidth = "50px"
-            ReactDom.render(<SpinnerButton size="12px"/>, e.target)
-
-            let form = new FormData()
-            form.append("userId", getCookieUserId())
-            form.append("email", val)
-            form.append("projectId", this.props.projectId)
-
-            new Fetch().post("/invitation", form).then(result => {
-                if(result == "success"){
-                    popUpAlert("invitation has been sent", "success")
-                    this.cancel()
-                }
-            })
-            // ApiFetch("/invitation", {
-            //     method: "POST",
-            //     body: form
-            // }).then(res => res.text()).then(result => {
-            //     if(result == "success"){
-            //         popUpAlert("invitation has been sent", "success")
-            //         this.cancel()
-            //     }
-            // }) 
+            return false
         }
+
+        let param = {}
+        param.projectId = this.props.projectId
+        param.email = input.value
+        console.log(param)
+        let serv = new Service()
+    
+        serv.invite(param)
+        // if(val == 0){
+        //     popUpAlert("Email is empty")
+        // }else{
+        //     e.target.style.opacity = 0.5
+        //     e.target.style.minWidth = "50px"
+        //     ReactDom.render(<SpinnerButton size="12px"/>, e.target)
+
+        //     let form = new FormData()
+        //     form.append("userId", getCookieUserId())
+        //     form.append("email", val)
+        //     form.append("projectId", this.props.projectId)
+
+        //     new Fetch().post("/invitation", form).then(result => {
+        //         if(result == "success"){
+        //             popUpAlert("invitation has been sent", "success")
+        //             this.cancel()
+        //         }
+        //     })
+        //     // ApiFetch("/invitation", {
+        //     //     method: "POST",
+        //     //     body: form
+        //     // }).then(res => res.text()).then(result => {
+        //     //     if(result == "success"){
+        //     //         popUpAlert("invitation has been sent", "success")
+        //     //         this.cancel()
+        //     //     }
+        //     // }) 
+        // }
     }
 
     cancel(){

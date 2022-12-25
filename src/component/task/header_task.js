@@ -73,7 +73,8 @@ class header_task extends React.Component{
         let elm = document.getElementById("header-base-tab-module")
         elm.style.zIndex = 1000
         this.setState({
-            teamsBase: <Teams projectId={this.props.dataProject.projectId} 
+            teamsBase: <Teams 
+                            projectId={this.props.dataProject.projectId} 
                             hidePopUp={this.hideTeams}/>
         })
     }
@@ -210,12 +211,10 @@ class header_task extends React.Component{
                                 :
                                     <a onClick={this.attachmentAction} className="bold main-font-size second-font-color mn-tsk-main main-border-right">Attachment</a>
                             }
-                            {/* <a onClick={this.props.taskPage} className="bold second-font-color mn-tsk-main main-border-right">Task list</a> */}
-                            {/* <a style={{color: "#000"}} className="bold mn-tsk-main main-border-right">Attachment</a> */}
                             <a className="bold main-font-size second-font-color mn-tsk-main">Chart</a>
                         </div>
                         
-                        <div>
+                        <div id="base-hdr-tms-0228">
                             <a onClick={this.teams}>
                                 <div id="prv-tm-prj-129ssa" style={{display: "flex", paddingLeft: "20px", alignItems: "center"}}>
                                     <div style={{width: "30px", 
@@ -232,7 +231,8 @@ class header_task extends React.Component{
                                     </div>
                                     {dataTeam}
                                     <div className='main-border-left' style={{marginLeft: "4px"}}>
-                                        <div style={{width: "25px", 
+                                        <button id="btn-add-prv-tms" 
+                                                style={{width: "25px", 
                                                     height: "25px", 
                                                     marginLeft: "5px",
                                                     borderRadius: "100%",
@@ -245,7 +245,7 @@ class header_task extends React.Component{
                                                     justifyContent: "center",
                                                     marginRight: "2px"}}>
                                             <FontAwesomeIcon icon={faPlus} color={"#898989"}/>
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                             </a>
@@ -262,18 +262,6 @@ class header_task extends React.Component{
                                 (this.props.viewModule == "list")
                                 ?
                                     <Fragment>
-                                        {/* <button ref={this.markAllBtn} onClick={this.markAll} style={{background:"none", fontSize: "12px", display: "block"}}>
-                                            <i class="fa fa-check"></i> 
-                                            Mark All
-                                        </button>
-                                        <button ref={this.unMarkAllBtn} onClick={this.unmarkAll} style={{background:"none", fontSize: "12px", display: "none"}}>
-                                            <i class="fa fa-times"></i> 
-                                            Unmark All
-                                        </button>
-                                        <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                            <i class="fa fa-trash"></i> 
-                                            Delete
-                                        </button> */}
                                         <div className="main-border-right" style={{display: "flex", alignItems: "center", marginRight: "10px", paddingRight: "10px"}}>
                                             {
                                                 (this.props.isShowDescription)
@@ -285,10 +273,6 @@ class header_task extends React.Component{
                                             }
                                             <div className="bold" style={{marginTop: "1px", fontSize: "11px"}}>Show Description</div>
                                         </div>
-                                        {/* <button onClick={this.deleteModule} style={{background:"none", fontSize: "12px"}}>
-                                            {/* <i class="fa fa-trash"></i>  */}
-                                            {/* Filter */}
-                                        {/* </button> */} 
                                     </Fragment>
                                 :
                                     ""
