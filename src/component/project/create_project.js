@@ -36,44 +36,42 @@ class create_project extends React.Component{
         let services = new PS();
         let body = {}
         body.projectName = this.state.projectName
+        
+        let tgt = e.target
+        var userId = getCookieUserId()
+        if(this.state.projectName == ""){
+            popUpAlert("Project name is empty", "warning");
+            return false;
+        }
 
-        let resp = await services.postProject(body)
-        console.log(resp)
-        // let tgt = e.target
-        // var userId = getCookieUserId()
-        // if(this.state.projectName == ""){
-        //     popUpAlert("Project name is empty", "warning");
-        //     return false;
-        // }
+        if(this.state.onProcess){
+            return false
+        }
 
-        // if(this.state.onProcess){
-        //     return false
-        // }
+        e.target.style.opacity = "0.5"
+        ReactDom.render(<SpinnerButton size="14px"/>, e.target)
+        this.setState({
+            onProcess: true
+        })
 
-        // e.target.style.opacity = "0.5"
-        // ReactDom.render(<SpinnerButton size="14px"/>, e.target)
-        // this.setState({
-        //     onProcess: true
-        // })
+        let form = new FormData()
+        form.append("userId", userId)
+        form.append("projectName", this.state.projectName)
 
-        // let form = new FormData()
-        // form.append("userId", userId)
-        // form.append("projectName", this.state.projectName)
+        let fetch = new Fetch()
+        fetch.post("/project/insert_project", form).then(result => {
+            if(result != "exists"){
+                window.location = "/project/"+result
+            }else{
+                popUpAlert("Project name already exists")
+            }
 
-        // let fetch = new Fetch()
-        // fetch.post("/project/insert_project", form).then(result => {
-        //     if(result != "exists"){
-        //         window.location = "/project/"+result
-        //     }else{
-        //         popUpAlert("Project name already exists")
-        //     }
-
-        //     tgt.style.opacity = "1"
-        //     ReactDom.render("Create", tgt)
-        //     this.setState({
-        //         onProcess: false
-        //     })
-        // })
+            tgt.style.opacity = "1"
+            ReactDom.render("Create", tgt)
+            this.setState({
+                onProcess: false
+            })
+        })
 
         // axios.post("/project/insert_project", form).then(response => {
         //     let status = response.status
@@ -93,6 +91,36 @@ class create_project extends React.Component{
         //         })
         //     }
         // })
+    }
+
+    commitProjectGolang = async (e) => {
+        let services = new PS();
+        let body = {}
+        body.projectName = this.state.projectName
+        
+        if(this.state.projectName == ""){
+            popUpAlert("Project name is empty", "warning");
+            return false;
+        }
+
+        let tgt = e.target
+        e.target.style.opacity = "0.5"
+        this.setState({
+            onProcess: true
+        })
+        
+        let resp = await services.postProject(body)
+        if(resp != "exists"){
+            window.location = "/project/"+resp
+        }else{
+            popUpAlert("Project name already exists")
+        }
+
+        tgt.style.opacity = "1"
+        ReactDom.render("Create", tgt)
+        this.setState({
+            onProcess: false
+        })
     }
 
     handleChange(e){
@@ -127,7 +155,7 @@ class create_project extends React.Component{
                             </span>
                         </div>
                         <div className="main-border-top" style={{textAlign: 'right', padding: "10px"}}>
-                            <button onClick={this.commitProject.bind(this)} className='btn-primary' style={{fontSize: '11px', marginRight: '5px'}}>
+                            <button onClick={this.commitProjectGolang} className='btn-primary' style={{fontSize: '11px', marginRight: '5px'}}>
                                 Create
                             </button>
                             <button className="btn-secondary" onClick={this.props.hidePopUp} style={{fontSize: '11px'}}>Cancel</button>
